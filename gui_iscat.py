@@ -50,15 +50,24 @@ class MainVisual(tk.Frame):
         
         # 
         self.figsize_value=(6,6)
+        
+        self.color_list=[(200, 0, 0), (200, 0, 127), (0, 0, 255), (200, 155, 0),
+                    (100, 255, 5), (255, 10, 120), (255, 127, 255),
+                    (127, 0, 255), (0, 255, 0), (177, 0, 20), 
+                    (12, 200, 0), (0, 114, 255), (255, 20, 0),
+                    (0, 255, 255), (255, 100, 100), (255, 127, 255),
+                    (127, 0, 255), (127, 0, 127)]
       
      # # # # # # menu to choose files and print data # # # # # #
         
         self.button1 = tk.Button(text="       Select movie file       ", command=self.select_movie, width=40)
         self.button1.grid(row=0, column=2, pady=5)
 
-        
-        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracker, width=40)
+        self.button2 = tk.Button(text="    Process data before tracking    ", command=self.processing, width=40)
         self.button2.grid(row=1, column=2, pady=5) 
+        
+        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=40)
+        self.button2.grid(row=2, column=2, pady=5) 
     
         
       # # # # # # movie  # # # # # # 
@@ -78,6 +87,10 @@ class MainVisual(tk.Frame):
         self.canvas = FigureCanvasTkAgg(fig, master=root)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=8, column=1, columnspan=3,pady=5)
+        
+    def processing(self):
+        
+        print("processing data")
 
             
     def select_movie(self):
@@ -109,7 +122,7 @@ class MainVisual(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().grid(row=8, column=1, columnspan=3, pady=5)
         
-    def tracker(self):
+    def tracking(self):
         print("tracker running")
         
         def track_to_frame(data):
@@ -159,7 +172,7 @@ class MainVisual(tk.Frame):
                     trace=p['trace']
                     trackID=p['trackID']
                     
-                    clr = trackID % len(color_list)
+                    clr = trackID % len(self.color_list)
                     if (len(trace) > 1):
                         for j in range(len(trace)-1):
                             # Draw trace line
@@ -170,10 +183,8 @@ class MainVisual(tk.Frame):
                             x2 = int(point2[1])
                             y2 = int(point2[0])                        
                             cv2.line(orig_frame, (int(x1), int(y1)), (int(x2), int(y2)),
-                                     color_list[clr], 2)
-        
-        #                point=trace[0]
-        #                cv2.putText(orig_frame,str(trackID) ,(int(point[1]),int(point[0])), cv2.FONT_HERSHEY_SIMPLEX, 0.5,self.color_list[clr],1,cv2.LINE_AA)
+                                     self.color_list[clr], 2)
+    
                 # Display the resulting tracking frame
                 cv2.imshow('Tracking', orig_frame)
         
@@ -183,34 +194,25 @@ class MainVisual(tk.Frame):
             
                     # save results
             
-            final_img_set=final_img_set/np.max(final_img_set)*65535
-            final_img_set=final_img_set.astype('uint16')
+            final_img_set=final_img_set/np.max(final_img_set)*255
+            final_img_set=final_img_set.astype('uint8')
             skimage.io.imsave(save_file, final_img_set)
             cv2.destroyAllWindows()
         
-        color_list=[(200, 0, 0), (200, 0, 127), (0, 0, 255), (200, 155, 0),
-                    (100, 255, 5), (255, 10, 120), (255, 127, 255),
-                    (127, 0, 255), (0, 255, 0), (177, 0, 20), 
-                    (12, 200, 0), (0, 114, 255), (255, 20, 0),
-                    (0, 255, 255), (255, 100, 100), (255, 127, 255),
-                    (127, 0, 255), (127, 0, 127)]
+
         
         # detector settings
         
         detect_particle=Detectors()
         #MSSEF settings
+        
         detect_particle.c=4 #0.01 # coef for the thresholding
-        detect_particle.k_max=3 # end of  the iteration
-        detect_particle.k_min=1 # start of the iteration
-        detect_particle.sigma_min=0.1 # min sigma for LOG
-        detect_particle.sigma_max=8 # max sigma for LOG     
+        detect_particle.sigma=8. # max sigma for LOG     
         
         #thresholding
         detect_particle.min_distance=5 # minimum distance between two max after MSSEF
-        detect_particle.threshold_rel=0.1 # min pixl value in relation to the image
+        detect_particle.threshold_rel=0.1 # min picl value in relation to the image
         
-        detect_particle.int_size=3 # define number of pixels near centre for the thresholding calculation
-        detect_particle.box_size=32 # bounding box size for detection
         
         # tracker settings
         
@@ -221,7 +223,7 @@ class MainVisual(tk.Frame):
         tracker = Tracker(distance_threshold, max_skip_frame, max_track_length, 0)
         
         # setting of the script:
-        duration_shreshold=50
+        duration_shreshold=50 # minimum  track length
         
         for frameN in range(0, self.movie.shape[0]):
             print('frame', frameN)
@@ -242,14 +244,14 @@ class MainVisual(tk.Frame):
         data_tracks={}
         
         for trackN in range(0, len(tracker.completeTracks)):
-            if len(tracker.completeTracks[trackN].trace)>duration_shreshold:
+            if len(tracker.completeTracks[trackN].trace)>=duration_shreshold:
                 data_tracks.update({tracker.completeTracks[trackN].track_id:{
                         'trackID':tracker.completeTracks[trackN].track_id,
                         'trace': tracker.completeTracks[trackN].trace,
                         'frames':tracker.completeTracks[trackN].trace_frame,
                         'skipped_frames': tracker.completeTracks[trackN].skipped_frames
                         }})
-        print(data_tracks)   
+
         save_file = tk.filedialog.asksaveasfilename(filetypes = [("All files", "*.*")])
         save_movie(data_tracks, save_file) 
         
