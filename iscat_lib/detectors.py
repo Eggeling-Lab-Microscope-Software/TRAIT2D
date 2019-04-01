@@ -31,18 +31,13 @@ class Detectors(object):
         # parameters for approach
         #MSSEF
         self.c=0.8 #0.01 # coef for the thresholding
-        self.k_max=20 # end of  the iteration
-        self.k_min=1 # start of the iteration
-        self.sigma_min=0.1 # min sigma for LOG
-        self.sigma_max=3. # max sigma for LOG     
+        self.sigma=3. # max sigma for LOG     
         
         #thresholding
         self.min_distance=4 # minimum distance between two max after MSSEF
         self.threshold_rel=0.1 # min picl value in relation to the image
         
-        self.int_size=3 # define number of pixels near centre for the thresholding calculation
-        self.box_size=32 # bounding box size for detection
-        
+        self.expected_size=20 # expected size of the particle
         
     def sef(self, img, img_sef_bin_prev, sigma, c, print_val=0):   
         '''
@@ -79,114 +74,114 @@ class Detectors(object):
             plt.show()
     
         return img_sef, img_sef_bin
+
+    def gaussian(self, height, center_x, center_y, width_x, width_y):
+        """Returns a gaussian function with the given parameters"""
+        width_x = float(width_x)
+        width_y = float(width_y)
+        return lambda x,y: height*np.exp(
+                    -(((center_x-x)/width_x)**2+((center_y-y)/width_y)**2)/2)
     
-    def mssef(self, img, c, k_max, k_min, sigma_min, sigma_max):
+    def moments(self, data):
         '''
-        Multi-scale spot enhancing filter
+         Returns (height, x, y, width_x, width_y)
+        the gaussian parameters of a 2D distribution by calculating its
+        moments 
         '''
-#### the code is based on the paper "Tracking virus particles in fluorescence microscopy images using two-step multi-frame association"  Jaiswal,Godinez, Eils, Lehmann, Rohr 2015 ###
+        total = data.sum()
         
-        img_bin=np.ones(img.shape) # original array
-        N=k_max-k_min # number of steps
+        X, Y = np.indices(data.shape)
+        x = (X*data).sum()/total
+        y = (Y*data).sum()/total
+        col = data[:, int(y)]
+        width_x = np.sqrt(np.abs((np.arange(col.size)-y)**2*col).sum()/col.sum())
+        row = data[int(x), :]
+        width_y = np.sqrt(np.abs((np.arange(row.size)-x)**2*row).sum()/row.sum())
+        height = data.max()
+        return height, x, y, width_x, width_y
     
-    # Multi-scale spot-enhancing filter loop
-        for k in range(k_min, k_max):
-    #        print ('sigma: ', sigma)
-            sigma=sigma_max-(k-1)*(sigma_max-sigma_min)/(N-1) #assign sigma
-            result, img_sef_bin=self.sef(img, img_bin, sigma, c, print_val=0) # SEF for a single scale
-            img_bin=img_sef_bin
-            
-        return result, img_sef_bin
-    
-    
-    def img_segmentation(self, img_segment, int_size, box_size, lm, printVal=False):
+    def fitgaussian(self, data):
         '''
-        the function segments the image based on the thresholding and watershed segmentation
-        the only center part of the segmented part is taked into account. The region is defined based on the segmentation
+        nonlinear leastsquare fit of gaussian parameters of a 2D distribution: 
+        Returns (height, x, y, width_x, width_y)
         '''
-
-        dict_lm={}
-        dict_lm.update({'local_max': lm})
-
-    # calculate threshold based on the centre
-        threshold=np.mean(img_segment[int(box_size/2-int_size):int(box_size/2+int_size), int(box_size/2-int_size):int(box_size/2+int_size)])*0.75
-    #    thresholding to get the mask
-        mask=np.zeros(np.shape(img_segment))
-        mask[img_segment>threshold]=1
-    
-        # separate the objects in image
-    ## Generate the markers as local maxima of the distance to the background
-        distance = sp.ndimage.distance_transform_edt(mask)
-        local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((3, 3)), labels=mask)
-        markers = sp.ndimage.label(local_maxi)[0]
-    
-        # segment the mask
-        segment = skimage.morphology.watershed(-distance, markers, mask=mask)
-       
-    # save the segment which is only in the centre
-        val=segment[int(box_size/2), int(box_size/2)]
-        segment[segment!=val]=0
-        segment[segment==val]=1
-        
-        # finding bounding box:
-        region_val = np.argwhere(segment==1)
-    
-       #place the segment on the final image 
-        dict_lm.update({'xmax': region_val[:,0].max()+lm[0]-box_size/2+1})
-        dict_lm.update({'xmin': region_val[:,0].min()+lm[0]-box_size/2-1})
-        dict_lm.update({'ymax': region_val[:,1].max()+lm[1]-box_size/2+1})
-        dict_lm.update({'ymin': region_val[:,1].min()+lm[1]-box_size/2-1})
-        x_centre=(dict_lm['xmax']-dict_lm['xmin'])/2+dict_lm['xmin']
-        y_centre=(dict_lm['ymax']-dict_lm['ymin'])/2+dict_lm['ymin']
-       
-        new_centre=[x_centre, y_centre]
-        dict_lm.update({'local_max': new_centre})
- #   mean_reg=np.mean(img_segment[region_val[:,0].min():region_val[:,0].max()+1, region_val[:,1].min():region_val[:,1].max()+1])
-        if printVal==True:
-            plt.figure()
-            plt.subplot(141)
-            plt.imshow(img_segment, cmap='gray')
-            plt.title('original', fontsize='large')
-            plt.subplot(142)
-            plt.imshow(mask, cmap='gray')
-            plt.title('mask', fontsize='large')
-            plt.subplot(143)
-            plt.imshow(segment, cmap='gray')
-            plt.title('segmented', fontsize='large')
-           # segment[region_val[:,0].min():region_val[:,0].max()+1, region_val[:,1].min():region_val[:,1].max()+1]=5
-            plt.subplot(144)
-            plt.imshow(segment, cmap='gray')
-            plt.title('new region', fontsize='large')
-            plt.show()  
-#    input("Press Enter to continue...")
-#        print("old: ", lm)          
-#        print("bounding box new: ", dict_lm)
-#        print() 
-        return dict_lm, segment # return the image and the dictionary with the local_max and refined region
-    
-
+         
+        params = self.moments(data)
+        errorfunction = lambda p: np.ravel(self.gaussian(*p)(*np.indices(data.shape)) -
+                                     data)
+        p, success = sp.optimize.leastsq(errorfunction, params)
+        return p
 
     def detect(self, frame):
-        """
+        '''
         Detect vesicles
-        """
-
-        # Convert BGR to GRAY
-        gray = frame
+        '''
 
             # MSSEF
 
 #        self.img_mssef, self.binary_mssef=self.mssef(gray, self.c, self.k_max, self.k_min, self.sigma_min, self.sigma_max)
     
-        self.img_mssef, self.binary_mssef=self.sef(gray, np.ones(gray.shape), self.sigma_max, self.c)       #img, img_sef_bin_prev, sigma, c
+        self.img_mssef, self.binary_mssef=self.sef(frame, np.ones(frame.shape), self.sigma, self.c)       #img, img_sef_bin_prev, sigma, c
         # 3. find local maximum in the 
         peaks_coor=peak_local_max(self.img_mssef, min_distance=self.min_distance, threshold_rel=self.threshold_rel) # min distance between peaks and threshold_rel - min value of the peak - in relation to the max value
 
         # remove the area where the membrane is
         coordinates=[]  
         for point in peaks_coor:
-            new_point=[int(point[0]),int(point[1])]
-            coordinates.append(new_point)
+            
+#            print("point ", point)
+#            print("size ", frame.shape)
+            data=np.zeros((self.expected_size,self.expected_size))
+            
+            #start point
+            start_x=int(point[0]-self.expected_size/2)
+            start_y=int(point[1]-self.expected_size/2)
+            
+            #end point
+            end_x=int(point[0]+self.expected_size/2)
+            end_y=int(point[1]+self.expected_size/2)
+            
+            x_0=0
+            x_1=self.expected_size
+            y_0=0
+            y_1=self.expected_size
+            
+            #possible cases to avoid our of boudary case
+            
+            if start_x<0:
+                start_x=0
+                x_0=int(self.expected_size/2-point[0])
+                
+            if start_y<0:
+                start_y=0
+                y_0=int(self.expected_size/2-point[1]) 
+                
+            if end_x>frame.shape[0]:
+                end_x=frame.shape[0]
+                x_1=int(frame.shape[0]-point[0]+self.expected_size/2)
+
+            if end_y>frame.shape[1]:
+                end_y=frame.shape[1]
+                y_1=int(frame.shape[1]-point[1]+self.expected_size/2)
+            
+#            print("into: ", (x_0, x_1), " y: ", (y_0,y_1))
+#            print("from: ", (start_x, end_x), " y: ", (start_y,end_y))
+            data[x_0:x_1,y_0:y_1]=frame[start_x:end_x, start_y:end_y]
+            
+            # nonlinear least square fitting
+            params  = self.fitgaussian(data)
+            (height, y, x, width_x, width_y) = params
+            
+            # insurt another approach
+            coordinates.append([x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
+            
+#            #plotting
+#            fit = self.gaussian(*params)
+#            plt.figure()
+#            plt.imshow(data)
+#            plt.contour(fit(*np.indices(data.shape)), cmap=plt.cm.copper)
+#            plt.plot(x, y, '*r')
+#            plt.show() 
 
 
         return coordinates

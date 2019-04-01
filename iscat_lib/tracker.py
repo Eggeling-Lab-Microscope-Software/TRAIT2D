@@ -74,7 +74,6 @@ class Tracker(object):
         row_ind, col_ind = linear_sum_assignment(cost)
         for i in range(len(row_ind)):
             assignment[row_ind[i]] = col_ind[i]
-        print("assigned: ", assignment)
         
         return assignment
     
@@ -98,7 +97,6 @@ class Tracker(object):
  
             # add the position to the assigned tracks and detect annasigned tracks
             un_assigned_tracks = []
-            print("--- iteration over the assignment")
             for i in range(len(assignment)):
                 if (assignment[i] != -1):
                     # check with the cost distance threshold and unassign if cost is high
@@ -135,19 +133,18 @@ class Tracker(object):
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
      
             #  remove tracks, which has high skipped_frame value
-            print("---- removing tracks ------")
             del_tracks = []
             for i in range(len(self.tracks)):
 #                print("track ", i, " length: ", len(self.tracks[i].trace_frame))
                 if ((self.tracks[i].trace_frame[-1]-self.tracks[i].trace_frame[0]) > self.max_trace_length):
                     del_tracks.append(i)
-                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", len(self.tracks[i].trace_frame), " frames length")
+#                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", len(self.tracks[i].trace_frame), " frames length")
 
         #remove track which are longer than the max_length
             for i in range(len(self.tracks)):
                 if (self.tracks[i].skipped_frames > self.max_frames_to_skip):
                     del_tracks.append(i)        
-                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", self.tracks[i].skipped_frames, " skipped frames")
+#                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", self.tracks[i].skipped_frames, " skipped frames")
         
         
         
