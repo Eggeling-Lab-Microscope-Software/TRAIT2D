@@ -8,8 +8,7 @@ import numpy as np
 
 import scipy as sp
 import matplotlib.pyplot as plt
-import skimage
-from skimage import exposure, filters # to import file
+#from skimage import exposure, filters # to import file
 
 from skimage.feature import peak_local_max # find local max on the image
 
@@ -164,16 +163,20 @@ class Detectors(object):
                 end_y=frame.shape[1]
                 y_1=int(frame.shape[1]-point[1]+self.expected_size/2)
             
-#            print("into: ", (x_0, x_1), " y: ", (y_0,y_1))
-#            print("from: ", (start_x, end_x), " y: ", (start_y,end_y))
+            
             data[x_0:x_1,y_0:y_1]=frame[start_x:end_x, start_y:end_y]
             
             # nonlinear least square fitting
             params  = self.fitgaussian(data)
             (height, y, x, width_x, width_y) = params
             
+            # check that the gaussian is inside of the spot
+            
+            if y<self.expected_size and x<self.expected_size:               
             # insurt another approach
-            coordinates.append([x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
+                coordinates.append([x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
+#            print(data.shape)
+#            print("point: ", (x,y), "  ", [x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
             
 #            #plotting
 #            fit = self.gaussian(*params)
