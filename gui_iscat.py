@@ -16,12 +16,13 @@ from tracker import Tracker
 import json
 import numpy as np
 import cv2
-
+import random
 import tkinter as tk
 from tkinter import filedialog
 
 # for plotting
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+
 # Implement the default Matplotlib key bindings.
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
@@ -47,6 +48,15 @@ class MainVisual(tk.Frame):
         self.frame_pos=0
         self.movie_length=0
         self.monitor_switch=0 # 0- show tracks and track numbers, 1- only tracks, 2 - nothing
+
+        # detection and tracking parameters 
+        self.maximum_diameter=10
+        self.sigma=2.
+        self.threshold=4.
+        self.min_peak=0.2
+        self.max_dist=10
+        self.frame_gap=5
+        self.spot_switch=0
         
         # 
         self.figsize_value=(6,6)
@@ -61,20 +71,77 @@ class MainVisual(tk.Frame):
      # # # # # # menu to choose files and print data # # # # # #
         
         self.button1 = tk.Button(text="       Select movie file       ", command=self.select_movie, width=40)
-        self.button1.grid(row=0, column=2, pady=5)
+        self.button1.grid(row=0, column=1, columnspan=3, pady=5)
+
+              # movie name 
+        lbl1 = tk.Label(master=root, text="selected file: "+self.movie_file, bg='white')
+        lbl1.grid(row=1, column=1, columnspan=3, pady=5)
+
 
         self.button2 = tk.Button(text="    Process data before tracking    ", command=self.processing, width=40)
-        self.button2.grid(row=1, column=2, pady=5) 
+        self.button2.grid(row=2, column=1, columnspan=3, pady=5) 
         
-        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=40)
-        self.button2.grid(row=2, column=2, pady=5) 
+        # set parameters 
+        
+        lbl1 = tk.Label(master=root, text="PARAMETERS: ", width=30, bg='white')
+        lbl1.grid(row=3, column=1, columnspan=3, pady=5)
+        
+        lbl2 = tk.Label(master=root, text="maximum diameter, px", width=30, bg='white')
+        lbl2.grid(row=4, column=1)
+        self.param1_diameter = tk.Entry(root, width=10)
+        self.param1_diameter.grid(row=4, column=2)
+        
+        lbl3 = tk.Label(master=root, text="sigma", width=30, bg='white')
+        lbl3.grid(row=5, column=1)
+        self.param2_sigma = tk.Entry(root, width=10)
+        self.param2_sigma.grid(row=5, column=2)
+        
+        
+        lbl4 = tk.Label(master=root, text="threshold [0.01,10]", width=30, bg='white')
+        lbl4.grid(row=6, column=1)
+        self.param3_threshold = tk.Entry(root, width=10)
+        self.param3_threshold.grid(row=6, column=2)
+
+        lbl5 = tk.Label(master=root, text="minimum peak value [0,1]", width=30, bg='white')
+        lbl5.grid(row=7, column=1)
+        self.param4_peak = tk.Entry(root, width=10)
+        self.param4_peak.grid(row=7, column=2)        
+        
+        
+        lbl6 = tk.Label(master=root, text="maximum distance, px", width=30, bg='white')
+        lbl6.grid(row=8, column=1)
+        self.param5_distance = tk.Entry(root, width=10)
+        self.param5_distance.grid(row=8, column=2)    
+
+        lbl6 = tk.Label(master=root, text="frame gap, frame", width=30, bg='white')
+        lbl6.grid(row=9, column=1)
+        self.param6_framegap = tk.Entry(root, width=10)
+        self.param6_framegap.grid(row=9, column=2)    
+
+        self.button2 = tk.Button(text="    preview    ", command=self.preview, width=20) #, height=30)
+        self.button2.grid(row=10, column=1, columnspan=1,pady=5)         
+        
+        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=20)
+        self.button2.grid(row=10, column=2, columnspan=1, pady=5) 
     
+    
+    #    # # # # # # filter choice # # # # # # #   
+        var = tk.IntVar()
+        
+        def update_monitor_switch():            
+            self.spot_switch=var.get()
+            
+
+        # monitor switch: # 0- show tracks and track numbers, 1- only tracks, 2 - nothing
+        self.R1 = tk.Radiobutton(root, text=" dark spot ", variable=var, value=0, bg='white', command =update_monitor_switch )
+        self.R1.grid(row=11, column=1)  
+        
+        self.R2 = tk.Radiobutton(root, text=" light spot ", variable=var, value=1, bg='white',command = update_monitor_switch ) #  command=sel)
+        self.R2.grid(row=11, column=2)
+
         
       # # # # # # movie  # # # # # # 
 
-              # movie name 
-        lbl1 = tk.Label(master=root, text="movie file: "+self.movie_file, bg='white')
-        lbl1.grid(row=3, column=1, columnspan=3, pady=5)
         
         # plot bg
         bg_img=np.ones((400,400))*0.8
@@ -86,13 +153,87 @@ class MainVisual(tk.Frame):
         # DrawingArea
         self.canvas = FigureCanvasTkAgg(fig, master=root)
         self.canvas.draw()
-        self.canvas.get_tk_widget().grid(row=8, column=1, columnspan=3,pady=5)
+        self.canvas.get_tk_widget().grid(row=15, column=1, columnspan=3,pady=5)
+        
+    def read_parameters(self):
+        
+        # read parameters from the form
+        
+        if self.param1_diameter.get()=='':
+            self.maximum_diameter=10
+        else:
+            self.maximum_diameter=int(self.param1_diameter.get())
+            
+        if self.param2_sigma.get()=='':
+            self.sigma=8
+        else:
+            self.sigma=float(self.param2_sigma.get())
+
+        if self.param3_threshold.get()=='':
+            self.threshold=5
+        else:
+            self.threshold=float(self.param3_threshold.get())
+
+        if self.param4_peak.get()=='':
+            self.min_peak=0.1
+        else:
+            self.min_peak=float(self.param4_peak.get())
+
+        if self.param5_distance.get()=='':
+            self.max_dist=10
+        else:
+            self.max_dist=float(self.param5_distance.get())               
+
+        if self.param6_framegap.get()=='':
+            self.frame_gap=5
+        else:
+            self.frame_gap=float(self.param6_framegap.get())    
+            
+            
         
     def processing(self):
         
         print("processing data")
 
-            
+    def preview(self):
+        
+        self.read_parameters()
+        # run detection
+        pos=random.randrange(0, self.movie.shape[0]-1)
+        self.image = self.movie[pos,:,:]
+        
+        # invert image in case you are looking at the dark spot
+        if self.spot_switch==0:
+            image_for_process=skimage.util.invert(self.image)
+        else:
+            image_for_process=self.image
+        
+        #plot detection
+        detect_particle=Detectors()
+        #MSSEF settings
+        
+        detect_particle.c=self.threshold #0.01 # coef for the thresholding
+        detect_particle.sigma=self.sigma # max sigma for LOG     
+        detect_particle.expected_size=self.maximum_diameter
+        #thresholding
+        detect_particle.min_distance=5 # minimum distance between two max after MSSEF
+        detect_particle.threshold_rel=self.min_peak # min picl value in relation to the image
+ 
+        centers=detect_particle.detect(image_for_process)
+        
+        plt.close()
+        fig = plt.figure(figsize=self.figsize_value)
+        plt.axis('off')
+        self.im = plt.imshow(self.image) # for later use self.im.set_data(new_data)
+
+        for point in centers:
+            plt.plot(point[1], point[0],  "*r")
+        # DrawingArea
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
+
+        
     def select_movie(self):
         # Allow user to select movie
         filename = tk.filedialog.askopenfilename(filetypes = [("All files", "*.*")])
@@ -101,7 +242,7 @@ class MainVisual(tk.Frame):
         self.movie=skimage.io.imread(self.movie_file)
         self.movie_length=self.movie.shape[0]  
         lbl1 = tk.Label(master=root, text="movie file: "+self.movie_file.split("/")[-1], bg='white')
-        lbl1.grid(row=3, column=1, columnspan=3, pady=5)
+        lbl1.grid(row=1, column=1, columnspan=3, pady=5)
         
                 # plot image
         self.show_tracks()
@@ -120,10 +261,12 @@ class MainVisual(tk.Frame):
         # DrawingArea
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas.draw()
-        canvas.get_tk_widget().grid(row=8, column=1, columnspan=3, pady=5)
+        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
         
     def tracking(self):
         print("tracker running")
+        #read parameters
+        self.read_parameters()
         
         def track_to_frame(data):
             # change data arrangment from tracks to frames
@@ -206,30 +349,29 @@ class MainVisual(tk.Frame):
         detect_particle=Detectors()
         #MSSEF settings
         
-        detect_particle.c=4 #0.01 # coef for the thresholding
-        detect_particle.sigma=8. # max sigma for LOG     
+        detect_particle.c=self.threshold #0.01 # coef for the thresholding
+        detect_particle.sigma=self.sigma # max sigma for LOG     
         
         #thresholding
         detect_particle.min_distance=5 # minimum distance between two max after MSSEF
-        detect_particle.threshold_rel=0.1 # min picl value in relation to the image
-        
+        detect_particle.threshold_rel=self.min_peak # min picl value in relation to the image
+        detect_particle.expected_size=self.maximum_diameter
         
         # tracker settings
-        
-        distance_threshold=10
-        max_skip_frame=3
-        max_track_length=self.movie.shape[0]
-        
-        tracker = Tracker(distance_threshold, max_skip_frame, max_track_length, 0)
-        
-        # setting of the script:
         duration_shreshold=50 # minimum  track length
         
+        tracker = Tracker(self.max_dist, self.frame_gap, self.movie.shape[0], 0)
+
+        
+        # tracking itself
         for frameN in range(0, self.movie.shape[0]):
             print('frame', frameN)
             #detection
             
             frame_img=self.movie[frameN,:,:]    
+            if self.spot_switch==0:
+                frame_img=skimage.util.invert(frame_img)
+
             centers=detect_particle.detect(frame_img)
         
             #tracking
@@ -238,8 +380,8 @@ class MainVisual(tk.Frame):
         for trackN in range(0, len(tracker.tracks)):
             tracker.completeTracks.append(tracker.tracks[trackN])
                 
-            ######################## run tracklinking ##############################
-         # # rearrange the data into disctionary   
+            
+         # # rearrange the data into disctionary  and save it 
         
         data_tracks={}
         
