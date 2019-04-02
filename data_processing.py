@@ -16,7 +16,39 @@ import matplotlib.pyplot as plt
 from tracker import Tracker
 import json
 import numpy as np
+import scipy as sp
 import cv2
+
+def gaussian(height, center_x, center_y, width_x, width_y):
+    """Returns a gaussian function with the given parameters"""
+    width_x = float(width_x)
+    width_y = float(width_y)
+    return lambda x,y: height*np.exp(
+                -(((center_x-x)/width_x)**2+((center_y-y)/width_y)**2)/2)
+
+def moments(data):
+    """Returns (height, x, y, width_x, width_y)
+    the gaussian parameters of a 2D distribution by calculating its
+    moments """
+    total = data.sum()
+    X, Y = np.indices(data.shape)
+    x = (X*data).sum()/total
+    y = (Y*data).sum()/total
+    col = data[:, int(y)]
+    width_x = np.sqrt(np.abs((np.arange(col.size)-y)**2*col).sum()/col.sum())
+    row = data[int(x), :]
+    width_y = np.sqrt(np.abs((np.arange(row.size)-x)**2*row).sum()/row.sum())
+    height = data.max()
+    return height, x, y, width_x, width_y
+
+def fitgaussian(data):
+    """Returns (height, x, y, width_x, width_y)
+    the gaussian parameters of a 2D distribution found by a fit"""
+    params = moments(data)
+    errorfunction = lambda p: np.ravel(gaussian(*p)(*np.indices(data.shape)) -
+                                 data)
+    p, success = sp.optimize.leastsq(errorfunction, params)
+    return p, success
 
 
 
@@ -144,7 +176,13 @@ for frameN in range(0, movie.shape[0]):
     
     frame_img=movie[frameN,:,:]    
     centers=detect_particle.detect(frame_img)
-    
+    new_centers=[]
+    expected_size=24
+    # fitting gaussian
+    for point in centers:
+        # extract subarray
+        data=frame_img[int(point[0]-expected_size/2):int(point[0]+expected_size/2), int(point[1]-expected_size/2):int(point[1]+expected_size/2)]
+
     # plot results to check
     plt.figure()
     
@@ -157,6 +195,9 @@ for frameN in range(0, movie.shape[0]):
     if len(centers)>0:
         for point in centers:
             plt.plot(point[1], point[0], '*r')
+        for point in new_centers:
+            plt.plot(point[1], point[0], '*g')
+            
     plt.title('coordinates', fontsize='large')
 
 #    plt.show()  
