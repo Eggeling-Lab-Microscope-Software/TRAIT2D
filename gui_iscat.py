@@ -198,6 +198,20 @@ class MainVisual(tk.Frame):
         # preprocessing step
         self.movie_processed = background_substraction(self.movie.copy())
 
+        # show first frame in the monitor
+
+        img = self.movie_processed[1,:,:]
+        plt.close()
+        fig = plt.figure(figsize=self.figsize_value)
+        plt.axis('off')
+        self.im = plt.imshow(img) # for later use self.im.set_data(new_data)
+
+        # DrawingArea
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)        
+        
+
     def preview(self):
         # show random frame with detection on the monitor
 
@@ -206,13 +220,13 @@ class MainVisual(tk.Frame):
 
         # select movie frame
         pos=random.randrange(0, self.movie_processed.shape[0]-1)
-        self.image = self.movie_processed[pos,:,:]
+        image = self.movie_processed[pos,:,:]
 
         # invert image in case you are looking at the dark spot
         if self.spot_switch==0:
-            image_for_process=skimage.util.invert(self.image)
+            image_for_process=skimage.util.invert(image)
         else:
-            image_for_process=self.image
+            image_for_process=image
 
         # set detector
         detect_particle=Detectors()
@@ -233,7 +247,7 @@ class MainVisual(tk.Frame):
         plt.close()
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
-        self.im = plt.imshow(self.image) # for later use self.im.set_data(new_data)
+        self.im = plt.imshow(image) # for later use self.im.set_data(new_data)
 
         for point in centers:
             plt.plot(point[1], point[0],  "*r")
