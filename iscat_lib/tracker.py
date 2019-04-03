@@ -5,7 +5,6 @@ Tracker Using  Hungarian Algorithm
 # Import python libraries
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-from math import atan2,degrees
 
 class Track(object):
 
@@ -15,26 +14,11 @@ class Track(object):
         self.trace_frame = [first_frame]  # predicted centroids (x,y)
         self.skipped_frames = 0  # number of frames skipped undetected
         self.trace = [first_point]  # trace path
-        self.direction=720
-    
-    def trackAngle(self):
-        if len(self.trace)>=2:
-            if len(self.trace)>=5:
-                p1=self.trace[-5]
-            else:
-                p1=self.trace[0]                
-            
-            p2=self.trace[-1]
-            xDiff = p2[0] - p1[0]
-            yDiff = p2[1] - p1[1]
-            self.direction= int(degrees(atan2(yDiff, xDiff)))
-        else:
-            self.direction=720
 
 
 class Tracker(object):
 
-    def __init__(self, dist_thresh=30, max_frames_to_skip=5, max_trace_length=100,
+    def __init__(self, dist_thresh=30, max_frames_to_skip=20, max_trace_length=100,
                  trackIdCount=0):
 
         self.dist_thresh = dist_thresh
@@ -62,7 +46,9 @@ class Tracker(object):
                     cost[i][j] = distance
                 except:
                     pass
-        
+        cost_array=np.asarray(cost)
+        cost_array[cost_array>self.dist_thresh]=10000
+        cost=cost_array.tolist()
         return cost
     
     def assignDetectionToTracks(self, cost):
@@ -79,7 +65,7 @@ class Tracker(object):
     
     
     def update(self, detections, frameN):
-
+#        print("detections: ",  detections)
 # Create tracks if no tracks  found
         if (len(self.tracks) == 0):
             for i in range(len(detections)):
@@ -91,9 +77,10 @@ class Tracker(object):
 # tracking the targets if there were tracks before
             # Calculate cost using sum of square distance between predicted vs detected centroids
             cost=self.cost_calculation(detections)
-    
+#            print(cost)
             # Hungarian Algorithm assigning detection to tracks:
             assignment=self.assignDetectionToTracks(cost)
+#            print(assignment)
  
             # add the position to the assigned tracks and detect annasigned tracks
             un_assigned_tracks = []
@@ -104,11 +91,12 @@ class Tracker(object):
                         assignment[i] = -1
                         un_assigned_tracks.append(i)
                         self.tracks[i].skipped_frames += 1
+#                        print("unassign detection in track  ", i)
                     else: # add the detection to the track
                         self.tracks[i].trace.append(detections[assignment[i]])
                         self.tracks[i].trace_frame.append(frameN)
                         self.tracks[i].skipped_frames =0
-                        self.tracks[i].trackAngle()
+                        
                 else:
                     un_assigned_tracks.append(i)
                     self.tracks[i].skipped_frames += 1                
@@ -138,13 +126,13 @@ class Tracker(object):
 #                print("track ", i, " length: ", len(self.tracks[i].trace_frame))
                 if ((self.tracks[i].trace_frame[-1]-self.tracks[i].trace_frame[0]) > self.max_trace_length):
                     del_tracks.append(i)
-#                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", len(self.tracks[i].trace_frame), " frames length")
+                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", len(self.tracks[i].trace_frame), " frames length")
 
         #remove track which are longer than the max_length
             for i in range(len(self.tracks)):
                 if (self.tracks[i].skipped_frames > self.max_frames_to_skip):
                     del_tracks.append(i)        
-#                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", self.tracks[i].skipped_frames, " skipped frames")
+                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", self.tracks[i].skipped_frames, " skipped frames")
         
         
         
@@ -164,7 +152,8 @@ class Tracker(object):
     
         #remove track which are lonfer than the max_length
                       
-        print()         
+                
         print("number of tracks: ", len(self.tracks))
         print("next track ID: ", self.trackIdCount)
+        print() 
 

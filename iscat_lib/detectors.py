@@ -78,8 +78,7 @@ class Detectors(object):
         """Returns a gaussian function with the given parameters"""
         width_x = float(width_x)
         width_y = float(width_y)
-        return lambda x,y: height*np.exp(
-                    -(((center_x-x)/width_x)**2+((center_y-y)/width_y)**2)/2)
+        return lambda x,y: height*np.exp(-(((center_x-x)/width_x)**2+((center_y-y)/width_y)**2)/2)
     
     def moments(self, data):
         '''
@@ -170,13 +169,13 @@ class Detectors(object):
             params  = self.fitgaussian(data)
             (height, y, x, width_x, width_y) = params
             
-            # check that the gaussian is inside of the spot
+            # check that the centre is inside of the spot
             
-            if y<self.expected_size and x<self.expected_size:               
+            if y<self.expected_size and x<self.expected_size and y>=0 and x>=0:               
             # insurt another approach
                 coordinates.append([x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
-#            print(data.shape)
-#            print("point: ", (x,y), "  ", [x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
+
+#                print("point: ", (x,y), "  ", [x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
             
 #            #plotting
 #            fit = self.gaussian(*params)
