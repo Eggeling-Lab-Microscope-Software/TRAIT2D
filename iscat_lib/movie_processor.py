@@ -23,7 +23,7 @@ def background_substraction(movie, saturation = 0.3, nFrames = 1000, invert=True
         Processed movie
 
     """
-    dtype = seq.dtype
+    dtype = movie.dtype
     movie_p = np.copy(movie).astype(np.float32)
 
     # Compute flat field from first 1000 frames (lateral shift)
@@ -38,7 +38,7 @@ def background_substraction(movie, saturation = 0.3, nFrames = 1000, invert=True
     # Normalization
     imin = movie_p.min()
     imax = movie_p.max()
-    seq_f = (movie_p - imin) / (imax - imin)
+    movie_p = (movie_p - imin) / (imax - imin)
 
     # Brightness adjustment
     isat = np.percentile(movie_p, 100 - saturation)
