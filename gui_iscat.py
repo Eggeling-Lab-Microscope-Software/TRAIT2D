@@ -91,33 +91,39 @@ class MainVisual(tk.Frame):
 
         lbl3 = tk.Label(master=root, text="SEF: sigma", width=35, bg='white')
         lbl3.grid(row=4, column=1)
-        self.param2_sigma = tk.Entry(root, width=10)
+        v = tk.StringVar(root, value=str(self.sigma))
+        self.param2_sigma = tk.Entry(root, width=10, text=v)
         self.param2_sigma.grid(row=4, column=2)
 
         lbl4 = tk.Label(master=root, text="SEF: threshold [0.01,10]", width=35, bg='white')
         lbl4.grid(row=5, column=1)
-        self.param3_threshold = tk.Entry(root, width=10)
+        v = tk.StringVar(root, value=str(self.threshold))
+        self.param3_threshold = tk.Entry(root, width=10, text=v)
         self.param3_threshold.grid(row=5, column=2)
 
         lbl5 = tk.Label(master=root, text="SEF: min peak value [0,1]", width=30, bg='white')
         lbl5.grid(row=6, column=1)
-        self.param4_peak = tk.Entry(root, width=10)
+        v = tk.StringVar(root, value=str(self.min_peak))
+        self.param4_peak = tk.Entry(root, width=10, text=v)
         self.param4_peak.grid(row=6, column=2)
 
         lbl2 = tk.Label(master=root, text="GF: patch size (even number), px", width=35, bg='white')
         lbl2.grid(row=7, column=1)
-        self.param1_diameter = tk.Entry(root, width=10)
+        v = tk.StringVar(root, value=str(self.maximum_diameter))
+        self.param1_diameter = tk.Entry(root, width=10, text=v)
         self.param1_diameter.grid(row=7, column=2)
 
 
         lbl6 = tk.Label(master=root, text="Linking: max distance, px", width=30, bg='white')
         lbl6.grid(row=8, column=1)
-        self.param5_distance = tk.Entry(root, width=10)
+        v = tk.StringVar(root, value=str(self.max_dist))
+        self.param5_distance = tk.Entry(root, width=10, text=v)
         self.param5_distance.grid(row=8, column=2)
 
         lbl6 = tk.Label(master=root, text="Linking: frame gap, frame", width=30, bg='white')
         lbl6.grid(row=9, column=1)
-        self.param6_framegap = tk.Entry(root, width=10)
+        v = tk.StringVar(root, value=str(self.frame_gap))
+        self.param6_framegap = tk.Entry(root, width=10, text=v)
         self.param6_framegap.grid(row=9, column=2)
 
         # type of spots (dark or light)
@@ -164,34 +170,22 @@ class MainVisual(tk.Frame):
 
         # read parameters from the GUI
 
-        if self.param1_diameter.get()=='':
-            self.maximum_diameter=10
-        else:
+        if self.param1_diameter.get()!='':
             self.maximum_diameter=int(self.param1_diameter.get())
 
-        if self.param2_sigma.get()=='':
-            self.sigma=8
-        else:
+        if self.param2_sigma.get()!='':
             self.sigma=float(self.param2_sigma.get())
 
-        if self.param3_threshold.get()=='':
-            self.threshold=5
-        else:
+        if self.param3_threshold.get()!='':
             self.threshold=float(self.param3_threshold.get())
 
-        if self.param4_peak.get()=='':
-            self.min_peak=0.1
-        else:
+        if self.param4_peak.get()!='':
             self.min_peak=float(self.param4_peak.get())
 
-        if self.param5_distance.get()=='':
-            self.max_dist=15
-        else:
+        if self.param5_distance.get()!='':
             self.max_dist=float(self.param5_distance.get())
 
-        if self.param6_framegap.get()=='':
-            self.frame_gap=15
-        else:
+        if self.param6_framegap.get()!='':
             self.frame_gap=float(self.param6_framegap.get())
 
     def processing(self):
