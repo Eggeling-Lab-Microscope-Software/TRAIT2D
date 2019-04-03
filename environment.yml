@@ -1,0 +1,13 @@
+name: iscat
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python>=3.6.8
+  - pip
+  - numpy
+  - scipy
+  - matplotlib
+  - scikit-image
+  - opencv=3.4.4
+  - tk
