@@ -46,6 +46,7 @@ class MainVisual(tk.Frame):
         #general
         self.movie_file=" " # path to the move file
         self.movie=[] # matrix with data
+        self.movie_processed=[] # matrix with processed data
         self.movie_length=0 # length of the original movie
         self.figsize_value=(6,6) # parameters for the figure size
 
@@ -55,13 +56,13 @@ class MainVisual(tk.Frame):
         self.threshold=4. # defines threshold in spot-enhancing filter
         self.min_peak=0.2 # defines parameters for local maxima [0,1]
         
-        self.max_dist=10 # number of pixels between two possible connections
-        self.frame_gap=5 # maximum number of possible consequently skipped frames in a track
+        self.max_dist=15 # number of pixels between two possible connections
+        self.frame_gap=15 # maximum number of possible consequently skipped frames in a track
         self.spot_switch=0 # spot type: 0 - dark spot, 1 - light spot
         
         # list of colors for trajectories plots
         self.color_list=[(200, 0, 0), (200, 0, 127), (0, 0, 255), (200, 155, 0),
-                    (100, 255, 5), (255, 10, 120), (255, 127, 255),
+                    (0, 255, 59), (255, 10, 120), (255, 127, 255),
                     (127, 0, 255), (0, 255, 0), (177, 0, 20), 
                     (12, 200, 0), (0, 114, 255), (255, 20, 0),
                     (0, 255, 255), (255, 100, 100), (255, 127, 255),
@@ -85,46 +86,39 @@ class MainVisual(tk.Frame):
        
         lbl1 = tk.Label(master=root, text="PARAMETERS: ", width=30, bg='white')
         lbl1.grid(row=3, column=1, columnspan=3, pady=5)
-        
-        lbl2 = tk.Label(master=root, text="maximum diameter(even number), px", width=35, bg='white')
-        lbl2.grid(row=4, column=1)
-        self.param1_diameter = tk.Entry(root, width=10)
-        self.param1_diameter.grid(row=4, column=2)
-        
-        lbl3 = tk.Label(master=root, text="sigma", width=35, bg='white')
-        lbl3.grid(row=5, column=1)
-        self.param2_sigma = tk.Entry(root, width=10)
-        self.param2_sigma.grid(row=5, column=2)
-        
-        lbl4 = tk.Label(master=root, text="threshold [0.01,10]", width=35, bg='white')
-        lbl4.grid(row=6, column=1)
-        self.param3_threshold = tk.Entry(root, width=10)
-        self.param3_threshold.grid(row=6, column=2)
 
-        lbl5 = tk.Label(master=root, text="minimum peak value [0,1]", width=30, bg='white')
-        lbl5.grid(row=7, column=1)
-        self.param4_peak = tk.Entry(root, width=10)
-        self.param4_peak.grid(row=7, column=2)        
         
-        lbl6 = tk.Label(master=root, text="maximum distance, px", width=30, bg='white')
+        lbl3 = tk.Label(master=root, text="SEF: sigma", width=35, bg='white')
+        lbl3.grid(row=4, column=1)
+        self.param2_sigma = tk.Entry(root, width=10)
+        self.param2_sigma.grid(row=4, column=2)
+        
+        lbl4 = tk.Label(master=root, text="SEF: threshold [0.01,10]", width=35, bg='white')
+        lbl4.grid(row=5, column=1)
+        self.param3_threshold = tk.Entry(root, width=10)
+        self.param3_threshold.grid(row=5, column=2)
+
+        lbl5 = tk.Label(master=root, text="SEF: min peak value [0,1]", width=30, bg='white')
+        lbl5.grid(row=6, column=1)
+        self.param4_peak = tk.Entry(root, width=10)
+        self.param4_peak.grid(row=6, column=2)        
+        
+        lbl2 = tk.Label(master=root, text="GF: patch size (even number), px", width=35, bg='white')
+        lbl2.grid(row=7, column=1)
+        self.param1_diameter = tk.Entry(root, width=10)
+        self.param1_diameter.grid(row=7, column=2)
+
+        
+        lbl6 = tk.Label(master=root, text="Linking: max distance, px", width=30, bg='white')
         lbl6.grid(row=8, column=1)
         self.param5_distance = tk.Entry(root, width=10)
         self.param5_distance.grid(row=8, column=2)    
 
-        lbl6 = tk.Label(master=root, text="frame gap, frame", width=30, bg='white')
+        lbl6 = tk.Label(master=root, text="Linking: frame gap, frame", width=30, bg='white')
         lbl6.grid(row=9, column=1)
         self.param6_framegap = tk.Entry(root, width=10)
         self.param6_framegap.grid(row=9, column=2)    
-
-        #preview button
-        self.button2 = tk.Button(text="    preview    ", command=self.preview, width=20) #, height=30)
-        self.button2.grid(row=10, column=1, columnspan=1,pady=5)         
         
-        # button to run the tracker and save results
-        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=20)
-        self.button2.grid(row=10, column=2, columnspan=1, pady=5) 
-    
-    
         # type of spots (dark or light)   
         var = tk.IntVar() # the switch variable
         
@@ -134,10 +128,22 @@ class MainVisual(tk.Frame):
 
         # spot type switch: # 0 - dark spot, 1 - light spot
         self.R1 = tk.Radiobutton(root, text=" dark spot ", variable=var, value=0, bg='white', command =update_monitor_switch )
-        self.R1.grid(row=11, column=1)  
+        self.R1.grid(row=10, column=1, pady=5)  
         
         self.R2 = tk.Radiobutton(root, text=" light spot ", variable=var, value=1, bg='white',command = update_monitor_switch ) #  command=sel)
-        self.R2.grid(row=11, column=2)
+        self.R2.grid(row=10, column=2, pady=5)
+        
+
+        #preview button
+        self.button2 = tk.Button(text="    preview    ", command=self.preview, width=20) #, height=30)
+        self.button2.grid(row=11, column=1, columnspan=1,pady=5)         
+        
+        # button to run the tracker and save results
+        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=20)
+        self.button2.grid(row=11, column=2, columnspan=1, pady=5) 
+    
+    
+
 
         
         # show the movie frame: use matplotlib imshow and plotting
@@ -178,12 +184,12 @@ class MainVisual(tk.Frame):
             self.min_peak=float(self.param4_peak.get())
 
         if self.param5_distance.get()=='':
-            self.max_dist=10
+            self.max_dist=15
         else:
             self.max_dist=float(self.param5_distance.get())               
 
         if self.param6_framegap.get()=='':
-            self.frame_gap=5
+            self.frame_gap=15
         else:
             self.frame_gap=float(self.param6_framegap.get())    
             
@@ -191,7 +197,8 @@ class MainVisual(tk.Frame):
         
     def processing(self):
         # preprocessing step
-        
+        self.movie_processed=self.movie.copy()
+
         print("processing data")
 
     def preview(self):
@@ -201,8 +208,8 @@ class MainVisual(tk.Frame):
         self.read_parameters()
         
         # select movie frame
-        pos=random.randrange(0, self.movie.shape[0]-1)
-        self.image = self.movie[pos,:,:]
+        pos=random.randrange(0, self.movie_processed.shape[0]-1)
+        self.image = self.movie_processed[pos,:,:]
         
         # invert image in case you are looking at the dark spot
         if self.spot_switch==0:
@@ -266,6 +273,9 @@ class MainVisual(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
         
+        # copy proccessed 
+        self.movie_processed=self.movie.copy()
+
     def tracking(self):
         # detection and linking from the selected movie - connect to the button
         print("tracker running")
@@ -279,7 +289,7 @@ class MainVisual(tk.Frame):
             track_data_framed={}
             track_data_framed.update({'frames':[]})
             
-            for n_frame in range(0, self.movie.shape[0]):
+            for n_frame in range(0, self.movie_processed.shape[0]):
                 
                 
                 frame_dict={}
@@ -304,14 +314,14 @@ class MainVisual(tk.Frame):
             
             track_data_framed=track_to_frame(tracks)
             
-            final_img_set = np.zeros((self.movie.shape[0], self.movie.shape[1], self.movie.shape[2], 3))
+            final_img_set = np.zeros((self.movie_processed.shape[0], self.movie_processed.shape[1], self.movie_processed.shape[2], 3))
             
-            for frameN in range(0, self.movie.shape[0]):
+            for frameN in range(0, self.movie_processed.shape[0]):
               
                 plot_info=track_data_framed['frames'][frameN]['tracks']
-                frame_img=self.movie[frameN,:,:]
+                frame_img=self.movie_processed[frameN,:,:]
                 # Make a colour image frame
-                orig_frame = np.zeros((self.movie.shape[1], self.movie.shape[2], 3))
+                orig_frame = np.zeros((self.movie_processed.shape[1], self.movie_processed.shape[2], 3))
         
                 orig_frame [:,:,0] = frame_img/np.max(frame_img)*256
                 orig_frame [:,:,1] = frame_img/np.max(frame_img)*256
@@ -364,13 +374,13 @@ class MainVisual(tk.Frame):
         detect_particle.expected_size=self.maximum_diameter
         
         # tracker settings
-        duration_shreshold=50 # minimum  track length
+        duration_shreshold=0 # minimum  track length
         
-        tracker = Tracker(self.max_dist, self.frame_gap, self.movie.shape[0], 0)
+        tracker = Tracker(self.max_dist, self.frame_gap, self.movie_processed.shape[0], 0)
 
         
         # tracking itself
-        for frameN in range(0, self.movie.shape[0]):
+        for frameN in range(0, self.movie_processed.shape[0]):
             print('frame', frameN)
             #detection
             
