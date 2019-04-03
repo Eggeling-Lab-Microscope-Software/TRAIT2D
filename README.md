@@ -11,8 +11,6 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * Activate your virtual environment with: `source activate iscat`
 * Install the `iscat_lib` package with `pip install -e .`
 
-* _Mac users should install [ActiveTcl](https://www.activestate.com/products/activetcl/) to make sure the GUI works_
-
 ## Update
 * Go to the repository directory
 * Update the environment with: `conda env update -f environment.yml`
