@@ -5,15 +5,19 @@ GUI iSCAT tracking
 
 @author: mariaa
 """
-import sys
-sys.path.append("/home/mariaa/Eggeling_lab/iSCAT_project/code/iscat_lib")
 
-from detectors import Detectors
-from movie_processor import background_substraction
+import matplotlib
+matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
+
+import sys
+from iscat_lib.detectors import Detectors
+from iscat_lib.movie_processor import background_substraction
+from iscat_lib.tracker import Tracker
+
 import skimage
 from skimage import io
 import matplotlib.pyplot as plt
-from tracker import Tracker
+
 import json
 import numpy as np
 import cv2
@@ -201,7 +205,7 @@ class MainVisual(tk.Frame):
         # show first frame in the monitor
 
         img = self.movie_processed[1,:,:]
-        plt.close()
+        # plt.close()
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
         self.im = plt.imshow(img) # for later use self.im.set_data(new_data)
@@ -209,8 +213,8 @@ class MainVisual(tk.Frame):
         # DrawingArea
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas.draw()
-        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)        
-        
+        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
+
 
     def preview(self):
         # show random frame with detection on the monitor
@@ -244,7 +248,7 @@ class MainVisual(tk.Frame):
         centers=detect_particle.detect(image_for_process)
 
         #plot the result
-        plt.close()
+        # plt.close()
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
         self.im = plt.imshow(image) # for later use self.im.set_data(new_data)
@@ -262,7 +266,9 @@ class MainVisual(tk.Frame):
 
         # Select movie for processing - connect to the button
 
-        filename = tk.filedialog.askopenfilename(filetypes = [("All files", "*.*")])
+        # filename = tk.filedialog.askopenfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
+        filename = tk.filedialog.askopenfilename()
+        root.update()
         self.movie_file=filename
 
         # read the file
@@ -274,7 +280,7 @@ class MainVisual(tk.Frame):
         # show first frame in the monitor
 
         self.image = self.movie[1,:,:]
-        plt.close()
+        # plt.close()
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
         self.im = plt.imshow(self.image) # for later use self.im.set_data(new_data)
@@ -421,7 +427,8 @@ class MainVisual(tk.Frame):
                         'skipped_frames': tracker.completeTracks[trackN].skipped_frames
                         }})
 
-        save_file = tk.filedialog.asksaveasfilename(filetypes = [("All files", "*.*")])
+        # save_file = tk.filedialog.asksaveasfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
+        save_file = tk.filedialog.asksaveasfilename()
         save_movie(data_tracks, save_file)
 
         with open('test.txt', 'w') as f:
