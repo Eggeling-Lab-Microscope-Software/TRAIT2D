@@ -28,12 +28,13 @@ def background_substraction(movie, saturation = 0.3, nFrames = 1000, invert=True
 
     # Compute flat field from first 1000 frames (lateral shift)
     bg_median = np.median(movie_p[0:nFrames,...], axis=0)
+    movie_p = movie_p / bg_median
 
     # Temporal average
     bg_avg = np.mean(movie_p, axis=0)
 
     # Background removal
-    movie_p = (movie_p - bg_avg) / bg_median
+    movie_p = movie_p - bg_avg
 
     # Normalization
     imin = movie_p.min()
