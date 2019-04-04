@@ -24,7 +24,7 @@ import cv2
 import random
 import tkinter as tk
 from tkinter import filedialog
-
+import csv
 # for plotting
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 # default Matplotlib key bindings
@@ -74,10 +74,11 @@ class MainVisual(tk.Frame):
                     (0, 255, 255), (255, 100, 100), (255, 127, 255),
                     (127, 0, 255), (127, 0, 127)]
 
+        self.tracks_data=[] # data of the tracks (trackID , frame, x, y, sigma_x, sigma_y)
      # # # # # # menu to choose files and set tracker parameters # # # # # #
 
         # button to select movie
-        self.button1 = tk.Button(text="       Select movie file       ", command=self.select_movie, width=40)
+        self.button1 = tk.Button(text="       Select movie file       ", command=self.select_movie, width=40, bg='gray')
         self.button1.grid(row=0, column=1, columnspan=3, pady=5)
 
         # show selected movie name
@@ -85,7 +86,7 @@ class MainVisual(tk.Frame):
         lbl1.grid(row=1, column=1, columnspan=3, pady=5)
 
         # button for preprocessing step
-        self.button2 = tk.Button(text="    Process data before tracking    ", command=self.processing, width=40)
+        self.button2 = tk.Button(text="    Process data before tracking    ", command=self.processing, width=40, bg='gray')
         self.button2.grid(row=2, column=1, columnspan=3, pady=5)
 
         # setting tracker parameters
@@ -147,14 +148,16 @@ class MainVisual(tk.Frame):
 
 
         #preview button
-        self.button2 = tk.Button(text="    preview    ", command=self.preview, width=20) #, height=30)
+        self.button2 = tk.Button(text="    preview    ", command=self.preview, width=20, bg='gray') #, height=30)
         self.button2.grid(row=11, column=1, columnspan=1,pady=5)
 
         # button to run the tracker and save results
-        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=20)
+        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=20, bg='gray')
         self.button2.grid(row=11, column=2, columnspan=1, pady=5)
 
-
+        # button to run the tracker and save results
+        self.button2 = tk.Button(text="    Save data    ", command=self.save_data, width=20, bg='gray')
+        self.button2.grid(row=12, column=2, columnspan=1, pady=5)
 
 
 
@@ -170,6 +173,22 @@ class MainVisual(tk.Frame):
         self.canvas = FigureCanvasTkAgg(fig, master=root)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=15, column=1, columnspan=3,pady=5)
+        
+    def save_data(self):
+        
+        print("saving data to file")
+        
+        save_file = tk.filedialog.asksaveasfilename()
+        if not(save_file.endswith(".csv")):
+                save_file += ".csv"
+#        csvData = [['Person', 'Age'], ['Peter', '22'], ['Jasmine', '21'], ['Sam', '24']]
+
+        with open(save_file, 'w') as csvFile:
+            writer = csv.writer(csvFile)
+            writer.writerows(self.tracks_data)
+
+        csvFile.close()
+        
 
     def read_parameters(self):
 
@@ -240,7 +259,7 @@ class MainVisual(tk.Frame):
         detect_particle.threshold_rel=self.min_peak # min peak value in relation to the image
 
         #run detector
-        centers=detect_particle.detect(image_for_process)
+        centers, sigma=detect_particle.detect(image_for_process)
 
         #plot the result
         # plt.close()
@@ -388,8 +407,6 @@ class MainVisual(tk.Frame):
         detect_particle.threshold_rel=self.min_peak # min picl value in relation to the image
         detect_particle.expected_size=self.maximum_diameter
 
-        # tracker settings
-        duration_shreshold=0 # minimum  track length
 
         tracker = Tracker(self.max_dist, self.frame_gap, self.movie_processed.shape[0], 0)
 
@@ -403,34 +420,42 @@ class MainVisual(tk.Frame):
             if self.spot_switch==0:
                 frame_img=skimage.util.invert(frame_img)
 
-            centers=detect_particle.detect(frame_img)
+            centers, sigmas =detect_particle.detect(frame_img)
 
             #tracking
-            tracker.update(centers, frameN)
+            tracker.update(centers, sigmas, frameN)
 
         for trackN in range(0, len(tracker.tracks)):
             tracker.completeTracks.append(tracker.tracks[trackN])
 
 
-         # # rearrange the data into disctionary  and save it
+         # # rearrange the data for saving: 
+         
+        self.tracks_data.append(['TrackID', 'frame', 'x', 'y', 'sigma x', 'sigma y'])
 
         data_tracks={}
 
         for trackN in range(0, len(tracker.completeTracks)):
-            if len(tracker.completeTracks[trackN].trace)>=duration_shreshold:
-                data_tracks.update({tracker.completeTracks[trackN].track_id:{
-                        'trackID':tracker.completeTracks[trackN].track_id,
-                        'trace': tracker.completeTracks[trackN].trace,
-                        'frames':tracker.completeTracks[trackN].trace_frame,
-                        'skipped_frames': tracker.completeTracks[trackN].skipped_frames
-                        }})
+            #save trajectories 
+            trackID=tracker.completeTracks[trackN].track_id
+            for pos in range(0, len(tracker.completeTracks[trackN].trace)):
+                point=tracker.completeTracks[trackN].trace[pos]
+                sigma=tracker.completeTracks[trackN].sigma[pos]
+                frame=tracker.completeTracks[trackN].trace_frame[pos]
+                
+                self.tracks_data.append([trackID, frame, point[1], point[0], sigma[1], sigma[0]])
+                
+            #save for plotting tracks
+            data_tracks.update({tracker.completeTracks[trackN].track_id:{
+                    'trackID':tracker.completeTracks[trackN].track_id,
+                    'trace': tracker.completeTracks[trackN].trace,
+                    'frames':tracker.completeTracks[trackN].trace_frame,
+                    'skipped_frames': tracker.completeTracks[trackN].skipped_frames
+                    }})
 
         # save_file = tk.filedialog.asksaveasfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
         save_file = tk.filedialog.asksaveasfilename()
         save_movie(data_tracks, save_file)
-
-        with open('test.txt', 'w') as f:
-            json.dump(data_tracks, f, ensure_ascii=False)
 
 
 

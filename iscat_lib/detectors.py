@@ -125,6 +125,7 @@ class Detectors(object):
 
         # remove the area where the membrane is
         coordinates=[]  
+        sigmas=[]
         for point in peaks_coor:
             
 #            print("point ", point)
@@ -168,12 +169,14 @@ class Detectors(object):
             # nonlinear least square fitting
             params  = self.fitgaussian(data)
             (height, y, x, width_x, width_y) = params
+#            print(params)
             
             # check that the centre is inside of the spot
             
             if y<self.expected_size and x<self.expected_size and y>=0 and x>=0:               
             # insurt another approach
                 coordinates.append([x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
+                sigmas.append([width_x, width_y])
 
 #                print("point: ", (x,y), "  ", [x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
             
@@ -186,4 +189,4 @@ class Detectors(object):
 #            plt.show() 
 
 
-        return coordinates
+        return coordinates, sigmas
