@@ -30,6 +30,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 # default Matplotlib key bindings
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
+import imageio
 
 
 
@@ -366,7 +367,10 @@ class MainVisual(tk.Frame):
 
             final_img_set=final_img_set/np.max(final_img_set)*255
             final_img_set=final_img_set.astype('uint8')
-            skimage.io.imsave(save_file, final_img_set)
+            # skimage.io.imsave(save_file, final_img_set)
+            if not(save_file.endswith(".tif") or save_file.endswith(".tiff")):
+                save_file += ".tif"
+            imageio.volwrite(save_file, final_img_set)
             cv2.destroyAllWindows()
 
 
