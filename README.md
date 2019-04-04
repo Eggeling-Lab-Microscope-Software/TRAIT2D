@@ -20,8 +20,3 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * Go to the source directory
 * Run the GUI with: `python gui_iscat.py`
 * After the analysis, to close the environment use the command `conda deactivate`
-
-## TODO list
-* [ ] Add preprocessing
-* [ ] Add parameters in GUI and viewing result
-* [ ] Gaussian filtering
