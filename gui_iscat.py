@@ -7,7 +7,7 @@ GUI iSCAT tracking
 """
 
 import matplotlib
-matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
+matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
 
 import sys
 from iscat_lib.detectors import Detectors
@@ -57,7 +57,7 @@ class MainVisual(tk.Frame):
 
         # detection and tracking parameters
         self.maximum_diameter=10 # size of the field for gaussian fitting
-        self.sigma=2. # defines gaussian in spot-enhancing filter
+        self.sigma=6. # defines gaussian in spot-enhancing filter
         self.threshold=4. # defines threshold in spot-enhancing filter
         self.min_peak=0.2 # defines parameters for local maxima [0,1]
 
@@ -260,7 +260,7 @@ class MainVisual(tk.Frame):
 
         # Select movie for processing - connect to the button
 
-        # filename = tk.filedialog.askopenfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
+        # filename = tk.filedialog.askopenfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
         filename = tk.filedialog.askopenfilename()
         root.update()
         self.movie_file=filename
@@ -395,7 +395,7 @@ class MainVisual(tk.Frame):
             print('frame', frameN)
             #detection
 
-            frame_img=self.movie[frameN,:,:]
+            frame_img=self.movie_processed[frameN,:,:]
             if self.spot_switch==0:
                 frame_img=skimage.util.invert(frame_img)
 
@@ -421,7 +421,7 @@ class MainVisual(tk.Frame):
                         'skipped_frames': tracker.completeTracks[trackN].skipped_frames
                         }})
 
-        # save_file = tk.filedialog.asksaveasfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
+        # save_file = tk.filedialog.asksaveasfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
         save_file = tk.filedialog.asksaveasfilename()
         save_movie(data_tracks, save_file)
 

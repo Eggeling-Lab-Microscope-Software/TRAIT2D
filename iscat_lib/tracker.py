@@ -126,13 +126,13 @@ class Tracker(object):
 #                print("track ", i, " length: ", len(self.tracks[i].trace_frame))
                 if ((self.tracks[i].trace_frame[-1]-self.tracks[i].trace_frame[0]) > self.max_trace_length):
                     del_tracks.append(i)
-                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", len(self.tracks[i].trace_frame), " frames length")
+#                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", len(self.tracks[i].trace_frame), " frames length")
 
         #remove track which are longer than the max_length
             for i in range(len(self.tracks)):
                 if (self.tracks[i].skipped_frames > self.max_frames_to_skip):
                     del_tracks.append(i)        
-                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", self.tracks[i].skipped_frames, " skipped frames")
+#                    print("track ", i,  " (", self.tracks[i].track_id, ") ", " will be deleted because of ", self.tracks[i].skipped_frames, " skipped frames")
         
         
         
@@ -152,7 +152,7 @@ class Tracker(object):
     
         #remove track which are lonfer than the max_length
                       
-                
+        print("number of detection: ", len(detections))
         print("number of tracks: ", len(self.tracks))
         print("next track ID: ", self.trackIdCount)
         print() 
