@@ -5,9 +5,10 @@ channels:
 dependencies:
   - python>=3.6.8
   - pip
+  - pip:
+    - opencv-python
   - numpy
   - scipy
   - matplotlib
   - scikit-image
-  - opencv=3.4.4
   - tk
