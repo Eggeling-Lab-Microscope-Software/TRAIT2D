@@ -46,6 +46,7 @@ class MainVisual(tk.Frame):
         self.master = master
         master.title("iSCAT tracker 1.0 ")
         master.configure(background='white')
+        master.protocol('WM_DELETE_WINDOW', self.close_app)
 #        master.geometry("1100x1000")
 
         # # # parameters # # #
@@ -181,7 +182,6 @@ class MainVisual(tk.Frame):
         save_file = tk.filedialog.asksaveasfilename()
         if not(save_file.endswith(".csv")):
                 save_file += ".csv"
-#        csvData = [['Person', 'Age'], ['Peter', '22'], ['Jasmine', '21'], ['Sam', '24']]
 
         with open(save_file, 'w') as csvFile:
             writer = csv.writer(csvFile)
@@ -458,7 +458,8 @@ class MainVisual(tk.Frame):
         save_movie(data_tracks, save_file)
 
 
-
+    def close_app(self):
+        self.quit()
 
 
 if __name__ == "__main__":
