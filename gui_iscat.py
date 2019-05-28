@@ -56,7 +56,9 @@ class MainVisual(tk.Frame):
         self.movie_processed=[] # matrix with processed data
         self.movie_length=0 # length of the original movie
         self.figsize_value=(6,6) # parameters for the figure size
-
+        self.unit="px" # coordinate unit
+        
+        
         # detection and tracking parameters
         self.maximum_diameter=10 # size of the field for gaussian fitting
         self.sigma=6. # defines gaussian in spot-enhancing filter
@@ -431,7 +433,11 @@ class MainVisual(tk.Frame):
 
          # # rearrange the data for saving: 
          
-        self.tracks_data.append(['TrackID', 'frame', 'x', 'y', 'sigma x', 'sigma y'])
+        self.tracks_data.append(['Position X', 'Position Y', 'Position Z','Unit', 'Category', 
+                                 'Collection', 'Birth [s]', 'Death [s]', 'TrackID',
+                                 'ID','OriginalID','Original Component Name',
+                                 'Original Component ID', 'Original Image Name', 'Original Image ID']) 
+                                 #'TrackID', 'frame', 'x', 'y', 'sigma x', 'sigma y'])
 
         data_tracks={}
 
@@ -442,8 +448,8 @@ class MainVisual(tk.Frame):
                 point=tracker.completeTracks[trackN].trace[pos]
                 sigma=tracker.completeTracks[trackN].sigma[pos]
                 frame=tracker.completeTracks[trackN].trace_frame[pos]
-                
-                self.tracks_data.append([trackID, frame, point[1], point[0], sigma[1], sigma[0]])
+                frame_original=frame-tracker.completeTracks[trackN].trace_frame[0]
+                self.tracks_data.append([ point[1], point[0], " ",  self.unit, " spot ", "position", " ", " ", trackID, frame,frame_original, ' ', ' ', ' ', ' '])
                 
             #save for plotting tracks
             data_tracks.update({tracker.completeTracks[trackN].track_id:{
