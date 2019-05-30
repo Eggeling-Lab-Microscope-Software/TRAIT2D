@@ -26,8 +26,8 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * Activate the environment with: `conda activate iscat`
 * Go to the source directory
 * Run the simulation
-`python simulate_iscat_movie.py /path/to/track.csv /path/to/output.tif --psf /path/to/psf.tif --gaussian_noise --poisson_noise`
+`python scripts/simulate_iscat_movie.py /path/to/track.csv /path/to/output.tif --psf /path/to/psf.tif --gaussian_noise --poisson_noise`
   * `tracks.csv` is a file containing the tracks to reconstruct
   * The optional `psf.tif` file is a 3D PSF stack were the middle slice is in focus.
   * The PSF can be generated with the ImageJ pluging [DeconvolutionLab2](http://bigwww.epfl.ch/deconvolution/deconvolutionlab2/)
-  * Other simulation options can be listed with: `python simulate_iscat_movie.py --help`
+  * Other simulation options can be listed with: `python scripts/simulate_iscat_movie.py --help`
