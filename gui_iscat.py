@@ -251,7 +251,7 @@ class MainVisual(tk.Frame):
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
         
         frameN_text = tk.Label(master=root, text=" frame 0 ", width=30, bg='white')
-        frameN_text.grid(row=14, column=1)    
+        frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
 
     def preview(self):
         '''
@@ -437,16 +437,16 @@ class MainVisual(tk.Frame):
         detect_particle=Detectors()
         #MSSEF settings
 
-        detect_particle.c=self.threshold #0.01 # coef for the thresholding
+        detect_particle.c=self.threshold # coef for the thresholding
         detect_particle.sigma=self.sigma # max sigma for LOG
 
         #thresholding
         detect_particle.min_distance=5 # minimum distance between two max after MSSEF
-        detect_particle.threshold_rel=self.min_peak # min picl value in relation to the image
+        detect_particle.threshold_rel=self.min_peak # min peak value in relation to the image
         detect_particle.expected_size=self.maximum_diameter
 
 
-        tracker = Tracker(self.max_dist, self.frame_gap, self.movie_processed.shape[0], 0)
+        tracker = Tracker(self.max_dist, self.frame_gap,  0)
 
 
         # tracking itself
@@ -461,7 +461,7 @@ class MainVisual(tk.Frame):
             centers, sigmas =detect_particle.detect(frame_img)
 
             #tracking
-            tracker.update(centers, sigmas, frameN)
+            tracker.update(centers, sigmas,  frameN)
 
         for trackN in range(0, len(tracker.tracks)):
             tracker.completeTracks.append(tracker.tracks[trackN])
@@ -479,8 +479,8 @@ class MainVisual(tk.Frame):
         for trackN in range(0, len(tracker.completeTracks)):
             #save trajectories 
             trackID=tracker.completeTracks[trackN].track_id
+            
             #if track is long enough:
-
             if len(tracker.completeTracks[trackN].trace)>=self.min_track_length:
                 
                 for pos in range(0, len(tracker.completeTracks[trackN].trace)):
