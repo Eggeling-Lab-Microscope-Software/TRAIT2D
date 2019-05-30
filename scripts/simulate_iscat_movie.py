@@ -5,20 +5,20 @@
 
 import argparse
 import csv
+import logging
 import imageio as io
 from skimage import util as sk_util
-from scipy.ndimage import convolve
-from scipy.signal import fftconvolve, convolve2d
-import logging
+from scipy.signal import fftconvolve
 import numpy as np
-import matplotlib.pyplot as plt
 import tqdm
 
 # Notes
-# TODO: Add PSF & Object appearance inputs
+# TODO: Add PSF & Object shape inputs (instead of only psf)
 # TODO: Add z-phase jitter for the PSF instead of using a fixed plane
-# The PSF can be generated with the FIJI plugin 'DeconvolutionLab2'. Create a python wrapper?
 # TODO: Load a simulation parameters file instead of passing everything in the commande line
+# TODO: Use input size as alternative
+# TODO: link tqdm with logging
+# TODO: Create a python wrapper for the ImageJ pluging 'DeconvolutionLab2' to generate PSF in the script?
 
 def parse_arguments():
     """Parse the input arguments for the simulator"""
@@ -36,7 +36,7 @@ def parse_arguments():
     parser.add_argument("--gaussian_noise", action="store_true", help="Add gaussian noise before PSF convolution")
     parser.add_argument("--gaussian_noise_variance", default=1e-3, type=float, help="Gaussian noise variance (default=%(default)s)")
     parser.add_argument("--poisson_noise", action="store_true", help="Add poisson noise after PSF convolution")
-    parser.add_argument("-v", "--verbose", action="store_true") # TODO: Setup the verbose flag with logging
+    parser.add_argument("-v", "--verbose", action="store_true")
 
     # Parse the arguments and return
     args = parser.parse_args()
@@ -99,7 +99,7 @@ def main():
     logging.debug("Tracks X range: {}".format((xmin, xmax)))
     logging.debug("Tracks Y range: {}".format((ymin, ymax)))
 
-    # Create the grid # TODO: Use input size as alternative
+    # Create the grid
     x = np.linspace(xmin, xmax, int((xmax - xmin)/args.resolution))
     y = np.linspace(ymin, ymax, int((ymax - ymin)/args.resolution))
     nx = len(x) + 1
@@ -133,7 +133,7 @@ def main():
         movie = np.pad(movie, ((0,0),(px//2, px//2),(py//2, py//2)), mode="reflect")
 
         # Apply convolution
-        for i in tqdm.tqdm(range(n_frames), desc="Convolving with PSF"): # TODO: link tqdm with logging
+        for i in tqdm.tqdm(range(n_frames), desc="Convolving with PSF"):
             movie[i,...] = fftconvolve(movie[i,...], psf_2d, mode='same')
 
         # Unpad
