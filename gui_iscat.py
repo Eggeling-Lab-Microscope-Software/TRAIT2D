@@ -36,9 +36,9 @@ import imageio
 
 class MainVisual(tk.Frame):
     '''
-    class of GUI widgets and functions
+    class of GUI for iSCAT data tracker
     '''
-    # choose the files and visualise the tracks on the data
+
     def __init__(self, master):
 
         #define a window
@@ -47,14 +47,14 @@ class MainVisual(tk.Frame):
         master.title("iSCAT tracker 1.0 ")
         master.configure(background='white')
         master.protocol('WM_DELETE_WINDOW', self.close_app)
-#        master.geometry("1100x1000")
 
         # # # parameters # # #
         #general
-        self.movie_file=" " # path to the move file
+        self.movie_file=" " # path to the movie file
         self.movie=[] # matrix with data
         self.movie_processed=[] # matrix with processed data
         self.movie_length=0 # length of the original movie
+        
         self.figsize_value=(6,6) # parameters for the figure size
         self.unit="px" # coordinate unit
         
@@ -63,11 +63,13 @@ class MainVisual(tk.Frame):
         self.maximum_diameter=10 # size of the field for gaussian fitting
         self.sigma=6. # defines gaussian in spot-enhancing filter
         self.threshold=4. # defines threshold in spot-enhancing filter
-        self.min_peak=0.2 # defines parameters for local maxima [0,1]
+        self.min_peak=0.2 # defines parameter for local maxima [0,1]
 
         self.max_dist=15 # number of pixels between two possible connections
         self.frame_gap=15 # maximum number of possible consequently skipped frames in a track
         self.spot_switch=0 # spot type: 0 - dark spot, 1 - light spot
+        
+        self.min_track_length=100 # track with length less than the value will be removed
 
         # list of colors for trajectories plots
         self.color_list=[(200, 0, 0), (200, 0, 127), (0, 0, 255), (200, 155, 0),
@@ -77,7 +79,8 @@ class MainVisual(tk.Frame):
                     (0, 255, 255), (255, 100, 100), (255, 127, 255),
                     (127, 0, 255), (127, 0, 127)]
 
-        self.tracks_data=[] # data of the tracks (trackID , frame, x, y, sigma_x, sigma_y)
+        self.tracks_data=[] # data of the tracks prepared for the csv file
+        
      # # # # # # menu to choose files and set tracker parameters # # # # # #
 
         # button to select movie
@@ -135,6 +138,11 @@ class MainVisual(tk.Frame):
         self.param6_framegap = tk.Entry(root, width=10, text=v)
         self.param6_framegap.grid(row=9, column=2)
 
+        lbl7 = tk.Label(master=root, text="Minimum track length, frames", width=30, bg='white')
+        lbl7.grid(row=10, column=1)
+        v = tk.StringVar(root, value=str(self.min_track_length))
+        self.param7_framegap = tk.Entry(root, width=10, text=v)
+        self.param7_framegap.grid(row=10, column=2)
         # type of spots (dark or light)
         var = tk.IntVar() # the switch variable
 
@@ -144,23 +152,23 @@ class MainVisual(tk.Frame):
 
         # spot type switch: # 0 - dark spot, 1 - light spot
         self.R1 = tk.Radiobutton(root, text=" dark spot ", variable=var, value=0, bg='white', command =update_monitor_switch )
-        self.R1.grid(row=10, column=1, pady=5)
+        self.R1.grid(row=11, column=1, pady=5)
 
         self.R2 = tk.Radiobutton(root, text=" light spot ", variable=var, value=1, bg='white',command = update_monitor_switch ) #  command=sel)
-        self.R2.grid(row=10, column=2, pady=5)
+        self.R2.grid(row=11, column=2, pady=5)
 
 
         #preview button
         self.button2 = tk.Button(text="    preview    ", command=self.preview, width=20, bg='gray') #, height=30)
-        self.button2.grid(row=11, column=1, columnspan=1,pady=5)
+        self.button2.grid(row=12, column=1, columnspan=1,pady=5)
 
         # button to run the tracker and save results
         self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=20, bg='gray')
-        self.button2.grid(row=11, column=2, columnspan=1, pady=5)
+        self.button2.grid(row=12, column=2, columnspan=1, pady=5)
 
         # button to run the tracker and save results
         self.button2 = tk.Button(text="    Save data    ", command=self.save_data, width=20, bg='gray')
-        self.button2.grid(row=12, column=2, columnspan=1, pady=5)
+        self.button2.grid(row=13, column=2, columnspan=1, pady=5)
 
 
 
@@ -170,17 +178,22 @@ class MainVisual(tk.Frame):
         bg_img=np.ones((400,400))*0.8
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
-        self.im = plt.imshow(bg_img) # for later use self.im.set_data(new_data)
+        self.im = plt.imshow(bg_img)
 
         # DrawingArea
         self.canvas = FigureCanvasTkAgg(fig, master=root)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=15, column=1, columnspan=3,pady=5)
+
+        frameN_text = tk.Label(master=root, text=" frame NaN ", width=30, bg='white')
+        frameN_text.grid(row=16, column=1, columnspan=3,pady=5)   
         
     def save_data(self):
+        '''
+        save csv file
+        '''
         
-        print("saving data to file")
-        
+        # select file location and name
         save_file = tk.filedialog.asksaveasfilename()
         if not(save_file.endswith(".csv")):
                 save_file += ".csv"
@@ -190,12 +203,13 @@ class MainVisual(tk.Frame):
             writer.writerows(self.tracks_data)
 
         csvFile.close()
-        
+         
+        print("csv file has been saved to ", save_file)
 
     def read_parameters(self):
-
-        # read parameters from the GUI
-
+        '''
+        read parameters from the GUI
+        '''
         if self.param1_diameter.get()!='':
             self.maximum_diameter=int(self.param1_diameter.get())
 
@@ -213,14 +227,19 @@ class MainVisual(tk.Frame):
 
         if self.param6_framegap.get()!='':
             self.frame_gap=float(self.param6_framegap.get())
+            
+        if self.param6_framegap.get()!='':
+            self.min_track_length=float(self.param7_framegap.get())
 
     def processing(self):
-        # preprocessing step
+        '''
+        preprocessing step - connected to a button
+        '''
         self.movie_processed = background_substraction(self.movie.copy())
 
         # show first frame in the monitor
 
-        img = self.movie_processed[1,:,:]
+        img = self.movie_processed[0,:,:]
         # plt.close()
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
@@ -230,11 +249,15 @@ class MainVisual(tk.Frame):
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas.draw()
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
-
+        
+        frameN_text = tk.Label(master=root, text=" frame 0 ", width=30, bg='white')
+        frameN_text.grid(row=14, column=1)    
 
     def preview(self):
-        # show random frame with detection on the monitor
-
+        '''
+        show random frame with detection on the monitor
+        '''
+        
         #read parameters
         self.read_parameters()
 
@@ -252,7 +275,7 @@ class MainVisual(tk.Frame):
         detect_particle=Detectors()
 
         #MSSEF settings
-        detect_particle.c=self.threshold #0.01 # coef for the thresholding
+        detect_particle.c=self.threshold  # coef for the thresholding
         detect_particle.sigma=self.sigma # max sigma for LOG
         detect_particle.expected_size=self.maximum_diameter # field for gaussian fitting
 
@@ -267,7 +290,7 @@ class MainVisual(tk.Frame):
         # plt.close()
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
-        self.im = plt.imshow(image) # for later use self.im.set_data(new_data)
+        self.im = plt.imshow(image) 
 
         for point in centers:
             plt.plot(point[1], point[0],  "*r")
@@ -276,13 +299,16 @@ class MainVisual(tk.Frame):
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas.draw()
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
+        
+        frameN_text = tk.Label(master=root, text=" frame "+str(pos), width=30, bg='white')
+        frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
 
 
     def select_movie(self):
+        '''
+        Select movie for processing - connected to a button
+        '''
 
-        # Select movie for processing - connect to the button
-
-        # filename = tk.filedialog.askopenfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
         filename = tk.filedialog.askopenfilename()
         root.update()
         self.movie_file=filename
@@ -299,19 +325,25 @@ class MainVisual(tk.Frame):
         # plt.close()
         fig = plt.figure(figsize=self.figsize_value)
         plt.axis('off')
-        self.im = plt.imshow(self.image) # for later use self.im.set_data(new_data)
+        self.im = plt.imshow(self.image) 
 
         # DrawingArea
         canvas = FigureCanvasTkAgg(fig, master=root)
         canvas.draw()
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
 
+        frameN_text = tk.Label(master=root, text=" frame 0", width=30, bg='white')
+        frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
+        
         # copy proccessed
         self.movie_processed=self.movie.copy()
 
     def tracking(self):
-        # detection and linking from the selected movie - connect to the button
-        print("tracker running")
+        '''
+        detection and linking from the selected movie - connected to a button
+        '''
+        print("tracker running ...")
+        
         #read parameters
         self.read_parameters()
 
@@ -340,10 +372,14 @@ class MainVisual(tk.Frame):
 
 
                 track_data_framed['frames'].append(frame_dict) # add the dictionary
+                
             return track_data_framed
 
 
         def save_movie(tracks, save_file):
+            '''
+            save movie with tracks
+            '''
 
             track_data_framed=track_to_frame(tracks)
 
@@ -432,39 +468,44 @@ class MainVisual(tk.Frame):
 
 
          # # rearrange the data for saving: 
-         
+        self.tracks_data=[]
         self.tracks_data.append(['Position X', 'Position Y', 'Position Z','Unit', 'Category', 
                                  'Collection', 'Birth [s]', 'Death [s]', 'TrackID',
                                  'ID','OriginalID','Original Component Name',
                                  'Original Component ID', 'Original Image Name', 'Original Image ID']) 
-                                 #'TrackID', 'frame', 'x', 'y', 'sigma x', 'sigma y'])
 
         data_tracks={}
 
         for trackN in range(0, len(tracker.completeTracks)):
             #save trajectories 
             trackID=tracker.completeTracks[trackN].track_id
-            for pos in range(0, len(tracker.completeTracks[trackN].trace)):
-                point=tracker.completeTracks[trackN].trace[pos]
-                sigma=tracker.completeTracks[trackN].sigma[pos]
-                frame=tracker.completeTracks[trackN].trace_frame[pos]
-                frame_original=frame-tracker.completeTracks[trackN].trace_frame[0]
-                self.tracks_data.append([ point[1], point[0], " ",  self.unit, " spot ", "position", " ", " ", trackID, frame,frame_original, ' ', ' ', ' ', ' '])
-                
-            #save for plotting tracks
-            data_tracks.update({tracker.completeTracks[trackN].track_id:{
-                    'trackID':tracker.completeTracks[trackN].track_id,
-                    'trace': tracker.completeTracks[trackN].trace,
-                    'frames':tracker.completeTracks[trackN].trace_frame,
-                    'skipped_frames': tracker.completeTracks[trackN].skipped_frames
-                    }})
+            #if track is long enough:
 
-        # save_file = tk.filedialog.asksaveasfilename(filetypes = [("All files", "*.*")]) # This crashes on mac due to filetypes
+            if len(tracker.completeTracks[trackN].trace)>=self.min_track_length:
+                
+                for pos in range(0, len(tracker.completeTracks[trackN].trace)):
+                    point=tracker.completeTracks[trackN].trace[pos]
+                    frame=tracker.completeTracks[trackN].trace_frame[pos]
+                    frame_original=frame-tracker.completeTracks[trackN].trace_frame[0]
+                    self.tracks_data.append([ point[1], point[0], " ",  self.unit, "  ", " ", " ", " ", trackID, frame,frame_original, ' ', ' ', ' ', ' '])
+                    
+                #save for plotting tracks
+                data_tracks.update({tracker.completeTracks[trackN].track_id:{
+                        'trackID':tracker.completeTracks[trackN].track_id,
+                        'trace': tracker.completeTracks[trackN].trace,
+                        'frames':tracker.completeTracks[trackN].trace_frame,
+                        'skipped_frames': tracker.completeTracks[trackN].skipped_frames
+                        }})
+
+
         save_file = tk.filedialog.asksaveasfilename()
         save_movie(data_tracks, save_file)
 
 
     def close_app(self):
+        '''
+        quit all the proccesses while closing the GUI
+        '''
         self.quit()
 
 
