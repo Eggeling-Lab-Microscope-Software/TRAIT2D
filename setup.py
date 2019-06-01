@@ -13,7 +13,7 @@ def main():
         url              = "https://github.com/MariiaVision/iSCAT_tracking.git",
         description      = 'Particle tracker for iSCAT data (collaboration with Eggeling group)',
         install_requires = ['setuptools', 'wheel', 'numpy', 'scipy', 'scikit-image',
-                            'matplotlib', 'tqdm'],
+                            'matplotlib', 'opencv-python', 'tqdm'],
     )
 
 if __name__ == "__main__":
