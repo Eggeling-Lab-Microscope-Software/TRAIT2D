@@ -15,7 +15,6 @@ from skimage.feature import peak_local_max # find local max on the image
 
 
 
-
 class Detectors(object):
     """
     Detectors class to detect objects in video frame
@@ -73,6 +72,108 @@ class Detectors(object):
             plt.show()
     
         return img_sef, img_sef_bin
+    
+    def radialsym_centre(img):
+        '''
+         Calculates the center of a 2D intensity distribution.
+         
+     Method: Considers lines passing through each half-pixel point with slope
+     parallel to the gradient of the intensity at that point.  Considers the
+     distance of closest approach between these lines and the coordinate
+     origin, and determines (analytically) the origin that minimizes the
+     weighted sum of these distances-squared.
+     
+     code is based on the paper: Raghuveer Parthasarathy 
+    "Rapid, accurate particle tracking by calculation of radial symmetry centers"   
+    
+    input: 
+        img: array
+        image itself. Image dimensions should be even(not odd) number for both axis
+        
+    output:
+        x: float
+        x coordinate of the radial symmetry
+        y: float
+        y coordinate of the radial symmetry
+        '''
+        
+        def lsradialcenterfit(m, b, w):
+            '''
+            least squares solution to determine the radial symmetry center
+            inputs m, b, w are defined on a grid
+            w are the weights for each point
+            '''
+            wm2p1=np.divide(w,(np.multiply(m,m)+1))
+            sw=np.sum(wm2p1)
+            smmw = np.sum(np.multiply(np.multiply(m,m),wm2p1))
+            smw  = np.sum(np.multiply(m,wm2p1))
+            smbw = np.sum(np.multiply(np.multiply(m,b),wm2p1))
+            sbw  = np.sum(np.multiply(b,wm2p1))
+            det = smw*smw - smmw*sw
+            xc = (smbw*sw - smw*sbw)/det # relative to image center
+            yc = (smbw*smw - smmw*sbw)/det # relative to image center
+                
+            return xc, yc
+    
+        # GRID
+        #  number of grid points
+        Ny, Nx = img.shape
+        
+        # for x
+        val=int((Nx-1)/2.0-0.5)
+        xm_onerow = np.asarray(range(-val,val+1))
+        xm = np.ones((Nx-1,Nx-1))*xm_onerow
+        
+        # for y
+        val=int((Ny-1)/2.0-0.5)
+        ym_onerow = np.asarray(range(-val,val+1))
+        ym = (np.ones((Ny-1,Ny-1))*ym_onerow).transpose()
+    
+        # derivate along 45-degree shidted coordinates
+    
+        dIdu = np.subtract(img[0:Nx-1, 1:Ny].astype(float),img[1:Nx, 0:Ny-1].astype(float))
+        dIdv = np.subtract(img[0:Nx-1, 0:Ny-1].astype(float),img[1:Nx, 1:Ny].astype(float))
+        
+        
+        #smoothing
+        filter_core=np.ones((3,3))/9
+        fdu=sp.signal.convolve2d(dIdu,filter_core,  mode='same', boundary='fill', fillvalue=0)
+        fdv=sp.signal.convolve2d(dIdv,filter_core,  mode='same', boundary='fill', fillvalue=0)
+    
+        dImag2=np.multiply(fdu,fdu)+np.multiply(fdv,fdv)
+    
+        #slope of the gradient
+        m = np.divide(-(fdv + fdu), (fdu-fdv))
+        
+        # if some of values in m is NaN 
+        m[np.isnan(m)]=np.divide(dIdv+dIdu, dIdu-dIdv)[np.isnan(m)]
+        
+        # if some of values in m is still NaN
+        m[np.isnan(m)]=0 
+        
+        
+        # if some of values in m  are inifinite
+        
+        m[np.isinf(m)]=10*np.max(m)
+        
+        #shortband b
+        b = ym - m*xm
+        
+        #weighting
+        sdI2=np.sum(dImag2)
+        
+        xcentroid = np.sum(np.multiply(dImag2, xm))/sdI2
+        ycentroid = np.sum(np.multiply(dImag2, ym))/sdI2
+        w=np.divide(dImag2, np.sqrt(np.multiply((xm-xcentroid),(xm-xcentroid))+np.multiply((ym-ycentroid),(ym-ycentroid))))
+        
+        # least square minimisation
+        xc,yc=lsradialcenterfit(m, b, w)
+        
+        # output replated to upper left coordinate
+        x=xc + (Nx+1)/2
+        y=yc + (Ny+1)/2
+        
+        return x, y
 
     def gaussian(self, height, center_x, center_y, width_x, width_y):
         """Returns a gaussian function with the given parameters"""
@@ -167,8 +268,11 @@ class Detectors(object):
             data[x_0:x_1,y_0:y_1]=frame[start_x:end_x, start_y:end_y]
             
             # nonlinear least square fitting
+            x,y=self.radialsym_centre(data)
+#            print("radial_symmetry ", x,y)
             params  = self.fitgaussian(data)
-            (height, y, x, width_x, width_y) = params
+            (height, yl, xl, width_x, width_y) = params
+#            print("fitting gaussian ", yl, xl)
 #            print(params)
             
             # check that the centre is inside of the spot
