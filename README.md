@@ -20,6 +20,11 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * Activate your virtual environment with: `conda activate iscat`
 * Install the `iscat_lib` package with `pip install -e .`
 
+## Simplified installation on Windows (tested on Windows 10 Pro)
+* Install [Anaconda](https://www.anaconda.com/distribution/)  (Python 3.7 version) - don't change the default installation path
+* run (double click) run_environmentSetup.bat to install all necessary packages 
+* run (double click) run_gui.bat to activate the environment and run the software (if necessary change the "CODE_FOLDER" to the location of the folder with code on your PC)
+
 ## Update
 * On Linux or Mac, Open a terminal. On Windows, open the application `Anaconda Prompt`
 * Go to the repository directory

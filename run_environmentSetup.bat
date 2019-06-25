@@ -7,6 +7,8 @@ call conda env create -f environment.yml
 
 ECHO Environment installed
 
+call activate iscat
+
 pip install -e .
 
 ECHO Installations done 
