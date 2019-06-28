@@ -73,7 +73,7 @@ class Detectors(object):
     
         return img_sef, img_sef_bin
     
-    def radialsym_centre(img):
+    def radialsym_centre(self, img):
         '''
          Calculates the center of a 2D intensity distribution.
          
@@ -226,7 +226,6 @@ class Detectors(object):
 
         # remove the area where the membrane is
         coordinates=[]  
-        sigmas=[]
         for point in peaks_coor:
             
 #            print("point ", point)
@@ -267,30 +266,19 @@ class Detectors(object):
             
             data[x_0:x_1,y_0:y_1]=frame[start_x:end_x, start_y:end_y]
             
-            # nonlinear least square fitting
+            # radial symmetry centers
             x,y=self.radialsym_centre(data)
-#            print("radial_symmetry ", x,y)
-            params  = self.fitgaussian(data)
-            (height, yl, xl, width_x, width_y) = params
-#            print("fitting gaussian ", yl, xl)
-#            print(params)
+
+            # nonlinear least square fitting
+#            params  = self.fitgaussian(data)
+#            (height, yl, xl, width_x, width_y) = params
+
             
             # check that the centre is inside of the spot
             
             if y<self.expected_size and x<self.expected_size and y>=0 and x>=0:               
             # insurt another approach
                 coordinates.append([x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
-                sigmas.append([width_x, width_y])
-
-#                print("point: ", (x,y), "  ", [x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
-            
-#            #plotting
-#            fit = self.gaussian(*params)
-#            plt.figure()
-#            plt.imshow(data)
-#            plt.contour(fit(*np.indices(data.shape)), cmap=plt.cm.copper)
-#            plt.plot(x, y, '*r')
-#            plt.show() 
 
 
-        return coordinates, sigmas
+        return coordinates

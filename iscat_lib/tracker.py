@@ -16,13 +16,12 @@ from scipy.optimize import linear_sum_assignment
 
 class Track(object):
 
-    def __init__(self, first_point, first_sigmas, first_frame, trackIdCount):
+    def __init__(self, first_point, first_frame, trackIdCount):
 
         self.track_id = trackIdCount  # identification of each track object
         self.trace_frame = [first_frame]  # predicted centroids (x,y)
         self.skipped_frames = 0  # number of frames skipped undetected
         self.trace = [first_point]  # trace path
-        self.sigma = [first_sigmas]
 
 
 class Tracker(object):
@@ -76,7 +75,7 @@ class Tracker(object):
         return assignment
     
     
-    def update(self, detections, sigmas, frameN):
+    def update(self, detections, frameN):
         '''
         main linking function
         '''
@@ -84,7 +83,7 @@ class Tracker(object):
         # create tracks if no tracks  found
         if (len(self.tracks) == 0):
             for i in range(len(detections)):
-                track = Track(detections[i], sigmas[i], frameN, self.trackIdCount)
+                track = Track(detections[i], frameN, self.trackIdCount)
                 self.trackIdCount += 1
                 self.tracks.append(track)
 
@@ -111,7 +110,6 @@ class Tracker(object):
 
                     else: # add the detection to the track
                         self.tracks[i].trace.append(detections[assignment[i]])
-                        self.tracks[i].sigma.append(sigmas[assignment[i]])
                         self.tracks[i].trace_frame.append(frameN)
                         self.tracks[i].skipped_frames =0
                         
@@ -129,7 +127,7 @@ class Tracker(object):
             # Start new tracks
             if(len(un_assigned_detects) != 0):
                 for i in range(len(un_assigned_detects)):
-                    track = Track(detections[un_assigned_detects[i]], sigmas[un_assigned_detects[i]], frameN,
+                    track = Track(detections[un_assigned_detects[i]], frameN,
                                   self.trackIdCount)              
 
 

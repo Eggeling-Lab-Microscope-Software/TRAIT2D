@@ -284,7 +284,7 @@ class MainVisual(tk.Frame):
         detect_particle.threshold_rel=self.min_peak # min peak value in relation to the image
 
         #run detector
-        centers, sigma=detect_particle.detect(image_for_process)
+        centers=detect_particle.detect(image_for_process)
 
         #plot the result
         # plt.close()
@@ -458,10 +458,10 @@ class MainVisual(tk.Frame):
             if self.spot_switch==0:
                 frame_img=skimage.util.invert(frame_img)
 
-            centers, sigmas =detect_particle.detect(frame_img)
+            centers=detect_particle.detect(frame_img)
 
             #tracking
-            tracker.update(centers, sigmas,  frameN)
+            tracker.update(centers,  frameN)
 
         for trackN in range(0, len(tracker.tracks)):
             tracker.completeTracks.append(tracker.tracks[trackN])
