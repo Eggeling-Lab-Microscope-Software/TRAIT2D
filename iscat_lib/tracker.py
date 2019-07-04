@@ -49,7 +49,7 @@ class Tracker(object):
             for j in range(len(detections)):
                 try:
                     diff = np.array(self.tracks[i].trace[len(self.tracks[i].trace)-1]) - np.array(detections[j])
-                    distance = np.sqrt((diff[0]*diff[0])**2 +(diff[1]*diff[1])**2 )
+                    distance = np.sqrt((diff[0])**2 +(diff[1])**2 )
 
                     cost[i][j] = distance
                 except:
