@@ -38,6 +38,32 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * Run the GUI with: `python gui_iscat.py`
 * After the analysis, to close the environment use the command `conda deactivate`
 
+### Setting parameters: 
+
+Use “preview” button to evaluate detection of the particles.  It shows detection for a random frame with a given parameters. 
+
+Settings description:  
+
+* SEF: sigma – relates to the spot size (increase to detect bigger particles) 
+* SEF: threshold – relates to the intensity of the spots (decrease to detect particles with less intensity) 
+* SEF: min peak value – relates to the intensity of the spots (decrease to detect particles with less intensity) 
+* patch size – size of the region of interest with the particle (bigger than expected particle size). It can influence the particle localisation accuracy.  
+* Linking: max distance – maximum possible distance between detections to be linked (decrease to eliminate wrong linking, increase if the right detections are not linked) 
+* Linking: frame gap – maximum possible number of frames between detections to be linked (increase if the final trajectory is broken into parts) 
+* Minimum track length – helps to eliminate short tracks created by false detections 
+
+Proposed strategy:  
+
+1) choose movie sequence and run pre-processing step if necessary; 
+2) choose between dark or light spots; 
+3)  tune the setting to detect all the particles. It is better to have false positive detections rather than miss some particles; 
+4) run linking. It offers to save tiff file with plotted trajectories. Check the trajectories and set the linking parameters if needed.  Use minimum track length parameter to eliminate short tracks; 
+5) when the tracks provided by the tracker is good enough - save csv file with the particle trajectories (button “save data”) 
+
+##### Advice: 
+
+* If the final trajectory is broken into parts - it means, that the detection is failing in a sequence of frames. Firstly, detection settings can be tuned to detect particles in the sequence, secondly the frame gap can be increased to connect the detection after the sequence.  
+
 ### iScat Movie simulation
 * Launch a terminal (or the `Anaconda Prompt` on Windows)
 * Activate the environment with: `conda activate iscat`
