@@ -38,12 +38,11 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * Run the GUI with: `python gui_iscat.py`
 * After the analysis, to close the environment use the command `conda deactivate`
 
-### Setting parameters: 
+#### Setting parameters: 
 
 Use “preview” button to evaluate detection of the particles.  It shows detection for a random frame with a given parameters. 
 
-Settings description:  
-
+Parameters:  
 * SEF: sigma – relates to the spot size (increase to detect bigger particles) 
 * SEF: threshold – relates to the intensity of the spots (decrease to detect particles with less intensity) 
 * SEF: min peak value – relates to the intensity of the spots (decrease to detect particles with less intensity) 
