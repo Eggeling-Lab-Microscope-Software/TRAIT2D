@@ -7,8 +7,10 @@ from skimage import draw
 import matplotlib.pyplot as plt
 import tqdm
 import json
+import csv
 import pprint
 from pathlib import Path
+import pickle
 
 DEBUG = True
 
@@ -127,7 +129,7 @@ class hopping_diffusion(object):
         store_counter = 0
         t = 0
 
-        pbar = tqdm.tqdm(desc="Simulation", total=self.Tmax)
+        pbar = tqdm.tqdm(desc="Simulation", total=int(self.Tmax / self.dt))
         while iteration < self.Tmax and diffuse: # the indefinitely long loop for each time step
             # Update position and compartment
             x0 = x + self.d * np.random.randn()
@@ -165,7 +167,7 @@ class hopping_diffusion(object):
                 buffer_counter = 0
 
             t += self.dt
-            pbar.update(self.dt)
+            pbar.update()
             if t > self.Tmax:
                 diffuse = False
         pbar.close()
@@ -240,9 +242,31 @@ class hopping_diffusion(object):
         self._gather_parameters()
         pprint.pprint(self.parameters)
 
-    def save_trajectory(self, filename): # TODO: Check which tracking file format to use.
+    def save_trajectory(self, filename, format=None): # TODO: Check which tracking file format to use.
+        supported_formats = ["json", "csv", "pcl"]
+        if format is None:
+            format = Path(filename).suffix.replace(".","")
         assert hasattr(self, "trajectory"), "You must first run the simulator to obtain a trajectory"
-        pass
+        assert format in supported_formats, f"Supported formats are: {supported_formats}"
+
+        if format == "json":
+            with open(filename, "w") as f:
+                json.dump(self.trajectory, f)
+        elif format == "csv":
+            with open(filename, "w") as f:
+                fieldnames = ["t", "x", "y"]
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                for i in range(len(self.trajectory["x"])):
+                    this_row = {"t": self.trajectory["t"][i],
+                                "x": self.trajectory["x"][i],
+                                "y": self.trajectory["y"][i]}
+                    writer.writerow(this_row)
+
+        elif format == "pcl":
+            with open(filename, "wb") as f:
+                pickle.dump(self.trajectory, f)
+
 
     def save_parameters(self, filename, mkdir=True):
         self._gather_parameters()
