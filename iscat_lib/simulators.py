@@ -242,7 +242,7 @@ class hopping_diffusion(object):
         self._gather_parameters()
         pprint.pprint(self.parameters)
 
-    def save_trajectory(self, filename, format=None): # TODO: Check which tracking file format to use.
+    def save_trajectory(self, filename, format=None):
         supported_formats = ["json", "csv", "pcl"]
         if format is None:
             format = Path(filename).suffix.replace(".","")
@@ -286,5 +286,3 @@ class hopping_diffusion(object):
 
         # Set the loaded parameters
         self._set_parameters(parameters)
-
-    # TODO: save the options (voronoi diagram, vertices, centers, regions, ...)
