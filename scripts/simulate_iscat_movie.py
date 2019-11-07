@@ -11,15 +11,7 @@ from skimage import util as sk_util
 from scipy.signal import fftconvolve
 import numpy as np
 import tqdm
-
-# Notes
-# TODO: Add PSF & Object shape inputs (instead of only psf)
-# TODO: Add z-phase jitter for the PSF instead of using a fixed plane
-# TODO: Load a simulation parameters file instead of passing everything in the command line
-# TODO: Use input size as alternative
-# TODO: link tqdm with logging
-# TODO: Create a python wrapper for the ImageJ plugin 'DeconvolutionLab2' to generate PSF in the script?
-# TODO: Background noise with different statistics (similar to transcient particles)
+from iscat_lib import simulators
 
 def parse_arguments():
     """Parse the input arguments for the simulator"""
@@ -30,6 +22,8 @@ def parse_arguments():
     parser.add_argument("output", help="Output movie file")
     parser.add_argument("-r", "--resolution", default=1, type=float,
                         help="Reconstruction resolution in px (default=%(default)s)")
+    parser.add_argument("-tr", "--time_resolution", default=1, type=float,
+                        help="Reconstruction resolution in frame/seconds (default=%(default)s)")
     parser.add_argument("--square", action="store_true", help="Make the simulated movie square")
     parser.add_argument("--psf", help="Optional PSF file")
     parser.add_argument("--snr", default=25, type=float, help="Reconstruction SNR (default=%(default)s)")
@@ -50,105 +44,30 @@ def parse_arguments():
 
     return args
 
-def load_tracks(filename):
-    """Load the tracks from a csv file"""
-    # Load the csv file
-    with open(filename, "r") as csvfile:
-        # Detect the csv format
-        dialect = csv.Sniffer().sniff(csvfile.read())
-
-        # Create a reader
-        csvfile.seek(0)
-        reader = csv.reader(csvfile, dialect)
-
-        tracks = {"x": [], "y": [], "track_id": [], "frame": [], "track_frame": []}
-        for i, row in enumerate(reader):
-            if i == 0:
-                column_names = row
-            else:
-                tracks["x"].append(float(row[column_names.index("Position X")]))
-                tracks["y"].append(float(row[column_names.index("Position Y")]))
-                tracks["track_id"].append(int(row[column_names.index("TrackID")]))
-                tracks["frame"].append(int(row[column_names.index("ID")]))
-                tracks["track_frame"].append(int(row[column_names.index("OriginalID")]))
-
-    return tracks
-
 def main():
     # Parse input arguments
     args = parse_arguments()
 
-    # Load the tracks
-    tracks = load_tracks(args.tracks)
-    n_spots = len(tracks["x"])
-    logging.debug("There are {} spots forming the tracks".format(n_spots))
-
-    # Get the number of frames
-    t_min = 0
-    t_max = np.max(tracks["frame"])
-    n_frames = t_max - t_min + 1
-    logging.debug("Movie number of frames: {}".format(n_frames))
-
-    # Get the movie size
-    xmin = 0 #np.min(tracks['x'])
-    xmax = np.max(tracks['x'])
-    ymin = 0 #np.min(tracks['y'])
-    ymax = np.max(tracks['y'])
-    if args.square:
-        xmax = max((xmax,ymax))
-        ymax = max((xmax,ymax))
-    logging.debug("Tracks X range: {}".format((xmin, xmax)))
-    logging.debug("Tracks Y range: {}".format((ymin, ymax)))
-
-    # Create the grid
-    x = np.linspace(xmin, xmax, int((xmax - xmin)/args.resolution))
-    y = np.linspace(ymin, ymax, int((ymax - ymin)/args.resolution))
-    nx = len(x) + 1
-    ny = len(y) + 1
-    logging.debug("Movie size at resolution={:f} is {}x{}x{}".format(args.resolution, n_frames, nx, ny))
-
-    # Prepare the movie array
-    movie = np.ones((n_frames, nx, ny)) * args.background_intensity
-
+    # Create the simulator
+    s = simulators.iscat_movie(args.tracks,
+                               resolution=args.resolution,
+                               dt=args.time_resolution,
+                               snr=args.snr,
+                               background=args.background_intensity,
+                               noise_poisson=args.poisson_noise)
     if args.gaussian_noise:
-        logging.debug("Adding Gaussian noise")
-        movie = sk_util.random_noise(movie, mode="gaussian", var=args.gaussian_noise_variance)
+        s.noise_gaussian = args.gaussian_noise_variance
+    if args.square:
+        s.ratio = "square"
+    else:
+        s.ratio = None
 
-    # Populate the tracks
-    logging.debug("Reconstructing the tracks")
-    for this_spot in range(n_spots):
-        mx = int(np.floor((tracks['x'][this_spot]-xmin) / args.resolution))
-        my = int(np.floor((tracks['y'][this_spot]-ymin) / args.resolution))
-        mf = tracks["frame"][this_spot]
-        if (xmin <= mx < xmax) and (ymin <= my < ymax):
-            movie[mf, mx, my] = (1+args.snr) * args.background_intensity
-
-    # Convolve by PSF if provided
-    if args.psf is not None:
-        psf = io.volread(args.psf).squeeze()
-        psf_2d = psf[int(psf.shape[0]/2), ...].squeeze()
-        psf_2d = psf_2d / psf_2d.sum()
-
-        # Pad the movie
-        px, py = psf_2d.shape
-        movie = np.pad(movie, ((0,0),(px//2, px//2),(py//2, py//2)), mode="reflect")
-
-        # Apply convolution
-        for i in tqdm.tqdm(range(n_frames), desc="Convolving with PSF"):
-            movie[i,...] = fftconvolve(movie[i,...], psf_2d, mode='same')
-
-        # Unpad
-        movie = movie[:,px//2:px//2+nx, py//2:py//2+ny]
-
-    # Add Poisson noise
-    logging.debug("Adding Poisson noise")
-    if args.poisson_noise:
-        movie = sk_util.random_noise(movie, mode="poisson", clip=False)
-        movie[movie<0] = 0
+    # Run simulation
+    s.run()
 
     # Saving the movie
     logging.debug("Saving the movie")
-    io.volwrite(args.output, movie.astype(np.float32))
+    s.save(args.output)
 
 if __name__ == "__main__":
     main()

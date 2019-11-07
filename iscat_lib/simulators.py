@@ -11,8 +11,14 @@ import csv
 import pprint
 from pathlib import Path
 import pickle
+from skimage import util as sk_util
+from scipy.signal import fftconvolve
+import imageio as io
+from pathlib import Path
 
 DEBUG = True
+
+__all__ = ["hopping_diffusion", "iscat_movie"]
 
 # Hopping diffusion simulation
 class hopping_diffusion(object):
@@ -254,13 +260,14 @@ class hopping_diffusion(object):
                 json.dump(self.trajectory, f)
         elif format == "csv":
             with open(filename, "w") as f:
-                fieldnames = ["t", "x", "y"]
+                fieldnames = ["t", "x", "y", "id"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 for i in range(len(self.trajectory["x"])):
                     this_row = {"t": self.trajectory["t"][i],
                                 "x": self.trajectory["x"][i],
-                                "y": self.trajectory["y"][i]}
+                                "y": self.trajectory["y"][i],
+                                "id": 0}
                     writer.writerow(this_row)
 
         elif format == "pcl":
@@ -286,3 +293,151 @@ class hopping_diffusion(object):
 
         # Set the loaded parameters
         self._set_parameters(parameters)
+
+
+# iScat Acquisition simulation
+class iscat_movie(object):
+    # Notes
+    # TODO: Add PSF & Object shape inputs (instead of only psf)
+    # TODO: Add z-phase jitter for the PSF instead of using a fixed plane
+    # TODO: Load a simulation parameters file instead of passing everything in the command line
+    # TODO: Use input size as alternative
+    # TODO: link tqdm with logging
+    # TODO: Create a python wrapper for the ImageJ plugin 'DeconvolutionLab2' to generate PSF in the script?
+    # TODO: Background noise with different statistics (similar to transcient particles)
+    def __init__(self, tracks=None, resolution=1.0, dt=1, snr=25, background=0.3, noise_gaussian=0.15, noise_poisson=True, ratio="square"):
+        # Prepare the simulator
+        self.resolution = resolution
+        self.snr = snr  # Signal to noise ratio
+        self.background = background  # Background intensity
+        self.noise_gaussian = noise_gaussian  # Gaussian noise variance
+        self.noise_poisson = noise_poisson  # Poisson noise variance
+        self.dt = dt  # Temporal resolution
+        self.ratio = ratio
+
+        if isinstance(tracks, dict):
+            self.tracks = tracks
+        elif isinstance(tracks, str) or isinstance(tracks, Path):
+            self.load_tracks(tracks)
+
+    def initialize(self):
+        assert hasattr(self, 'tracks'), "You must load a tracks file or set a tracks dict first"
+        self.n_spots = len(self.tracks["x"])
+
+        # Get the number of frames
+        self.tmin = 0
+        self.tmax = np.max(self.tracks["t"])
+        self.n_frames = int((self.tmax - self.tmin)/self.dt) + 1
+
+        # Get the movie shape
+        self.xmin = np.min(self.tracks["x"])
+        self.ymin = np.min(self.tracks["y"])
+        self.xmax = np.max(self.tracks["x"])
+        self.ymax = np.max(self.tracks["y"])
+        if self.ratio == "square":
+            self.xmin = min(self.xmin, self.ymin)
+            self.ymin = min(self.xmin, self.ymin)
+            self.xmax = max(self.xmax, self.ymax)
+            self.ymax = max(self.xmax, self.ymax)
+        else:
+            print(f"Unknown ratio: {self.ratio}")
+
+        # Initialize the simulation grid
+        x = np.linspace(self.xmin, self.xmax, (self.xmax - self.xmin) / self.resolution)
+        y = np.linspace(self.ymin, self.ymax, (self.ymax - self.ymin) / self.resolution)
+        self.nx = len(x) + 1
+        self.ny = len(y) + 1
+
+        print(f"Movie shape will be: ({self.nx}, {self.ny}) with ({self.n_frames}) frames")
+
+    def run(self):
+        self.initialize()
+
+        # Create the movie array
+        print("Creating an empty movie")
+        movie = np.ones((self.n_frames, self.nx, self.ny)) * self.background
+
+        # Add Gaussian noise to the background
+        if self.noise_gaussian is not None:
+            print("Adding gaussian noise to the background")
+            movie = sk_util.random_noise(movie, mode="gaussian", var=self.noise_gaussian)
+
+        # Populate the tracks
+        for this_spot in tqdm.tqdm(range(self.n_spots), "Adding tracks"):
+            mx = int(np.round((self.tracks['x'][this_spot] - self.xmin) / self.resolution))
+            my = int(np.round((self.tracks['y'][this_spot] - self.ymin) / self.resolution))
+            mt = int(self.tracks["t"][this_spot] / self.dt)
+            if isinstance(mx, list):
+                for x, y, t in zip(mx, my, mt):
+                    if (0 <= mx < self.nx) and (0 <= my < self.ny):
+                        movie[t, x, y] = movie[t, x, y] + (1 + self.snr) * self.background
+            else:
+                if (0 <= mx < self.nx) and (0 <= my < self.ny):
+                    movie[mt, mx, my] = movie[mt, mx, my] + (1 + self.snr) * self.background
+
+        # Convolve by PSF if provided
+        if hasattr(self, "psf_2d"):
+            px, py = self.psf_2d.shape
+            movie = np.pad(movie, ((0, 0), (px // 2, px // 2), (py // 2, py // 2)), mode="reflect")
+
+            # Apply convolution
+            for i in tqdm.tqdm(range(self.n_frames), desc="Convolving with PSF"):
+                movie[i, ...] = fftconvolve(movie[i, ...], self.psf_2d, mode='same')
+
+            # Unpad
+            movie = movie[:, px // 2:px // 2 + self.nx, py // 2:py // 2 + self.ny]
+
+        # Add Poisson noise
+        if self.noise_poisson:
+            print("Adding Poisson noise")
+            movie = sk_util.random_noise(movie, mode="poisson", clip=False)
+            movie[movie < 0] = 0
+
+        self.movie = movie
+
+    def save(self, filename):
+        assert hasattr(self, "movie"), "You must first run the simulation"
+        io.volwrite(filename, self.movie.astype(np.float32))
+
+
+    def load_tracks(self, filename, field_x="x", field_y="y", field_t="t", field_id="ID"): # TODO: Load other tracks format
+        """Load the tracks from a csv file.
+        Parameters
+        ----------
+        filename : str
+            Path to a csv filename
+        field_x : str
+            Column name in the CSV corresponding to the tracks X positions.
+        field_y : str
+            Column name in the CSV corresponding to the tracks Y positions.
+        field_t : str
+            Column name in the CSV corresponding to the tracks time.
+        field_id : str
+            Column name in the CSV corresponding to the tracks ID.
+        """
+        # Load the csv file
+        with open(filename, "r") as csvfile:
+            #  Detect the csv format
+            dialect = csv.Sniffer().sniff(csvfile.read())
+
+            #  Create a reader
+            csvfile.seek(0)
+            reader = csv.reader(csvfile, dialect)
+
+            tracks = {"x": [], "y": [], "t": [], "id": []}
+            for i, row in enumerate(reader):
+                if i == 0:
+                    column_names = row
+                else:
+                    tracks["x"].append(float(row[column_names.index(field_x)]))
+                    tracks["y"].append(float(row[column_names.index(field_y)]))
+                    tracks["t"].append(int(row[column_names.index(field_t)]))
+                    tracks["id"].append(int(row[column_names.index(field_id)]))
+
+        self.tracks = tracks
+
+    def load_psf(self, filename):
+        psf = io.volread(filename).squeeze()
+        psf_2d = psf[int(psf.shape[0] / 2), ...].squeeze()
+        psf_2d = psf_2d / psf_2d.sum()
+        self.psf_2d = psf_2d
