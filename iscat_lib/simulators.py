@@ -210,7 +210,7 @@ class hopping_diffusion(object):
         :return:
         """
         assert hasattr(self, "trajectory"), "You must first run the simulator"
-        time_interval = int(np.ceil(time_resolution / self.parameters["dt"]))
+        time_interval = int(np.ceil(time_resolution / self.dt))
         x = self.trajectory["x"][0::time_interval]
         y = self.trajectory["y"][0::time_interval]
         plt.plot(x, y, alpha=alpha)
@@ -298,13 +298,13 @@ class hopping_diffusion(object):
 # iScat Acquisition simulation
 class iscat_movie(object):
     # Notes
-    # TODO: Add PSF & Object shape inputs (instead of only psf)
+    # TODO: Add PSF & Object shape inputs (instead of only psf)
     # TODO: Add z-phase jitter for the PSF instead of using a fixed plane
     # TODO: Load a simulation parameters file instead of passing everything in the command line
-    # TODO: Use input size as alternative
-    # TODO: link tqdm with logging
+    # TODO: Use input size as alternative
+    # TODO: link tqdm with logging
     # TODO: Create a python wrapper for the ImageJ plugin 'DeconvolutionLab2' to generate PSF in the script?
-    # TODO: Background noise with different statistics (similar to transcient particles)
+    # TODO: Background noise with different statistics (similar to transcient particles)
     def __init__(self, tracks=None, resolution=1.0, dt=1, snr=25, background=0.3, noise_gaussian=0.15, noise_poisson=True, ratio="square"):
         # Prepare the simulator
         self.resolution = resolution
@@ -417,10 +417,10 @@ class iscat_movie(object):
         """
         # Load the csv file
         with open(filename, "r") as csvfile:
-            #  Detect the csv format
+            #  Detect the csv format
             dialect = csv.Sniffer().sniff(csvfile.read())
 
-            #  Create a reader
+            #  Create a reader
             csvfile.seek(0)
             reader = csv.reader(csvfile, dialect)
 

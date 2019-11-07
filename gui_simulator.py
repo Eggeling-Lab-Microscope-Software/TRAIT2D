@@ -10,9 +10,8 @@ import matplotlib
 matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
 
 import sys
-from iscat_lib.detectors import Detectors
-from iscat_lib.movie_processor import background_substraction
-from iscat_lib.tracker import Tracker
+
+from iscat_lib.simulators import  hopping_diffusion, iscat_movie
 
 import skimage
 from skimage import io
@@ -35,6 +34,8 @@ import imageio
 
 
 
+
+
 class MainVisual(tk.Frame):
     '''
     class of GUI for simulator
@@ -50,8 +51,8 @@ class MainVisual(tk.Frame):
         master.protocol('WM_DELETE_WINDOW', self.close_app)
 
         # # # parameters # # #
-        #trajectory generation
-        self.Tmax = 100 # Maximal total length [s]
+        # trajectory generation
+        self.Tmax = 10 # Maximal total length [s]
         self.dt = 50e-6 #Time step [s]
         self.L = 10e-6 #Sandbox length [m]
         self.dL = 20e-9 #Compartment map pixel size [m]
@@ -62,7 +63,24 @@ class MainVisual(tk.Frame):
 
         self.dynamics_switch=0 # dynamics type: 0 - diffusion 1 - hopping diffusion
         
+        self.trajectory_file_type="csv" # file type to save the trajectories
         self.trajectory={} # data of the tracks prepared for the csv file
+        
+        # image generation
+        self.resolution=1.0
+        self.dt_image=1
+        self.snr=25
+        self.background=0.3
+        self.noise_gaussian=0.15
+        self.noise_poisson=0.15
+        self.ratio="square"
+        
+        # trajectory generator
+        self.TG=hopping_diffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
+        
+        # image generator
+        self.IG=iscat_movie(tracks=None, resolution=self.resolution, dt=self.dt_image, snr=self.snr, background=self.background, 
+                            noise_gaussian=self.noise_gaussian, noise_poisson=self.noise_poisson, ratio=self.ratio)
         
      # # # # # # menu to choose files and set tracker parameters # # # # # #
 
@@ -73,7 +91,7 @@ class MainVisual(tk.Frame):
 
         # separator - line 
         self._separator = ttk.Separator(master=root, orient=tk.VERTICAL)
-        self._separator.grid(row=1, column=1, columnspan=4, pady=5, sticky="ew")
+        self._separator.grid(row=1, column=1, columnspan=8, pady=5, sticky="ew")
 
         # type of dynamics
         var = tk.IntVar() # the switch variable
@@ -87,77 +105,98 @@ class MainVisual(tk.Frame):
 #        self.R1.grid(row=2, column=1, pady=5)
 
         self.R2 = tk.Radiobutton(root, text=" hopping diffusion ", variable=var, value=1, bg='gray',command = update_switch ) #  command=sel)
-        self.R2.grid(row=2, column=3, pady=5)        
+        self.R2.grid(row=2, column=3, columnspan=3,pady=5)        
         
         # setting trajectory parameters
-        lbl1 = tk.Label(master=root, text="parameters: ", width=30, bg='gray')
-        lbl1.grid(row=3, column=1, columnspan=3, pady=5)
+        lbl1 = tk.Label(master=root, text="Parameters: ", width=30, bg='gray')
+        lbl1.grid(row=3, column=1, columnspan=7, pady=5)
 
 
-        lbl3 = tk.Label(master=root, text=" Maximal total length, s", width=35, bg='gray', compound=tk.LEFT)
+        lbl3 = tk.Label(master=root, text=" Maximal total length, s", width=40, bg='gray', compound=tk.LEFT)
         lbl3.grid(row=4, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.Tmax))
         self.param_Tmax = tk.Entry(root, width=10, text=v)
-        self.param_Tmax.grid(row=4, column=3, columnspan=2)
+        self.param_Tmax.grid(row=4, column=3, columnspan=6)
 
-        lbl4 = tk.Label(master=root, text=" Time step, s", width=35, bg='gray', compound=tk.LEFT)
+        lbl4 = tk.Label(master=root, text=" Time step, s", width=40, bg='gray', compound=tk.LEFT)
         lbl4.grid(row=5, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dt))
         self.param_dt = tk.Entry(root, width=10, text=v)
-        self.param_dt.grid(row=5, column=3, columnspan=2)
+        self.param_dt.grid(row=5, column=3, columnspan=6)
 
-        lbl5 = tk.Label(master=root, text=" Sandbox length, m", width=30, bg='gray', compound=tk.LEFT)
+        lbl5 = tk.Label(master=root, text=" Sandbox length, m", width=40, bg='gray', compound=tk.LEFT)
         lbl5.grid(row=6, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.L))
         self.param_L = tk.Entry(root, width=10, text=v)
-        self.param_L.grid(row=6, column=3, columnspan=2)
+        self.param_L.grid(row=6, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Compartment map pixel size, m", width=35, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Compartment map pixel size, m", width=40, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=7, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dL))
         self.param_dL = tk.Entry(root, width=10, text=v)
-        self.param_dL.grid(row=7, column=3, columnspan=2)
+        self.param_dL.grid(row=7, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Free diffusion coefficient, $m^2/s$", width=35, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Free diffusion coefficient, "+r'm^2/s', width=40, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=8, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.Df))
         self.param_Df = tk.Entry(root, width=10, text=v)
-        self.param_Df.grid(row=8, column=3, columnspan=2)
+        self.param_Df.grid(row=8, column=3, columnspan=6)
 
-        lbl6 = tk.Label(master=root, text=" Average compartment diameter/length, m", width=35, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Average compartment diameter/length, m", width=40, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=9, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.HL))
         self.param_HL = tk.Entry(root, width=10, text=v)
-        self.param_HL.grid(row=9, column=3, columnspan=2)
+        self.param_HL.grid(row=9, column=3, columnspan=6)
         
-        lbl6 = tk.Label(master=root, text=" Hopping probability [0:1]", width=35, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Hopping probability [0-1]", width=40, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=10, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.HP))
         self.param_HP = tk.Entry(root, width=10, text=v)
-        self.param_HP.grid(row=10, column=3, columnspan=2)
+        self.param_HP.grid(row=10, column=3, columnspan=6)
 
-        lbl6 = tk.Label(master=root, text=" Random generator seed (int)", width=35, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Random generator seed (integer)", width=40, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=11, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.seed))
         self.param_seed = tk.Entry(root, width=10, text=v)
-        self.param_seed.grid(row=11, column=3, columnspan=2)
+        self.param_seed.grid(row=11, column=3, columnspan=6)
 
 
 
-        #preview button
+        #generate button
         self.button2 = tk.Button(text="    GENERATE    ", command=self.generate_trajectory, width=20, bg='gray') #, height=30)
         self.button2.grid(row=12, column=1, columnspan=2,pady=5)
 
-        # button to run the tracker and save results
+        # button to save results
         self.button2 = tk.Button(text="    SAVE   ", command=self.save_trajectory, width=20, bg='gray')
-        self.button2.grid(row=12, column=3, columnspan=2, pady=5)
+        self.button2.grid(row=12, column=3, columnspan=6, pady=5)
+        
+        #preview button
+        self.button2 = tk.Button(text="  SHOW TRACK  ", command=self.show_trajectory, width=20, bg='gray') #, height=30)
+        self.button2.grid(row=13, column=1, columnspan=2,pady=5)
+        
+        # choose the file type
+        # type of dynamics
+        var_2 = tk.StringVar() # the switch variable
 
+        # variable update
+        def update_switch_2():
+            self.trajectory_file_type=var_2.get()
+
+        # trajectory file type
+        self.F1 = tk.Radiobutton(root, text=" csv", variable=var_2, value="csv", bg='gray',command = update_switch_2 ) #  command=sel)
+        self.F1.grid(row=13, column=4, columnspan=1, pady=5)     
+
+        self.F2 = tk.Radiobutton(root, text=" json", variable=var_2, value="json", bg='gray',command = update_switch_2 ) #  command=sel)
+        self.F2.grid(row=13, column=5, columnspan=1, pady=5)  
+
+        self.F3 = tk.Radiobutton(root, text=" pcl", variable=var_2, value="pcl", bg='gray',command = update_switch_2 ) #  command=sel)
+        self.F3.grid(row=13, column=6, columnspan=1, pady=5)     
 ##################################################
 
         # separator - line 
         self._separator = ttk.Separator(master=root, orient=tk.VERTICAL)
-        self._separator.grid(row=20, column=1, columnspan=4, pady=5, sticky="ew")        
+        self._separator.grid(row=20, column=1, columnspan=8, pady=5, sticky="ew")        
                 # name the section
 
         lbl1 = tk.Label(master=root, text=" IMAGE SEQUENCE ", bg='gray', compound=tk.LEFT)
@@ -165,55 +204,71 @@ class MainVisual(tk.Frame):
 
         # separator - line 
         self._separator = ttk.Separator(master=root, orient=tk.VERTICAL)
-        self._separator.grid(row=22, column=1, columnspan=4, pady=5, sticky="ew")
+        self._separator.grid(row=22, column=1, columnspan=8, pady=5, sticky="ew")
         
         # button to load trajectory
         self.button2 = tk.Button(text="    load trajectory    ", command=self.load_trajectory, width=20, bg='gray')
-        self.button2.grid(row=23, column=3, columnspan=2, pady=5)
+        self.button2.grid(row=23, column=3, columnspan=6, pady=5)
         
         # setting image parameters
-        lbl1 = tk.Label(master=root, text="parameters: ", width=30, bg='gray')
-        lbl1.grid(row=24, column=1, columnspan=3, pady=5)
+        lbl1 = tk.Label(master=root, text="Parameters: ", width=30, bg='gray')
+        lbl1.grid(row=24, column=1, columnspan=7, pady=5)
 
 
-        lbl3 = tk.Label(master=root, text=" Parameter #1", width=35, bg='gray', compound=tk.LEFT)
+        lbl3 = tk.Label(master=root, text=" Resolution", width=35, bg='gray', compound=tk.LEFT)
         lbl3.grid(row=25, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.HP))
-        self.param2_sigma = tk.Entry(root, width=10, text=v)
-        self.param2_sigma.grid(row=25, column=3, columnspan=2)
+        v = tk.StringVar(root, value=str(self.resolution))
+        self.param_resolution = tk.Entry(root, width=10, text=v)
+        self.param_resolution.grid(row=25, column=3, columnspan=6)
 
-        lbl4 = tk.Label(master=root, text=" Parameter #2", width=35, bg='gray', compound=tk.LEFT)
+        lbl4 = tk.Label(master=root, text=" Signal to noise ratio", width=35, bg='gray', compound=tk.LEFT)
         lbl4.grid(row=26, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.HP))
-        self.param3_threshold = tk.Entry(root, width=10, text=v)
-        self.param3_threshold.grid(row=26, column=3, columnspan=2)
+        v = tk.StringVar(root, value=str(self.snr))
+        self.param_snr = tk.Entry(root, width=10, text=v)
+        self.param_snr.grid(row=26, column=3, columnspan=6)
 
-        lbl5 = tk.Label(master=root, text=" Parameter #3", width=30, bg='gray', compound=tk.LEFT)
+        lbl5 = tk.Label(master=root, text=" Background intensity", width=30, bg='gray', compound=tk.LEFT)
         lbl5.grid(row=27, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.HP))
-        self.param4_peak = tk.Entry(root, width=10, text=v)
-        self.param4_peak.grid(row=27, column=3, columnspan=2)
+        v = tk.StringVar(root, value=str(self.background))
+        self.param_background = tk.Entry(root, width=10, text=v)
+        self.param_background.grid(row=27, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Parameter #4", width=35, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Gaussian noise variance", width=35, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=28, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.HP))
-        self.param1_diameter = tk.Entry(root, width=10, text=v)
-        self.param1_diameter.grid(row=28, column=3, columnspan=2)
+        v = tk.StringVar(root, value=str(self.noise_gaussian))
+        self.param_noise_gaussian = tk.Entry(root, width=10, text=v)
+        self.param_noise_gaussian.grid(row=28, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Parameter #5", width=30, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Poisson noise variance", width=30, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=29, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.HP))
-        self.param5_distance = tk.Entry(root, width=10, text=v)
-        self.param5_distance.grid(row=29, column=3, columnspan=2)
+        v = tk.StringVar(root, value=str(self.noise_poisson))
+        self.param_noise_poisson = tk.Entry(root, width=10, text=v)
+        self.param_noise_poisson.grid(row=29, column=3, columnspan=6)
 
+        lbl2 = tk.Label(master=root, text=" Temporal resolution", width=35, bg='gray', compound=tk.LEFT)
+        lbl2.grid(row=30, column=1, columnspan=2)
+        v = tk.StringVar(root, value=str(self.dt_image))
+        self.param_dt_image = tk.Entry(root, width=10, text=v)
+        self.param_dt_image.grid(row=30, column=3, columnspan=6)
+
+
+        lbl6 = tk.Label(master=root, text=" Ratio", width=30, bg='gray', compound=tk.LEFT)
+        lbl6.grid(row=31, column=1, columnspan=2)
+        v = tk.StringVar(root, value=str(self.ratio))
+        self.param_ratio = tk.Entry(root, width=10, text=v)
+        self.param_ratio.grid(row=31, column=3, columnspan=6)
+        
+
+        
+ 
         #preview button
-        self.button2 = tk.Button(text="    GENERATE    ", command=self.generate_images, width=20, bg='gray') #, height=30)
-        self.button2.grid(row=30, column=1, columnspan=2,pady=5)
+        self.button2 = tk.Button(text=" GENERATE and SHOW ", command=self.generate_images, width=20, bg='gray') #, height=30)
+        self.button2.grid(row=32, column=1, columnspan=2,pady=5)
 
         # button to run the tracker and save results
         self.button2 = tk.Button(text="    SAVE   ", command=self.save_images, width=20, bg='gray')
-        self.button2.grid(row=30, column=3, columnspan=2, pady=10, padx=20)
+        self.button2.grid(row=32, column=3, columnspan=6, pady=10, padx=30)
     
 
 
@@ -221,13 +276,16 @@ class MainVisual(tk.Frame):
         '''
         function to generate trajectory
         '''
-        
         # update the parameters        
         self.read_parameters()
         
+        if  self.dynamics_switch==1 or self.dynamics_switch!=1:
+            self.TG=hopping_diffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
+            self.TG.run()
+                 
         print("generate_trajectory(self)")
         
-        self.trajectory={}
+        self.trajectory=self.TG.trajectory
         
         
         
@@ -235,36 +293,95 @@ class MainVisual(tk.Frame):
         '''
         save trajectory
         '''
-        filename = tk.filedialog.askopenfilename()
-        root.update()
+        # update the parameters        
+        self.read_parameters()
+        # select file location and name
+        save_file = tk.filedialog.asksaveasfilename()
+        if not(save_file.endswith(self.trajectory_file_type)):
+                save_file += "."+self.trajectory_file_type
+                
+        self.TG.save_trajectory(save_file, self.trajectory_file_type)
 
          
-        print("save trajectory into a file: ", filename)
+        print("save trajectory into a file: ", save_file)
+        
+    def show_trajectory(self):
+        '''
+        plot trajectory in separate window
+        '''        
+                # DrawingArea
+        novi = tk.Toplevel()
+        novi.title("trajectory plot")
+#        canvas = tk.Canvas(novi, width = 640, height = 480)
+#        canvas.pack(expand = tk.YES, fill = tk.BOTH)
+        
+        fig = plt.figure(figsize=(10,10))
+
+#        time_interval = int(np.ceil(0.5e-3 / self.dt))
+#        x = self.trajectory["x"][0::time_interval]
+#        y = self.trajectory["y"][0::time_interval]
+#        plt.plot(x, y, alpha=0.8)
+        self.TG.display_trajectory(time_resolution=0.5e-3, limit_fov=False, alpha=0.8)
+            
+                # DrawingArea
+        canvas = FigureCanvasTkAgg(fig, master=novi)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=0, column=0)
+
+        print("trajectory is plotted")
 
     def read_parameters(self):
         '''
         read parameters from the GUI
         '''
+        # trajectory
         if self.param_Tmax.get()!='':
-            self.Tmax=int(self.param_Tmax.get())
+            self.Tmax=float(self.param_Tmax.get())
 
-#        if self.param2_sigma.get()!='':
-#            self.sigma=float(self.param2_sigma.get())
-#
-#        if self.param3_threshold.get()!='':
-#            self.threshold=float(self.param3_threshold.get())
-#
-#        if self.param4_peak.get()!='':
-#            self.min_peak=float(self.param4_peak.get())
-#
-#        if self.param5_distance.get()!='':
-#            self.max_dist=float(self.param5_distance.get())
-#
-#        if self.param6_framegap.get()!='':
-#            self.frame_gap=float(self.param6_framegap.get())
-#            
-#        if self.param6_framegap.get()!='':
-#            self.min_track_length=float(self.param7_framegap.get())
+        if self.param_dt.get()!='':
+            self.dt=float(self.param_dt.get())
+
+        if self.param_L.get()!='':
+            self.L=float(self.param_L.get())
+
+        if self.param_dL.get()!='':
+            self.dL=float(self.param_dL.get())
+
+        if self.param_Df.get()!='':
+            self.Df=float(self.param_Df.get())
+
+        if self.param_HL.get()!='':
+            self.HL=float(self.param_HL.get())
+
+        if self.param_HP.get()!='':
+            self.HP=float(self.param_HP.get())
+
+        if self.param_seed.get()!='':
+            self.seed=int(self.param_seed.get())
+            
+        # image sequence
+
+        if self.param_resolution.get()!='':
+            self.resolution=float(self.param_resolution.get())
+
+        if self.param_dt_image.get()!='':
+            self.dt_image=float(self.param_dt_image.get())
+
+        if self.param_snr.get()!='':
+            self.snr=float(self.param_snr.get())
+
+        if self.param_background.get()!='':
+            self.background=float(self.param_background.get())
+
+        if self.param_noise_gaussian.get()!='':
+            self.noise_gaussian=float(self.param_noise_gaussian.get())
+
+        if self.param_noise_poisson.get()!='':
+            self.noise_poisson=float(self.param_noise_poisson.get())
+
+        if self.param_ratio.get()!='':
+            self.ratio=str(self.param_ratio.get())
+            
 
     def load_trajectory(self):
         '''
@@ -272,6 +389,9 @@ class MainVisual(tk.Frame):
         '''
         
         print("load_trajectory(self)")
+
+        filename = tk.filedialog.askopenfilename()
+        root.update()        
         
         self.trajectory={}
         
