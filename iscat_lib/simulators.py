@@ -329,6 +329,7 @@ class iscat_movie(object):
         self.tmax = np.max(self.tracks["t"])
         self.n_frames = int((self.tmax - self.tmin)/self.dt) + 1
 
+
         # Get the movie shape
         self.xmin = np.min(self.tracks["x"])
         self.ymin = np.min(self.tracks["y"])
@@ -347,6 +348,13 @@ class iscat_movie(object):
         y = np.linspace(self.ymin, self.ymax, (self.ymax - self.ymin) / self.resolution)
         self.nx = len(x) + 1
         self.ny = len(y) + 1
+        
+        print(" - - - - - - - - ")
+        print(self.tmax)
+        print(len(x))
+        print("self.xmin", self.xmin)
+        print("self.ymin", self.ymin)
+        print("self.xmax", self.xmax)
 
         print(f"Movie shape will be: ({self.nx}, {self.ny}) with ({self.n_frames}) frames")
 
@@ -355,6 +363,9 @@ class iscat_movie(object):
 
         # Create the movie array
         print("Creating an empty movie")
+                
+
+        
         movie = np.ones((self.n_frames, self.nx, self.ny)) * self.background
 
         # Add Gaussian noise to the background
@@ -400,7 +411,7 @@ class iscat_movie(object):
         io.volwrite(filename, self.movie.astype(np.float32))
 
 
-    def load_tracks(self, filename, field_x="x", field_y="y", field_t="t", field_id="ID"): # TODO: Load other tracks format
+    def load_tracks(self, filename, field_x="x", field_y="y", field_t="t", field_id="id"): # TODO: Load other tracks format
         """Load the tracks from a csv file.
         Parameters
         ----------
@@ -431,7 +442,7 @@ class iscat_movie(object):
                 else:
                     tracks["x"].append(float(row[column_names.index(field_x)]))
                     tracks["y"].append(float(row[column_names.index(field_y)]))
-                    tracks["t"].append(int(row[column_names.index(field_t)]))
+                    tracks["t"].append(float(row[column_names.index(field_t)]))
                     tracks["id"].append(int(row[column_names.index(field_id)]))
 
         self.tracks = tracks

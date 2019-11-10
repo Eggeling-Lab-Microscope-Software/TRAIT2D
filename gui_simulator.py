@@ -67,8 +67,8 @@ class MainVisual(tk.Frame):
         self.trajectory={} # data of the tracks prepared for the csv file
         
         # image generation
-        self.resolution=1.0
-        self.dt_image=1
+        self.resolution=1e-8
+        self.dt_image=50e-6
         self.snr=25
         self.background=0.3
         self.noise_gaussian=0.15
@@ -259,16 +259,18 @@ class MainVisual(tk.Frame):
         self.param_ratio = tk.Entry(root, width=10, text=v)
         self.param_ratio.grid(row=31, column=3, columnspan=6)
         
-
+        #preview button
+        self.button2 = tk.Button(text=" load psf", command=self.load_psf, width=20, bg='gray') #, height=30)
+        self.button2.grid(row=32, column=1, columnspan=2,pady=5)
         
  
         #preview button
         self.button2 = tk.Button(text=" GENERATE and SHOW ", command=self.generate_images, width=20, bg='gray') #, height=30)
-        self.button2.grid(row=32, column=1, columnspan=2,pady=5)
+        self.button2.grid(row=33, column=1, columnspan=2,pady=5)
 
         # button to run the tracker and save results
         self.button2 = tk.Button(text="    SAVE   ", command=self.save_images, width=20, bg='gray')
-        self.button2.grid(row=32, column=3, columnspan=6, pady=10, padx=30)
+        self.button2.grid(row=33, column=3, columnspan=6, pady=10, padx=30)
     
 
 
@@ -391,9 +393,14 @@ class MainVisual(tk.Frame):
         print("load_trajectory(self)")
 
         filename = tk.filedialog.askopenfilename()
-        root.update()        
+        root.update()   
         
-        self.trajectory={}
+        # load from csv file
+        
+        self.IG.load_tracks(filename, field_x="x", field_y="y", field_t="t", field_id="id")
+        
+        
+        self.trajectory=self.IG.tracks
         
 
     def generate_images(self):
@@ -403,15 +410,63 @@ class MainVisual(tk.Frame):
         # update the parameters        
         self.read_parameters()
         
-        print("generate images")
+        # define image generator class with new parameters and the trajectory
+        self.IG.tracks=self.trajectory
+        self.IG.resolution=self.resolution
+        self.IG.dt=self.dt_image
+        self.IG.snr=self.snr
+        self.IG.background=self.background
+        self.IG.noise_gaussian=self.noise_gaussian
+        self.IG.noise_poisson=self.noise_poisson
+        self.IG.ratio=self.ratio
+        
+        # run the generator
+        self.IG.run()
+        
+        # plot the average image
+        
+        img=np.average(self.IG.movie, axis=0)
+        
+        # DrawingArea
+        novi = tk.Toplevel()
+        novi.title("average of the image sequence")
+        
+        fig = plt.figure(figsize=(10,10))
+
+#        time_interval = int(np.ceil(0.5e-3 / self.dt))
+#        x = self.trajectory["x"][0::time_interval]
+#        y = self.trajectory["y"][0::time_interval]
+#        plt.plot(x, y, alpha=0.8)
+        plt.imshow(img, cmap="gray")
+            
+                # DrawingArea
+        canvas = FigureCanvasTkAgg(fig, master=novi)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=0, column=0)      
+        
+        print("image is generated")
 
     def save_images(self):
         '''
         function to save image sequence
         '''
+        # select file location and name
+        save_file_name = tk.filedialog.asksaveasfilename()
         
+        if not(save_file_name.endswith("tif")):
+            save_file_name += "tif"
+        
+        self.IG.save(save_file_name)
         print("save images")
-
+        
+    def load_psf(self):
+        '''
+        load psf
+        '''
+        filename = tk.filedialog.askopenfilename()
+        root.update() 
+        
+        self.IG.load_psf(filename)
 
     def close_app(self):
         '''
