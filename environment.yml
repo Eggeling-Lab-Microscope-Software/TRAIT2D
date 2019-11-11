@@ -10,3 +10,4 @@ dependencies:
   - matplotlib
   - scikit-image
   - tk
+  - imageio
