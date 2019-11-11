@@ -13,7 +13,8 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * provide some psf in a separate folder
 * add to the code: load trajectory from json and pcl
 * add to the code: info about trajectory 
-* add to the code: define clear parameters metrics / add scaling tool
+* add to the code: define units / add scaling tool
+
 
 
 ## Dependencies
