@@ -53,7 +53,7 @@ class MainVisual(tk.Frame):
         # # # parameters # # #
         # trajectory generation
         self.Tmax = 10 # Maximal total length [s]
-        self.dt = 50e-6 #Time step [s]
+        self.dt = 5e-3 #Time step [s]
         self.L = 10e-6 #Sandbox length [m]
         self.dL = 20e-9 #Compartment map pixel size [m]
         self.Df = 8e-13 # Free diffusion coefficient [m^2/s]
@@ -68,7 +68,7 @@ class MainVisual(tk.Frame):
         
         # image generation
         self.resolution=1e-8
-        self.dt_image=50e-6
+        self.dt_image=5e-3
         self.snr=25
         self.background=0.3
         self.noise_gaussian=0.15
@@ -314,15 +314,8 @@ class MainVisual(tk.Frame):
                 # DrawingArea
         novi = tk.Toplevel()
         novi.title("trajectory plot")
-#        canvas = tk.Canvas(novi, width = 640, height = 480)
-#        canvas.pack(expand = tk.YES, fill = tk.BOTH)
         
         fig = plt.figure(figsize=(10,10))
-
-#        time_interval = int(np.ceil(0.5e-3 / self.dt))
-#        x = self.trajectory["x"][0::time_interval]
-#        y = self.trajectory["y"][0::time_interval]
-#        plt.plot(x, y, alpha=0.8)
         self.TG.display_trajectory(time_resolution=0.5e-3, limit_fov=False, alpha=0.8)
             
                 # DrawingArea
@@ -437,7 +430,7 @@ class MainVisual(tk.Frame):
 #        x = self.trajectory["x"][0::time_interval]
 #        y = self.trajectory["y"][0::time_interval]
 #        plt.plot(x, y, alpha=0.8)
-        plt.imshow(img, cmap="gray")
+        plt.imshow(img.T, origin='lower', cmap="gray")
             
                 # DrawingArea
         canvas = FigureCanvasTkAgg(fig, master=novi)
