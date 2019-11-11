@@ -1,9 +1,19 @@
 # iSCAT_tracking
 particle tracker for iSCAT data (collaboration with Eggeling group)
 
+
 * data_processing.py - detection and tracking of a movie specified inside the script
 * gui_iscat.py - GUI with code for tracking inside
+* gui_simulator.py - GUI with code for a simulator (in development)
 * iscat_lib - classes and functions for detection and tracking
+
+
+# TODO list:
+* check psf loader
+* add to the code: load trajectory from json and pcl
+* add to the code: info about trajectory 
+* add to the code: define clear parameters metrics / add scaling tool
+
 
 ## Dependencies
 * [Anaconda 3](https://www.anaconda.com/distribution/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
