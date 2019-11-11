@@ -445,10 +445,9 @@ class MainVisual(tk.Frame):
         '''
         # select file location and name
         save_file_name = tk.filedialog.asksaveasfilename()
-        
-        if not(save_file_name.endswith("tif")):
-            save_file_name += "tif"
-        
+        if not(save_file_name.endswith("tiff")) and not(save_file_name.endswith("tif")):
+            save_file_name += "tiff"
+
         self.IG.save(save_file_name)
         print("save images")
         
