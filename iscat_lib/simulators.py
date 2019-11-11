@@ -155,7 +155,10 @@ class hopping_diffusion(object):
                 while id0 != id:
                     x0 = x + self.d * np.random.randn()
                     y0 = y + self.d * np.random.randn()
-                    id0 = self.hopping_map[int(np.floor(x0 / self.dL)), int(np.floor(y0 / self.dL))]
+                    ix = int(np.floor(x0 / self.dL))
+                    iy = int(np.floor(y0 / self.dL))
+                    if 0 <= ix < self.hopping_map.shape[0] and 0 <= iy < self.hopping_map.shape[1]:
+                        id0 = self.hopping_map[ix,iy]
 
             # Update the position and compartment
             x = x0
