@@ -7,15 +7,6 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * gui_simulator.py - GUI with code for a simulator (in development)
 * iscat_lib - classes and functions for detection and tracking
 
-
-# TODO list:
-* check psf loader
-* provide some psf in a separate folder
-* add to the code: load trajectory from json and pcl
-* add to the code: info about trajectory 
-* add to the code: define clear parameters metrics / add scaling tool
-
-
 ## Dependencies
 * [Anaconda 3](https://www.anaconda.com/distribution/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 * Python 3
@@ -84,3 +75,8 @@ Proposed strategy:
   * The optional `psf.tif` file is a 3D PSF stack were the middle slice is in focus.
   * The PSF can be generated with the ImageJ plugin [DeconvolutionLab2](http://bigwww.epfl.ch/deconvolution/deconvolutionlab2/)
   * Other simulation options can be listed with: `python scripts/simulate_iscat_movie.py --help`
+  
+ **Simulated track and iscat movie example. (Left) Raw image, (Right) convolved with a synthetic PSF.**
+ <p align="center">
+  <img width="608" height="304" src="examples/simulated_hopping_diffusion_with_and_without_psf.gif">
+</p>

@@ -155,7 +155,10 @@ class hopping_diffusion(object):
                 while id0 != id:
                     x0 = x + self.d * np.random.randn()
                     y0 = y + self.d * np.random.randn()
-                    id0 = self.hopping_map[int(np.floor(x0 / self.dL)), int(np.floor(y0 / self.dL))]
+                    ix = int(np.floor(x0 / self.dL))
+                    iy = int(np.floor(y0 / self.dL))
+                    if 0 <= ix < self.hopping_map.shape[0] and 0 <= iy < self.hopping_map.shape[1]:
+                        id0 = self.hopping_map[ix,iy]
 
             # Update the position and compartment
             x = x0
@@ -411,7 +414,7 @@ class iscat_movie(object):
         io.volwrite(filename, self.movie.astype(np.float32))
 
 
-    def load_tracks(self, filename, field_x="x", field_y="y", field_t="t", field_id="id"): # TODO: Load other tracks format
+    def load_tracks(self, filename, field_x="x", field_y="y", field_t="t", field_id="id", file_format=None): # TODO: Load other tracks format
         """Load the tracks from a csv file.
         Parameters
         ----------
@@ -425,25 +428,43 @@ class iscat_movie(object):
             Column name in the CSV corresponding to the tracks time.
         field_id : str
             Column name in the CSV corresponding to the tracks ID.
+        file_format : str
+            Specify the file format (available are cvs, json, pcl). If none is given, it will be inferred from the filename
         """
-        # Load the csv file
-        with open(filename, "r") as csvfile:
-            #  Detect the csv format
-            dialect = csv.Sniffer().sniff(csvfile.read())
+        tracks = {"x": [], "y": [], "t": [], "id": []}
+        if Path(filename).suffix == ".csv" or file_format == "csv":
+            # Load the csv file
+            with open(filename, "r") as csvfile:
+                #  Detect the csv format
+                dialect = csv.Sniffer().sniff(csvfile.read())
 
-            #  Create a reader
-            csvfile.seek(0)
-            reader = csv.reader(csvfile, dialect)
+                #  Create a reader
+                csvfile.seek(0)
+                reader = csv.reader(csvfile, dialect)
 
-            tracks = {"x": [], "y": [], "t": [], "id": []}
-            for i, row in enumerate(reader):
-                if i == 0:
-                    column_names = row
-                else:
-                    tracks["x"].append(float(row[column_names.index(field_x)]))
-                    tracks["y"].append(float(row[column_names.index(field_y)]))
-                    tracks["t"].append(float(row[column_names.index(field_t)]))
-                    tracks["id"].append(int(row[column_names.index(field_id)]))
+                for i, row in enumerate(reader):
+                    if i == 0:
+                        column_names = row
+                    else:
+                        tracks["x"].append(float(row[column_names.index(field_x)]))
+                        tracks["y"].append(float(row[column_names.index(field_y)]))
+                        tracks["t"].append(float(row[column_names.index(field_t)]))
+                        tracks["id"].append(int(row[column_names.index(field_id)]))
+        elif Path(filename).suffix == ".json" or file_format == "json":
+            with open(filename, "r") as f:
+                content = json.load(f)
+            tracks["x"] = content[field_x]
+            tracks["y"] = content[field_y]
+            tracks["t"] = content[field_t]
+            tracks["id"] = content[field_id]
+
+        elif Path(filename).suffix == ".pcl" or file_format == "pcl":
+            with open(filename, "rb") as f:
+                content = pickle.load(f)
+            tracks["x"] = content[field_x]
+            tracks["y"] = content[field_y]
+            tracks["t"] = content[field_t]
+            tracks["id"] = content[field_id]
 
         self.tracks = tracks
 
