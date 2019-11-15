@@ -7,15 +7,6 @@ particle tracker for iSCAT data (collaboration with Eggeling group)
 * gui_simulator.py - GUI with code for a simulator (in development)
 * iscat_lib - classes and functions for detection and tracking
 
-
-# TODO list:
-* check psf loader
-* provide some psf in a separate folder
-* add to the code: load trajectory from json and pcl
-* add to the code: info about trajectory 
-* add to the code: define clear parameters metrics / add scaling tool
-
-
 ## Dependencies
 * [Anaconda 3](https://www.anaconda.com/distribution/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 * Python 3
