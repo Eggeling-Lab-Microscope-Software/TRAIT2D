@@ -65,7 +65,7 @@ Proposed strategy:
 
 * If the final trajectory is broken into parts - it means, that the detection is failing in a sequence of frames. Firstly, detection settings can be tuned to detect particles in the sequence, secondly the frame gap can be increased to connect the detection after the sequence.  
 
-### iScat Movie simulation
+### iScat Movie simulation: command line
 * Launch a terminal (or the `Anaconda Prompt` on Windows)
 * Activate the environment with: `conda activate iscat`
 * Go to the source directory
@@ -76,6 +76,13 @@ Proposed strategy:
   * The PSF can be generated with the ImageJ plugin [DeconvolutionLab2](http://bigwww.epfl.ch/deconvolution/deconvolutionlab2/)
   * Other simulation options can be listed with: `python scripts/simulate_iscat_movie.py --help`
   
+### iScat Movie simulation: GUI
+* Launch a terminal (or the `Anaconda Prompt` on Windows)
+* Activate the environment with: `conda activate iscat`
+* Go to the source directory
+* Run the simulator `python gui_simulator.py`
+* Generate/load trajectory first, then generate the image sequence and save it
+
  **Simulated track and iscat movie example. (Left) Raw image, (Right) convolved with a synthetic PSF.**
  <p align="center">
   <img width="608" height="304" src="examples/simulated_hopping_diffusion_with_and_without_psf.gif">
