@@ -75,3 +75,7 @@ Proposed strategy:
   * The optional `psf.tif` file is a 3D PSF stack were the middle slice is in focus.
   * The PSF can be generated with the ImageJ plugin [DeconvolutionLab2](http://bigwww.epfl.ch/deconvolution/deconvolutionlab2/)
   * Other simulation options can be listed with: `python scripts/simulate_iscat_movie.py --help`
+  
+ **Simulated track and iscat movie example. (Left) Raw image, (Right) convolved with a synthetic PSF.**
+ 
+ ![Simulated iscat movie animation](examples/simulated_hopping_diffusion_with_and_without_psf.gif)
