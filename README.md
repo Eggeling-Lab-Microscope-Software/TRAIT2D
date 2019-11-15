@@ -77,5 +77,6 @@ Proposed strategy:
   * Other simulation options can be listed with: `python scripts/simulate_iscat_movie.py --help`
   
  **Simulated track and iscat movie example. (Left) Raw image, (Right) convolved with a synthetic PSF.**
- 
- ![Simulated iscat movie animation](examples/simulated_hopping_diffusion_with_and_without_psf.gif)
+ <p align="center">
+  <img width="608" height="304" src="examples/simulated_hopping_diffusion_with_and_without_psf.gif">
+</p>
