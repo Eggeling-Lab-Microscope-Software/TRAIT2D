@@ -375,7 +375,7 @@ class MainVisual(tk.Frame):
             self.noise_gaussian=float(self.param_noise_gaussian.get())
 
         if self.param_noise_poisson.get()!='':
-            self.noise_poisson=float(self.param_noise_poisson.get())
+            self.noise_poisson=bool(self.param_noise_poisson.get())
 
         if self.param_ratio.get()!='':
             self.ratio=str(self.param_ratio.get())
