@@ -72,7 +72,7 @@ class MainVisual(tk.Frame):
         self.snr=25
         self.background=0.3
         self.noise_gaussian=0.15
-        self.noise_poisson=0.15
+        self.noise_poisson=True
         self.ratio="square"
         
         # trajectory generator
@@ -100,62 +100,62 @@ class MainVisual(tk.Frame):
         def update_switch():
             self.dynamics_switch=var.get()
 
-        # dynamics type switch: # 0 - diffusion 1 - hopping diffusion
-#        self.R1 = tk.Radiobutton(root, text=" diffusion ", variable=var, value=0, bg='gray', command =update_switch )
+        # dynamics type switch: # 1 - diffusion 0 - hopping diffusion
+#        self.R1 = tk.Radiobutton(root, text=" diffusion ", variable=var, value=1, bg='gray', command =update_switch )
 #        self.R1.grid(row=2, column=1, pady=5)
 
-        self.R2 = tk.Radiobutton(root, text=" hopping diffusion ", variable=var, value=1, bg='gray',command = update_switch ) #  command=sel)
+        self.R2 = tk.Radiobutton(root, text=" hopping diffusion ", variable=var, value=0, bg='gray',command = update_switch ) #  command=sel)
         self.R2.grid(row=2, column=3, columnspan=3,pady=5)        
         
         # setting trajectory parameters
-        lbl1 = tk.Label(master=root, text="Parameters: ", width=30, bg='gray')
+        lbl1 = tk.Label(master=root, text=" Parameters: ", width=30, bg='gray')
         lbl1.grid(row=3, column=1, columnspan=7, pady=5)
 
 
-        lbl3 = tk.Label(master=root, text=" Maximal total length, s", width=40, bg='gray', compound=tk.LEFT)
+        lbl3 = tk.Label(master=root, text="Maximal total length [Tmax, s]", width=40, bg='gray', compound=tk.LEFT)
         lbl3.grid(row=4, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.Tmax))
         self.param_Tmax = tk.Entry(root, width=10, text=v)
         self.param_Tmax.grid(row=4, column=3, columnspan=6)
 
-        lbl4 = tk.Label(master=root, text=" Time step, s", width=40, bg='gray', compound=tk.LEFT)
+        lbl4 = tk.Label(master=root, text="Time step [dt, s]", width=40, bg='gray', compound=tk.LEFT)
         lbl4.grid(row=5, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dt))
         self.param_dt = tk.Entry(root, width=10, text=v)
         self.param_dt.grid(row=5, column=3, columnspan=6)
 
-        lbl5 = tk.Label(master=root, text=" Sandbox length, m", width=40, bg='gray', compound=tk.LEFT)
+        lbl5 = tk.Label(master=root, text=" Sandbox length [L, m]", width=40, bg='gray', compound=tk.LEFT)
         lbl5.grid(row=6, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.L))
         self.param_L = tk.Entry(root, width=10, text=v)
         self.param_L.grid(row=6, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Compartment map pixel size, m", width=40, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Compartment map pixel size [dL, m]", width=40, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=7, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dL))
         self.param_dL = tk.Entry(root, width=10, text=v)
         self.param_dL.grid(row=7, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Free diffusion coefficient, "+r'm^2/s', width=40, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Free diffusion coefficient [Df, "+r'm^2/s]', width=40, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=8, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.Df))
         self.param_Df = tk.Entry(root, width=10, text=v)
         self.param_Df.grid(row=8, column=3, columnspan=6)
 
-        lbl6 = tk.Label(master=root, text=" Average compartment diameter/length, m", width=40, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Average compartment diameter/length [HL, m]", width=45, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=9, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.HL))
         self.param_HL = tk.Entry(root, width=10, text=v)
         self.param_HL.grid(row=9, column=3, columnspan=6)
         
-        lbl6 = tk.Label(master=root, text=" Hopping probability [0-1]", width=40, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Hopping probability [HP, [0,1]]", width=40, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=10, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.HP))
         self.param_HP = tk.Entry(root, width=10, text=v)
         self.param_HP.grid(row=10, column=3, columnspan=6)
 
-        lbl6 = tk.Label(master=root, text=" Random generator seed (integer)", width=40, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Random generator seed [seed, integer]", width=40, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=11, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.seed))
         self.param_seed = tk.Entry(root, width=10, text=v)
@@ -164,6 +164,7 @@ class MainVisual(tk.Frame):
 
 
         #generate button
+        
         self.button2 = tk.Button(text="    GENERATE    ", command=self.generate_trajectory, width=20, bg='gray') #, height=30)
         self.button2.grid(row=12, column=1, columnspan=2,pady=5)
 
@@ -178,11 +179,12 @@ class MainVisual(tk.Frame):
         # choose the file type
         # type of dynamics
         var_2 = tk.StringVar() # the switch variable
-
+        var_2.set("csv")
         # variable update
         def update_switch_2():
             self.trajectory_file_type=var_2.get()
 
+        
         # trajectory file type
         self.F1 = tk.Radiobutton(root, text=" csv", variable=var_2, value="csv", bg='gray',command = update_switch_2 ) #  command=sel)
         self.F1.grid(row=13, column=4, columnspan=1, pady=5)     
@@ -215,45 +217,45 @@ class MainVisual(tk.Frame):
         lbl1.grid(row=24, column=1, columnspan=7, pady=5)
 
 
-        lbl3 = tk.Label(master=root, text=" Resolution", width=35, bg='gray', compound=tk.LEFT)
+        lbl3 = tk.Label(master=root, text="Resolution [resolution, m/pix]", width=45, bg='gray', compound=tk.LEFT)
         lbl3.grid(row=25, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.resolution))
         self.param_resolution = tk.Entry(root, width=10, text=v)
         self.param_resolution.grid(row=25, column=3, columnspan=6)
 
-        lbl4 = tk.Label(master=root, text=" Signal to noise ratio", width=35, bg='gray', compound=tk.LEFT)
+        lbl4 = tk.Label(master=root, text=" Signal to noise ratio [snr, ratio]", width=45, bg='gray', compound=tk.LEFT)
         lbl4.grid(row=26, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.snr))
         self.param_snr = tk.Entry(root, width=10, text=v)
         self.param_snr.grid(row=26, column=3, columnspan=6)
 
-        lbl5 = tk.Label(master=root, text=" Background intensity", width=30, bg='gray', compound=tk.LEFT)
+        lbl5 = tk.Label(master=root, text=" Background intensity [background, [0,1]]", width=45, bg='gray', compound=tk.LEFT)
         lbl5.grid(row=27, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.background))
         self.param_background = tk.Entry(root, width=10, text=v)
         self.param_background.grid(row=27, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Gaussian noise variance", width=35, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Gaussian noise variance [noise_gaussian]", width=45, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=28, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.noise_gaussian))
         self.param_noise_gaussian = tk.Entry(root, width=10, text=v)
         self.param_noise_gaussian.grid(row=28, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Poisson noise variance", width=30, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Poisson noise variance [noise_poisson, bool]", width=45, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=29, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.noise_poisson))
         self.param_noise_poisson = tk.Entry(root, width=10, text=v)
         self.param_noise_poisson.grid(row=29, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Temporal resolution", width=35, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Temporal resolution [dt_image, frame/sec]", width=45, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=30, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dt_image))
         self.param_dt_image = tk.Entry(root, width=10, text=v)
         self.param_dt_image.grid(row=30, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Ratio", width=30, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Ratio [ratio]", width=45, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=31, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.ratio))
         self.param_ratio = tk.Entry(root, width=10, text=v)
@@ -317,7 +319,8 @@ class MainVisual(tk.Frame):
         
         fig = plt.figure(figsize=(10,10))
         self.TG.display_trajectory(time_resolution=0.5e-3, limit_fov=False, alpha=0.8)
-            
+        plt.xlabel("x")
+        plt.ylabel("y")            
                 # DrawingArea
         canvas = FigureCanvasTkAgg(fig, master=novi)
         canvas.draw()
@@ -422,7 +425,7 @@ class MainVisual(tk.Frame):
         
         # DrawingArea
         novi = tk.Toplevel()
-        novi.title("average of the image sequence")
+        novi.title("Projection of the image sequence")
         
         fig = plt.figure(figsize=(10,10))
 
@@ -431,6 +434,9 @@ class MainVisual(tk.Frame):
 #        y = self.trajectory["y"][0::time_interval]
 #        plt.plot(x, y, alpha=0.8)
         plt.imshow(img.T, origin='lower', cmap="gray")
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.title("Projection of the image sequence")
             
                 # DrawingArea
         canvas = FigureCanvasTkAgg(fig, master=novi)
