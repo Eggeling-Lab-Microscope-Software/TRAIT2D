@@ -11,7 +11,7 @@ matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
 
 import sys
 
-from iscat_lib.simulators import  HoppingDiffusion, iscat_movie
+from iscat_lib.simulators import  HoppingDiffusion, iscat_movie, BrownianDiffusion
 
 import skimage
 from skimage import io
@@ -101,8 +101,8 @@ class MainVisual(tk.Frame):
             self.dynamics_switch=var.get()
 
         # dynamics type switch: # 1 - diffusion 0 - hopping diffusion
-#        self.R1 = tk.Radiobutton(root, text=" diffusion ", variable=var, value=1, bg='gray', command =update_switch )
-#        self.R1.grid(row=2, column=1, pady=5)
+        self.R1 = tk.Radiobutton(root, text=" diffusion ", variable=var, value=1, bg='gray', command =update_switch )
+        self.R1.grid(row=2, column=1, columnspan=2)
 
         self.R2 = tk.Radiobutton(root, text=" hopping diffusion ", variable=var, value=0, bg='gray',command = update_switch ) #  command=sel)
         self.R2.grid(row=2, column=3, columnspan=3,pady=5)        
@@ -283,9 +283,12 @@ class MainVisual(tk.Frame):
         # update the parameters        
         self.read_parameters()
         
-        if  self.dynamics_switch==1 or self.dynamics_switch!=1:
+        if  self.dynamics_switch==0:
             self.TG=HoppingDiffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
             self.TG.run()
+        elif self.dynamics_switch==1:
+            self.TG=BrownianDiffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, d=self.Df,  seed=self.seed)
+            self.TG.run()            
                  
         print("generate_trajectory(self)")
         
