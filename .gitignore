@@ -108,3 +108,6 @@ archives/
 
 # Data directory
 data/
+
+# PyCharm data
+.idea*
