@@ -18,10 +18,180 @@ from pathlib import Path
 
 DEBUG = True
 
-__all__ = ["hopping_diffusion", "iscat_movie"]
+
+# Abstract diffusion object
+class Diffusion(object):
+    def __init__(self, Tmax=1.0, dt=1e-3, L=1, dL=1e-3, d=1e-2, seed: int=None):
+        """ Abstract diffusion simulator
+
+        The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables
+        """
+
+        ## Initializations
+        self.params_list = ["Tmax", "dt", "L", "dL", "d", "seed"]
+        self.Tmax = Tmax
+        self.dt = dt
+        self.L = L
+        self.dL = dL
+        self.d = d
+        self.seed = seed
+
+        # Set random seed
+        np.random.seed(self.seed)
+
+    def run(self):
+        # Initialize
+        self.trajectory = dict()
+        self.trajectory["x"] = []
+        self.trajectory["y"] = []
+        self.trajectory["t"] = []
+
+    def display_trajectory(self, time_resolution=None, limit_fov=False, alpha=0.8):
+        """ Display the simulated trajectory.
+        :param time_resolution: [s]
+        :param limit_fov
+        :return:
+        """
+        assert hasattr(self, "trajectory"), "You must first run the simulator"
+        if time_resolution is not None:
+            time_interval = int(np.ceil(time_resolution / self.dt))
+        else:
+            time_interval = 1
+        x = np.array(self.trajectory["x"][0::time_interval])
+        y = np.array(self.trajectory["y"][0::time_interval])
+        plt.plot(x, y, alpha=alpha)
+
+        if limit_fov:
+            plt.xlim((0, self.parameters["L"]))
+            plt.ylim((0, self.parameters["L"]))
+
+    def _gather_parameters(self):
+        self.parameters = dict()
+        for this_param in self.params_list:
+            self.parameters[this_param] = getattr(self, this_param)
+
+    def _set_parameters(self, parameters):
+        # Parameters must be a dict
+        for this_param in self.params_list:
+            if this_param in parameters:
+                setattr(self, this_param, parameters[this_param])
+
+        # Set the random seed if given
+        if "seed" in parameters:
+            np.random.seed(parameters["seed"])
+
+    def print_parameters(self):
+        """Print the simulation parameters, accessible from self._gather_parameters()"""
+        self._gather_parameters()
+        pprint.pprint(self.parameters)
+
+    def save_trajectory(self, filename, format=None):
+        """Save the simulated trajectory as either a json, cvs or pcl file with fiels t, x, and y"""
+        supported_formats = ["json", "csv", "pcl"]
+        if format is None:
+            format = Path(filename).suffix.replace(".","")
+        assert hasattr(self, "trajectory"), "You must first run the simulator to obtain a trajectory"
+        assert format in supported_formats, f"Supported formats are: {supported_formats}"
+
+        if format == "json":
+            with open(filename, "w") as f:
+                json.dump(self.trajectory, f)
+        elif format == "csv":
+            with open(filename, "w") as f:
+                fieldnames = ["t", "x", "y"]
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                for i in range(len(self.trajectory["x"])):
+                    this_row = {"t": self.trajectory["t"][i],
+                                "x": self.trajectory["x"][i],
+                                "y": self.trajectory["y"][i]}
+                    writer.writerow(this_row)
+
+        elif format == "pcl":
+            with open(filename, "wb") as f:
+                pickle.dump(self.trajectory, f)
+
+    def save_parameters(self, filename, mkdir=True):
+        """Save the simulation parameters, accessible through _gather_parameter"""
+        self._gather_parameters()
+
+        # Create the parent directory
+        if mkdir:
+            Path(filename).parent().mkdir(parents=True, exist_ok=True)
+
+        # Save the parameters as a JSON file
+        with open(filename, "w") as f:
+            json.dumps(f, self.parameters)
+
+    def load_parameters(self, filename):
+        """Load the simulation parameters"""
+        # Load the parameters from a JSON file
+        with open(filename, 'r') as f:
+            parameters = json.load(f)
+
+        # Set the loaded parameters
+        self._set_parameters(parameters)
+
+# Brownian diffusion simulation
+class BrownianDiffusion(Diffusion):
+    def __init__(self, **kwargs):
+        """" BrownianDiffusion Initialization
+        Parameters
+        ----------
+        Tmax: float
+            Maximum simulation time (s)
+        dt: float
+            Simulation time resolution (s)
+        L: float
+            Simulation domain size (m)
+        dL: float
+            Simulation spatial resolution (m)
+        d: float
+            Diffusion coefficient (m^2/s)
+        seed: int
+            Seed to initialize the random generator (for reproducibility)
+        """
+        super(BrownianDiffusion, self).__init__(**kwargs)
+
+    def run(self):
+        """Run a random walk simulation (Brownian diffusion)"""
+        # Starting values is in the center.
+        x = self.L / 2.0
+        y = self.L / 2.0
+        diffuse = True
+        iteration = 0
+
+        x_list = [x]
+        y_list = [y]
+        t_list = [0]
+
+        pbar = tqdm.tqdm(desc="Brownian Diffusion Simulation", total=int(self.Tmax / self.dt))
+        while iteration * self.dt < self.Tmax and diffuse:
+            # Update position and compartment
+            x0 = x + np.sqrt(self.d * self.dt) * np.random.randn()
+            y0 = y + np.sqrt(self.d * self.dt) * np.random.randn()
+
+            # Outside of area, stop it here
+            if not(0 <= x0 <= self.L) or not(0 <= y0 <= self.L):
+                diffuse = False
+                continue
+
+            # Update the position and compartment
+            x = x0
+            y = y0
+            x_list.append(x)
+            y_list.append(y)
+            t_list.append(t_list[-1]+self.dt)
+            iteration += 1
+            pbar.update()
+
+        # Make sure the simulated track is expressed as dL spatial resolution
+        x_list = np.round(np.array(x_list) / self.dL) * self.dL
+        y_list = np.round(np.array(y_list) / self.dL) * self.dL
+        self.trajectory = {"x": x_list.tolist(), "y": y_list.tolist(), "t": t_list}
 
 # Hopping diffusion simulation
-class hopping_diffusion(object):
+class HoppingDiffusion(Diffusion):
     def __init__(self, Tmax=100, dt=50e-6, L=10e-6, dL=20e-9, Df=8e-13, HL=40e-9, HP=0.01, seed: int = None):
         """ Simulates a hopping diffusion trajectory of a single molecule for a
         hopping diffusion model (i.e. free diffusion inside of compartments but
@@ -61,7 +231,10 @@ class hopping_diffusion(object):
         Converted to Python by Joel Lefebvre
         """
 
+        # super(HoppingDiffusion, self).__init__(seed=seed)
+
         # Set parameters
+        self.params_list = ["Tmax", "dt", "L", "dL", "Df", "HL", "HP", "seed"]
         self.Tmax = Tmax
         self.dt = dt
         self.L = L
@@ -71,7 +244,6 @@ class hopping_diffusion(object):
         self.HP = HP
         self.seed = seed
 
-        ## Initializations
         # Set random seed
         np.random.seed(self.seed)
 
@@ -205,98 +377,6 @@ class hopping_diffusion(object):
         assert hasattr(self, "hopping_map"), "No hopping map was set or created."
         plt.imshow(self.hopping_map)
         plt.title("Hopping Map")
-
-    def display_trajectory(self, time_resolution=0.5e-3, limit_fov=False, alpha=0.8):
-        """ Display the simulated trajectory.
-        :param time_resolution: [s]
-        :param limit_fov
-        :return:
-        """
-        assert hasattr(self, "trajectory"), "You must first run the simulator"
-        time_interval = int(np.ceil(time_resolution / self.dt))
-        x = self.trajectory["x"][0::time_interval]
-        y = self.trajectory["y"][0::time_interval]
-        plt.plot(x, y, alpha=alpha)
-
-        if limit_fov:
-            plt.xlim((0, self.parameters["L"]))
-            plt.ylim((0, self.parameters["L"]))
-
-    def _gather_parameters(self):
-        self.parameters = dict()
-        self.parameters["Tmax"] = self.Tmax
-        self.parameters["dt"] = self.dt
-        self.parameters["L"] = self.L
-        self.parameters["dL"] = self.dL
-        self.parameters["Df"] = self.Df
-        self.parameters["HL"] = self.HL
-        self.parameters["HP"] = self.HP
-        self.parameters["seed"] = self.seed
-        self.parameters["md"] = self.md
-        self.parameters["d"] = self.d
-        self.parameters["num"] = self.num  # Number of compartments
-
-    def _set_parameters(self, parameters):
-        # Parameters must be a dict
-        params_list = ["Tmax", "dt", "L", "dL", "Df", "HL", "HP", "seed", "md", "d", "num"]
-        for this_param in params_list:
-            if this_param in parameters:
-                setattr(self, this_param, parameters[this_param])
-
-        # Set the random seed if given
-        if "seed" in parameters:
-            np.random.seed(parameters["seed"])
-
-    def print_parameters(self):
-        self._gather_parameters()
-        pprint.pprint(self.parameters)
-
-    def save_trajectory(self, filename, format=None):
-        supported_formats = ["json", "csv", "pcl"]
-        if format is None:
-            format = Path(filename).suffix.replace(".","")
-        assert hasattr(self, "trajectory"), "You must first run the simulator to obtain a trajectory"
-        assert format in supported_formats, f"Supported formats are: {supported_formats}"
-
-        if format == "json":
-            with open(filename, "w") as f:
-                json.dump(self.trajectory, f)
-        elif format == "csv":
-            with open(filename, "w") as f:
-                fieldnames = ["t", "x", "y", "id"]
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writeheader()
-                for i in range(len(self.trajectory["x"])):
-                    this_row = {"t": self.trajectory["t"][i],
-                                "x": self.trajectory["x"][i],
-                                "y": self.trajectory["y"][i],
-                                "id": 0}
-                    writer.writerow(this_row)
-
-        elif format == "pcl":
-            with open(filename, "wb") as f:
-                pickle.dump(self.trajectory, f)
-
-
-    def save_parameters(self, filename, mkdir=True):
-        self._gather_parameters()
-
-        # Create the parent directory
-        if mkdir:
-            Path(filename).parent().mkdir(parents=True, exist_ok=True)
-
-        # Save the parameters as a JSON file
-        with open(filename, "w") as f:
-            json.dumps(f, self.parameters)
-
-    def load_parameters(self, filename):
-        # Load the parameters from a JSON file
-        with open(filename, 'r') as f:
-            parameters = json.load(f)
-
-        # Set the loaded parameters
-        self._set_parameters(parameters)
-
 
 # iScat Acquisition simulation
 class iscat_movie(object):
