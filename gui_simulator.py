@@ -11,7 +11,7 @@ matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
 
 import sys
 
-from iscat_lib.simulators import  hopping_diffusion, iscat_movie
+from iscat_lib.simulators import  HoppingDiffusion, iscat_movie
 
 import skimage
 from skimage import io
@@ -76,7 +76,7 @@ class MainVisual(tk.Frame):
         self.ratio="square"
         
         # trajectory generator
-        self.TG=hopping_diffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
+        self.TG=HoppingDiffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
         
         # image generator
         self.IG=iscat_movie(tracks=None, resolution=self.resolution, dt=self.dt_image, snr=self.snr, background=self.background, 
@@ -284,7 +284,7 @@ class MainVisual(tk.Frame):
         self.read_parameters()
         
         if  self.dynamics_switch==1 or self.dynamics_switch!=1:
-            self.TG=hopping_diffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
+            self.TG=HoppingDiffusion(Tmax=self.Tmax, dt=self.dt, L=self.L, dL=self.dL, Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
             self.TG.run()
                  
         print("generate_trajectory(self)")
