@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 import itertools
 import concurrent.futures
 
+from multiprocessing import Pool, cpu_count
+
 
 def normalize(track):
     x = np.array(track["x"])
@@ -102,7 +104,7 @@ def MSD_loop(i, pos_x, pos_y, N):
     return MSD, MSD_error
 >>>>>>> Implemented multithreading for MSD calculation
 
-def MSD(x, y, N: int=None):
+def MSD(x, y, N: int=None, numThreads: int=None):
     """Mean squared displacement calculation
     Parameters
     ----------
@@ -128,15 +130,38 @@ def MSD(x, y, N: int=None):
     pos_x = np.array(x)
     pos_y = np.array(y)
 
+    if numThreads == None:
+        workers = cpu_count()
+    else:
+        workers = numThreads
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        i = range(1, N-2)
-        results = list(tqdm.tqdm(executor.map(MSD_loop, i, itertools.repeat(pos_y, len(i)), itertools.repeat(pos_x, len(i)), itertools.repeat(N, len(i))), total=len(i), desc="MSD calculation"))
-    i = 0
-    for (MSD_i, MSD_error_i) in results:
-        MSD[i] = MSD_i
-        MSD_error[i] = MSD_error_i
-        i += 1
+    print(workers)
+    
+    if workers > 1:
+        pool = Pool(processes=workers)
+        iterable = []
+        for i in range(1, N-2):
+            iterable.append((i, pos_y, pos_x, N))
+
+        results = list(tqdm.tqdm(pool.starmap(MSD_loop, iterable), 
+                                    total=len(iterable),
+                                    desc="MSD calculation (multiproc)"))
+        pool.close()
+        pool.join()
+
+        i = 0
+        for (MSD_i, MSD_error_i) in results:
+            MSD[i] = MSD_i
+            MSD_error[i] = MSD_error_i
+            i += 1
+    else:
+        for i in tqdm.tqdm(range(1, N-2), desc="MSD calculation"):
+            idx_0 = np.arange(1, N-i-1, 1)
+            idx_t = idx_0 + i
+            this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
+
+            MSD[i-1] = np.mean(this_msd)
+            MSD_error[i-1] = np.std(this_msd) / np.sqrt(len(this_msd))
 
     return MSD, MSD_error
 
@@ -163,7 +188,7 @@ def BIC(pred: list, target: list, k: int, n: int):
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
 
-def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False):
+def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False, numThreads: int=None):
     n_tracks = len(tracks)
 
     # Calculate MSD for each track
@@ -171,7 +196,7 @@ def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints
     for track in tracks:
         if useNormalization:
             track = normalize(track)
-        msd_list.append(MSD(track["x"], track["y"]))
+        msd_list.append(MSD(track["x"], track["y"], numThreads=numThreads))
 
     # Loop over the MSDs, and perform fits.
     for this_msd, this_msd_error in msd_list:
