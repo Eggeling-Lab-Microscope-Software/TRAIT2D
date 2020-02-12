@@ -112,7 +112,7 @@ def BIC(pred: list, target: list, k: int, n: int):
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
 
-def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False):
+def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False):
     n_tracks = len(tracks)
 
     # Calculate MSD for each track
@@ -129,7 +129,7 @@ def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useN
 
         # Define the number of points to use for fitting
         if nFitPoints is None:
-            n_points = int(0.25 * N)
+            n_points = int(fractionFitPoints * N)
         else:
             n_points = int(nFitPoints)
 
