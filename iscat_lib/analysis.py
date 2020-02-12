@@ -112,7 +112,7 @@ def BIC(pred: list, target: list, k: int, n: int):
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
 
-def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useNormalization=True):
+def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False):
     n_tracks = len(tracks)
 
     # Calculate MSD for each track
@@ -165,9 +165,12 @@ def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useN
         rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
 
         # Plot the results
-        plt.semilogx(T, this_msd, label="Data")
-        plt.semilogx(T[0:n_points], m1[0:n_points], label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
-        plt.semilogx(T[0:n_points], m2[0:n_points], label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
+        if linearPlot:
+            plt.plot(T, this_msd, label="Data")
+        else:
+            plt.semilogx(T, this_msd, label="Data")
+        plt.plot(T[0:n_points], m1[0:n_points], label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
+        plt.plot(T[0:n_points], m2[0:n_points], label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
         plt.axvspan(T[0], T[n_points], alpha=0.5, color='gray', label="Fitted data")
         plt.xlabel("Time")
         plt.ylabel("MSD")
