@@ -54,6 +54,39 @@ def normalize(track):
 
     return track
 
+def SD(x, y, j):
+    """Squared displacement calculation for single time point
+    Parameters
+    ----------
+    x: list or ndarray
+        X coordinates of a 2D track
+    y: list or ndarray
+        Y coordinates of a 2D track
+    j: int
+        Index of timepoint in 2D track
+
+    Returns
+    -------
+    SD: ndarray
+        Squared displacements at timepoint j sorted
+        from smallest to largest value
+    """
+
+    length_array = len(x) # Length of the track
+
+    pos_x = np.array(x)
+    pos_y = np.array(y)
+
+    idx_0 = np.arange(0, length_array-j-1, 1)
+    idx_t = idx_0 + j
+
+    SD = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
+
+    SD.sort()
+
+    return SD
+
+
 def MSD(x, y, N: int=None):
     """Mean squared displacement calculation
     Parameters
