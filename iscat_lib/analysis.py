@@ -8,6 +8,9 @@ from scipy import optimize
 from scipy.stats import rayleigh
 import matplotlib.pyplot as plt
 
+import itertools
+import concurrent.futures
+
 
 def normalize(track):
     x = np.array(track["x"])
@@ -35,7 +38,6 @@ def normalize(track):
     track["tmin"] = tmin
     track["tmax"] = tmax
 
-
     # # Smallest time interval
     # dt = np.abs(np.diff(t)).min()
     #
@@ -52,9 +54,9 @@ def normalize(track):
     # track["y"] = list(np.array(y) / dy)
     # track["t"] = list(np.array(t) / dt)
 
-
     return track
 
+<<<<<<< HEAD
 def SD(x, y, j):
     """Squared displacement calculation for single time point
     Parameters
@@ -87,6 +89,18 @@ def SD(x, y, j):
 
     return SD
 
+=======
+
+def MSD_loop(i, pos_x, pos_y, N):
+    idx_0 = np.arange(1, N-i-1, 1)
+    idx_t = idx_0 + i
+    this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
+
+    MSD = np.mean(this_msd)
+    MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
+
+    return MSD, MSD_error
+>>>>>>> Implemented multithreading for MSD calculation
 
 def MSD(x, y, N: int=None):
     """Mean squared displacement calculation
@@ -113,13 +127,16 @@ def MSD(x, y, N: int=None):
     MSD_error = np.zeros((N-3,))
     pos_x = np.array(x)
     pos_y = np.array(y)
-    for i in tqdm.tqdm(range(1, N-2), desc="MSD calculation"):
-        idx_0 = np.arange(1, N-i-1, 1)
-        idx_t = idx_0 + i
-        this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
 
-        MSD[i-1] = np.mean(this_msd)
-        MSD_error[i-1] = np.std(this_msd) / np.sqrt(len(this_msd))
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        i = range(1, N-2)
+        results = list(tqdm.tqdm(executor.map(MSD_loop, i, itertools.repeat(pos_y, len(i)), itertools.repeat(pos_x, len(i)), itertools.repeat(N, len(i))), total=len(i), desc="MSD calculation"))
+    i = 0
+    for (MSD_i, MSD_error_i) in results:
+        MSD[i] = MSD_i
+        MSD_error[i] = MSD_error_i
+        i += 1
 
     return MSD, MSD_error
 
