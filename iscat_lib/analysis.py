@@ -112,7 +112,7 @@ def BIC(pred: list, target: list, k: int, n: int):
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
 
-def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useNormalization=True):
+def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False):
     n_tracks = len(tracks)
 
     # Calculate MSD for each track
@@ -142,14 +142,14 @@ def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useN
         T = np.linspace(1, N, N,  endpoint=True) # This is the time array, as the fits will be MSD vs T
 
         # Definining the models used for the fit
-        model1 = lambda t, D, delta2: 4 * D * t + delta2  # MSD(t_i) = 4 * D * t_i + 2 delta^2
-        model2 = lambda t, D, delta2, alpha, tau: 4 * D * tau * (t/tau)**alpha + delta2
+        model1 = lambda t, D, delta2: 4 * D * t + 2 * delta2
+        model2 = lambda t, D, delta2, alpha: 4 * D * t**alpha + 2 * delta2
 
         # Fit the data to these 2 models using weighted least-squares fit
         # TODO: normalize the curves to make the fit easier to perform.
         reg1 = optimize.curve_fit(model1, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
         # print(f"reg1 parameters: {reg1[0]}") # Debug
-        reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], [*reg1[0][0:2], 1.0, 1.0], sigma=this_msd_error[0:n_points])
+        reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], [*reg1[0][0:2], 1.0], sigma=this_msd_error[0:n_points])
         # reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
         # print(f"reg2 parameters: {reg2[0]}") #Debug
 
@@ -165,9 +165,12 @@ def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useN
         rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
 
         # Plot the results
-        plt.semilogx(T, this_msd, label="Data")
-        plt.semilogx(T[0:n_points], m1[0:n_points], label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
-        plt.semilogx(T[0:n_points], m2[0:n_points], label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
+        if linearPlot:
+            plt.plot(T, this_msd, label="Data")
+        else:
+            plt.semilogx(T, this_msd, label="Data")
+        plt.plot(T[0:n_points], m1[0:n_points], label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
+        plt.plot(T[0:n_points], m2[0:n_points], label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
         plt.axvspan(T[0], T[n_points], alpha=0.5, color='gray', label="Fitted data")
         plt.xlabel("Time")
         plt.ylabel("MSD")
