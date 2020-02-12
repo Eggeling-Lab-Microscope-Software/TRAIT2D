@@ -6,7 +6,7 @@ from setuptools import find_packages
 def main():
     setup(
         name             = 'iscat_lib',
-        version          = '0.1.0',
+        version          = '0.1.1-dev',
         packages         = find_packages(),
         author           = 'Mariia Dmitrieva, Joel Lefebvre',
         author_email     = 'mariia.dmitrieva@eng.ox.ac.uk, joel.lefebvre@eng.ox.ac.uk',
