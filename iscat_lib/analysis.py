@@ -5,6 +5,7 @@ import numpy as np
 import tqdm
 import warnings
 from scipy import optimize
+from scipy.stats import rayleigh
 import matplotlib.pyplot as plt
 
 
@@ -304,7 +305,49 @@ def smartAveraging():
     """Average tracks by category, and report average track fit results and summary statistics"""
     pass
 
-def squaredDisplacementAnalysis():
-    pass
+def squaredDisplacementAnalysis(tracks: list, dt: float=1., display_fit: bool=False):
+    """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
+    Parameters
+    ----------
+    tracks: list
+    """
+    # We define a list of timepoints at which to calculate the distribution
+    J = [1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100] # can be more, I don't think less.
 
+    for track in tracks:
+        # Perform the analysis for a sigle track
+        dapp_list = []
+        for j in J:
+            # Calculate the SD
+            x = np.array(track["x"])
+            y = np.array(track["y"])
+            sd = SD(x, y, j)
 
+            # TODO: Binning ist still broken
+            # Use Freedman Diaconis Rule for binning
+            hist_SD, bins = np.histogram(np.sqrt(sd), bins='fd')
+            
+            #x_fit = np.sqrt(sd / (j * dt))
+            t_lag = j * dt
+            #x_fit = np.sqrt(hist_SD)
+            x_fit = hist_SD
+        
+            reg = rayleigh.fit(x_fit)    
+
+            if display_fit:
+                print(bins)
+                eval_x = np.linspace(bins[0], bins[-1], 100)
+                #plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
+                plt.hist(x_fit, bins, alpha=0.5, label="Data")
+                plt.legend()
+                plt.show()
+            
+            sigma = reg[1]
+            #dapp = sigma / 4 # This is the equivalent of Dapp
+            dapp = sigma**2 / (2 * t_lag)
+            dapp_list.append(dapp)
+            
+        plt.semilogx(np.array(J) * dt, dapp_list); 
+        plt.xlabel("Time")
+        plt.ylabel("Estimated $D_{app}$")
+        plt.show()
