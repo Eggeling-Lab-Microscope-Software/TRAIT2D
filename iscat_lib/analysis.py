@@ -142,14 +142,14 @@ def classicalMSDAnalysis(tracks: list, nFitPoints: int=None, dt: float=1.0, useN
         T = np.linspace(1, N, N,  endpoint=True) # This is the time array, as the fits will be MSD vs T
 
         # Definining the models used for the fit
-        model1 = lambda t, D, delta2: 4 * D * t + delta2  # MSD(t_i) = 4 * D * t_i + 2 delta^2
-        model2 = lambda t, D, delta2, alpha, tau: 4 * D * tau * (t/tau)**alpha + delta2
+        model1 = lambda t, D, delta2: 4 * D * t + 2 * delta2
+        model2 = lambda t, D, delta2, alpha: 4 * D * t**alpha + 2 * delta2
 
         # Fit the data to these 2 models using weighted least-squares fit
         # TODO: normalize the curves to make the fit easier to perform.
         reg1 = optimize.curve_fit(model1, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
         # print(f"reg1 parameters: {reg1[0]}") # Debug
-        reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], [*reg1[0][0:2], 1.0, 1.0], sigma=this_msd_error[0:n_points])
+        reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], [*reg1[0][0:2], 1.0], sigma=this_msd_error[0:n_points])
         # reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
         # print(f"reg2 parameters: {reg2[0]}") #Debug
 
