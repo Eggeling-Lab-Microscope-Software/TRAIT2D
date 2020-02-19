@@ -330,13 +330,13 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
             
             t_lag = j * dt
 
-            x_fit = np.sqrt(sd)
-            reg = rayleigh.fit(x_fit)
+            x_fit = np.sqrt(sd / t_lag)
+            reg = rayleigh.fit(x_fit)  # Fit Rayleigh PDF to SD data
 
             if display_fit:
                 # Use Freedman Diaconis Rule for binning
-                hist_SD, bins = np.histogram(np.sqrt(sd), bins='fd', density=True)
-                plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]), align='edge', alpha=0.5, label="Data")
+                hist_SD, bins = np.histogram(
+                    x_fit, bins='fd', density=True)
                 # Plot the fit
                 eval_x = np.linspace(bins[0], bins[-1], 100)
                 plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
