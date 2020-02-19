@@ -9,10 +9,8 @@ from scipy.stats import rayleigh
 import matplotlib.pyplot as plt
 
 import itertools
-import concurrent.futures
-
-from multiprocessing import Pool, cpu_count
-
+import os
+from concurrent.futures import ProcessPoolExecutor
 
 def normalize(track):
     x = np.array(track["x"])
@@ -100,7 +98,7 @@ def MSD_loop(i, pos_x, pos_y, N):
 
     return MSD, MSD_error
 
-def MSD(x, y, N: int=None, numThreads: int=None):
+def MSD(x, y, N: int=None, numWorkers: int=None):
     """Mean squared displacement calculation
     Parameters
     ----------
@@ -126,25 +124,23 @@ def MSD(x, y, N: int=None, numThreads: int=None):
     pos_x = np.array(x)
     pos_y = np.array(y)
 
-    if numThreads == None:
-        workers = cpu_count()
+    if numWorkers == None:
+        workers = os.cpu_count()
     else:
-        workers = numThreads
-
-    print(workers)
+        workers = numWorkers
     
     if workers > 1:
-        pool = Pool(processes=workers)
-        iterable = []
-        for i in range(1, N-2):
-            iterable.append((i, pos_y, pos_x, N))
-
-        results = list(tqdm.tqdm(pool.starmap(MSD_loop, iterable), 
-                                    total=len(iterable),
-                                    desc="MSD calculation (multiproc)"))
-        pool.close()
-        pool.join()
-
+        with ProcessPoolExecutor(max_workers=workers) as executor:
+            i = range(1, N-2)
+            chunksize= int(N / 500)
+            print(chunksize)
+            results = list(tqdm.tqdm(executor.map(MSD_loop, i,
+                                                            itertools.repeat(pos_y),
+                                                            itertools.repeat(pos_x),
+                                                            itertools.repeat(N),
+                                                  chunksize=chunksize),
+                                            total=len(i),
+                                            desc="MSD calculation (workers: {}, chunksize: {})".format(workers, chunksize)))
         i = 0
         for (MSD_i, MSD_error_i) in results:
             MSD[i] = MSD_i
@@ -184,7 +180,7 @@ def BIC(pred: list, target: list, k: int, n: int):
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
 
-def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False, numThreads: int=None):
+def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False, numWorkers: int=None):
     n_tracks = len(tracks)
 
     # Calculate MSD for each track
@@ -192,7 +188,7 @@ def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints
     for track in tracks:
         if useNormalization:
             track = normalize(track)
-        msd_list.append(MSD(track["x"], track["y"], numThreads=numThreads))
+        msd_list.append(MSD(track["x"], track["y"], numWorkers=numWorkers))
 
     # Loop over the MSDs, and perform fits.
     for this_msd, this_msd_error in msd_list:
