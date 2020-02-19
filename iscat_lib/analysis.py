@@ -133,7 +133,6 @@ def MSD(x, y, N: int=None, numWorkers: int=None):
         with ProcessPoolExecutor(max_workers=workers) as executor:
             i = range(1, N-2)
             chunksize= int(N / 500)
-            print(chunksize)
             results = list(tqdm.tqdm(executor.map(MSD_loop, i,
                                                             itertools.repeat(pos_y),
                                                             itertools.repeat(pos_x),
