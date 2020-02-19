@@ -128,11 +128,13 @@ def MSD(x, y, N: int=None, numWorkers: int=None):
         workers = os.cpu_count()
     else:
         workers = numWorkers
+
+    chunksize= 100 # TODO: Make an educated guess for the chunksize based on data
+    # TODO: If the sample size is smaller than the chunksize, there is no need to invoke multiple workers
     
     if workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as executor:
             i = range(1, N-2)
-            chunksize= 100 # TODO: Make an educated guess for the chunksize based on data
             results = list(tqdm.tqdm(executor.map(MSD_loop, i,
                                                             itertools.repeat(pos_y),
                                                             itertools.repeat(pos_x),
