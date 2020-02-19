@@ -132,14 +132,14 @@ def MSD(x, y, N: int=None, numWorkers: int=None):
     if workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as executor:
             i = range(1, N-2)
-            chunksize= int(N / 500)
+            chunksize= 100 # TODO: Make an educated guess for the chunksize based on data
             results = list(tqdm.tqdm(executor.map(MSD_loop, i,
                                                             itertools.repeat(pos_y),
                                                             itertools.repeat(pos_x),
                                                             itertools.repeat(N),
                                                   chunksize=chunksize),
                                             total=len(i),
-                                            desc="MSD calculation (workers: {}, chunksize: {})".format(workers, chunksize)))
+                                            desc="MSD calculation (workers: {})".format(workers)))
         i = 0
         for (MSD_i, MSD_error_i) in results:
             MSD[i] = MSD_i
