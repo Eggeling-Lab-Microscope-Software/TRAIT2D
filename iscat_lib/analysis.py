@@ -335,8 +335,8 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
 
             if display_fit:
                 # Use Freedman Diaconis Rule for binning
-                hist_SD, bins = np.histogram(
-                    x_fit, bins='fd', density=True)
+                hist_SD, bins = np.histogram(x_fit, bins='fd', density=True)
+                plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]), align='edge', alpha=0.5, label="Data")
                 # Plot the fit
                 eval_x = np.linspace(bins[0], bins[-1], 100)
                 plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
