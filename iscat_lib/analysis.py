@@ -58,7 +58,6 @@ def normalize(track):
 
     return track
 
-<<<<<<< HEAD
 def SD(x, y, j):
     """Squared displacement calculation for single time point
     Parameters
@@ -91,8 +90,6 @@ def SD(x, y, j):
 
     return SD
 
-=======
-
 def MSD_loop(i, pos_x, pos_y, N):
     idx_0 = np.arange(1, N-i-1, 1)
     idx_t = idx_0 + i
@@ -102,7 +99,6 @@ def MSD_loop(i, pos_x, pos_y, N):
     MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
 
     return MSD, MSD_error
->>>>>>> Implemented multithreading for MSD calculation
 
 def MSD(x, y, N: int=None, numThreads: int=None):
     """Mean squared displacement calculation
