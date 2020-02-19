@@ -5,6 +5,7 @@ import numpy as np
 import tqdm
 import warnings
 from scipy import optimize
+from scipy.stats import rayleigh
 import matplotlib.pyplot as plt
 
 
@@ -53,6 +54,39 @@ def normalize(track):
 
 
     return track
+
+def SD(x, y, j):
+    """Squared displacement calculation for single time point
+    Parameters
+    ----------
+    x: list or ndarray
+        X coordinates of a 2D track
+    y: list or ndarray
+        Y coordinates of a 2D track
+    j: int
+        Index of timepoint in 2D track
+
+    Returns
+    -------
+    SD: ndarray
+        Squared displacements at timepoint j sorted
+        from smallest to largest value
+    """
+
+    length_array = len(x) # Length of the track
+
+    pos_x = np.array(x)
+    pos_y = np.array(y)
+
+    idx_0 = np.arange(0, length_array-j-1, 1)
+    idx_t = idx_0 + j
+
+    SD = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
+
+    SD.sort()
+
+    return SD
+
 
 def MSD(x, y, N: int=None):
     """Mean squared displacement calculation
@@ -271,7 +305,49 @@ def smartAveraging():
     """Average tracks by category, and report average track fit results and summary statistics"""
     pass
 
-def squaredDisplacementAnalysis():
-    pass
+def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=False):
+    """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
+    Parameters
+    ----------
+    tracks: list
+        list of tracks to be analysed
+    dt: float
+        timestep
+    display_fit: bool
+        display fit for every timepoint
+    """
+    # We define a list of timepoints at which to calculate the distribution
+    J = [1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100] # can be more, I don't think less.
 
+    for track in tracks:
+        # Perform the analysis for a sigle track
+        dapp_list = []
+        for j in J:
+            # Calculate the SD
+            x = np.array(track["x"])
+            y = np.array(track["y"])
+            sd = SD(x, y, j)
+            
+            t_lag = j * dt
 
+            x_fit = np.sqrt(sd / t_lag)
+            reg = rayleigh.fit(x_fit)  # Fit Rayleigh PDF to SD data
+
+            if display_fit:
+                # Use Freedman Diaconis Rule for binning
+                hist_SD, bins = np.histogram(
+                    x_fit, bins='fd', density=True)
+                # Plot the fit
+                eval_x = np.linspace(bins[0], bins[-1], 100)
+                plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
+                plt.legend()
+                plt.show()
+            
+            sigma = reg[1]
+            dapp = sigma**2 / (2 * t_lag)
+            dapp_list.append(dapp)
+            
+        plt.semilogx(np.array(J) * dt, dapp_list); 
+        plt.xlabel("Time")
+        plt.ylabel("Estimated $D_{app}$")
+        plt.show()
