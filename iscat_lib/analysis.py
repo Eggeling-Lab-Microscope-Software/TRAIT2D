@@ -319,10 +319,12 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
     # We define a list of timepoints at which to calculate the distribution
     J = [1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100] # can be more, I don't think less.
 
+    i = 0
     for track in tracks:
-        # Perform the analysis for a sigle track
+        i += 1
+        # Perform the analysis for a single track
         dapp_list = []
-        for j in J:
+        for j in tqdm.tqdm(J, desc="SD analysis for track {}/{}".format(i, len(tracks))):
             # Calculate the SD
             x = np.array(track["x"])
             y = np.array(track["y"])
