@@ -341,6 +341,7 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
                 eval_x = np.linspace(bins[0], bins[-1], 100)
                 plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
                 plt.legend()
+                plt.title("$n = {}$".format(j))
                 plt.show()
             
             sigma = reg[1]
