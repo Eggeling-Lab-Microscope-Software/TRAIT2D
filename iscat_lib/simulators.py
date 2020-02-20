@@ -258,7 +258,6 @@ class HoppingDiffusion(Diffusion):
 
     def create_hopping_map(self):
         ## Create hopping map
-        print("Create hopping map")
         centers = self.L * np.random.rand(self.num, 2)
 
         # Compute Voronoi diagram
@@ -288,7 +287,6 @@ class HoppingDiffusion(Diffusion):
 
     def run(self, update_hoppingMap=False):
         ## Create hopping trajectory
-        print("Simulate hopping diffusion")
 
         # Create or update the hopping map
         if not hasattr(self, "hopping_map") or update_hoppingMap:
