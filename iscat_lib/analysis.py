@@ -98,7 +98,7 @@ def MSD_loop(i, pos_x, pos_y, N):
 
     return MSD, MSD_error
 
-def MSD(x, y, N: int=None, numWorkers: int=None):
+def MSD(x, y, N: int=None, numWorkers: int=None, chunksize: int=100):
     """Mean squared displacement calculation
     Parameters
     ----------
@@ -116,6 +116,9 @@ def MSD(x, y, N: int=None, numWorkers: int=None):
     MSD_error: (N-3, ) ndarray
         Standard error of the mean of the MSD values
     """
+    # TODO: Make an educated guess for the chunksize based on data
+    # TODO: If the sample size is smaller than the chunksize, there is no need to invoke multiple workers
+
     if N is None:
         N = len(x)  # Length of the track
 
@@ -128,9 +131,6 @@ def MSD(x, y, N: int=None, numWorkers: int=None):
         workers = os.cpu_count()
     else:
         workers = numWorkers
-
-    chunksize= 100 # TODO: Make an educated guess for the chunksize based on data
-    # TODO: If the sample size is smaller than the chunksize, there is no need to invoke multiple workers
     
     if workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as executor:
@@ -181,7 +181,7 @@ def BIC(pred: list, target: list, k: int, n: int):
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
 
-def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False, numWorkers: int=None):
+def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, useNormalization=True, linearPlot=False, numWorkers: int=None, chunksize: int=100):
     n_tracks = len(tracks)
 
     # Calculate MSD for each track
@@ -189,7 +189,7 @@ def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints
     for track in tracks:
         if useNormalization:
             track = normalize(track)
-        msd_list.append(MSD(track["x"], track["y"], numWorkers=numWorkers))
+        msd_list.append(MSD(track["x"], track["y"], numWorkers=numWorkers, chunksize=chunksize))
 
     # Loop over the MSDs, and perform fits.
     for this_msd, this_msd_error in msd_list:
