@@ -65,6 +65,9 @@ class Diffusion(object):
             plt.xlim((0, self.parameters["L"]))
             plt.ylim((0, self.parameters["L"]))
 
+        plt.title("Hopping Diffusion")
+        plt.show()
+
     def _gather_parameters(self):
         self.parameters = dict()
         for this_param in self.params_list:
