@@ -305,7 +305,8 @@ def smartAveraging():
     """Average tracks by category, and report average track fit results and summary statistics"""
     pass
 
-def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=False):
+def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=False,
+                                J: list=[1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100]):
     """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
     Parameters
     ----------
@@ -317,7 +318,7 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
         display fit for every timepoint
     """
     # We define a list of timepoints at which to calculate the distribution
-    J = [1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100] # can be more, I don't think less.
+     # can be more, I don't think less.
 
     i = 0
     for track in tracks:
