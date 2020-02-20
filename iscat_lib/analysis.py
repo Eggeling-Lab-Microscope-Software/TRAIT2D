@@ -330,7 +330,7 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
             
             t_lag = j * dt
 
-            x_fit = np.sqrt(sd / t_lag)
+            x_fit = np.sqrt(sd)
             reg = rayleigh.fit(x_fit)  # Fit Rayleigh PDF to SD data
 
             if display_fit:
