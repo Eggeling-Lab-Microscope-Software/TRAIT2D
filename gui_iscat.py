@@ -46,6 +46,14 @@ class MainVisual(tk.Frame):
         self.master = master
         master.title("iSCAT tracker 1.0 ")
         master.configure(background='white')
+        
+        # get the monitor size
+        self.dpi=100
+        self.monitor_width=master.winfo_screenwidth()
+        self.monitor_height = master.winfo_screenheight()
+        self.button_size=int(self.monitor_width/25)
+        self.figsize_value=(int(self.monitor_height/2/self.dpi), int(self.monitor_height/2/self.dpi)) #(6,6) # parameters for the figure
+        
         master.protocol('WM_DELETE_WINDOW', self.close_app)
 
         # # # parameters # # #
@@ -55,7 +63,7 @@ class MainVisual(tk.Frame):
         self.movie_processed=[] # matrix with processed data
         self.movie_length=0 # length of the original movie
         
-        self.figsize_value=(6,6) # parameters for the figure size
+        
         self.unit="px" # coordinate unit
         
         
@@ -84,7 +92,7 @@ class MainVisual(tk.Frame):
      # # # # # # menu to choose files and set tracker parameters # # # # # #
 
         # button to select movie
-        self.button1 = tk.Button(text="       Select movie file       ", command=self.select_movie, width=40, bg='gray')
+        self.button1 = tk.Button(text="       Select movie file       ", command=self.select_movie, width=int(self.button_size/3), bg='gray')
         self.button1.grid(row=0, column=1, columnspan=3, pady=5)
 
         # show selected movie name
@@ -92,56 +100,56 @@ class MainVisual(tk.Frame):
         lbl1.grid(row=1, column=1, columnspan=3, pady=5)
 
         # button for preprocessing step
-        self.button2 = tk.Button(text="    Process data before tracking    ", command=self.processing, width=40, bg='gray')
+        self.button2 = tk.Button(text="    Process data before tracking    ", command=self.processing, width=int(self.button_size/3), bg='gray')
         self.button2.grid(row=2, column=1, columnspan=3, pady=5)
 
         # setting tracker parameters
 
-        lbl1 = tk.Label(master=root, text="PARAMETERS: ", width=30, bg='white')
+        lbl1 = tk.Label(master=root, text="PARAMETERS: ", width=int(self.button_size/2), bg='white')
         lbl1.grid(row=3, column=1, columnspan=3, pady=5)
 
 
-        lbl3 = tk.Label(master=root, text="SEF: sigma", width=35, bg='white')
+        lbl3 = tk.Label(master=root, text="SEF: sigma", width=int(self.button_size/2), bg='white')
         lbl3.grid(row=4, column=1)
         v = tk.StringVar(root, value=str(self.sigma))
-        self.param2_sigma = tk.Entry(root, width=10, text=v)
+        self.param2_sigma = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param2_sigma.grid(row=4, column=2)
 
-        lbl4 = tk.Label(master=root, text="SEF: threshold [0.01,10]", width=35, bg='white')
+        lbl4 = tk.Label(master=root, text="SEF: threshold [0.01,10]", width=int(self.button_size/2), bg='white')
         lbl4.grid(row=5, column=1)
         v = tk.StringVar(root, value=str(self.threshold))
-        self.param3_threshold = tk.Entry(root, width=10, text=v)
+        self.param3_threshold = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param3_threshold.grid(row=5, column=2)
 
-        lbl5 = tk.Label(master=root, text="SEF: min peak value [0,1]", width=30, bg='white')
+        lbl5 = tk.Label(master=root, text="SEF: min peak value [0,1]", width=int(self.button_size/2), bg='white')
         lbl5.grid(row=6, column=1)
         v = tk.StringVar(root, value=str(self.min_peak))
-        self.param4_peak = tk.Entry(root, width=10, text=v)
+        self.param4_peak = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param4_peak.grid(row=6, column=2)
 
-        lbl2 = tk.Label(master=root, text="GF: patch size (even number), px", width=35, bg='white')
+        lbl2 = tk.Label(master=root, text="  patch size (even number), px", width=int(self.button_size/2), bg='white')
         lbl2.grid(row=7, column=1)
         v = tk.StringVar(root, value=str(self.maximum_diameter))
-        self.param1_diameter = tk.Entry(root, width=10, text=v)
+        self.param1_diameter = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param1_diameter.grid(row=7, column=2)
 
 
-        lbl6 = tk.Label(master=root, text="Linking: max distance, px", width=30, bg='white')
+        lbl6 = tk.Label(master=root, text="Linking: max distance, px", width=int(self.button_size/2), bg='white')
         lbl6.grid(row=8, column=1)
         v = tk.StringVar(root, value=str(self.max_dist))
-        self.param5_distance = tk.Entry(root, width=10, text=v)
+        self.param5_distance = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param5_distance.grid(row=8, column=2)
 
-        lbl6 = tk.Label(master=root, text="Linking: frame gap, frame", width=30, bg='white')
+        lbl6 = tk.Label(master=root, text="Linking: frame gap, frame", width=int(self.button_size/2), bg='white')
         lbl6.grid(row=9, column=1)
         v = tk.StringVar(root, value=str(self.frame_gap))
-        self.param6_framegap = tk.Entry(root, width=10, text=v)
+        self.param6_framegap = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param6_framegap.grid(row=9, column=2)
 
-        lbl7 = tk.Label(master=root, text="Minimum track length, frames", width=30, bg='white')
+        lbl7 = tk.Label(master=root, text="Minimum track length, frames", width=int(self.button_size/2), bg='white')
         lbl7.grid(row=10, column=1)
         v = tk.StringVar(root, value=str(self.min_track_length))
-        self.param7_framegap = tk.Entry(root, width=10, text=v)
+        self.param7_framegap = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param7_framegap.grid(row=10, column=2)
         # type of spots (dark or light)
         var = tk.IntVar() # the switch variable
@@ -151,7 +159,7 @@ class MainVisual(tk.Frame):
             self.spot_switch=var.get()
 
         # spot type switch: # 0 - dark spot, 1 - light spot
-        self.R1 = tk.Radiobutton(root, text=" dark spot ", variable=var, value=0, bg='white', command =update_monitor_switch )
+        self.R1 = tk.Radiobutton(root, text=" dark spot ", variable=var, value=0, bg='white', command =update_monitor_switch)
         self.R1.grid(row=11, column=1, pady=5)
 
         self.R2 = tk.Radiobutton(root, text=" light spot ", variable=var, value=1, bg='white',command = update_monitor_switch ) #  command=sel)
@@ -159,15 +167,15 @@ class MainVisual(tk.Frame):
 
 
         #preview button
-        self.button2 = tk.Button(text="    preview    ", command=self.preview, width=20, bg='gray') #, height=30)
+        self.button2 = tk.Button(text="    preview    ", command=self.preview, width=int(self.button_size/3), bg='gray') #, height=30)
         self.button2.grid(row=12, column=1, columnspan=1,pady=5)
 
         # button to run the tracker and save results
-        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=20, bg='gray')
+        self.button2 = tk.Button(text="    Run tracking algorithm    ", command=self.tracking, width=int(self.button_size/3), bg='gray')
         self.button2.grid(row=12, column=2, columnspan=1, pady=5)
 
         # button to run the tracker and save results
-        self.button2 = tk.Button(text="    Save data    ", command=self.save_data, width=20, bg='gray')
+        self.button2 = tk.Button(text="    Save data    ", command=self.save_data, width=int(self.button_size/3), bg='gray')
         self.button2.grid(row=13, column=2, columnspan=1, pady=5)
 
 
@@ -185,7 +193,7 @@ class MainVisual(tk.Frame):
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=15, column=1, columnspan=3,pady=5)
 
-        frameN_text = tk.Label(master=root, text=" frame NaN ", width=30, bg='white')
+        frameN_text = tk.Label(master=root, text=" frame NaN ", width=int(self.button_size/1.5), bg='white')
         frameN_text.grid(row=16, column=1, columnspan=3,pady=5)   
         
     def save_data(self):
@@ -250,7 +258,7 @@ class MainVisual(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
         
-        frameN_text = tk.Label(master=root, text=" frame 0 ", width=30, bg='white')
+        frameN_text = tk.Label(master=root, text=" frame 0 ", width=int(self.button_size/1.5), bg='white')
         frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
 
     def preview(self):
@@ -300,7 +308,7 @@ class MainVisual(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
         
-        frameN_text = tk.Label(master=root, text=" frame "+str(pos), width=30, bg='white')
+        frameN_text = tk.Label(master=root, text=" frame "+str(pos), width=int(self.button_size/1.5), bg='white')
         frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
 
 
@@ -332,7 +340,7 @@ class MainVisual(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
 
-        frameN_text = tk.Label(master=root, text=" frame 0", width=30, bg='white')
+        frameN_text = tk.Label(master=root, text=" frame 0", width=int(self.button_size/1.5), bg='white')
         frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
         
         # copy proccessed
