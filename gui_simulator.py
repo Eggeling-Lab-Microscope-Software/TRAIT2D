@@ -48,6 +48,13 @@ class MainVisual(tk.Frame):
         self.master = master
         master.title("iSCAT simulator 0.0 ")
         master.configure(background='gray')
+        # get the monitor size
+        self.dpi=100
+        self.monitor_width=master.winfo_screenwidth()
+        self.monitor_height = master.winfo_screenheight()
+        self.button_size=int(self.monitor_width/25)
+        self.fig_size=(int(self.monitor_height/2/self.dpi), int(self.monitor_height/2/self.dpi))
+        
         master.protocol('WM_DELETE_WINDOW', self.close_app)
 
         # # # parameters # # #
@@ -112,68 +119,68 @@ class MainVisual(tk.Frame):
         lbl1.grid(row=3, column=1, columnspan=7, pady=5)
 
 
-        lbl3 = tk.Label(master=root, text="Maximal total length [Tmax, s]", width=40, bg='gray', compound=tk.LEFT)
+        lbl3 = tk.Label(master=root, text="Maximal total length [Tmax, s]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl3.grid(row=4, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.Tmax))
-        self.param_Tmax = tk.Entry(root, width=10, text=v)
+        self.param_Tmax = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_Tmax.grid(row=4, column=3, columnspan=6)
 
-        lbl4 = tk.Label(master=root, text="Time step [dt, s]", width=40, bg='gray', compound=tk.LEFT)
+        lbl4 = tk.Label(master=root, text="Time step [dt, s]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl4.grid(row=5, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dt))
-        self.param_dt = tk.Entry(root, width=10, text=v)
+        self.param_dt = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_dt.grid(row=5, column=3, columnspan=6)
 
-        lbl5 = tk.Label(master=root, text=" Sandbox length [L, m]", width=40, bg='gray', compound=tk.LEFT)
+        lbl5 = tk.Label(master=root, text=" Sandbox length [L, m]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl5.grid(row=6, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.L))
-        self.param_L = tk.Entry(root, width=10, text=v)
+        self.param_L = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_L.grid(row=6, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Compartment map pixel size [dL, m]", width=40, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Compartment map pixel size [dL, m]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=7, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dL))
-        self.param_dL = tk.Entry(root, width=10, text=v)
+        self.param_dL = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_dL.grid(row=7, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Free diffusion coefficient [Df, "+r'm^2/s]', width=40, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Free diffusion coefficient [Df, "+r'm^2/s]', width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=8, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.Df))
-        self.param_Df = tk.Entry(root, width=10, text=v)
+        self.param_Df = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_Df.grid(row=8, column=3, columnspan=6)
 
-        lbl6 = tk.Label(master=root, text=" Average compartment diameter/length [HL, m]", width=45, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Average compartment diameter/length [HL, m]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=9, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.HL))
-        self.param_HL = tk.Entry(root, width=10, text=v)
+        self.param_HL = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_HL.grid(row=9, column=3, columnspan=6)
         
-        lbl6 = tk.Label(master=root, text=" Hopping probability [HP, [0,1]]", width=40, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Hopping probability [HP, [0,1]]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=10, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.HP))
-        self.param_HP = tk.Entry(root, width=10, text=v)
+        self.param_HP = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_HP.grid(row=10, column=3, columnspan=6)
 
-        lbl6 = tk.Label(master=root, text=" Random generator seed [seed, integer]", width=40, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Random generator seed [seed, integer]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=11, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.seed))
-        self.param_seed = tk.Entry(root, width=10, text=v)
+        self.param_seed = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_seed.grid(row=11, column=3, columnspan=6)
 
 
 
         #generate button
         
-        self.button2 = tk.Button(text="    GENERATE    ", command=self.generate_trajectory, width=20, bg='gray') #, height=30)
+        self.button2 = tk.Button(text="    GENERATE    ", command=self.generate_trajectory, width=int(self.button_size/4), bg='gray') #, height=30)
         self.button2.grid(row=12, column=1, columnspan=2,pady=5)
 
         # button to save results
-        self.button2 = tk.Button(text="    SAVE   ", command=self.save_trajectory, width=20, bg='gray')
+        self.button2 = tk.Button(text="    SAVE   ", command=self.save_trajectory, width=int(self.button_size/4), bg='gray')
         self.button2.grid(row=12, column=3, columnspan=6, pady=5)
         
         #preview button
-        self.button2 = tk.Button(text="  SHOW TRACK  ", command=self.show_trajectory, width=20, bg='gray') #, height=30)
+        self.button2 = tk.Button(text="  SHOW TRACK  ", command=self.show_trajectory, width=int(self.button_size/4), bg='gray') #, height=30)
         self.button2.grid(row=13, column=1, columnspan=2,pady=5)
         
         # choose the file type
@@ -209,69 +216,69 @@ class MainVisual(tk.Frame):
         self._separator.grid(row=22, column=1, columnspan=8, pady=5, sticky="ew")
         
         # button to load trajectory
-        self.button2 = tk.Button(text="    load trajectory    ", command=self.load_trajectory, width=20, bg='gray')
+        self.button2 = tk.Button(text="    load trajectory    ", command=self.load_trajectory, width=int(self.button_size/4), bg='gray')
         self.button2.grid(row=23, column=3, columnspan=6, pady=5)
         
         # setting image parameters
-        lbl1 = tk.Label(master=root, text="Parameters: ", width=30, bg='gray')
+        lbl1 = tk.Label(master=root, text="Parameters: ", width=int(self.button_size/1.5), bg='gray')
         lbl1.grid(row=24, column=1, columnspan=7, pady=5)
 
 
-        lbl3 = tk.Label(master=root, text="Resolution [resolution, m/pix]", width=45, bg='gray', compound=tk.LEFT)
+        lbl3 = tk.Label(master=root, text="Resolution [resolution, m/pix]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl3.grid(row=25, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.resolution))
-        self.param_resolution = tk.Entry(root, width=10, text=v)
+        self.param_resolution = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_resolution.grid(row=25, column=3, columnspan=6)
 
-        lbl4 = tk.Label(master=root, text=" Signal to noise ratio [snr, ratio]", width=45, bg='gray', compound=tk.LEFT)
+        lbl4 = tk.Label(master=root, text=" Signal to noise ratio [snr, ratio]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl4.grid(row=26, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.snr))
-        self.param_snr = tk.Entry(root, width=10, text=v)
+        self.param_snr = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_snr.grid(row=26, column=3, columnspan=6)
 
-        lbl5 = tk.Label(master=root, text=" Background intensity [background, [0,1]]", width=45, bg='gray', compound=tk.LEFT)
+        lbl5 = tk.Label(master=root, text=" Background intensity [background, [0,1]]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl5.grid(row=27, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.background))
-        self.param_background = tk.Entry(root, width=10, text=v)
+        self.param_background = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_background.grid(row=27, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Gaussian noise variance [noise_gaussian]", width=45, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Gaussian noise variance [noise_gaussian]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=28, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.noise_gaussian))
-        self.param_noise_gaussian = tk.Entry(root, width=10, text=v)
+        self.param_noise_gaussian = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_noise_gaussian.grid(row=28, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Poisson noise variance [noise_poisson, bool]", width=45, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Poisson noise variance [noise_poisson, bool]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=29, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.noise_poisson))
-        self.param_noise_poisson = tk.Entry(root, width=10, text=v)
+        self.param_noise_poisson = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_noise_poisson.grid(row=29, column=3, columnspan=6)
 
-        lbl2 = tk.Label(master=root, text=" Temporal resolution [dt_image, frame/sec]", width=45, bg='gray', compound=tk.LEFT)
+        lbl2 = tk.Label(master=root, text=" Temporal resolution [dt_image, frame/sec]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl2.grid(row=30, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.dt_image))
-        self.param_dt_image = tk.Entry(root, width=10, text=v)
+        self.param_dt_image = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_dt_image.grid(row=30, column=3, columnspan=6)
 
 
-        lbl6 = tk.Label(master=root, text=" Ratio [ratio]", width=45, bg='gray', compound=tk.LEFT)
+        lbl6 = tk.Label(master=root, text=" Ratio [ratio]", width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=31, column=1, columnspan=2)
         v = tk.StringVar(root, value=str(self.ratio))
-        self.param_ratio = tk.Entry(root, width=10, text=v)
+        self.param_ratio = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_ratio.grid(row=31, column=3, columnspan=6)
         
         #preview button
-        self.button2 = tk.Button(text=" load psf", command=self.load_psf, width=20, bg='gray') #, height=30)
+        self.button2 = tk.Button(text=" load psf", command=self.load_psf, width=int(self.button_size/4), bg='gray') #, height=30)
         self.button2.grid(row=32, column=1, columnspan=2,pady=5)
         
  
         #preview button
-        self.button2 = tk.Button(text=" GENERATE and SHOW ", command=self.generate_images, width=20, bg='gray') #, height=30)
+        self.button2 = tk.Button(text=" GENERATE and SHOW ", command=self.generate_images, width=int(self.button_size/4), bg='gray') #, height=30)
         self.button2.grid(row=33, column=1, columnspan=2,pady=5)
 
         # button to run the tracker and save results
-        self.button2 = tk.Button(text="    SAVE   ", command=self.save_images, width=20, bg='gray')
+        self.button2 = tk.Button(text="    SAVE   ", command=self.save_images, width=int(self.button_size/4), bg='gray')
         self.button2.grid(row=33, column=3, columnspan=6, pady=10, padx=30)
     
 
@@ -320,7 +327,7 @@ class MainVisual(tk.Frame):
         novi = tk.Toplevel()
         novi.title("trajectory plot")
         
-        fig = plt.figure(figsize=(10,10))
+        fig = plt.figure(figsize=self.fig_size)
         self.TG.display_trajectory(time_resolution=0.5e-3, limit_fov=False, alpha=0.8)
         plt.xlabel("x")
         plt.ylabel("y")            
@@ -430,7 +437,7 @@ class MainVisual(tk.Frame):
         novi = tk.Toplevel()
         novi.title("Projection of the image sequence")
         
-        fig = plt.figure(figsize=(10,10))
+        fig = plt.figure(figsize=self.fig_size)
 
 #        time_interval = int(np.ceil(0.5e-3 / self.dt))
 #        x = self.trajectory["x"][0::time_interval]
