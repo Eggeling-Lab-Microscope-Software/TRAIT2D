@@ -1,5 +1,5 @@
 '''
-    Cargo detector
+    Spot detector
     Python Version    : 3.6
 '''
 
@@ -23,16 +23,16 @@ class Detectors(object):
         """Initialize variables
         """
 
-        self.img_mssef=[]
-        self.binary_mssef=[]
+        self.img_sef=[]
+        self.binary_sef=[]
         
         # parameters for approach
-        #MSSEF
+        #SEF
         self.c=0.8 #0.01 # coef for the thresholding
         self.sigma=3. # max sigma for LOG     
         
         #thresholding
-        self.min_distance=4 # minimum distance between two max after MSSEF
+        self.min_distance=4 # minimum distance between two max after SEF
         self.threshold_rel=0.1 # min picl value in relation to the image
         
         self.expected_size=20 # expected size of the particle
@@ -170,8 +170,8 @@ class Detectors(object):
         xc,yc=lsradialcenterfit(m, b, w)
         
         # output replated to upper left coordinate
-        x=xc + (Nx+1)/2
-        y=yc + (Ny+1)/2
+        x=xc + (Nx+1)/2 # xc + (Nx+1)/2
+        y=yc + (Ny+1)/2 # yc + (Ny+1)/2
         
         return x, y
 
@@ -216,13 +216,11 @@ class Detectors(object):
         Detect vesicles
         '''
 
-            # MSSEF
-
-#        self.img_mssef, self.binary_mssef=self.mssef(gray, self.c, self.k_max, self.k_min, self.sigma_min, self.sigma_max)
-    
-        self.img_mssef, self.binary_mssef=self.sef(frame, np.ones(frame.shape), self.sigma, self.c)       #img, img_sef_bin_prev, sigma, c
+            # Spot enhancing filter
+   
+        self.img_sef, self.binary_sef=self.sef(frame, np.ones(frame.shape), self.sigma, self.c)
         # 3. find local maximum in the 
-        peaks_coor=peak_local_max(self.img_mssef, min_distance=self.min_distance, threshold_rel=self.threshold_rel) # min distance between peaks and threshold_rel - min value of the peak - in relation to the max value
+        peaks_coor=peak_local_max(self.img_sef, min_distance=self.min_distance, threshold_rel=self.threshold_rel) # min distance between peaks and threshold_rel - min value of the peak - in relation to the max value
 
         # remove the area where the membrane is
         coordinates=[]  
@@ -271,7 +269,7 @@ class Detectors(object):
 
             # nonlinear least square fitting
 #            params  = self.fitgaussian(data)
-#            (height, yl, xl, width_x, width_y) = params
+#            (height, y, x, width_x, width_y) = params
 
             
             # check that the centre is inside of the spot
