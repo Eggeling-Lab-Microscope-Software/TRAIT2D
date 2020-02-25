@@ -59,9 +59,10 @@ class MainVisual(tk.Frame):
         # # # parameters # # #
         #general
         self.movie_file=" " # path to the movie file
-        self.movie=[] # matrix with data
-        self.movie_processed=[] # matrix with processed data
+        self.movie=np.ones((1,400,400))*0.8 # matrix with data
+        self.movie_processed=np.ones((1, 400,400))*0.8 # matrix with processed data
         self.movie_length=0 # length of the original movie
+        self.frame_pos=0 # frame location
         
         
         self.unit="px" # coordinate unit
@@ -183,18 +184,40 @@ class MainVisual(tk.Frame):
         # show the movie frame: use matplotlib imshow and plotting
 
         # show dark screen until movie is selected
-        bg_img=np.ones((400,400))*0.8
-        fig = plt.figure(figsize=self.figsize_value)
+        self.fig, self.ax = plt.subplots(1,1,figsize=self.figsize_value)
         plt.axis('off')
-        self.im = plt.imshow(bg_img)
+        self.fig.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
+        
+        self.show_frame()
 
+        def show_values(v):
+            self.frame_pos=int(v)
+            self.show_frame() 
+          
+        self.scale_movie = tk.Scale(root, from_=0, to=self.movie_processed.shape[0], tickinterval=int(self.movie_processed.shape[0]/5), length=400, width=10, orient="horizontal", command=show_values)
+        self.scale_movie.set(self.frame_pos)        
+        self.scale_movie.grid(row=17, column=1, columnspan=3, pady=5, padx=5) 
+        
+
+
+
+    def show_frame(self , centers=[]):
+        '''
+        show the frame 
+        '''
+        self.ax.clear() # clean the plot 
+        self.ax.imshow(self.movie_processed[self.frame_pos,:,:], cmap="gray")
+        self.ax.axis('off')
+        for point in centers:
+            self.ax.plot(point[1], point[0],  "*r")
+        
         # DrawingArea
-        self.canvas = FigureCanvasTkAgg(fig, master=root)
-        self.canvas.draw()
+        self.canvas = FigureCanvasTkAgg(self.fig, master=root)
         self.canvas.get_tk_widget().grid(row=15, column=1, columnspan=3,pady=5)
-
-        frameN_text = tk.Label(master=root, text=" frame NaN ", width=int(self.button_size/1.5), bg='white')
-        frameN_text.grid(row=16, column=1, columnspan=3,pady=5)   
+        self.canvas.draw()
+       
+#        frameN_text = tk.Label(master=root, text=" frame NaN ", width=int(self.button_size/1.5), bg='white')
+#        frameN_text.grid(row=16, column=1, columnspan=3,pady=5)   
         
     def save_data(self):
         '''
@@ -247,19 +270,7 @@ class MainVisual(tk.Frame):
 
         # show first frame in the monitor
 
-        img = self.movie_processed[0,:,:]
-        # plt.close()
-        fig = plt.figure(figsize=self.figsize_value)
-        plt.axis('off')
-        self.im = plt.imshow(img) # for later use self.im.set_data(new_data)
-
-        # DrawingArea
-        canvas = FigureCanvasTkAgg(fig, master=root)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
-        
-        frameN_text = tk.Label(master=root, text=" frame 0 ", width=int(self.button_size/1.5), bg='white')
-        frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
+        self.show_frame()
 
     def preview(self):
         '''
@@ -270,8 +281,7 @@ class MainVisual(tk.Frame):
         self.read_parameters()
 
         # select movie frame
-        pos=random.randrange(0, self.movie_processed.shape[0]-1)
-        image = self.movie_processed[pos,:,:]
+        image = self.movie_processed[self.frame_pos,:,:]
 
         # invert image in case you are looking at the dark spot
         if self.spot_switch==0:
@@ -295,21 +305,7 @@ class MainVisual(tk.Frame):
         centers=detect_particle.detect(image_for_process)
 
         #plot the result
-        # plt.close()
-        fig = plt.figure(figsize=self.figsize_value)
-        plt.axis('off')
-        self.im = plt.imshow(image) 
-
-        for point in centers:
-            plt.plot(point[1], point[0],  "*r")
-
-        # DrawingArea
-        canvas = FigureCanvasTkAgg(fig, master=root)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
-        
-        frameN_text = tk.Label(master=root, text=" frame "+str(pos), width=int(self.button_size/1.5), bg='white')
-        frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
+        self.show_frame(centers)
 
 
     def select_movie(self):
@@ -325,26 +321,23 @@ class MainVisual(tk.Frame):
         self.movie=skimage.io.imread(self.movie_file)
         self.movie_length=self.movie.shape[0]
         lbl1 = tk.Label(master=root, text="movie file: "+self.movie_file.split("/")[-1], bg='white')
-        lbl1.grid(row=1, column=1, columnspan=3, pady=5)
+        lbl1.grid(row=1, column=1, columnspan=3, pady=5, padx=5)
 
-        # show first frame in the monitor
-
-        self.image = self.movie[1,:,:]
-        # plt.close()
-        fig = plt.figure(figsize=self.figsize_value)
-        plt.axis('off')
-        self.im = plt.imshow(self.image) 
-
-        # DrawingArea
-        canvas = FigureCanvasTkAgg(fig, master=root)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row=15, column=1, columnspan=3, pady=5)
-
-        frameN_text = tk.Label(master=root, text=" frame 0", width=int(self.button_size/1.5), bg='white')
-        frameN_text.grid(row=16, column=1, columnspan=3,pady=5) 
         
         # copy proccessed
         self.movie_processed=self.movie.copy()
+        
+        # show first frame in the monitor
+        self.show_frame()
+        
+        
+        def show_values(v):
+            self.frame_pos=int(v)
+            self.show_frame() 
+          
+        self.scale_movie = tk.Scale(root, from_=0, to=self.movie_processed.shape[0], tickinterval=int(self.movie_processed.shape[0]/5), length=400, width=10, orient="horizontal", command=show_values)
+        self.scale_movie.set(self.frame_pos)        
+        self.scale_movie.grid(row=17, column=1, columnspan=3, pady=5, padx=5) 
 
     def tracking(self):
         '''
