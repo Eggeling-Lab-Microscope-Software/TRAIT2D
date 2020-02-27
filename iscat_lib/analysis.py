@@ -346,18 +346,16 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
             num_bins = int(np.ceil((max_x - min_x) / binsize))
             hist_SD, bins = np.histogram(x_fit, bins=num_bins, density=True)
             bin_mids = (bins[1:] + bins[:-1]) / 2.0
-            # 
+            # Fit Rayleigh PDF to histogram. The bin size gives a good order-of-maginutde approximation
+            # for the initial guess of sigma
             popt, pcov = optimize.curve_fit(rayleighPDF, bin_mids, hist_SD, p0=binsize)
-            print(popt)
-            #reg = rayleigh.fit(x_fit)  # Fit Rayleigh PDF to SD data
 
             if display_fit:
-                # Use Freedman Diaconis Rule for binning
+                # Plot binned data
                 plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]), align='edge', alpha=0.5, label="Data")
                 plt.gca().set_xlim(0, 4.0e-7)
                 # Plot the fit
                 eval_x = np.linspace(bins[0], bins[-1], 100)
-                #plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
                 plt.plot(eval_x, rayleighPDF(eval_x, popt[0]))
                 plt.legend()
                 plt.title("$n = {}$".format(j))
