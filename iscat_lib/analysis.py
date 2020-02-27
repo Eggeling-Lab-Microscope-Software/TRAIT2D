@@ -305,7 +305,10 @@ def smartAveraging():
     """Average tracks by category, and report average track fit results and summary statistics"""
     pass
 
-def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=False,
+def rayleighPDF(x, sigma):
+    return x / sigma**2 * np.exp(- x**2 / (2 * sigma**2))
+
+def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=False, binsize_nm: float = 10.0,
                                 J: list=[1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100]):
     """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
     Parameters
@@ -317,6 +320,9 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
     display_fit: bool
         display fit for every timepoint
     """
+    # Convert binsize to m
+    binsize = binsize_nm * 1e-9
+
     # We define a list of timepoints at which to calculate the distribution
      # can be more, I don't think less.
 
@@ -334,20 +340,30 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
             t_lag = j * dt
 
             x_fit = np.sqrt(sd)
-            reg = rayleigh.fit(x_fit)  # Fit Rayleigh PDF to SD data
+            # Calculate bins, x_fit is already sorted
+            max_x = x_fit[-1]
+            min_x = x_fit[0]
+            num_bins = int(np.ceil((max_x - min_x) / binsize))
+            hist_SD, bins = np.histogram(x_fit, bins=num_bins, density=True)
+            bin_mids = (bins[1:] + bins[:-1]) / 2.0
+            # 
+            popt, pcov = optimize.curve_fit(rayleighPDF, bin_mids, hist_SD, p0=binsize)
+            print(popt)
+            #reg = rayleigh.fit(x_fit)  # Fit Rayleigh PDF to SD data
 
             if display_fit:
                 # Use Freedman Diaconis Rule for binning
-                hist_SD, bins = np.histogram(x_fit, bins='fd', density=True)
                 plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]), align='edge', alpha=0.5, label="Data")
+                plt.gca().set_xlim(0, 4.0e-7)
                 # Plot the fit
                 eval_x = np.linspace(bins[0], bins[-1], 100)
-                plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
+                #plt.plot(eval_x, rayleigh.pdf(eval_x, *reg), label="Fit")
+                plt.plot(eval_x, rayleighPDF(eval_x, popt[0]))
                 plt.legend()
                 plt.title("$n = {}$".format(j))
                 plt.show()
             
-            sigma = reg[1]
+            sigma = popt[0]
             dapp = sigma**2 / (2 * t_lag)
             dapp_list.append(dapp)
             
