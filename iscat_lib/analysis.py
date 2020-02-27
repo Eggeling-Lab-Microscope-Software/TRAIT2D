@@ -304,9 +304,6 @@ def smartAveraging():
     """Average tracks by category, and report average track fit results and summary statistics"""
     pass
 
-def rayleighPDF(x, sigma):
-    return x / sigma**2 * np.exp(- x**2 / (2 * sigma**2))
-
 def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=False, binsize_nm: float = 10.0,
                                 J: list=[1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100]):
     """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
@@ -323,6 +320,7 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
     J: list
         list of timepoints to consider
     """
+    rayleigh_pdf = lambda x, sigma: x / sigma**2 * np.exp(- x**2 / (2 * sigma**2))
     # Convert binsize to m
     binsize = binsize_nm * 1e-9
 
@@ -351,7 +349,7 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
             bin_mids = (bins[1:] + bins[:-1]) / 2.0
             # Fit Rayleigh PDF to histogram. The bin size gives a good order-of-maginutde approximation
             # for the initial guess of sigma
-            popt, pcov = optimize.curve_fit(rayleighPDF, bin_mids, hist_SD, p0=binsize)
+            popt, pcov = optimize.curve_fit(rayleigh_pdf, bin_mids, hist_SD, p0=binsize)
 
             if display_fit:
                 # Plot binned data
