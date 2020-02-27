@@ -357,7 +357,7 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
                 plt.gca().set_xlim(0, 4.0e-7)
                 # Plot the fit
                 eval_x = np.linspace(bins[0], bins[-1], 100)
-                plt.plot(eval_x, rayleighPDF(eval_x, popt[0]), label="Rayleigh Fit")
+                plt.plot(eval_x, rayleigh_pdf(eval_x, popt[0]), label="Rayleigh Fit")
                 plt.legend()
                 plt.title("$n = {}$".format(j))
                 plt.show()
