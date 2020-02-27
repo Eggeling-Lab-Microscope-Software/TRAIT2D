@@ -5,7 +5,6 @@ import numpy as np
 import tqdm
 import warnings
 from scipy import optimize
-from scipy.stats import rayleigh
 import matplotlib.pyplot as plt
 
 
