@@ -319,6 +319,10 @@ def squaredDisplacementAnalysis(tracks: list, dt: float=1.0, display_fit: bool=F
         timestep
     display_fit: bool
         display fit for every timepoint
+    binsize_nm: float
+        binsize in nm
+    J: list
+        list of timepoints to consider
     """
     # Convert binsize to m
     binsize = binsize_nm * 1e-9
