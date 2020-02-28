@@ -5,6 +5,7 @@ import numpy as np
 import tqdm
 import warnings
 from scipy import optimize
+from scipy import interpolate
 import matplotlib.pyplot as plt
 
 import itertools
@@ -247,15 +248,18 @@ def classicalMSDAnalysis(tracks: list, fractionFitPoints: float=0.25, nFitPoints
 
 
 
-def adc_analysis(tracks: list, R: float=1/6, nFitPoints=None, useNormalization=True):
+def adc_analysis(tracks: list, R: float=1/6, nFitPoints=None, useNormalization=True, maxfev=1000):
     """Revised analysis using the apparent diffusion coefficient
     Parameters
     ----------
     R: float
         Point scanning across the field of view.
     """
-    # Calculate MSD for each track
+    # TODO: Make msd_list "struct of lists" instead of "list of structs" for better user experience
     msd_list = []
+    D_app_list = []
+    model_list = []
+    # Calculate MSD for each track
     for track in tracks:
         # Normalize the track
         if useNormalization:
@@ -284,6 +288,7 @@ def adc_analysis(tracks: list, R: float=1/6, nFitPoints=None, useNormalization=T
 
         # Compute  the time-dependent apparent diffusion coefficient.
         Dapp = this_msd / (4 * T * (1 - 2*R*dt / T))
+        D_app_list.append(Dapp)
 
         # Define the models to fit the Dapp
         model_brownian = lambda t, D, delta: D + delta**2 / (2 * t * (1 - 2*R*dt/t))
@@ -291,9 +296,9 @@ def adc_analysis(tracks: list, R: float=1/6, nFitPoints=None, useNormalization=T
         model_hop = lambda t, D_macro, D_micro, delta, tau: D_macro + D_micro * (tau/t) * (1 - np.exp(-tau/t)) + delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
 
         # Perform fits.
-        r_brownian = optimize.curve_fit(model_brownian, T[0:n_points], Dapp[0:n_points], sigma=this_msd_error[0:n_points])
-        r_confined = optimize.curve_fit(model_confined, T[0:n_points], Dapp[0:n_points], sigma=this_msd_error[0:n_points])
-        r_hop = optimize.curve_fit(model_hop, T[0:n_points], Dapp[0:n_points], sigma=this_msd_error[0:n_points])
+        r_brownian = optimize.curve_fit(model_brownian, T[0:n_points], Dapp[0:n_points], sigma=this_msd_error[0:n_points], maxfev=maxfev)
+        r_confined = optimize.curve_fit(model_confined, T[0:n_points], Dapp[0:n_points], sigma=this_msd_error[0:n_points], maxfev=maxfev)
+        r_hop = optimize.curve_fit(model_hop, T[0:n_points], Dapp[0:n_points], sigma=this_msd_error[0:n_points], maxfev=maxfev)
 
         # Compute BIC for each model.
         pred_brownian = model_brownian(T, *r_brownian[0])
@@ -311,6 +316,7 @@ def adc_analysis(tracks: list, R: float=1/6, nFitPoints=None, useNormalization=T
             category = "hop"
         else:
             category = "unknown"
+        model_list.append(category)
 
         print("Brownian diffusion parameters: D={}, delta={}, BIC={}".format(*r_brownian[0], bic_brownian))
         print("Confined diffusion parameters: D_micro={}, delta={}, tau={}, BIC={}".format(*r_confined[0], bic_confined))
@@ -334,10 +340,92 @@ def adc_analysis(tracks: list, R: float=1/6, nFitPoints=None, useNormalization=T
         plt.legend()
         plt.show()
 
+    return msd_list, D_app_list, model_list
 
-def smartAveraging():
+
+def smartAveraging(tracks: list, MSD: list, D_app: list, models: list):
     """Average tracks by category, and report average track fit results and summary statistics"""
-    pass
+
+    track_length = len(tracks[0]["x"])
+    average_D_app_brownian = np.zeros(track_length - 3)
+    average_D_app_confined = np.zeros(track_length - 3)
+    average_D_app_hop = np.zeros(track_length - 3)
+    
+    average_MSD_brownian = np.zeros(track_length - 3)
+    average_MSD_confined = np.zeros(track_length - 3)
+    average_MSD_hop = np.zeros(track_length - 3)
+
+    counter_brownian = 0
+    counter_confined = 0
+    counter_hop = 0
+
+    if (len(tracks) != len(models)):
+        raise ValueError("Track list and model list do not have the same length!")
+
+    if (len(tracks) != len(MSD)):
+        raise ValueError("Track list and MSD list do not have the same length!")
+
+    if (len(tracks) != len(D_app)):
+        raise ValueError("Track list and D_app list do not have the same length!")
+
+    for k in range(0, len(tracks)):
+        if len(tracks[k]["x"]) != track_length:
+            raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(len(tracks[k]), track_length - 3, k + 1))
+        if len(MSD[k][0]) != track_length - 3:
+            raise ValueError("Encountered MSD with incorrect length! (Got {}, expected {} for track {}.)".format(len(MSD[k]), track_length - 3, k + 1))
+        if len(D_app[k]) != track_length - 3:
+            raise ValueError("Encountered D_app with incorrect length!(Got {}, expected {} for track {}.)".format(len(D_app[k]), track_length - 3, k + 1))
+
+    for k in range(0, len(tracks)):
+        if models[k] == "brownian":
+            counter_brownian += 1
+            average_D_app_brownian += D_app[k]
+            average_MSD_brownian += MSD[k][0]
+        elif models[k] == "confined":
+            counter_confined += 1
+            average_D_app_confined += D_app[k]
+            average_MSD_confined += MSD[k][0]
+        elif models[k] == "hop":
+            counter_hop += 1
+            average_D_app_hop += D_app[k]
+            average_MSD_hop += MSD[k][0]
+        elif models[k] == "unknown":
+            continue
+        else:
+            raise ValueError('Invalid model name encountered: {}. Allowed are "brownian", "confined", "hop" and "unknown".'.format(models[k]))
+
+    average_D_app_brownian /= counter_brownian
+    average_D_app_confined /= counter_confined
+    average_D_app_hop /= counter_hop
+
+    average_MSD_brownian /= counter_brownian
+    average_MSD_confined /= counter_confined
+    average_MSD_hop /= counter_hop
+
+    counter_sum = counter_brownian + counter_confined + counter_hop
+    sector_brownian_area = counter_brownian / counter_sum
+    sector_confined_area = counter_confined / counter_sum
+    sector_hop_area = counter_hop / counter_sum
+
+    # TODO: The whole fitting routine from ADC.
+    # TODO: Plot results.
+    # TODO: Print fit results.
+
+    print(sector_brownian_area)
+    print(sector_confined_area)
+    print(sector_hop_area)
+
+    plt.semilogx(average_D_app_brownian)
+    plt.semilogx(average_D_app_confined)
+    plt.semilogx(average_D_app_hop)
+
+    fig1, ax1 = plt.subplots()
+    ax1.pie([sector_brownian_area, sector_confined_area, sector_hop_area], labels=["brownian", "confined", "hop"], autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    ax1.legend()
+
+    plt.show()
 
 def rayleighPDF(x, sigma):
     return x / sigma**2 * np.exp(- x**2 / (2 * sigma**2))
