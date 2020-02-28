@@ -111,3 +111,6 @@ data/
 
 # PyCharm data
 .idea*
+
+# VSCode settings
+.vscode
