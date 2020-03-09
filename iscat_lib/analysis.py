@@ -373,6 +373,9 @@ class Track:
         plt.legend()
         plt.show()
 
+        return {"model1" : {"D": reg1[0][0], "delta2": reg1[0][1], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
+                "model2" : {"D": reg2[0][0], "delta2": reg2[0][1], "alpha": reg2[0][2], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
+
     def adc_analysis(self, R: float = 1/6, nFitPoints=None, maxfev=1000):
         """Revised analysis using the apparent diffusion coefficient
         Parameters
