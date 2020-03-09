@@ -18,6 +18,9 @@ class Track:
         self._y = y
         self._t = t
 
+        self._MSD = None
+        self._MSD_error = None
+
     def SD(self, j: int):
         """Squared displacement calculation for single time point
         Parameters
@@ -35,7 +38,7 @@ class Track:
             Squared displacements at timepoint j sorted
             from smallest to largest value
         """
-        length_array = len(self._x) # Length of the track
+        length_array = self._x.size() # Length of the track
 
         pos_x = np.array(self._x)
         pos_y = np.array(self._y)
@@ -49,55 +52,156 @@ class Track:
 
         return SD
 
-    def 
+    def normalize(self, track: Track):
+        if self.__class__ == NormalizedTrack:
+            warnings.warn("Track is already an instance of NormalizedTrack. This will do nothing.")
+
+        x = self._x
+        y = self._y
+        t = self._t
+
+        # Getting the span of the diffusion.
+        xmin = x.min(); xmax = x.max()
+        ymin = y.min(); ymax = y.max()
+        tmin = t.min(); tmax = t.max()
+
+        # Normalizing the coordinates
+        xy_min = min([xmin, ymin])
+        xy_max = min([xmax, ymax])
+        x = (x - xy_min) / (xy_max - xy_min)
+        y = (y - xy_min) / (xy_max - xy_min)
+        t = (t - tmin) / (tmax - tmin)
+
+        # Create normalized Track object
+        self = NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
+
+    def calculateMSD(self, N: int=None, numWorkers: int=None, chunksize: int=100):
+        """Mean squared displacement calculation
+        Parameters
+        ----------
+        N: int
+            Maximum MSD length to consider (if none, will be computed from the track length)
+        numWorkers: int
+            Number or processes used for calculation. Will use number of system's cores if None.
+        chunksize: int
+            Chunksize for process pool mapping. Small number might have negative performance impacts.
+
+        Returns
+        -------
+        MSD: (N-3,) ndarray
+            Mean squared displacements
+        MSD_error: (N-3, ) ndarray
+            Standard error of the mean of the MSD values
+        """
+
+        if N is None:
+            N = self._x.size()
+
+        MSD = np.zeros((N-3,))
+        MSD_error = np.zeros((N-3,))
+        pos_x = self._x
+        pos_y = self._y
+
+        if numWorkers == None:
+            workers = os.cpu_count()
+        else:
+            workers = numWorkers
+        
+        if workers > 1:
+            with ProcessPoolExecutor(max_workers=workers) as executor:
+                i = range(1, N-2)
+                results = list(tqdm.tqdm(executor.map(MSD_loop, i,
+                                                                itertools.repeat(pos_y),
+                                                                itertools.repeat(pos_x),
+                                                                itertools.repeat(N),
+                                                    chunksize=chunksize),
+                                                total=len(i),
+                                                desc="MSD calculation (workers: {})".format(workers)))
+            i = 0
+            for (MSD_i, MSD_error_i) in results:
+                MSD[i] = MSD_i
+                MSD_error[i] = MSD_error_i
+                i += 1
+        else:
+            for i in tqdm.tqdm(range(1, N-2), desc="MSD calculation"):
+                idx_0 = np.arange(1, N-i-1, 1)
+                idx_t = idx_0 + i
+                this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
+
+                MSD[i-1] = np.mean(this_msd)
+                MSD_error[i-1] = np.std(this_msd) / np.sqrt(len(this_msd))
+
+        self._MSD = MSD
+        self._MSD_error = MSD_error
+
+    def classicalMSDAnalysis(self, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, linearPlot=False, numWorkers: int=None, chunksize: int=100):
+        # Calculate MSD for only this track
+
+        # Calculate MSD if this has not been done yet.
+        if not self._MSD:
+            self.calculateMSD()
+
+        # Number time frames for this track
+        N = self._MSD.size()
+
+        # Define the number of points to use for fitting
+        if nFitPoints is None:
+            n_points = int(fractionFitPoints * N)
+        else:
+            n_points = int(nFitPoints)
+
+        # Asserting that the nFitPoints is valid
+        assert n_points >= 2, f"nFitPoints={n_points} is not enough"
+        if n_points > int(0.25 * N):
+            warnings.warn("Using too many points for the fit means including points which have higher measurment errors.")
+            # Selecting more points than 25% should be possible, but not advised
+
+        T = np.linspace(1, N, N,  endpoint=True) # This is the time array, as the fits will be MSD vs T
+
+        # Definining the models used for the fit
+        model1 = lambda t, D, delta2: 4 * D * t + 2 * delta2
+        model2 = lambda t, D, delta2, alpha: 4 * D * t**alpha + 2 * delta2
+
+        # Fit the data to these 2 models using weighted least-squares fit
+        # TODO: normalize the curves to make the fit easier to perform.
+        reg1 = optimize.curve_fit(model1, T[0:n_points], self._MSD[0:n_points], sigma=self._MSD_error[0:n_points])
+        # print(f"reg1 parameters: {reg1[0]}") # Debug
+        reg2 = optimize.curve_fit(model2, T[0:n_points], self._MSD[0:n_points], [*reg1[0][0:2], 1.0], sigma=self._MSD_error[0:n_points])
+        # reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
+        # print(f"reg2 parameters: {reg2[0]}") #Debug
+
+        # Compute BIC for both models
+        m1 = model1(T, *reg1[0])
+        m2 = model2(T, *reg2[0])
+        bic1 = BIC(m1[0:n_points], self._MSD[0:n_points], 2, 1)
+        bic2 = BIC(m2[0:n_points], self._MSD[0:n_points], 2, 1)
+        print(bic1, bic2) # FIXME: numerical instabilities due to low position values. should normalize before analysis, and then report those adimentional values.
+
+        # Relative Likelihood for each model
+        rel_likelihood_1 = np.exp((bic1 - min([bic1, bic2])) * 0.5)
+        rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
+
+        # Plot the results
+        if linearPlot:
+            plt.plot(T, self._MSD, label="Data")
+        else:
+            plt.semilogx(T, self._MSD, label="Data")
+        plt.plot(T[0:n_points], m1[0:n_points], label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
+        plt.plot(T[0:n_points], m2[0:n_points], label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
+        plt.axvspan(T[0], T[n_points], alpha=0.5, color='gray', label="Fitted data")
+        plt.xlabel("Time")
+        plt.ylabel("MSD")
+        plt.legend()
+        plt.show()
+
 
 class NormalizedTrack(Track):
-    def __init__(self):
-        pass
-
-def normalize(track):
-    x = np.array(track["x"])
-    y = np.array(track["y"])
-    t = np.array(track["t"])
-
-    # Getting the span of the diffusion.
-    xmin = x.min(); xmax = x.max()
-    ymin = y.min(); ymax = y.max()
-    tmin = t.min(); tmax = t.max()
-
-    # Normalizing the coordinates
-    xy_min = min([xmin, ymin])
-    xy_max = min([xmax, ymax])
-    x = (x - xy_min) / (xy_max - xy_min)
-    y = (y - xy_min) / (xy_max - xy_min)
-    t = (t - tmin) / (tmax - tmin)
-
-    # Update the track
-    track["x"] = list(x)
-    track["y"] = list(y)
-    track["t"] = list(t)
-    track["xy_min"] = xy_min
-    track["xy_max"] = xy_max
-    track["tmin"] = tmin
-    track["tmax"] = tmax
-
-    # # Smallest time interval
-    # dt = np.abs(np.diff(t)).min()
-    #
-    # # Smallest x and y distances
-    # dx = np.abs(np.diff(x)).min()
-    # dy = np.abs(np.diff(y)).min()
-    # dxy = min([dx, dy])
-    #
-    # track["dt"] = dt
-    # track["dxy"] = dxy
-    #
-    # # Normalize the track
-    # track["x"] = list(np.array(x) / dx)
-    # track["y"] = list(np.array(y) / dy)
-    # track["t"] = list(np.array(t) / dt)
-
-    return track
+    def __init__(self, x=None, y=None, t=None, xy_min = None, xy_max = None, tmin=None, tmax=None):
+        Track.__init__(x, y, t)
+        self._xy_min = xy_min
+        self._xy_max = xy_max
+        self._tmin = tmin
+        self._tmax = tmax
 
 def MSD_loop(i, pos_x, pos_y, N):
     idx_0 = np.arange(1, N-i-1, 1)
@@ -106,66 +210,6 @@ def MSD_loop(i, pos_x, pos_y, N):
 
     MSD = np.mean(this_msd)
     MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
-
-    return MSD, MSD_error
-
-def MSD(x, y, N: int=None, numWorkers: int=None, chunksize: int=100):
-    """Mean squared displacement calculation
-    Parameters
-    ----------
-    x: (N,) list or ndarray
-        X coordinates of a 2D track (of length N)
-    y: (N,) list or ndarray
-        Y coordinates of a 2D track (of length N)
-    N: int
-        Maximum MSD length to consider (if none, will be computed from the track length)
-
-    Returns
-    -------
-    MSD: (N-3,) ndarray
-        Mean squared displacements
-    MSD_error: (N-3, ) ndarray
-        Standard error of the mean of the MSD values
-    """
-    # TODO: Make an educated guess for the chunksize based on data
-    # TODO: If the sample size is smaller than the chunksize, there is no need to invoke multiple workers
-
-    if N is None:
-        N = len(x)  # Length of the track
-
-    MSD = np.zeros((N-3,))
-    MSD_error = np.zeros((N-3,))
-    pos_x = np.array(x)
-    pos_y = np.array(y)
-
-    if numWorkers == None:
-        workers = os.cpu_count()
-    else:
-        workers = numWorkers
-    
-    if workers > 1:
-        with ProcessPoolExecutor(max_workers=workers) as executor:
-            i = range(1, N-2)
-            results = list(tqdm.tqdm(executor.map(MSD_loop, i,
-                                                            itertools.repeat(pos_y),
-                                                            itertools.repeat(pos_x),
-                                                            itertools.repeat(N),
-                                                  chunksize=chunksize),
-                                            total=len(i),
-                                            desc="MSD calculation (workers: {})".format(workers)))
-        i = 0
-        for (MSD_i, MSD_error_i) in results:
-            MSD[i] = MSD_i
-            MSD_error[i] = MSD_error_i
-            i += 1
-    else:
-        for i in tqdm.tqdm(range(1, N-2), desc="MSD calculation"):
-            idx_0 = np.arange(1, N-i-1, 1)
-            idx_t = idx_0 + i
-            this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
-
-            MSD[i-1] = np.mean(this_msd)
-            MSD_error[i-1] = np.std(this_msd) / np.sqrt(len(this_msd))
 
     return MSD, MSD_error
 
