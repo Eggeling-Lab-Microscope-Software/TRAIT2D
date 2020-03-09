@@ -132,22 +132,29 @@ class Track:
         self._model = "unknown"
 
     def __repr__(self):
-        return "<%s instance at %s>\nMSD calculated: %s\nDapp calculated: %s\nModel class: %s" % (self.__class__.__name__, id(self), self.is_msd_calculated(), self.is_dapp_calculated(), self._model)
+        return ("<%s instance at %s>\n"
+                "MSD calculated: %s\n"
+                "Dapp calculated: %s\n"
+                "Model class: %s") % (self.__class__.__name__,
+                                      id(self),
+                                      self.is_msd_calculated(),
+                                      self.is_dapp_calculated(),
+                                      self._model)
 
     def is_msd_calculated(self):
+        """Returns True if the MSD of this track has already been calculated.
+        """
         return self._MSD is not None
 
     def is_dapp_calculated(self):
+        """Returns True if the D_app of this track has already been calculated.
+        """
         return self._Dapp is not None
 
     def calculate_sd_at(self, j: int):
         """Squared displacement calculation for single time point
         Parameters
         ----------
-        x: list or ndarray
-            X coordinates of a 2D track
-        y: list or ndarray
-            Y coordinates of a 2D track
         j: int
             Index of timepoint in 2D track
 
@@ -172,6 +179,11 @@ class Track:
         return SD
 
     def normalized(self):
+        """Normalize the track.
+        Returns
+        -------
+        Instance of NormalizedTrack containing the normalized track data.
+        """
         if self.__class__ == NormalizedTrack:
             warnings.warn("Track is already an instance of NormalizedTrack. This will do nothing.")
 
@@ -201,16 +213,9 @@ class Track:
         N: int
             Maximum MSD length to consider (if none, will be computed from the track length)
         numWorkers: int
-            Number or processes used for calculation. Will use number of system's cores if None.
+            Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
             Chunksize for process pool mapping. Small number might have negative performance impacts.
-
-        Returns
-        -------
-        MSD: (N-3,) ndarray
-            Mean squared displacements
-        MSD_error: (N-3, ) ndarray
-            Standard error of the mean of the MSD values
         """
 
         if N is None:
@@ -257,6 +262,18 @@ class Track:
         """ Classical Mean Squared Displacement Analysis for single track
         Parameters
         ----------
+        fractionFitPoints: float
+            Fraction of points to use for fitting if nFitPoints is not specified.
+        nFitPoints: int
+            Number of points to user for fitting. Will override fractionFitPoints.
+        dt: float
+            Timestep.
+        linearPlot: bool
+            Plot results on a liner scale instead of default logarithmic.
+        numWorkers: int
+            Number or processes used for calculation. Defaults to number of system cores.
+        chunksize: int
+            Chunksize for process pool mapping. Small number might have negative performance impacts.
         """
 
         # Calculate MSD if this has not been done yet.
@@ -316,12 +333,16 @@ class Track:
         plt.legend()
         plt.show()
 
-    def adc_analysis(self, R: float = 1/6, nFitPoints=None, useNormalization=True, maxfev=1000):
+    def adc_analysis(self, R: float = 1/6, nFitPoints=None, maxfev=1000):
         """Revised analysis using the apparent diffusion coefficient
         Parameters
         ----------
         R: float
             Point scanning across the field of view.
+        nFitPoints: int
+            Number of points used for fitting. Defaults to 25 % of total points.
+        maxfev: int
+            maxfev used by Scipy fitting routine.
         """
         # Calculate MSD if this has not been done yet.
         if self._MSD is None:
@@ -407,8 +428,6 @@ class Track:
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
-        tracks: list
-            list of tracks to be analysed
         dt: float
             timestep
         display_fit: bool
