@@ -12,6 +12,49 @@ import itertools
 import os
 from concurrent.futures import ProcessPoolExecutor
 
+class Track:
+    def __init__(self, x=None, y=None, t=None):
+        self._x = x
+        self._y = y
+        self._t = t
+
+    def SD(self, j: int):
+        """Squared displacement calculation for single time point
+        Parameters
+        ----------
+        x: list or ndarray
+            X coordinates of a 2D track
+        y: list or ndarray
+            Y coordinates of a 2D track
+        j: int
+            Index of timepoint in 2D track
+
+        Returns
+        -------
+        SD: ndarray
+            Squared displacements at timepoint j sorted
+            from smallest to largest value
+        """
+        length_array = len(self._x) # Length of the track
+
+        pos_x = np.array(self._x)
+        pos_y = np.array(self._y)
+
+        idx_0 = np.arange(0, length_array-j-1, 1)
+        idx_t = idx_0 + j
+
+        SD = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
+
+        SD.sort()
+
+        return SD
+
+    def 
+
+class NormalizedTrack(Track):
+    def __init__(self):
+        pass
+
 def normalize(track):
     x = np.array(track["x"])
     y = np.array(track["y"])
@@ -55,38 +98,6 @@ def normalize(track):
     # track["t"] = list(np.array(t) / dt)
 
     return track
-
-def SD(x, y, j):
-    """Squared displacement calculation for single time point
-    Parameters
-    ----------
-    x: list or ndarray
-        X coordinates of a 2D track
-    y: list or ndarray
-        Y coordinates of a 2D track
-    j: int
-        Index of timepoint in 2D track
-
-    Returns
-    -------
-    SD: ndarray
-        Squared displacements at timepoint j sorted
-        from smallest to largest value
-    """
-
-    length_array = len(x) # Length of the track
-
-    pos_x = np.array(x)
-    pos_y = np.array(y)
-
-    idx_0 = np.arange(0, length_array-j-1, 1)
-    idx_t = idx_0 + j
-
-    SD = (pos_x[idx_t] - pos_x[idx_0])**2 + (pos_y[idx_t] - pos_y[idx_0])**2
-
-    SD.sort()
-
-    return SD
 
 def MSD_loop(i, pos_x, pos_y, N):
     idx_0 = np.arange(1, N-i-1, 1)
