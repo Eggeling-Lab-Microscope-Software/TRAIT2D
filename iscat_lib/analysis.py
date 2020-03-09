@@ -16,6 +16,12 @@ class ListOfTracks:
     def __init__(self, tracks: list=None):
         self._tracks = tracks
 
+    def __repr__(self):
+        return ("<%s instance at %s>\n"
+                "Number of tracks: %s\n") % (self.__class__.__name__,
+                                            id(self),
+                                            len(self._tracks))
+
     def load_trajectories(self, filename: str):
         # TODO
         pass
