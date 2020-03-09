@@ -138,8 +138,6 @@ class Track:
         self._MSD = None
         self._MSD_error = None
 
-        self._Dapp = None
-
         self._model = "unknown"
 
     @classmethod
@@ -185,11 +183,6 @@ class Track:
         """Returns True if the MSD of this track has already been calculated.
         """
         return self._MSD is not None
-
-    def is_dapp_calculated(self):
-        """Returns True if the D_app of this track has already been calculated.
-        """
-        return self._Dapp is not None
 
     def calculate_sd_at(self, j: int):
         """Squared displacement calculation for single time point
@@ -458,8 +451,6 @@ class Track:
         plt.title("Diffusion Category: {}".format(category))
         plt.legend()
         plt.show()
-
-        self._Dapp = Dapp
 
         return {"Brownian": {"params": r_brownian[0], "BIC": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
                 "Confined": {"params": r_confined[0], "BIC": bic_confined, "rel_likelihood": rel_likelihood_confined},
