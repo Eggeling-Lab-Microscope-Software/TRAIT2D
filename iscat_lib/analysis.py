@@ -142,6 +142,35 @@ class Track:
 
         self._model = "unknown"
 
+    @classmethod
+    def from_dict(cls, dict):
+        """Create a track from a dictionary.
+        Parameters
+        ----------
+        dict: dict
+            Dictionary of the track. Has to contain the fields "x", "y" and "t".
+        """
+        return cls(dict["x"], dict["y"], dict["t"])
+
+    @classmethod
+    def from_file(cls, filename):
+        """Create a track from a file containing a single track.
+        Parameters
+        ----------
+        filename: str
+            Name of the file.
+        """
+        ext = os.path.splitext(filename)
+        if ext == ".csv":
+            # TODO: .csv-specific import
+            pass
+        elif ext == ".json":
+            # TODO: .json-specific import
+            pass
+        elif ext == ".pcl":
+            # TODO: .pcl-specific import
+            pass
+
     def __repr__(self):
         return ("<%s instance at %s>\n"
                 "MSD calculated: %s\n"
