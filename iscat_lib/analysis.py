@@ -12,6 +12,30 @@ import itertools
 import os
 from concurrent.futures import ProcessPoolExecutor
 
+class ListOfTracks:
+    def __init__(self, tracks: list=None):
+        self._tracks = tracks
+
+    def load_trajectories(self, filename: str):
+        # TODO
+        pass
+    
+    def msd_analysis(self):
+        # TODO
+        pass
+
+    def adc_analysis(self):
+        # TODO
+        pass
+
+    def sd_analysis(self):
+        # TODO
+        pass
+
+    def smart_averaging(self):
+        # TODO
+        pass
+
 class Track:
     def __init__(self, x=None, y=None, t=None):
         """Create a track.
@@ -30,7 +54,7 @@ class Track:
         self._MSD = None
         self._MSD_error = None
 
-    def SD(self, j: int):
+    def calculate_sd_at(self, j: int):
         """Squared displacement calculation for single time point
         Parameters
         ----------
@@ -84,7 +108,7 @@ class Track:
         # Create normalized Track object
         self = NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
 
-    def calculateMSD(self, N: int=None, numWorkers: int=None, chunksize: int=100):
+    def calculate_msd(self, N: int=None, numWorkers: int=None, chunksize: int=100):
         """Mean squared displacement calculation
         Parameters
         ----------
@@ -143,8 +167,11 @@ class Track:
         self._MSD = MSD
         self._MSD_error = MSD_error
 
-    def classicalMSDAnalysis(self, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, linearPlot=False, numWorkers: int=None, chunksize: int=100):
-        # Calculate MSD for only this track
+    def msd_analysis(self, fractionFitPoints: float=0.25, nFitPoints: int=None, dt: float=1.0, linearPlot=False, numWorkers: int=None, chunksize: int=100):
+        """ Classical Mean Squared Displacement Analysis for single track
+        Parameters
+        ----------
+        """
 
         # Calculate MSD if this has not been done yet.
         if self._MSD is None:
