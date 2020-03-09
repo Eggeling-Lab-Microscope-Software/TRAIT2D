@@ -49,6 +49,8 @@ class ListOfTracks:
         counter_hop = 0
 
         for track in self._tracks:
+            if not track.is_dapp_calculated() or not track.is_msd_calculated():
+                raise ValueError("All tracks have to be analysed before averaging!")
             if track._x.size != track_length:
                 raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(track._x.size, track_length - 3, k + 1))
             if track._MSD.size != track_length - 3:
@@ -130,7 +132,13 @@ class Track:
         self._model = "unknown"
 
     def __repr__(self):
-        return "<%s instance at %s>\nMSD calculated: %s\nDapp calculated: %s\nModel class: %s" % (self.__class__.__name__, id(self), self._MSD is not None, self._Dapp is not None, self._model)
+        return "<%s instance at %s>\nMSD calculated: %s\nDapp calculated: %s\nModel class: %s" % (self.__class__.__name__, id(self), self.is_msd_calculated(), self.is_dapp_calculated(), self._model)
+
+    def is_msd_calculated(self):
+        return self._MSD is not None
+
+    def is_dapp_calculated(self):
+        return self._Dapp is not None
 
     def calculate_sd_at(self, j: int):
         """Squared displacement calculation for single time point
@@ -184,7 +192,7 @@ class Track:
         t = (t - tmin) / (tmax - tmin)
 
         # Create normalized Track object
-        self = NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
+        self = NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax) # BUG: Doesn't work that way
 
     def calculate_msd(self, N: int=None, numWorkers: int=None, chunksize: int=100):
         """Mean squared displacement calculation
@@ -417,7 +425,7 @@ class Track:
         # can be more, I don't think less.
 
         # Perform the analysis for a single track
-        dapp_list = np.zeros()
+        dapp_list = []
         for j in tqdm.tqdm(J, desc="SD analysis for single track"):
             # Calculate the SD
             sd = self.calculate_sd_at(j)
@@ -457,7 +465,7 @@ class Track:
 
 class NormalizedTrack(Track):
     def __init__(self, x=None, y=None, t=None, xy_min = None, xy_max = None, tmin=None, tmax=None):
-        Track.__init__(x, y, t)
+        Track.__init__(self, x, y, t)
         self._xy_min = xy_min
         self._xy_max = xy_max
         self._tmin = tmin
