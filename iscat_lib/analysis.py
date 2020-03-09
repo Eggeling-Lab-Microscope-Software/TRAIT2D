@@ -56,7 +56,7 @@ class ListOfTracks:
 
         for track in self._tracks:
             if not track.is_dapp_calculated() or not track.is_msd_calculated():
-                raise ValueError("All tracks have to be analysed before averaging!")
+                raise ValueError("All tracks have to be analysed using ADC analysis before averaging!")
             if track._x.size != track_length:
                 raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(track._x.size, track_length - 3, k + 1))
             if track._MSD.size != track_length - 3:
@@ -82,13 +82,18 @@ class ListOfTracks:
             else:
                 raise ValueError('Invalid model name encountered: {}. Allowed are "brownian", "confined", "hop" and "unknown".'.format(track._model))
 
-        average_D_app_brownian /= counter_brownian
-        average_D_app_confined /= counter_confined
-        average_D_app_hop /= counter_hop
+        if counter_brownian:
+            average_D_app_brownian /= counter_brownian
+            average_MSD_brownian /= counter_brownian
 
-        average_MSD_brownian /= counter_brownian
-        average_MSD_confined /= counter_confined
-        average_MSD_hop /= counter_hop
+        if counter_confined:
+            average_D_app_confined /= counter_confined
+            average_MSD_confined /= counter_confined
+
+        if counter_hop:
+            average_D_app_hop /= counter_hop
+            average_MSD_hop /= counter_hop
+
 
         counter_sum = counter_brownian + counter_confined + counter_hop
         sector_brownian_area = counter_brownian / counter_sum
