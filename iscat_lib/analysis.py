@@ -26,11 +26,11 @@ class ListOfTracks:
 
     def adc_analysis(self):
         for track in self._tracks:
-            track.adc_analysis
+            track.adc_analysis()
 
     def sd_analysis(self):
         for track in self._tracks:
-            track.sd_analysis
+            track.sd_analysis()
 
     def smart_averaging(self):
         """Average tracks by category, and report average track fit results and summary statistics"""
