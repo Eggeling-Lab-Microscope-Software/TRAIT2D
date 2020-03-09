@@ -171,7 +171,7 @@ class Track:
 
         return SD
 
-    def normalize(self):
+    def normalized(self):
         if self.__class__ == NormalizedTrack:
             warnings.warn("Track is already an instance of NormalizedTrack. This will do nothing.")
 
@@ -192,7 +192,7 @@ class Track:
         t = (t - tmin) / (tmax - tmin)
 
         # Create normalized Track object
-        self = NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax) # BUG: Doesn't work that way
+        return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
 
     def calculate_msd(self, N: int=None, numWorkers: int=None, chunksize: int=100):
         """Mean squared displacement calculation
