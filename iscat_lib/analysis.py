@@ -442,11 +442,6 @@ class Track:
             category = "unknown"
         self._model = category
 
-        print("Brownian diffusion parameters: D={}, delta={}, BIC={}".format(*r_brownian[0], bic_brownian))
-        print("Confined diffusion parameters: D_micro={}, delta={}, tau={}, BIC={}".format(*r_confined[0], bic_confined))
-        print("Hop diffusion parameters: D_macro={}, D_micro={}, delta={}, tau={}, BIC={}".format(*r_hop[0], bic_hop))
-        print("Diffusion category: {}".format(category))
-
         # Calculate the relative likelihood for each model
         rel_likelihood_brownian = np.exp((bic_brownian - bic_min) * 0.5)
         rel_likelihood_confined = np.exp((bic_confined - bic_min) * 0.5)
@@ -465,6 +460,10 @@ class Track:
         plt.show()
 
         self._Dapp = Dapp
+
+        return {"Brownian": {"params": r_brownian[0], "BIC": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
+                "Confined": {"params": r_confined[0], "BIC": bic_confined, "rel_likelihood": rel_likelihood_confined},
+                "Hop": {"params": r_hop[0], "BIC": bic_hop, "rel_likelihood": rel_likelihood_hop}}
 
     def sd_analysis(self, dt: float=1.0, display_fit: bool=False, binsize_nm: float = 10.0,
                     J: list=[1,2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100]):
