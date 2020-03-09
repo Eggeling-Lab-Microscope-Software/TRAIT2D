@@ -14,9 +14,18 @@ from concurrent.futures import ProcessPoolExecutor
 
 class Track:
     def __init__(self, x=None, y=None, t=None):
-        self._x = x
-        self._y = y
-        self._t = t
+        """Create a track.
+        Parameters
+        ----------
+        x: array_like
+
+        y: array_like
+
+        t: array_like
+        """
+        self._x = np.array(x)
+        self._y = np.array(y)
+        self._t = np.array(t)
 
         self._MSD = None
         self._MSD_error = None
@@ -38,7 +47,7 @@ class Track:
             Squared displacements at timepoint j sorted
             from smallest to largest value
         """
-        length_array = self._x.size() # Length of the track
+        length_array = self._x.size # Length of the track
 
         pos_x = np.array(self._x)
         pos_y = np.array(self._y)
@@ -52,7 +61,7 @@ class Track:
 
         return SD
 
-    def normalize(self, track: Track):
+    def normalize(self):
         if self.__class__ == NormalizedTrack:
             warnings.warn("Track is already an instance of NormalizedTrack. This will do nothing.")
 
@@ -95,7 +104,7 @@ class Track:
         """
 
         if N is None:
-            N = self._x.size()
+            N = self._x.size
 
         MSD = np.zeros((N-3,))
         MSD_error = np.zeros((N-3,))
@@ -138,11 +147,11 @@ class Track:
         # Calculate MSD for only this track
 
         # Calculate MSD if this has not been done yet.
-        if not self._MSD:
+        if self._MSD is None:
             self.calculateMSD()
 
         # Number time frames for this track
-        N = self._MSD.size()
+        N = self._MSD.size
 
         # Define the number of points to use for fitting
         if nFitPoints is None:
