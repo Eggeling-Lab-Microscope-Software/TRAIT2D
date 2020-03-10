@@ -62,7 +62,7 @@ class ListOfTracks:
             k += 1
             if not track.is_dapp_calculated() or not track.is_msd_calculated():
                 raise ValueError(
-                    "All tracks have to have their Dapp and MSD calculated before averaging! Use sd_analysis() or adc_analysis().")
+                    "All tracks have to have their Dapp and MSD calculated before averaging! Use adc_analysis().")
             if track._x.size != track_length:
                 raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(
                     track._x.size, track_length - 3, k + 1))
@@ -72,7 +72,7 @@ class ListOfTracks:
             if track._Dapp["Dapp"].size != dapp_length:
                 raise ValueError("Encountered D_app with incorrect length!(Got {}, expected {} for track {}.)".format(
                     track._Dapp["Dapp"].size, dapp_length, k + 1))
-            if track._Dapp["T"].any() != self._tracks[0]._Dapp["T"].any():
+            if track._Dapp["J"].any() != self._tracks[0]._Dapp["J"].any():
                 raise ValueError("The Dapp of all tracks has to be evaluated for the same time points!")
 
         for track in self._tracks:
@@ -155,6 +155,8 @@ class Track:
 
         self._model = "unknown"
 
+        self._last_analyized = "not_analyzed"
+
     @classmethod
     def from_dict(cls, dict):
         """Create a track from a dictionary.
@@ -188,10 +190,12 @@ class Track:
         return ("<%s instance at %s>\n"
                 "MSD calculated: %s\n"
                 "Dapp calculated: %s\n"
+                "Last analyzed: %s\n"
                 "Model class: %s") % (self.__class__.__name__,
                                       id(self),
                                       self.is_msd_calculated(),
                                       self.is_dapp_calculated(),
+                                      self._last_analyized,
                                       self._model)
 
     def is_msd_calculated(self):
@@ -400,6 +404,8 @@ class Track:
         plt.legend()
         plt.show()
 
+        self._last_analyized = "msd_analysis"
+
         return {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
                 "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
 
@@ -432,13 +438,15 @@ class Track:
         # Compute  the time-dependent apparent diffusion coefficient.
         Dapp = self._MSD / (4 * T * (1 - 2*R*dt / T))
 
-        self._Dapp = {"Dapp" : np.array(Dapp), "T": np.array(T)}
+        self._Dapp = {"Dapp" : np.array(Dapp), "J": np.arange(1, N+1)}
+
+        self._last_analyized = "adc_analysis"
 
         if categorize:
-            return self.categorize(fractionFit=fractionFit)
+            return self.categorize(fractionFit=fractionFit, maxfev=maxfev)
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float=0.25, categorize: bool = True):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float=0.25, maxfev=1000, categorize: bool = True):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
@@ -502,13 +510,14 @@ class Track:
         plt.ylabel("Estimated $D_{app}$")
         plt.show()
 
-        self._Dapp = {"Dapp" : np.array(dapp_list), "T" : np.array(J) * dt}
+        self._Dapp = {"Dapp" : np.array(dapp_list), "J" : np.array(J)}
+
+        self._last_analyized = "sd_analysis"
 
         if categorize:
-            return self.categorize(fractionFit=fractionFit)
+            return self.categorize(fractionFit=fractionFit, maxfev=maxfev)
 
     def categorize(self, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
-        print(fractionFit)
         if not self.is_dapp_calculated():
             raise ValueError(
                 "The Dapp of the track has to be calculated using adc_analysis() or sd_analysis() before categorizing.")
@@ -519,9 +528,10 @@ class Track:
                 
         dt = self._t[1] - self._t[0]
         Dapp = self._Dapp["Dapp"]
-        T = self._Dapp["T"]
+        J = self._Dapp["J"]
+        T = J * dt
 
-        n_points = np.argmax(T > fractionFit * T[-1])
+        n_points = np.argmax(J > fractionFit * J[-1])
         # Define the models to fit the Dapp
         def model_brownian(t, D, delta): return D + \
             delta**2 / (2 * t * (1 - 2*R*dt/t))
@@ -534,9 +544,10 @@ class Track:
 
         # Perform fits.
         if self.is_msd_calculated():
-            error = self._MSD_error[0:n_points]
+            error = self._MSD_error[J[0:n_points]]
         else:
-            error = 0
+            error = None
+
         r_brownian = optimize.curve_fit(
             model_brownian, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
         r_confined = optimize.curve_fit(
