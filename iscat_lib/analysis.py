@@ -44,10 +44,9 @@ class ListOfTracks:
         """Average tracks by category, and report average track fit results and summary statistics"""
 
         track_length = self._tracks[0]._x.size
-        dapp_length = self._tracks[0]._Dapp["Dapp"].size
-        average_D_app_brownian = np.zeros(dapp_length)
-        average_D_app_confined = np.zeros(dapp_length)
-        average_D_app_hop = np.zeros(dapp_length)
+        average_D_app_brownian = np.zeros(track_length - 3)
+        average_D_app_confined = np.zeros(track_length - 3)
+        average_D_app_hop = np.zeros(track_length - 3)
 
         average_MSD_brownian = np.zeros(track_length - 3)
         average_MSD_confined = np.zeros(track_length - 3)
@@ -60,35 +59,33 @@ class ListOfTracks:
         k = 0
         for track in self._tracks:
             k += 1
-            if not track.is_dapp_calculated() or not track.is_msd_calculated():
+            if track._adc_analysis_results["analyzed"] == False:
                 raise ValueError(
-                    "All tracks have to have their Dapp and MSD calculated before averaging! Use adc_analysis().")
+                    "All tracks have to be analyzed using adc_analysis() before averaging!")
             if track._x.size != track_length:
                 raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(
                     track._x.size, track_length - 3, k + 1))
             if track._MSD.size != track_length - 3:
                 raise ValueError("Encountered MSD with incorrect length! (Got {}, expected {} for track {}.)".format(
                     track._MSD.size, track_length - 3, k + 1))
-            if track._Dapp["Dapp"].size != dapp_length:
+            if track._adc_analysis_results["Dapp"].size != track_length - 3:
                 raise ValueError("Encountered D_app with incorrect length!(Got {}, expected {} for track {}.)".format(
-                    track._Dapp["Dapp"].size, dapp_length, k + 1))
-            if track._Dapp["J"].any() != self._tracks[0]._Dapp["J"].any():
-                raise ValueError("The Dapp of all tracks has to be evaluated for the same time points!")
+                    track._adc_analysis_results["Dapp"].size, track_length - 3, k + 1))
 
         for track in self._tracks:
-            if track._model == "brownian":
+            if track._adc_analysis_results["model"] == "brownian":
                 counter_brownian += 1
-                average_D_app_brownian += track._Dapp["Dapp"]
+                average_D_app_brownian += track._adc_analysis_results["Dapp"]
                 average_MSD_brownian += track._MSD
-            elif track._model == "confined":
+            elif track._adc_analysis_results["model"] == "confined":
                 counter_confined += 1
-                average_D_app_confined += track._Dapp["Dapp"]
+                average_D_app_confined += track._adc_analysis_results["Dapp"]
                 average_MSD_confined += track._MSD
-            elif track._model == "hop":
+            elif track._adc_analysis_results["model"] == "hop":
                 counter_hop += 1
-                average_D_app_hop += track._Dapp["Dapp"]
+                average_D_app_hop += track._adc_analysis_results["Dapp"]
                 average_MSD_hop += track._MSD
-            elif track._model == "unknown":
+            elif track._adc_analysis_results["model"] == "unknown":
                 continue
             else:
                 raise ValueError(
@@ -151,11 +148,9 @@ class Track:
         self._MSD = None
         self._MSD_error = None
 
-        self._Dapp = None
-
-        self._model = "unknown"
-
-        self._last_analyized = "not_analyzed"
+        self._msd_analysis_results = {"analyzed" : False, "results" : None}
+        self._adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
+        self._sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
 
     @classmethod
     def from_dict(cls, dict):
@@ -189,24 +184,37 @@ class Track:
     def __repr__(self):
         return ("<%s instance at %s>\n"
                 "MSD calculated: %s\n"
-                "Dapp calculated: %s\n"
-                "Last analyzed: %s\n"
-                "Model class: %s") % (self.__class__.__name__,
+                "MSD analysis done: %s\n"
+                "SD analysis done: %s\n"
+                "ADC analysis done: %s\n") % (self.__class__.__name__,
                                       id(self),
                                       self.is_msd_calculated(),
-                                      self.is_dapp_calculated(),
-                                      self._last_analyized,
-                                      self._model)
+                                      self._msd_analysis_results["analyzed"],
+                                      self._sd_analysis_results["analyzed"],
+                                      self._adc_analysis_results["analyzed"])
+
+    def get_msd_analysis_results(self):
+        return self._msd_analysis_results
+    
+    def get_sd_analysis_results(self):
+        return self._sd_analysis_results
+
+    def get_adc_analysis_results(self):
+        return self._adc_analysis_results
+
+    def delete_msd_analysis_results(self):
+        self._msd_analysis_results = {"analyzed" : False, "results" : None}
+    
+    def delete_sd_analysis_results(self):
+        self._sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
+    
+    def delete_adc_analysis_results(self):
+        self._adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}     
 
     def is_msd_calculated(self):
         """Returns True if the MSD of this track has already been calculated.
         """
         return self._MSD is not None
-
-    def is_dapp_calculated(self):
-        """Returns True if the Dapp of this track has already been calculated.
-        """
-        return self._Dapp is not None
 
     def calculate_sd_at(self, j: int):
         """Squared displacement calculation for single time point
@@ -404,12 +412,13 @@ class Track:
         plt.legend()
         plt.show()
 
-        self._last_analyized = "msd_analysis"
+        self._msd_analysis_results["analyzed"] = True
+        self._msd_analysis_results["results"] = {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
+                                                 "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
 
-        return {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
-                "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
+        return self._msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000, categorize: bool = True):
+    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000):
         print(fractionFit)
         """Revised analysis using the apparent diffusion coefficient
         Parameters
@@ -438,15 +447,15 @@ class Track:
         # Compute  the time-dependent apparent diffusion coefficient.
         Dapp = self._MSD / (4 * T * (1 - 2*R*dt / T))
 
-        self._Dapp = {"Dapp" : np.array(Dapp), "J": np.arange(1, N+1)}
+        model, results = self.categorize(np.array(Dapp), np.arange(1, N+1), fractionFit=fractionFit, maxfev=maxfev)
 
-        self._last_analyized = "adc_analysis"
-
-        if categorize:
-            return self.categorize(fractionFit=fractionFit, maxfev=maxfev)
+        self._adc_analysis_results["analyzed"] = True
+        self._adc_analysis_results["Dapp"] = np.array(Dapp)
+        self._adc_analysis_results["model"] = model
+        self._adc_analysis_results["results"] = results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float=0.25, maxfev=1000, categorize: bool = True):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float=0.25, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
@@ -510,25 +519,20 @@ class Track:
         plt.ylabel("Estimated $D_{app}$")
         plt.show()
 
-        self._Dapp = {"Dapp" : np.array(dapp_list), "J" : np.array(J)}
+        model, results = self.categorize(np.array(dapp_list), np.array(J), fractionFit=fractionFit, maxfev=maxfev)
 
-        self._last_analyized = "sd_analysis"
+        self._sd_analysis_results["analyzed"] = True
+        self._sd_analysis_results["Dapp"] = np.array(dapp_list)
+        self._sd_analysis_results["J"] = np.array(J)
+        self._sd_analysis_results["model"] = model
+        self._sd_analysis_results["results"] = results
 
-        if categorize:
-            return self.categorize(fractionFit=fractionFit, maxfev=maxfev)
-
-    def categorize(self, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
-        if not self.is_dapp_calculated():
-            raise ValueError(
-                "The Dapp of the track has to be calculated using adc_analysis() or sd_analysis() before categorizing.")
-
+    def categorize(self, Dapp, J, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
         if fractionFit > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
                 
         dt = self._t[1] - self._t[0]
-        Dapp = self._Dapp["Dapp"]
-        J = self._Dapp["J"]
         T = J * dt
 
         n_points = np.argmax(J > fractionFit * J[-1])
@@ -574,8 +578,6 @@ class Track:
         else:
             category = "unknown"
 
-        self._model = category
-
         # Calculate the relative likelihood for each model
         rel_likelihood_brownian = np.exp((bic_brownian - bic_min) * 0.5)
         rel_likelihood_confined = np.exp((bic_confined - bic_min) * 0.5)
@@ -597,7 +599,7 @@ class Track:
         plt.legend()
         plt.show()
 
-        return {"Brownian": {"params": r_brownian[0], "BIC": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
+        return category, {"Brownian": {"params": r_brownian[0], "BIC": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
                 "Confined": {"params": r_confined[0], "BIC": bic_confined, "rel_likelihood": rel_likelihood_confined},
                 "Hop": {"params": r_hop[0], "BIC": bic_hop, "rel_likelihood": rel_likelihood_hop}}
 
