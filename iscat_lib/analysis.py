@@ -218,6 +218,9 @@ class Track:
         self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
 
     def plot_msd_analysis_results(self, linearPlot: bool=False):
+        if self.get_msd_analysis_results()["analyzed"] == False:
+            ValueError("Track as not been analyzed using msd_analysis yet!")
+            
         # Definining the models used for the fit
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
         def model2(t, D, delta2, alpha): return 4 * D * t**alpha + 2 * delta2
