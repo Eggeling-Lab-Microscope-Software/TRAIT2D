@@ -217,6 +217,38 @@ class Track:
     def delete_adc_analysis_results(self):
         self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
 
+    def plot_msd_analysis_results(self, linearPlot: bool=False):
+        # Definining the models used for the fit
+        def model1(t, D, delta2): return 4 * D * t + 2 * delta2
+        def model2(t, D, delta2, alpha): return 4 * D * t**alpha + 2 * delta2
+
+
+        results = self.get_msd_analysis_results()["results"]
+        N = self.__x.size
+        T = np.linspace(1, N, N-3,  endpoint=True)
+        n_points = results["n_points"]
+        reg1 = results["model1"]["params"]
+        reg2 = results["model2"]["params"]
+        m1 = model1(T, *reg1)
+        m2 = model2(T, *reg2)
+        rel_likelihood_1 = results["model1"]["rel_likelihood"]
+        rel_likelihood_2 = results["model2"]["rel_likelihood"]
+        # Plot the results
+        if linearPlot:
+            plt.plot(T, self.__msd, label="Data")
+        else:
+            plt.semilogx(T, self.__msd, label="Data")
+        plt.plot(T[0:n_points], m1[0:n_points],
+                 label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
+        plt.plot(T[0:n_points], m2[0:n_points],
+                 label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
+        plt.axvspan(T[0], T[n_points], alpha=0.5,
+                    color='gray', label="Fitted data")
+        plt.xlabel("Time")
+        plt.ylabel("MSD")
+        plt.legend()
+        plt.show()
+
     def get_x(self):
         return self.__x
 
@@ -408,31 +440,15 @@ class Track:
         bic1 = BIC(m1[0:n_points], self.__msd[0:n_points], 2, 1)
         bic2 = BIC(m2[0:n_points], self.__msd[0:n_points], 2, 1)
         # FIXME: numerical instabilities due to low position values. should normalize before analysis, and then report those adimentional values.
-        print(bic1, bic2)
 
         # Relative Likelihood for each model
         rel_likelihood_1 = np.exp((bic1 - min([bic1, bic2])) * 0.5)
         rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
 
-        # Plot the results
-        if linearPlot:
-            plt.plot(T, self.__msd, label="Data")
-        else:
-            plt.semilogx(T, self.__msd, label="Data")
-        plt.plot(T[0:n_points], m1[0:n_points],
-                 label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
-        plt.plot(T[0:n_points], m2[0:n_points],
-                 label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
-        plt.axvspan(T[0], T[n_points], alpha=0.5,
-                    color='gray', label="Fitted data")
-        plt.xlabel("Time")
-        plt.ylabel("MSD")
-        plt.legend()
-        plt.show()
-
         self.__msd_analysis_results["analyzed"] = True
         self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
-                                                 "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
+                                                 "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2},
+                                                 "n_points" : n_points}
 
         return self.__msd_analysis_results
 
