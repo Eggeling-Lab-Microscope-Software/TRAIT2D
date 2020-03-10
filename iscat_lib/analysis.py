@@ -16,34 +16,40 @@ from concurrent.futures import ProcessPoolExecutor
 
 class ListOfTracks:
     def __init__(self, tracks: list = None):
-        self._tracks = tracks
+        self.__tracks = tracks
 
     def __repr__(self):
         return ("<%s instance at %s>\n"
                 "Number of tracks: %s\n") % (self.__class__.__name__,
                                              id(self),
-                                             len(self._tracks))
+                                             len(self.__tracks))
+
+    def get_tracks(self):
+        return self.__tracks
+
+    def get_track(self, idx):
+        return self.__tracks[idx]
 
     def load_trajectories(self, filename: str):
         # TODO
         pass
 
     def msd_analysis(self, **kwargs):
-        for track in self._tracks:
+        for track in self.__tracks:
             track.msd_analysis(**kwargs)
 
     def adc_analysis(self, **kwargs):
-        for track in self._tracks:
+        for track in self.__tracks:
             track.adc_analysis(**kwargs)
 
     def sd_analysis(self, **kwargs):
-        for track in self._tracks:
+        for track in self.__tracks:
             track.sd_analysis(**kwargs)
 
     def smart_averaging(self):
         """Average tracks by category, and report average track fit results and summary statistics"""
 
-        track_length = self._tracks[0]._x.size
+        track_length = self.__tracks[0].get_x().size
         average_D_app_brownian = np.zeros(track_length - 3)
         average_D_app_confined = np.zeros(track_length - 3)
         average_D_app_hop = np.zeros(track_length - 3)
@@ -57,35 +63,35 @@ class ListOfTracks:
         counter_hop = 0
 
         k = 0
-        for track in self._tracks:
+        for track in self.__tracks:
             k += 1
-            if track._adc_analysis_results["analyzed"] == False:
+            if track.get_adc_analysis_results()["analyzed"] == False:
                 raise ValueError(
                     "All tracks have to be analyzed using adc_analysis() before averaging!")
-            if track._x.size != track_length:
+            if track.get_x().size != track_length:
                 raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(
-                    track._x.size, track_length - 3, k + 1))
-            if track._MSD.size != track_length - 3:
+                    track.get_x().size, track_length - 3, k + 1))
+            if track.get_msd().size != track_length - 3:
                 raise ValueError("Encountered MSD with incorrect length! (Got {}, expected {} for track {}.)".format(
-                    track._MSD.size, track_length - 3, k + 1))
-            if track._adc_analysis_results["Dapp"].size != track_length - 3:
+                    track.get_msd().size, track_length - 3, k + 1))
+            if track.get_adc_analysis_results()["Dapp"].size != track_length - 3:
                 raise ValueError("Encountered D_app with incorrect length!(Got {}, expected {} for track {}.)".format(
-                    track._adc_analysis_results["Dapp"].size, track_length - 3, k + 1))
+                    track.get_adc_analysis_results()["Dapp"].size, track_length - 3, k + 1))
 
-        for track in self._tracks:
-            if track._adc_analysis_results["model"] == "brownian":
+        for track in self.__tracks:
+            if track.get_adc_analysis_results()["model"] == "brownian":
                 counter_brownian += 1
-                average_D_app_brownian += track._adc_analysis_results["Dapp"]
-                average_MSD_brownian += track._MSD
-            elif track._adc_analysis_results["model"] == "confined":
+                average_D_app_brownian += track.get_adc_analysis_results()["Dapp"]
+                average_MSD_brownian += track.get_msd()
+            elif track.get_adc_analysis_results()["model"] == "confined":
                 counter_confined += 1
-                average_D_app_confined += track._adc_analysis_results["Dapp"]
-                average_MSD_confined += track._MSD
-            elif track._adc_analysis_results["model"] == "hop":
+                average_D_app_confined += track.get_adc_analysis_results()["Dapp"]
+                average_MSD_confined += track.get_msd()
+            elif track.get_adc_analysis_results()["model"] == "hop":
                 counter_hop += 1
-                average_D_app_hop += track._adc_analysis_results["Dapp"]
-                average_MSD_hop += track._MSD
-            elif track._adc_analysis_results["model"] == "unknown":
+                average_D_app_hop += track.get_adc_analysis_results()["Dapp"]
+                average_MSD_hop += track.get_msd()
+            elif track.get_adc_analysis_results()["model"] == "unknown":
                 continue
             else:
                 raise ValueError(
@@ -141,16 +147,16 @@ class Track:
 
         t: array_like
         """
-        self._x = np.array(x)
-        self._y = np.array(y)
-        self._t = np.array(t)
+        self.__x = np.array(x)
+        self.__y = np.array(y)
+        self.__t = np.array(t)
 
-        self._MSD = None
-        self._MSD_error = None
+        self.__msd = None
+        self.__msd_error = None
 
-        self._msd_analysis_results = {"analyzed" : False, "results" : None}
-        self._adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
-        self._sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
+        self.__msd_analysis_results = {"analyzed" : False, "results" : None}
+        self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
+        self.__sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
 
     @classmethod
     def from_dict(cls, dict):
@@ -189,32 +195,44 @@ class Track:
                 "ADC analysis done: %s\n") % (self.__class__.__name__,
                                       id(self),
                                       self.is_msd_calculated(),
-                                      self._msd_analysis_results["analyzed"],
-                                      self._sd_analysis_results["analyzed"],
-                                      self._adc_analysis_results["analyzed"])
+                                      self.__msd_analysis_results["analyzed"],
+                                      self.__sd_analysis_results["analyzed"],
+                                      self.__adc_analysis_results["analyzed"])
 
     def get_msd_analysis_results(self):
-        return self._msd_analysis_results
+        return self.__msd_analysis_results
     
     def get_sd_analysis_results(self):
-        return self._sd_analysis_results
+        return self.__sd_analysis_results
 
     def get_adc_analysis_results(self):
-        return self._adc_analysis_results
+        return self.__adc_analysis_results
 
     def delete_msd_analysis_results(self):
-        self._msd_analysis_results = {"analyzed" : False, "results" : None}
+        self.__msd_analysis_results = {"analyzed" : False, "results" : None}
     
     def delete_sd_analysis_results(self):
-        self._sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
+        self.__sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
     
     def delete_adc_analysis_results(self):
-        self._adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}     
+        self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
+
+    def get_x(self):
+        return self.__x
+
+    def get_y(self):
+        return self.__y
+
+    def get_t(self):
+        return self.__t
 
     def is_msd_calculated(self):
         """Returns True if the MSD of this track has already been calculated.
         """
-        return self._MSD is not None
+        return self.__msd is not None
+
+    def get_msd(self):
+        return self.__msd
 
     def calculate_sd_at(self, j: int):
         """Squared displacement calculation for single time point
@@ -229,10 +247,10 @@ class Track:
             Squared displacements at timepoint j sorted
             from smallest to largest value
         """
-        length_array = self._x.size  # Length of the track
+        length_array = self.__x.size  # Length of the track
 
-        pos_x = np.array(self._x)
-        pos_y = np.array(self._y)
+        pos_x = np.array(self.__x)
+        pos_y = np.array(self.__y)
 
         idx_0 = np.arange(0, length_array-j-1, 1)
         idx_t = idx_0 + j
@@ -254,9 +272,9 @@ class Track:
             warnings.warn(
                 "Track is already an instance of NormalizedTrack. This will do nothing.")
 
-        x = self._x
-        y = self._y
-        t = self._t
+        x = self.__x
+        y = self.__y
+        t = self.__t
 
         # Getting the span of the diffusion.
         xmin = x.min()
@@ -289,12 +307,12 @@ class Track:
         """
 
         if N is None:
-            N = self._x.size
+            N = self.__x.size
 
         MSD = np.zeros((N-3,))
         MSD_error = np.zeros((N-3,))
-        pos_x = self._x
-        pos_y = self._y
+        pos_x = self.__x
+        pos_y = self.__y
 
         if numWorkers == None:
             workers = os.cpu_count()
@@ -326,8 +344,8 @@ class Track:
                 MSD[i-1] = np.mean(this_msd)
                 MSD_error[i-1] = np.std(this_msd) / np.sqrt(len(this_msd))
 
-        self._MSD = MSD
-        self._MSD_error = MSD_error
+        self.__msd = MSD
+        self.__msd_error = MSD_error
 
     def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, linearPlot=False, numWorkers: int = None, chunksize: int = 100):
         """ Classical Mean Squared Displacement Analysis for single track
@@ -348,11 +366,11 @@ class Track:
         """
 
         # Calculate MSD if this has not been done yet.
-        if self._MSD is None:
+        if self.__msd is None:
             self.calculate_msd()
 
         # Number time frames for this track
-        N = self._MSD.size
+        N = self.__msd.size
 
         # Define the number of points to use for fitting
         if nFitPoints is None:
@@ -377,18 +395,18 @@ class Track:
         # Fit the data to these 2 models using weighted least-squares fit
         # TODO: normalize the curves to make the fit easier to perform.
         reg1 = optimize.curve_fit(
-            model1, T[0:n_points], self._MSD[0:n_points], sigma=self._MSD_error[0:n_points])
+            model1, T[0:n_points], self.__msd[0:n_points], sigma=self.__msd_error[0:n_points])
         # print(f"reg1 parameters: {reg1[0]}") # Debug
-        reg2 = optimize.curve_fit(model2, T[0:n_points], self._MSD[0:n_points], [
-                                  *reg1[0][0:2], 1.0], sigma=self._MSD_error[0:n_points])
+        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], [
+                                  *reg1[0][0:2], 1.0], sigma=self.__msd_error[0:n_points])
         # reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
         # print(f"reg2 parameters: {reg2[0]}") #Debug
 
         # Compute BIC for both models
         m1 = model1(T, *reg1[0])
         m2 = model2(T, *reg2[0])
-        bic1 = BIC(m1[0:n_points], self._MSD[0:n_points], 2, 1)
-        bic2 = BIC(m2[0:n_points], self._MSD[0:n_points], 2, 1)
+        bic1 = BIC(m1[0:n_points], self.__msd[0:n_points], 2, 1)
+        bic2 = BIC(m2[0:n_points], self.__msd[0:n_points], 2, 1)
         # FIXME: numerical instabilities due to low position values. should normalize before analysis, and then report those adimentional values.
         print(bic1, bic2)
 
@@ -398,9 +416,9 @@ class Track:
 
         # Plot the results
         if linearPlot:
-            plt.plot(T, self._MSD, label="Data")
+            plt.plot(T, self.__msd, label="Data")
         else:
-            plt.semilogx(T, self._MSD, label="Data")
+            plt.semilogx(T, self.__msd, label="Data")
         plt.plot(T[0:n_points], m1[0:n_points],
                  label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
         plt.plot(T[0:n_points], m2[0:n_points],
@@ -412,11 +430,11 @@ class Track:
         plt.legend()
         plt.show()
 
-        self._msd_analysis_results["analyzed"] = True
-        self._msd_analysis_results["results"] = {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
+        self.__msd_analysis_results["analyzed"] = True
+        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
                                                  "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
 
-        return self._msd_analysis_results
+        return self.__msd_analysis_results
 
     def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000):
         print(fractionFit)
@@ -433,26 +451,28 @@ class Track:
             categorize the track model after Dapp calculation
         """
         # Calculate MSD if this has not been done yet.
-        if self._MSD is None:
+        if self.__msd is None:
             self.calculate_msd()
 
-        dt = self._t[1] - self._t[0]
+        dt = self.__t[1] - self.__t[0]
 
-        N = self._MSD.size
+        N = self.__msd.size
 
         # Time coordinates
         # This is the time array, as the fits will be MSD vs T
         T = np.linspace(dt, dt*N, N, endpoint=True)
 
         # Compute  the time-dependent apparent diffusion coefficient.
-        Dapp = self._MSD / (4 * T * (1 - 2*R*dt / T))
+        Dapp = self.__msd / (4 * T * (1 - 2*R*dt / T))
 
-        model, results = self.categorize(np.array(Dapp), np.arange(1, N+1), fractionFit=fractionFit, maxfev=maxfev)
+        model, results = self.__categorize(np.array(Dapp), np.arange(1, N+1), fractionFit=fractionFit, maxfev=maxfev)
 
-        self._adc_analysis_results["analyzed"] = True
-        self._adc_analysis_results["Dapp"] = np.array(Dapp)
-        self._adc_analysis_results["model"] = model
-        self._adc_analysis_results["results"] = results
+        self.__adc_analysis_results["analyzed"] = True
+        self.__adc_analysis_results["Dapp"] = np.array(Dapp)
+        self.__adc_analysis_results["model"] = model
+        self.__adc_analysis_results["results"] = results
+
+        return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
                     J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float=0.25, maxfev=1000):
@@ -473,7 +493,7 @@ class Track:
         # Convert binsize to m
         binsize = binsize_nm * 1e-9
 
-        dt = self._t[1] - self._t[0]
+        dt = self.__t[1] - self.__t[0]
 
         # We define a list of timepoints at which to calculate the distribution
         # can be more, I don't think less.
@@ -519,20 +539,20 @@ class Track:
         plt.ylabel("Estimated $D_{app}$")
         plt.show()
 
-        model, results = self.categorize(np.array(dapp_list), np.array(J), fractionFit=fractionFit, maxfev=maxfev)
+        model, results = self.__categorize(np.array(dapp_list), np.array(J), fractionFit=fractionFit, maxfev=maxfev)
 
-        self._sd_analysis_results["analyzed"] = True
-        self._sd_analysis_results["Dapp"] = np.array(dapp_list)
-        self._sd_analysis_results["J"] = np.array(J)
-        self._sd_analysis_results["model"] = model
-        self._sd_analysis_results["results"] = results
+        self.__sd_analysis_results["analyzed"] = True
+        self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
+        self.__sd_analysis_results["J"] = np.array(J)
+        self.__sd_analysis_results["model"] = model
+        self.__sd_analysis_results["results"] = results
 
-    def categorize(self, Dapp, J, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
+    def __categorize(self, Dapp, J, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
         if fractionFit > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
                 
-        dt = self._t[1] - self._t[0]
+        dt = self.__t[1] - self.__t[0]
         T = J * dt
 
         n_points = np.argmax(J > fractionFit * J[-1])
@@ -548,7 +568,7 @@ class Track:
 
         # Perform fits.
         if self.is_msd_calculated():
-            error = self._MSD_error[J[0:n_points]]
+            error = self.__msd_error[J[0:n_points]]
         else:
             error = None
 
@@ -607,10 +627,10 @@ class Track:
 class NormalizedTrack(Track):
     def __init__(self, x=None, y=None, t=None, xy_min=None, xy_max=None, tmin=None, tmax=None):
         Track.__init__(self, x, y, t)
-        self._xy_min = xy_min
-        self._xy_max = xy_max
-        self._tmin = tmin
-        self._tmax = tmax
+        self.__xy_min = xy_min
+        self.__xy_max = xy_max
+        self.__tmin = tmin
+        self.__tmax = tmax
 
 
 def MSD_loop(i, pos_x, pos_y, N):
