@@ -156,7 +156,7 @@ class Track:
 
         self.__msd_analysis_results = {"analyzed" : False, "results" : None}
         self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
-        self.__sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
+        self.__sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "results" : None}
 
     @classmethod
     def from_dict(cls, dict):
@@ -215,7 +215,7 @@ class Track:
         self.__sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
     
     def delete_adc_analysis_results(self):
-        self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "reults" : None}
+        self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "results" : None}
 
     def plot_msd_analysis_results(self, linearPlot: bool=False):
         if self.get_msd_analysis_results()["analyzed"] == False:
@@ -359,7 +359,7 @@ class Track:
         plt.title("Diffusion Category: {}".format(model))
         plt.legend()
         plt.show()
-        
+
     def get_x(self):
         return self.__x
 
