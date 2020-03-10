@@ -301,10 +301,65 @@ class Track:
                     color='gray', label="Fitted data")
         plt.xlabel("Time [step]")
         plt.ylabel("Normalized ADC")
-        plt.title("Diffusion Category: {}".format(model))
+        plt.title("Diffusion Category: {}".format())
         plt.legend()
         plt.show()
 
+    def plot_sd_analysis_results(self):
+        if self.get_sd_analysis_results()["analyzed"] == False:
+            raise ValueError("Track has not been analyzed using sd_analysis yet!")
+
+        J = self.get_sd_analysis_results()["J"]
+
+        dt = self.__t[1] - self.__t[0]
+        N = self.__t.size
+        T = J * dt
+
+        results = self.get_sd_analysis_results()["results"]
+
+        r_brownian = results["brownian"]["params"]
+        r_confined = results["confined"]["params"]
+        r_hop = results["hop"]["params"]
+
+        rel_likelihood_brownian = results["brownian"]["rel_likelihood"]
+        rel_likelihood_confined = results["confined"]["rel_likelihood"]
+        rel_likelihood_hop = results["hop"]["rel_likelihood"]
+
+        n_points = results["n_points"]
+        R = results["R"]
+
+        Dapp = self.get_sd_analysis_results()["Dapp"]
+        model = self.get_sd_analysis_results()["model"]
+
+        # Define the models to fit the Dapp
+        def model_brownian(t, D, delta): return D + \
+            delta**2 / (2 * t * (1 - 2*R*dt/t))
+        def model_confined(t, D_micro, delta, tau): return D_micro * (tau/t) * \
+            (1 - np.exp(-tau/t)) + delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
+
+        def model_hop(t, D_macro, D_micro, delta, tau): return D_macro + D_micro * \
+            (tau/t) * (1 - np.exp(-tau/t)) + \
+            delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
+
+        pred_brownian = model_brownian(T, *r_brownian)
+        pred_confined = model_confined(T, *r_confined)
+        pred_hop = model_hop(T, *r_hop)
+
+        plt.semilogx(T, Dapp, label="Data", marker="o")
+        plt.semilogx(T[0:n_points], pred_brownian[0:n_points],
+                     label=f"Brownian, Rel_Likelihood={rel_likelihood_brownian:.2e}")
+        plt.semilogx(T[0:n_points], pred_confined[0:n_points],
+                     label=f"Confined, Rel_Likelihood={rel_likelihood_confined:.2e}")
+        plt.semilogx(T[0:n_points], pred_hop[0:n_points],
+                     label=f"Hop, Rel_Likelihood={rel_likelihood_hop:.2e}")
+        plt.axvspan(T[0], T[n_points], alpha=0.25,
+                    color='gray', label="Fitted data")
+        plt.xlabel("Time [step]")
+        plt.ylabel("Normalized ADC")
+        plt.title("Diffusion Category: {}".format(model))
+        plt.legend()
+        plt.show()
+        
     def get_x(self):
         return self.__x
 
