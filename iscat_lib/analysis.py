@@ -219,8 +219,8 @@ class Track:
 
     def plot_msd_analysis_results(self, linearPlot: bool=False):
         if self.get_msd_analysis_results()["analyzed"] == False:
-            ValueError("Track as not been analyzed using msd_analysis yet!")
-            
+            raise ValueError("Track as not been analyzed using msd_analysis yet!")
+
         # Definining the models used for the fit
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
         def model2(t, D, delta2, alpha): return 4 * D * t**alpha + 2 * delta2
@@ -249,6 +249,59 @@ class Track:
                     color='gray', label="Fitted data")
         plt.xlabel("Time")
         plt.ylabel("MSD")
+        plt.legend()
+        plt.show()
+
+    def plot_adc_analysis_results(self):
+        if self.get_adc_analysis_results()["analyzed"] == False:
+            raise ValueError("Track has not been analyzed using adc_analysis yet!")
+
+        dt = self.__t[1] - self.__t[0]
+        N = self.__t.size
+        T = np.linspace(1, N, N-3,  endpoint=True) * dt
+
+        results = self.get_adc_analysis_results()["results"]
+
+        r_brownian = results["brownian"]["params"]
+        r_confined = results["confined"]["params"]
+        r_hop = results["hop"]["params"]
+
+        rel_likelihood_brownian = results["brownian"]["rel_likelihood"]
+        rel_likelihood_confined = results["confined"]["rel_likelihood"]
+        rel_likelihood_hop = results["hop"]["rel_likelihood"]
+
+        n_points = results["n_points"]
+        R = results["R"]
+
+        Dapp = self.get_adc_analysis_results()["Dapp"]
+        model = self.get_adc_analysis_results()["model"]
+
+        # Define the models to fit the Dapp
+        def model_brownian(t, D, delta): return D + \
+            delta**2 / (2 * t * (1 - 2*R*dt/t))
+        def model_confined(t, D_micro, delta, tau): return D_micro * (tau/t) * \
+            (1 - np.exp(-tau/t)) + delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
+
+        def model_hop(t, D_macro, D_micro, delta, tau): return D_macro + D_micro * \
+            (tau/t) * (1 - np.exp(-tau/t)) + \
+            delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
+
+        pred_brownian = model_brownian(T, *r_brownian)
+        pred_confined = model_confined(T, *r_confined)
+        pred_hop = model_hop(T, *r_hop)
+
+        plt.semilogx(T, Dapp, label="Data", marker="o")
+        plt.semilogx(T[0:n_points], pred_brownian[0:n_points],
+                     label=f"Brownian, Rel_Likelihood={rel_likelihood_brownian:.2e}")
+        plt.semilogx(T[0:n_points], pred_confined[0:n_points],
+                     label=f"Confined, Rel_Likelihood={rel_likelihood_confined:.2e}")
+        plt.semilogx(T[0:n_points], pred_hop[0:n_points],
+                     label=f"Hop, Rel_Likelihood={rel_likelihood_hop:.2e}")
+        plt.axvspan(T[0], T[n_points], alpha=0.25,
+                    color='gray', label="Fitted data")
+        plt.xlabel("Time [step]")
+        plt.ylabel("Normalized ADC")
+        plt.title("Diffusion Category: {}".format(model))
         plt.legend()
         plt.show()
 
@@ -622,25 +675,9 @@ class Track:
         rel_likelihood_confined = np.exp((bic_confined - bic_min) * 0.5)
         rel_likelihood_hop = np.exp((bic_hop - bic_min) * 0.5)
 
-        # Plot the results
-        plt.semilogx(T, Dapp, label="Data", marker="o")
-        plt.semilogx(T[0:n_points], pred_brownian[0:n_points],
-                     label=f"Brownian, Rel_Likelihood={rel_likelihood_brownian:.2e}")
-        plt.semilogx(T[0:n_points], pred_confined[0:n_points],
-                     label=f"Confined, Rel_Likelihood={rel_likelihood_confined:.2e}")
-        plt.semilogx(T[0:n_points], pred_hop[0:n_points],
-                     label=f"Hop, Rel_Likelihood={rel_likelihood_hop:.2e}")
-        plt.axvspan(T[0], T[n_points], alpha=0.25,
-                    color='gray', label="Fitted data")
-        plt.xlabel("Time [step]")
-        plt.ylabel("Normalized ADC")
-        plt.title("Diffusion Category: {}".format(category))
-        plt.legend()
-        plt.show()
-
-        return category, {"Brownian": {"params": r_brownian[0], "BIC": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
-                "Confined": {"params": r_confined[0], "BIC": bic_confined, "rel_likelihood": rel_likelihood_confined},
-                "Hop": {"params": r_hop[0], "BIC": bic_hop, "rel_likelihood": rel_likelihood_hop}}
+        return category, {"brownian": {"params": r_brownian[0], "bic": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
+                "confined": {"params": r_confined[0], "bic": bic_confined, "rel_likelihood": rel_likelihood_confined},
+                "hop": {"params": r_hop[0], "bic": bic_hop, "rel_likelihood": rel_likelihood_hop}, "n_points" : n_points, "R" : R}
 
 
 class NormalizedTrack(Track):
