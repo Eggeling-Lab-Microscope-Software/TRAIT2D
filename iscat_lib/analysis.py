@@ -28,25 +28,26 @@ class ListOfTracks:
         # TODO
         pass
 
-    def msd_analysis(self):
+    def msd_analysis(self, **kwargs):
         for track in self._tracks:
-            track.msd_analysis()
+            track.msd_analysis(**kwargs)
 
-    def adc_analysis(self):
+    def adc_analysis(self, **kwargs):
         for track in self._tracks:
-            track.adc_analysis()
+            track.adc_analysis(**kwargs)
 
-    def sd_analysis(self):
+    def sd_analysis(self, **kwargs):
         for track in self._tracks:
-            track.sd_analysis()
+            track.sd_analysis(**kwargs)
 
     def smart_averaging(self):
         """Average tracks by category, and report average track fit results and summary statistics"""
 
         track_length = self._tracks[0]._x.size
-        average_D_app_brownian = np.zeros(track_length - 3)
-        average_D_app_confined = np.zeros(track_length - 3)
-        average_D_app_hop = np.zeros(track_length - 3)
+        dapp_length = self._tracks[0]._Dapp["Dapp"].size
+        average_D_app_brownian = np.zeros(dapp_length)
+        average_D_app_confined = np.zeros(dapp_length)
+        average_D_app_hop = np.zeros(dapp_length)
 
         average_MSD_brownian = np.zeros(track_length - 3)
         average_MSD_confined = np.zeros(track_length - 3)
@@ -61,29 +62,31 @@ class ListOfTracks:
             k += 1
             if not track.is_dapp_calculated() or not track.is_msd_calculated():
                 raise ValueError(
-                    "All tracks have to be analysed using ADC analysis before averaging!")
+                    "All tracks have to have their Dapp and MSD calculated before averaging! Use sd_analysis() or adc_analysis().")
             if track._x.size != track_length:
                 raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(
                     track._x.size, track_length - 3, k + 1))
             if track._MSD.size != track_length - 3:
                 raise ValueError("Encountered MSD with incorrect length! (Got {}, expected {} for track {}.)".format(
                     track._MSD.size, track_length - 3, k + 1))
-            if track._Dapp.size != track_length - 3:
+            if track._Dapp["Dapp"].size != dapp_length:
                 raise ValueError("Encountered D_app with incorrect length!(Got {}, expected {} for track {}.)".format(
-                    track._Dapp.size, track_length - 3, k + 1))
+                    track._Dapp["Dapp"].size, dapp_length, k + 1))
+            if track._Dapp["T"].any() != self._tracks[0]._Dapp["T"].any():
+                raise ValueError("The Dapp of all tracks has to be evaluated for the same time points!")
 
         for track in self._tracks:
             if track._model == "brownian":
                 counter_brownian += 1
-                average_D_app_brownian += track._Dapp
+                average_D_app_brownian += track._Dapp["Dapp"]
                 average_MSD_brownian += track._MSD
             elif track._model == "confined":
                 counter_confined += 1
-                average_D_app_confined += track._Dapp
+                average_D_app_confined += track._Dapp["Dapp"]
                 average_MSD_confined += track._MSD
             elif track._model == "hop":
                 counter_hop += 1
-                average_D_app_hop += track._Dapp
+                average_D_app_hop += track._Dapp["Dapp"]
                 average_MSD_hop += track._MSD
             elif track._model == "unknown":
                 continue
@@ -104,6 +107,8 @@ class ListOfTracks:
             average_MSD_hop /= counter_hop
 
         counter_sum = counter_brownian + counter_confined + counter_hop
+        if counter_sum == 0:
+            raise ValueError("No tracks are categorized!")
         sector_brownian_area = counter_brownian / counter_sum
         sector_confined_area = counter_confined / counter_sum
         sector_hop_area = counter_hop / counter_sum
@@ -111,10 +116,6 @@ class ListOfTracks:
         # TODO: The whole fitting routine from ADC.
         # TODO: Plot results.
         # TODO: Print fit results.
-
-        print(sector_brownian_area)
-        print(sector_confined_area)
-        print(sector_hop_area)
 
         plt.semilogx(average_D_app_brownian)
         plt.semilogx(average_D_app_confined)
@@ -128,6 +129,8 @@ class ListOfTracks:
         ax1.legend()
 
         plt.show()
+
+        return {"sector_brownian_area" : sector_brownian_area, "sector_confined_area" : sector_confined_area, "sector_hop_area" : sector_hop_area}
 
 
 class Track:
@@ -400,7 +403,8 @@ class Track:
         return {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
                 "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
 
-    def adc_analysis(self, R: float = 1/6, nFitPoints=None, maxfev=1000, categorize: bool = True):
+    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000, categorize: bool = True):
+        print(fractionFit)
         """Revised analysis using the apparent diffusion coefficient
         Parameters
         ----------
@@ -431,10 +435,10 @@ class Track:
         self._Dapp = {"Dapp" : np.array(Dapp), "T": np.array(T)}
 
         if categorize:
-            return self.categorize()
+            return self.categorize(fractionFit=fractionFit)
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], categorize: bool = True):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float=0.25, categorize: bool = True):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
@@ -501,9 +505,10 @@ class Track:
         self._Dapp = {"Dapp" : np.array(dapp_list), "T" : np.array(J) * dt}
 
         if categorize:
-            return self.categorize()
+            return self.categorize(fractionFit=fractionFit)
 
     def categorize(self, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
+        print(fractionFit)
         if not self.is_dapp_calculated():
             raise ValueError(
                 "The Dapp of the track has to be calculated using adc_analysis() or sd_analysis() before categorizing.")
@@ -515,9 +520,8 @@ class Track:
         dt = self._t[1] - self._t[0]
         Dapp = self._Dapp["Dapp"]
         T = self._Dapp["T"]
-        n_points = int(Dapp.size * fractionFit)
 
-        n_points = np.argmax(T > 0.25 * T[-1])
+        n_points = np.argmax(T > fractionFit * T[-1])
         # Define the models to fit the Dapp
         def model_brownian(t, D, delta): return D + \
             delta**2 / (2 * t * (1 - 2*R*dt/t))
@@ -558,6 +562,8 @@ class Track:
             category = "hop"
         else:
             category = "unknown"
+
+        self._model = category
 
         # Calculate the relative likelihood for each model
         rel_likelihood_brownian = np.exp((bic_brownian - bic_min) * 0.5)
