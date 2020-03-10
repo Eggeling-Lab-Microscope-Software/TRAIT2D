@@ -301,7 +301,7 @@ class Track:
                     color='gray', label="Fitted data")
         plt.xlabel("Time [step]")
         plt.ylabel("Normalized ADC")
-        plt.title("Diffusion Category: {}".format())
+        plt.title("Diffusion Category: {}".format(model))
         plt.legend()
         plt.show()
 
@@ -312,7 +312,6 @@ class Track:
         J = self.get_sd_analysis_results()["J"]
 
         dt = self.__t[1] - self.__t[0]
-        N = self.__t.size
         T = J * dt
 
         results = self.get_sd_analysis_results()["results"]
