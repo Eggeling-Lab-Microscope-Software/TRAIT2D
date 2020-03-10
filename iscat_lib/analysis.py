@@ -4,6 +4,7 @@
 import numpy as np
 import tqdm
 import warnings
+import logging
 from scipy import optimize
 from scipy import interpolate
 import matplotlib.pyplot as plt
@@ -55,7 +56,9 @@ class ListOfTracks:
         counter_confined = 0
         counter_hop = 0
 
+        k = 0
         for track in self._tracks:
+            k += 1
             if not track.is_dapp_calculated() or not track.is_msd_calculated():
                 raise ValueError(
                     "All tracks have to be analysed using ADC analysis before averaging!")
@@ -145,6 +148,8 @@ class Track:
         self._MSD = None
         self._MSD_error = None
 
+        self._Dapp = None
+
         self._model = "unknown"
 
     @classmethod
@@ -190,6 +195,11 @@ class Track:
         """Returns True if the MSD of this track has already been calculated.
         """
         return self._MSD is not None
+
+    def is_dapp_calculated(self):
+        """Returns True if the Dapp of this track has already been calculated.
+        """
+        return self._Dapp is not None
 
     def calculate_sd_at(self, j: int):
         """Squared displacement calculation for single time point
@@ -390,7 +400,7 @@ class Track:
         return {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
                 "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2}}
 
-    def adc_analysis(self, R: float = 1/6, nFitPoints=None, maxfev=1000):
+    def adc_analysis(self, R: float = 1/6, nFitPoints=None, maxfev=1000, categorize: bool = True):
         """Revised analysis using the apparent diffusion coefficient
         Parameters
         ----------
@@ -400,6 +410,8 @@ class Track:
             Number of points used for fitting. Defaults to 25 % of total points.
         maxfev: int
             maxfev used by Scipy fitting routine.
+        categorize: bool
+            categorize the track model after Dapp calculation
         """
         # Calculate MSD if this has not been done yet.
         if self._MSD is None:
@@ -409,19 +421,6 @@ class Track:
 
         N = self._MSD.size
 
-        # Define the number of points to use for fitting
-        if nFitPoints is None:
-            n_points = int(0.25 * N)
-        else:
-            n_points = int(nFitPoints * N)
-
-        # Asserting that the nFitPoints is valid
-        assert n_points >= 2, f"nFitPoints={n_points} is not enough"
-        if n_points > int(0.25 * N):
-            warnings.warn(
-                "Using too many points for the fit means including points which have higher measurment errors.")
-            # Selecting more points than 25% should be possible, but not advised
-
         # Time coordinates
         # This is the time array, as the fits will be MSD vs T
         T = np.linspace(dt, dt*N, N, endpoint=True)
@@ -429,6 +428,96 @@ class Track:
         # Compute  the time-dependent apparent diffusion coefficient.
         Dapp = self._MSD / (4 * T * (1 - 2*R*dt / T))
 
+        self._Dapp = {"Dapp" : np.array(Dapp), "T": np.array(T)}
+
+        if categorize:
+            return self.categorize()
+
+    def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], categorize: bool = True):
+        """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
+        Parameters
+        ----------
+        dt: float
+            timestep
+        display_fit: bool
+            display fit for every timepoint
+        binsize_nm: float
+            binsize in nm
+        J: list
+            list of timepoints to consider
+        categorize: bool
+            categorize the track model after Dapp calculation
+        """
+        # Convert binsize to m
+        binsize = binsize_nm * 1e-9
+
+        dt = self._t[1] - self._t[0]
+
+        # We define a list of timepoints at which to calculate the distribution
+        # can be more, I don't think less.
+
+        # Perform the analysis for a single track
+        dapp_list = []
+        for j in tqdm.tqdm(J, desc="SD analysis for single track"):
+            # Calculate the SD
+            sd = self.calculate_sd_at(j)
+
+            t_lag = j * dt
+
+            x_fit = np.sqrt(sd)
+            # Calculate bins, x_fit is already sorted
+            max_x = x_fit[-1]
+            min_x = x_fit[0]
+            num_bins = int(np.ceil((max_x - min_x) / binsize))
+            hist_SD, bins = np.histogram(x_fit, bins=num_bins, density=True)
+            bin_mids = (bins[1:] + bins[:-1]) / 2.0
+            # Fit Rayleigh PDF to histogram. The bin size gives a good order-of-maginutde approximation
+            # for the initial guess of sigma
+            popt, pcov = optimize.curve_fit(
+                rayleighPDF, bin_mids, hist_SD, p0=(max_x-min_x))
+            if display_fit:
+                # Plot binned data
+                plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]),
+                        align='edge', alpha=0.5, label="Data")
+                plt.gca().set_xlim(0, 4.0e-7)
+                # Plot the fit
+                eval_x = np.linspace(bins[0], bins[-1], 100)
+                plt.plot(eval_x, rayleighPDF(
+                    eval_x, popt[0]), label="Rayleigh Fit")
+                plt.legend()
+                plt.title("$n = {}$".format(j))
+                plt.show()
+
+            sigma = popt[0]
+            dapp = sigma**2 / (2 * t_lag)
+            dapp_list.append(dapp)
+
+        plt.semilogx(np.array(J) * dt, dapp_list)
+        plt.xlabel("Time")
+        plt.ylabel("Estimated $D_{app}$")
+        plt.show()
+
+        self._Dapp = {"Dapp" : np.array(dapp_list), "T" : np.array(J) * dt}
+
+        if categorize:
+            return self.categorize()
+
+    def categorize(self, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
+        if not self.is_dapp_calculated():
+            raise ValueError(
+                "The Dapp of the track has to be calculated using adc_analysis() or sd_analysis() before categorizing.")
+
+        if fractionFit > 0.25:
+            warnings.warn(
+                "Using too many points for the fit means including points which have higher measurment errors.")
+                
+        dt = self._t[1] - self._t[0]
+        Dapp = self._Dapp["Dapp"]
+        T = self._Dapp["T"]
+        n_points = int(Dapp.size * fractionFit)
+
+        n_points = np.argmax(T > 0.25 * T[-1])
         # Define the models to fit the Dapp
         def model_brownian(t, D, delta): return D + \
             delta**2 / (2 * t * (1 - 2*R*dt/t))
@@ -440,12 +529,16 @@ class Track:
             delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
 
         # Perform fits.
+        if self.is_msd_calculated():
+            error = self._MSD_error[0:n_points]
+        else:
+            error = 0
         r_brownian = optimize.curve_fit(
-            model_brownian, T[0:n_points], Dapp[0:n_points], sigma=self._MSD_error[0:n_points], maxfev=maxfev)
+            model_brownian, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
         r_confined = optimize.curve_fit(
-            model_confined, T[0:n_points], Dapp[0:n_points], sigma=self._MSD_error[0:n_points], maxfev=maxfev)
+            model_confined, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
         r_hop = optimize.curve_fit(
-            model_hop, T[0:n_points], Dapp[0:n_points], sigma=self._MSD_error[0:n_points], maxfev=maxfev)
+            model_hop, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
 
         # Compute BIC for each model.
         pred_brownian = model_brownian(T, *r_brownian[0])
@@ -465,7 +558,6 @@ class Track:
             category = "hop"
         else:
             category = "unknown"
-        self._model = category
 
         # Calculate the relative likelihood for each model
         rel_likelihood_brownian = np.exp((bic_brownian - bic_min) * 0.5)
@@ -491,68 +583,6 @@ class Track:
         return {"Brownian": {"params": r_brownian[0], "BIC": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
                 "Confined": {"params": r_confined[0], "BIC": bic_confined, "rel_likelihood": rel_likelihood_confined},
                 "Hop": {"params": r_hop[0], "BIC": bic_hop, "rel_likelihood": rel_likelihood_hop}}
-
-    def sd_analysis(self, dt: float = 1.0, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]):
-        """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
-        Parameters
-        ----------
-        dt: float
-            timestep
-        display_fit: bool
-            display fit for every timepoint
-        binsize_nm: float
-            binsize in nm
-        J: list
-            list of timepoints to consider
-        """
-        # Convert binsize to m
-        binsize = binsize_nm * 1e-9
-
-        # We define a list of timepoints at which to calculate the distribution
-        # can be more, I don't think less.
-
-        # Perform the analysis for a single track
-        dapp_list = []
-        for j in tqdm.tqdm(J, desc="SD analysis for single track"):
-            # Calculate the SD
-            sd = self.calculate_sd_at(j)
-
-            t_lag = j * dt
-
-            x_fit = np.sqrt(sd)
-            # Calculate bins, x_fit is already sorted
-            max_x = x_fit[-1]
-            min_x = x_fit[0]
-            num_bins = int(np.ceil((max_x - min_x) / binsize))
-            hist_SD, bins = np.histogram(x_fit, bins=num_bins, density=True)
-            bin_mids = (bins[1:] + bins[:-1]) / 2.0
-            # Fit Rayleigh PDF to histogram. The bin size gives a good order-of-maginutde approximation
-            # for the initial guess of sigma
-            popt, pcov = optimize.curve_fit(
-                rayleighPDF, bin_mids, hist_SD, p0=binsize)
-
-            if display_fit:
-                # Plot binned data
-                plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]),
-                        align='edge', alpha=0.5, label="Data")
-                plt.gca().set_xlim(0, 4.0e-7)
-                # Plot the fit
-                eval_x = np.linspace(bins[0], bins[-1], 100)
-                plt.plot(eval_x, rayleighPDF(
-                    eval_x, popt[0]), label="Rayleigh Fit")
-                plt.legend()
-                plt.title("$n = {}$".format(j))
-                plt.show()
-
-            sigma = popt[0]
-            dapp = sigma**2 / (2 * t_lag)
-            dapp_list.append(dapp)
-
-        plt.semilogx(np.array(J) * dt, dapp_list)
-        plt.xlabel("Time")
-        plt.ylabel("Estimated $D_{app}$")
-        plt.show()
 
 
 class NormalizedTrack(Track):
