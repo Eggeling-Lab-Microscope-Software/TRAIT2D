@@ -15,6 +15,14 @@ from concurrent.futures import ProcessPoolExecutor
 
 
 class ListOfTracks:
+    """Create an object that can hold multiple tracks and analyze them in bulk.
+
+    Parameters
+    ----------
+    tracks : list
+        A Python list containing the tracks.
+    """
+
     def __init__(self, tracks: list = None):
         self.__tracks = tracks
 
@@ -25,9 +33,23 @@ class ListOfTracks:
                                              len(self.__tracks))
 
     def get_tracks(self):
+        """Return a Python list that contains the tracks.
+
+        Returns
+        -------
+        tracks : list
+            List of tracks.
+        """
         return self.__tracks
 
     def get_track(self, idx):
+        """Return a single track at the specified index.
+
+        Parameters
+        ----------
+        idx : int
+            Index of track.
+        """
         return self.__tracks[idx]
 
     def load_trajectories(self, filename: str):
@@ -35,19 +57,47 @@ class ListOfTracks:
         pass
 
     def msd_analysis(self, **kwargs):
+        """Analyze all tracks using MSD analysis.
+
+        Parameters
+        ----------
+        **kwargs
+            Keyword arguments to be used by msd_analysis for each track.
+        """
         for track in self.__tracks:
             track.msd_analysis(**kwargs)
 
     def adc_analysis(self, **kwargs):
+        """Analyze all tracks using ADC analysis.
+
+        Parameters
+        ----------
+        **kwargs
+            Keyword arguments to be used by adc_analysis for each track.
+        """
         for track in self.__tracks:
             track.adc_analysis(**kwargs)
 
     def sd_analysis(self, **kwargs):
+        """Analyze all tracks using SD analyis.
+
+        Parameters
+        ----------
+        **kwargs
+            Keyword arguments to be used by sd_analysis for each track.
+        """
         for track in self.__tracks:
             track.sd_analysis(**kwargs)
 
     def smart_averaging(self):
-        """Average tracks by category, and report average track fit results and summary statistics"""
+        """Average tracks by category, and report average track fit results and summary statistics
+
+        Returns
+        -------
+
+        results : dict
+            Relative shares of each model.
+        """
 
         track_length = self.__tracks[0].get_x().size
         average_D_app_brownian = np.zeros(track_length - 3)
@@ -139,16 +189,19 @@ class ListOfTracks:
 
 
 class Track:
+    """Create a track that can hold trajectory and analysis information.
+
+    Parameters
+    ----------
+    x: array_like
+        x coordinates of trajectory.
+    y: array_like
+        y coordinates of trajectory.
+    t: array_like
+        time coordinates of trajectory.
+    """
+
     def __init__(self, x=None, y=None, t=None):
-        """Create a track.
-        Parameters
-        ----------
-        x: array_like
-
-        y: array_like
-
-        t: array_like
-        """
         self.__x = np.array(x)
         self.__y = np.array(y)
         self.__t = np.array(t)
@@ -204,26 +257,44 @@ class Track:
                                               self.__adc_analysis_results["analyzed"])
 
     def get_msd_analysis_results(self):
+        """Returns the MSD analysis results."""
         return self.__msd_analysis_results
 
     def get_sd_analysis_results(self):
+        """Returns the SD analysis results."""
         return self.__sd_analysis_results
 
     def get_adc_analysis_results(self):
+        """Returns the ADC analysis results."""
         return self.__adc_analysis_results
 
     def delete_msd_analysis_results(self):
+        """Delete the MSD analysis results."""
         self.__msd_analysis_results = {"analyzed": False, "results": None}
 
     def delete_sd_analysis_results(self):
+        """Delete the SD analyis results."""
         self.__sd_analysis_results = {
             "analyzed": False, "model": "unknown", "Dapp": None, "results": None}
 
     def delete_adc_analysis_results(self):
+        """ Delete the ADC analysis results."""
         self.__adc_analysis_results = {
             "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
 
     def plot_msd_analysis_results(self, linearPlot: bool = False):
+        """Plot the MSD analysis results.
+
+        Parameters
+        ----------
+        linearPlot : bool
+            Whether to plot x values on a linear scale instead of the default logarithmic.
+
+        Raises
+        ------
+        ValueError
+            Track has not been analyzed using MSD analysis yet.
+        """
         if self.get_msd_analysis_results()["analyzed"] == False:
             raise ValueError(
                 "Track as not been analyzed using msd_analysis yet!")
@@ -259,6 +330,13 @@ class Track:
         plt.show()
 
     def plot_adc_analysis_results(self):
+        """Plot the ADC analysis results.
+
+        Raises
+        ------
+        ValueError
+            Track has not been analyzed using ADC analysis yet.
+        """
         if self.get_adc_analysis_results()["analyzed"] == False:
             raise ValueError(
                 "Track has not been analyzed using adc_analysis yet!")
@@ -313,6 +391,13 @@ class Track:
         plt.show()
 
     def plot_sd_analysis_results(self):
+        """Plot the SD analysis results.
+
+        Raises
+        ------
+        ValueError
+            Track has not been analyzed using SD analyis yet.
+        """
         if self.get_sd_analysis_results()["analyzed"] == False:
             raise ValueError(
                 "Track has not been analyzed using sd_analysis yet!")
@@ -368,20 +453,23 @@ class Track:
         plt.show()
 
     def get_x(self):
+        """Return x coordinates of trajectory."""
         return self.__x
 
     def get_y(self):
+        """Return y coordinates of trajectory."""
         return self.__y
 
     def get_t(self):
+        """Return time coordinates of trajectory."""
         return self.__t
 
     def is_msd_calculated(self):
-        """Returns True if the MSD of this track has already been calculated.
-        """
+        """Returns True if the MSD of this track has already been calculated."""
         return self.__msd is not None
 
     def get_msd(self):
+        """Returns the MSD values of the track."""
         return self.__msd
 
     def calculate_sd_at(self, j: int):
@@ -445,7 +533,8 @@ class Track:
         return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
 
     def calculate_msd(self, N: int = None, numWorkers: int = None, chunksize: int = 100):
-        """Mean squared displacement calculation
+        """Calculates the mean squared displacement of the track.
+
         Parameters
         ----------
         N: int
@@ -517,7 +606,7 @@ class Track:
 
         # Calculate MSD if this has not been done yet.
         if self.__msd is None:
-            self.calculate_msd()
+            self.calculate_msd(numWorkers=numWorkers, chunksize=chunksize)
 
         # Number time frames for this track
         N = self.__msd.size
@@ -745,6 +834,8 @@ class Track:
 
 
 class NormalizedTrack(Track):
+    """A track with normalized coordinates and additional information about the normalization."""
+
     def __init__(self, x=None, y=None, t=None, xy_min=None, xy_max=None, tmin=None, tmax=None):
         Track.__init__(self, x, y, t)
         self.__xy_min = xy_min
