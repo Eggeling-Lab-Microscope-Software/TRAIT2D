@@ -81,11 +81,13 @@ class ListOfTracks:
         for track in self.__tracks:
             if track.get_adc_analysis_results()["model"] == "brownian":
                 counter_brownian += 1
-                average_D_app_brownian += track.get_adc_analysis_results()["Dapp"]
+                average_D_app_brownian += track.get_adc_analysis_results()[
+                    "Dapp"]
                 average_MSD_brownian += track.get_msd()
             elif track.get_adc_analysis_results()["model"] == "confined":
                 counter_confined += 1
-                average_D_app_confined += track.get_adc_analysis_results()["Dapp"]
+                average_D_app_confined += track.get_adc_analysis_results()[
+                    "Dapp"]
                 average_MSD_confined += track.get_msd()
             elif track.get_adc_analysis_results()["model"] == "hop":
                 counter_hop += 1
@@ -133,7 +135,7 @@ class ListOfTracks:
 
         plt.show()
 
-        return {"sector_brownian_area" : sector_brownian_area, "sector_confined_area" : sector_confined_area, "sector_hop_area" : sector_hop_area}
+        return {"sector_brownian_area": sector_brownian_area, "sector_confined_area": sector_confined_area, "sector_hop_area": sector_hop_area}
 
 
 class Track:
@@ -154,9 +156,11 @@ class Track:
         self.__msd = None
         self.__msd_error = None
 
-        self.__msd_analysis_results = {"analyzed" : False, "results" : None}
-        self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
-        self.__sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "results" : None}
+        self.__msd_analysis_results = {"analyzed": False, "results": None}
+        self.__adc_analysis_results = {
+            "analyzed": False, "model": "unknown", "Dapp": None, "results": None}
+        self.__sd_analysis_results = {
+            "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
 
     @classmethod
     def from_dict(cls, dict):
@@ -193,15 +197,15 @@ class Track:
                 "MSD analysis done: %s\n"
                 "SD analysis done: %s\n"
                 "ADC analysis done: %s\n") % (self.__class__.__name__,
-                                      id(self),
-                                      self.is_msd_calculated(),
-                                      self.__msd_analysis_results["analyzed"],
-                                      self.__sd_analysis_results["analyzed"],
-                                      self.__adc_analysis_results["analyzed"])
+                                              id(self),
+                                              self.is_msd_calculated(),
+                                              self.__msd_analysis_results["analyzed"],
+                                              self.__sd_analysis_results["analyzed"],
+                                              self.__adc_analysis_results["analyzed"])
 
     def get_msd_analysis_results(self):
         return self.__msd_analysis_results
-    
+
     def get_sd_analysis_results(self):
         return self.__sd_analysis_results
 
@@ -209,22 +213,24 @@ class Track:
         return self.__adc_analysis_results
 
     def delete_msd_analysis_results(self):
-        self.__msd_analysis_results = {"analyzed" : False, "results" : None}
-    
-    def delete_sd_analysis_results(self):
-        self.__sd_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "results" : None}
-    
-    def delete_adc_analysis_results(self):
-        self.__adc_analysis_results = {"analyzed" : False, "model" : "unknown", "Dapp" : None, "J" : None, "results" : None}
+        self.__msd_analysis_results = {"analyzed": False, "results": None}
 
-    def plot_msd_analysis_results(self, linearPlot: bool=False):
+    def delete_sd_analysis_results(self):
+        self.__sd_analysis_results = {
+            "analyzed": False, "model": "unknown", "Dapp": None, "results": None}
+
+    def delete_adc_analysis_results(self):
+        self.__adc_analysis_results = {
+            "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
+
+    def plot_msd_analysis_results(self, linearPlot: bool = False):
         if self.get_msd_analysis_results()["analyzed"] == False:
-            raise ValueError("Track as not been analyzed using msd_analysis yet!")
+            raise ValueError(
+                "Track as not been analyzed using msd_analysis yet!")
 
         # Definining the models used for the fit
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
         def model2(t, D, delta2, alpha): return 4 * D * t**alpha + 2 * delta2
-
 
         results = self.get_msd_analysis_results()["results"]
         N = self.__x.size
@@ -254,7 +260,8 @@ class Track:
 
     def plot_adc_analysis_results(self):
         if self.get_adc_analysis_results()["analyzed"] == False:
-            raise ValueError("Track has not been analyzed using adc_analysis yet!")
+            raise ValueError(
+                "Track has not been analyzed using adc_analysis yet!")
 
         dt = self.__t[1] - self.__t[0]
         N = self.__t.size
@@ -307,7 +314,8 @@ class Track:
 
     def plot_sd_analysis_results(self):
         if self.get_sd_analysis_results()["analyzed"] == False:
-            raise ValueError("Track has not been analyzed using sd_analysis yet!")
+            raise ValueError(
+                "Track has not been analyzed using sd_analysis yet!")
 
         J = self.get_sd_analysis_results()["J"]
 
@@ -557,12 +565,12 @@ class Track:
 
         self.__msd_analysis_results["analyzed"] = True
         self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
-                                                 "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2},
-                                                 "n_points" : n_points}
+                                                  "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2},
+                                                  "n_points": n_points}
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000):
+    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000, numWorkers=None, chunksize=chunksize):
         print(fractionFit)
         """Revised analysis using the apparent diffusion coefficient
         Parameters
@@ -578,7 +586,7 @@ class Track:
         """
         # Calculate MSD if this has not been done yet.
         if self.__msd is None:
-            self.calculate_msd()
+            self.calculate_msd(numWorkers=numWorkers, chunksize=chunksize)
 
         dt = self.__t[1] - self.__t[0]
 
@@ -591,7 +599,8 @@ class Track:
         # Compute  the time-dependent apparent diffusion coefficient.
         Dapp = self.__msd / (4 * T * (1 - 2*R*dt / T))
 
-        model, results = self.__categorize(np.array(Dapp), np.arange(1, N+1), fractionFit=fractionFit, maxfev=maxfev)
+        model, results = self.__categorize(np.array(Dapp), np.arange(
+            1, N+1), fractionFit=fractionFit, maxfev=maxfev)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -601,7 +610,7 @@ class Track:
         return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float=0.25, maxfev=1000):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float = 0.25, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
@@ -665,7 +674,8 @@ class Track:
         plt.ylabel("Estimated $D_{app}$")
         plt.show()
 
-        model, results = self.__categorize(np.array(dapp_list), np.array(J), fractionFit=fractionFit, maxfev=maxfev)
+        model, results = self.__categorize(np.array(dapp_list), np.array(
+            J), fractionFit=fractionFit, maxfev=maxfev)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -673,11 +683,11 @@ class Track:
         self.__sd_analysis_results["model"] = model
         self.__sd_analysis_results["results"] = results
 
-    def __categorize(self, Dapp, J, R: float = 1/6, fractionFit : float = 0.25, maxfev=1000):
+    def __categorize(self, Dapp, J, R: float = 1/6, fractionFit: float = 0.25, maxfev=1000):
         if fractionFit > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
-                
+
         dt = self.__t[1] - self.__t[0]
         T = J * dt
 
@@ -730,8 +740,8 @@ class Track:
         rel_likelihood_hop = np.exp((bic_hop - bic_min) * 0.5)
 
         return category, {"brownian": {"params": r_brownian[0], "bic": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
-                "confined": {"params": r_confined[0], "bic": bic_confined, "rel_likelihood": rel_likelihood_confined},
-                "hop": {"params": r_hop[0], "bic": bic_hop, "rel_likelihood": rel_likelihood_hop}, "n_points" : n_points, "R" : R}
+                          "confined": {"params": r_confined[0], "bic": bic_confined, "rel_likelihood": rel_likelihood_confined},
+                          "hop": {"params": r_hop[0], "bic": bic_hop, "rel_likelihood": rel_likelihood_hop}, "n_points": n_points, "R": R}
 
 
 class NormalizedTrack(Track):
