@@ -659,7 +659,7 @@ class Track:
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000, numWorkers=None, chunksize=chunksize):
+    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000, numWorkers=None, chunksize=100):
         print(fractionFit)
         """Revised analysis using the apparent diffusion coefficient
         Parameters
