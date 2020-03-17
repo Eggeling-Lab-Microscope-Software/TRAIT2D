@@ -57,6 +57,52 @@ class ListOfTracks:
         # TODO
         pass
 
+    def plot_trajectories(self, cmap="plasma"):
+        from matplotlib.collections import LineCollection
+        from matplotlib.ticker import FuncFormatter
+        from matplotlib.cm import get_cmap
+        cmap = get_cmap(cmap)
+        plt.figure()
+        ax = plt.gca()
+        xmin = 0
+        xmax = 0
+        ymin = 0
+        ymax = 0
+        for track in self.__tracks:
+            segs = []
+            colors = []
+            x = track.get_x()
+            y = track.get_y()
+            t = track.get_t()
+            x -= x[0]
+            y -= y[0]
+            for i in range(1, t.size):
+                segs.append([(x[i-1], y[i-1]),
+                             (x[i], y[i])])
+                colors.append(
+                    cmap(t[i] / (t.max() - t.min())))
+            lc = LineCollection(segs, colors=colors)
+            ax.add_collection(lc)
+            xmin = min(xmin, x.min())
+            xmax = max(xmax, x.max())
+            ymin = min(ymin, y.min())
+            ymax = max(ymax, y.max())
+        ax.set_title("Plot of {} trajectories".format(len(self.__tracks)))
+        xspan = xmax - xmin
+        yspan = ymax - ymin
+        ax.set_xlim(xmin - 0.1 * xspan, xmax + 0.1 * xspan)
+        ax.set_ylim(ymin - 0.1 * yspan, ymax + 0.1 * yspan)
+        ax.axhline(0, linewidth=0.5, color='black', zorder=-1)
+        ax.axvline(0, linewidth=0.5, color='black', zorder=-1)
+        ax.set_aspect('equal', 'datalim')
+        ax.xaxis.set_major_formatter(
+            FuncFormatter(lambda x, pos: "%d" % int(x * 1e9)))
+        ax.yaxis.set_major_formatter(
+            FuncFormatter(lambda x, pos: "%d" % int(x * 1e9)))
+        ax.set_xlabel("x (nm)")
+        ax.set_ylabel("y (nm)")
+        plt.show()
+
     def msd_analysis(self, **kwargs):
         """Analyze all tracks using MSD analysis.
 
@@ -486,6 +532,38 @@ class Track:
         plt.legend()
         plt.show()
 
+    def plot_trajectory(self, cmap='plasma'):
+        from matplotlib.collections import LineCollection
+        from matplotlib.ticker import FuncFormatter
+        from matplotlib.cm import get_cmap
+        cmap = get_cmap(cmap)
+        plt.figure()
+        ax = plt.gca()
+        segs = []
+        colors = []
+        for i in range(1, self.__t.size):
+            segs.append([(self.__x[i-1], self.__y[i-1]),
+                         (self.__x[i], self.__y[i])])
+            colors.append(
+                cmap(self.__t[i] / (self.__t.max() - self.__t.min())))
+        lc = LineCollection(segs, colors=colors)
+        ax.axhline(self.__y[0], linewidth=0.5, color='black', zorder=-1)
+        ax.axvline(self.__x[0], linewidth=0.5, color='black', zorder=-1)
+        ax.add_collection(lc)
+        ax.set_title("Trajectory")
+        xspan = self.__x.max() - self.__x.min()
+        yspan = self.__y.max() - self.__y.min()
+        ax.set_xlim(self.__x.min() - 0.1 * xspan, self.__x.max() + 0.1 * xspan)
+        ax.set_ylim(self.__y.min() - 0.1 * yspan, self.__y.max() + 0.1 * yspan)
+        ax.set_aspect('equal', 'datalim')
+        ax.xaxis.set_major_formatter(
+            FuncFormatter(lambda x, pos: "%d" % int(x * 1e9)))
+        ax.yaxis.set_major_formatter(
+            FuncFormatter(lambda x, pos: "%d" % int(x * 1e9)))
+        ax.set_xlabel("x (nm)")
+        ax.set_ylabel("y (nm)")
+        plt.show()
+
     def get_x(self):
         """Return x coordinates of trajectory."""
         return self.__x
@@ -794,11 +872,6 @@ class Track:
             sigma = popt[0]
             dapp = sigma**2 / (2 * t_lag)
             dapp_list.append(dapp)
-
-        plt.semilogx(np.array(J) * dt, dapp_list)
-        plt.xlabel("Time")
-        plt.ylabel("Estimated $D_{app}$")
-        plt.show()
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
             J), fractionFit=fractionFit, maxfev=maxfev)
