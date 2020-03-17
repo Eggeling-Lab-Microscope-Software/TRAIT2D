@@ -953,6 +953,8 @@ class NormalizedTrack(Track):
         self.__tmin = tmin
         self.__tmax = tmax
 
+    # We define a list of timepoints at which to calculate the distribution
+     # can be more, I don't think less.
 
 def MSD_loop(i, pos_x, pos_y, N):
     idx_0 = np.arange(1, N-i-1, 1)
