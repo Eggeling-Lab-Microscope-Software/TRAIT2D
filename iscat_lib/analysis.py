@@ -227,13 +227,20 @@ class Track:
         return cls(dict["x"], dict["y"], dict["t"])
 
     @classmethod
-    def from_file(cls, filename, format=None):
+    def from_file(cls, filename, format=None, unit='metres'):
         """Create a track from a file containing a single track.
         Parameters
         ----------
         filename: str
             Name of the file.
         """
+        unit_factor = 1
+        if unit == "millimetres":
+            unit_factor = 1e-3
+        elif unit == 'micrometres':
+            unit_factor = 1e-6
+        elif unit == "nanometres":
+            unit_factor = 1e-9
         if format == None:
             format = os.path.splitext(filename)[1].replace(".", "")
             if format == "":
@@ -249,8 +256,8 @@ class Track:
                 y = []
                 t = []
                 for row in reader:
-                    x.append(row["x"])
-                    y.append(row["y"])
+                    x.append(float(row["x"]) * unit_factor)
+                    y.append(float(row["y"]) * unit_factor)
                     t.append(row["t"])
             return cls(x, y, t)
         elif format == "json":
