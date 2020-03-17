@@ -233,14 +233,23 @@ class Track:
         ----------
         filename: str
             Name of the file.
+        format: str
+            Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
+        unit: str
+            Unit of track data in space. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
         """
-        unit_factor = 1
+        unit_factor = None
+        if unit == "metres":
+            unit_factor = 1
         if unit == "millimetres":
             unit_factor = 1e-3
         elif unit == 'micrometres':
             unit_factor = 1e-6
         elif unit == "nanometres":
             unit_factor = 1e-9
+        else:
+            raise ValueError(
+                "unit must be metres, millimetres, micrometres, or nanometres")
         if format == None:
             format = os.path.splitext(filename)[1].replace(".", "")
             if format == "":
