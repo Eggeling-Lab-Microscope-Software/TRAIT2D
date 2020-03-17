@@ -5,6 +5,7 @@ import numpy as np
 import tqdm
 import warnings
 import logging
+import csv
 from scipy import optimize
 from scipy import interpolate
 import matplotlib.pyplot as plt
@@ -202,9 +203,9 @@ class Track:
     """
 
     def __init__(self, x=None, y=None, t=None):
-        self.__x = np.array(x)
-        self.__y = np.array(y)
-        self.__t = np.array(t)
+        self.__x = np.array(x, dtype=float)
+        self.__y = np.array(y, dtype=float)
+        self.__t = np.array(t, dtype=float)
 
         self.__msd = None
         self.__msd_error = None
@@ -226,23 +227,40 @@ class Track:
         return cls(dict["x"], dict["y"], dict["t"])
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, filename, format=None):
         """Create a track from a file containing a single track.
         Parameters
         ----------
         filename: str
             Name of the file.
         """
-        ext = os.path.splitext(filename)
-        if ext == ".csv":
-            # TODO: .csv-specific import
-            pass
-        elif ext == ".json":
+        if format == None:
+            format = os.path.splitext(filename)[1].replace(".", "")
+            if format == "":
+                raise ValueError(
+                    'You must supply a format "csv", "json" or "pcl" if the file has no extension.')
+
+        if format != "csv" and format != "json" and format != "pcl":
+            raise ValueError("Unknown format: {}".format(format))
+        if format == "csv":
+            with open(filename, "r") as f:
+                reader = csv.DictReader(f)
+                x = []
+                y = []
+                t = []
+                for row in reader:
+                    x.append(row["x"])
+                    y.append(row["y"])
+                    t.append(row["t"])
+            return cls(x, y, t)
+        elif format == "json":
             # TODO: .json-specific import
-            pass
-        elif ext == ".pcl":
+            raise NotImplementedError(
+                "Import from json is not yet implemented.")
+        elif format == "pcl":
             # TODO: .pcl-specific import
-            pass
+            raise NotImplementedError(
+                "Import from pcl is not yet implemented.")
 
     def __repr__(self):
         return ("<%s instance at %s>\n"
@@ -463,6 +481,9 @@ class Track:
     def get_t(self):
         """Return time coordinates of trajectory."""
         return self.__t
+
+    def get_trajectory(self):
+        return {"t": self.__t.tolist(), "x": self.__x.tolist(), "y": self.__y.tolist()}
 
     def is_msd_calculated(self):
         """Returns True if the MSD of this track has already been calculated."""
