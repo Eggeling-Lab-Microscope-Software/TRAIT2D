@@ -52,7 +52,7 @@ class MainVisual(tk.Frame):
         self.monitor_width=master.winfo_screenwidth()
         self.monitor_height = master.winfo_screenheight()
         self.button_size=int(self.monitor_width/25)
-        self.figsize_value=(int(self.monitor_height/2/self.dpi), int(self.monitor_height/2/self.dpi)) #(6,6) # parameters for the figure
+        self.figsize_value=(int(self.monitor_height/3/self.dpi), int(self.monitor_height/3/self.dpi)) # parameters for the figure
         
         master.protocol('WM_DELETE_WINDOW', self.close_app)
 
