@@ -241,9 +241,9 @@ class Track:
         unit_factor = None
         if unit == "metres":
             unit_factor = 1
-        if unit == "millimetres":
+        elif unit == "millimetres":
             unit_factor = 1e-3
-        elif unit == 'micrometres':
+        elif unit == "micrometres":
             unit_factor = 1e-6
         elif unit == "nanometres":
             unit_factor = 1e-9
