@@ -45,6 +45,7 @@ class Diffusion(object):
         self.trajectory["x"] = []
         self.trajectory["y"] = []
         self.trajectory["t"] = []
+        self.trajectory["id"] = []
 
     def display_trajectory(self, time_resolution=None, limit_fov=False, alpha=0.8):
         """ Display the simulated trajectory.
@@ -101,13 +102,14 @@ class Diffusion(object):
                 json.dump(self.trajectory, f)
         elif format == "csv":
             with open(filename, "w") as f:
-                fieldnames = ["t", "x", "y"]
+                fieldnames = ["t", "x", "y", "id"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 for i in range(len(self.trajectory["x"])):
                     this_row = {"t": self.trajectory["t"][i],
                                 "x": self.trajectory["x"][i],
-                                "y": self.trajectory["y"][i]}
+                                "y": self.trajectory["y"][i],
+                               "id": 0}
                     writer.writerow(this_row)
 
         elif format == "pcl":
