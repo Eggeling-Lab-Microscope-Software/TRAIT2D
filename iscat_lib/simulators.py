@@ -98,9 +98,9 @@ class Diffusion(object):
             with open(filename, "w") as f:
                 json.dump(self.trajectory, f)
         elif format == "csv":
-            with open(filename, "w") as f:
+            with open(filename, "w", newline='') as f:
                 fieldnames = ["t", "x", "y", "id"]
-                writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator='\n')
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 for i in range(len(self.trajectory["x"])):
                     this_row = {"t": self.trajectory["t"][i],
