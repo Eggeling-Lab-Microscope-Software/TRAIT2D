@@ -100,7 +100,7 @@ class Diffusion(object):
         elif format == "csv":
             with open(filename, "w") as f:
                 fieldnames = ["t", "x", "y", "id"]
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator='\n')
                 writer.writeheader()
                 for i in range(len(self.trajectory["x"])):
                     this_row = {"t": self.trajectory["t"][i],
