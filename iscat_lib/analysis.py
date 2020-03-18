@@ -775,7 +775,6 @@ class Track:
         return self.__msd_analysis_results
 
     def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000, numWorkers=None, chunksize=100):
-        print(fractionFit)
         """Revised analysis using the apparent diffusion coefficient
         Parameters
         ----------
@@ -955,6 +954,7 @@ class NormalizedTrack(Track):
 
     # We define a list of timepoints at which to calculate the distribution
      # can be more, I don't think less.
+
 
 def MSD_loop(i, pos_x, pos_y, N):
     idx_0 = np.arange(1, N-i-1, 1)
