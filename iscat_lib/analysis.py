@@ -780,7 +780,7 @@ class Track:
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fractionFit=0.25, maxfev=1000, numWorkers=None, chunksize=100):
+    def adc_analysis(self, R: float = 1/6, fractionFitPoints=0.25, maxfev=1000, numWorkers=None, chunksize=100):
         """Revised analysis using the apparent diffusion coefficient
         Parameters
         ----------
@@ -809,7 +809,7 @@ class Track:
         Dapp = self.__msd / (4 * T * (1 - 2*R*dt / T))
 
         model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), fractionFit=fractionFit, maxfev=maxfev)
+            1, N+1), fractionFitPoints=fractionFitPoints, maxfev=maxfev)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -819,7 +819,7 @@ class Track:
         return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFit: float = 0.25, maxfev=1000):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFitPoints: float = 0.25, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
@@ -879,7 +879,7 @@ class Track:
             dapp_list.append(dapp)
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), fractionFit=fractionFit, maxfev=maxfev)
+            J), fractionFitPoints=fractionFitPoints, maxfev=maxfev)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -887,15 +887,15 @@ class Track:
         self.__sd_analysis_results["model"] = model
         self.__sd_analysis_results["results"] = results
 
-    def __categorize(self, Dapp, J, R: float = 1/6, fractionFit: float = 0.25, maxfev=1000):
-        if fractionFit > 0.25:
+    def __categorize(self, Dapp, J, R: float = 1/6, fractionFitPoints: float = 0.25, maxfev=1000):
+        if fractionFitPoints > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
 
         dt = self.__t[1] - self.__t[0]
         T = J * dt
 
-        n_points = np.argmax(J > fractionFit * J[-1])
+        n_points = np.argmax(J > fractionFitPoints * J[-1])
         # Define the models to fit the Dapp
         def model_brownian(t, D, delta): return D + \
             delta**2 / (2 * t * (1 - 2*R*dt/t))
