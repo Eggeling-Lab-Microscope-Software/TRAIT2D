@@ -326,15 +326,21 @@ class Track:
 
     def __repr__(self):
         return ("<%s instance at %s>\n"
-                "MSD calculated: %s\n"
-                "MSD analysis done: %s\n"
-                "SD analysis done: %s\n"
-                "ADC analysis done: %s\n") % (self.__class__.__name__,
-                                              id(self),
-                                              self.is_msd_calculated(),
-                                              self.__msd_analysis_results["analyzed"],
-                                              self.__sd_analysis_results["analyzed"],
-                                              self.__adc_analysis_results["analyzed"])
+                "------------------------\n"
+                "Track length:%s\n"
+                "------------------------\n"
+                "MSD calculated:%s\n"
+                "MSD analysis done:%s\n"
+                "SD analysis done:%s\n"
+                "ADC analysis done:%s\n") % (
+            self.__class__.__name__,
+            id(self),
+            str(self.__t.size).rjust(11, ' '),
+            str(self.is_msd_calculated()).rjust(9, ' '),
+            str(self.__msd_analysis_results["analyzed"]).rjust(6, ' '),
+            str(self.__sd_analysis_results["analyzed"]).rjust(7, ' '),
+            str(self.__adc_analysis_results["analyzed"]).rjust(6, ' ')
+        )
 
     def get_msd_analysis_results(self):
         """Returns the MSD analysis results."""
