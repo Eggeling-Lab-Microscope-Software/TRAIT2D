@@ -98,7 +98,7 @@ class Diffusion(object):
             with open(filename, "w") as f:
                 json.dump(self.trajectory, f)
         elif format == "csv":
-            with open(filename, "w") as f:
+            with open(filename, "w", newline='') as f:
                 fieldnames = ["t", "x", "y", "id"]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
@@ -429,8 +429,8 @@ class iscat_movie(object):
             print(f"Unknown ratio: {self.ratio}")
 
         # Initialize the simulation grid
-        x = np.linspace(self.xmin, self.xmax, (self.xmax - self.xmin) / self.resolution)
-        y = np.linspace(self.ymin, self.ymax, (self.ymax - self.ymin) / self.resolution)
+        x = np.linspace(self.xmin, self.xmax, int((self.xmax - self.xmin) / self.resolution))
+        y = np.linspace(self.ymin, self.ymax, int((self.ymax - self.ymin) / self.resolution))
         self.nx = len(x) + 1
         self.ny = len(y) + 1
         
