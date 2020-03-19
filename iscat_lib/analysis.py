@@ -582,6 +582,10 @@ class Track:
         """Return time coordinates of trajectory."""
         return self.__t
 
+    def get_size(self):
+        """Return number of points of the trajectory."""
+        return self.__t.size
+
     def get_trajectory(self):
         return {"t": self.__t.tolist(), "x": self.__x.tolist(), "y": self.__y.tolist()}
 
