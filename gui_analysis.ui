@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>737</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>iSCAT Single-Track Analysis 0.1</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>10</y>
+      <width>591</width>
+      <height>701</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tabMSD">
+     <attribute name="title">
+      <string>MSD Analysis</string>
+     </attribute>
+     <widget class="QGroupBox" name="groupBoxModel1">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>561</width>
+        <height>131</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Model 1</string>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBoxModel2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>561</width>
+        <height>131</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Model 2</string>
+      </property>
+     </widget>
+     <widget class="PlotWidget" name="plotMSD">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>290</y>
+        <width>561</width>
+        <height>361</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabADC">
+     <attribute name="title">
+      <string>ADC Analysis</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tabSD">
+     <attribute name="title">
+      <string>SD Analysis</string>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButtonLoadTrack">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>201</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load Track</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
