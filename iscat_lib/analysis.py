@@ -391,7 +391,7 @@ class Track:
 
         results = self.get_msd_analysis_results()["results"]
         N = self.__x.size
-        T = np.linspace(1, N, N-3,  endpoint=True)
+        T = self.__t[0:-3]
         n_points = results["n_points"]
         reg1 = results["model1"]["params"]
         reg2 = results["model2"]["params"]
@@ -750,7 +750,7 @@ class Track:
             # Selecting more points than 25% should be possible, but not advised
 
         # This is the time array, as the fits will be MSD vs T
-        T = np.linspace(1, N, N,  endpoint=True)
+        T = self.__t[0:-3]
 
         # Definining the models used for the fit
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
