@@ -46,6 +46,17 @@ class MathTextLabel(QtWidgets.QWidget):
         self._figure.set_size_inches(w/80, h/80)
         self.setFixedSize(w, h)
 
+# There is a bug in pyqtgraph which prevents an InfiniteLine from being drawn when the y
+# range is very small. We manually set the limits to very large values to prevent this.
+# We fix this by creating a new class that manually sets the end points to -1.0 and 1.0
+# AFTER each _computeBoundingRect() call. This way, only the paint() call is affected
+# and will always draw a line from -1.0 to 1.0 no matter the actual limits.
+# This fix only works on pyqtgraph 0.11 upwards
+class FixedInfiniteLine(pg.InfiniteLine):
+    def _computeBoundingRect(self):
+        super()._computeBoundingRect()
+        self._endPoints = (-1.0, 1.0)
+        return self._bounds
 
 class MainWindow(QtWidgets.QMainWindow):
 
