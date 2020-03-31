@@ -1,9 +1,10 @@
 from iscat_lib.analysis import Track
+from iscat_lib.exceptions import *
 import sys
 import pyqtgraph as pg
 import numpy as np
 from PyQt5 import QtWidgets, QtGui, QtCore, uic
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QWidget, QDialog
 from PyQt5.QtCore import Qt
 
 from matplotlib.figure import Figure
@@ -55,7 +56,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.track = None
 
-        self.pushButtonLoadTrack.clicked.connect(self.load_trajectory)
+        self.pushButtonLoadTrack.clicked.connect(self.load_trajectory_dialog)
         self.pushButtonAnalyzeMSD.clicked.connect(self.analyze_msd)
         self.checkBoxLogPlotMSD.stateChanged.connect(self.set_log_plot_msd)
         # TODO
@@ -63,14 +64,42 @@ class MainWindow(QtWidgets.QMainWindow):
         self.pushButtonFormula_1.clicked.connect(self.show_formula_model_1)
         self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
 
-    def load_trajectory(self, filename: str):
+    def show_trackid_dialog(self):
+        Dialog = QtWidgets.QDialog()
+        uic.loadUi("dialog_trackid.ui", Dialog)
+        Dialog.show()
+        resp = Dialog.exec_()
+
+        if resp == QtWidgets.QDialog.Accepted:
+            return Dialog.spinBoxId.value()
+
+    def load_trajectory(self, filename : str, id=None):
+        try:
+            self.track = Track.from_file(filename, id=id)
+        except Exception as inst:
+            if type(inst) == LoadTrackMissingIdError:
+                id = self.show_trackid_dialog()
+                self.load_trajectory(filename=filename, id=id)
+            if type(inst) == LoadTrackIdNotFoundError:
+                mb = QMessageBox()
+                mb.setText("There is no track with that ID!")
+                mb.setWindowTitle("Error")
+                mb.setIcon(QMessageBox.Critical)
+                mb.exec()
+                print("RETURN")
+
+        if self.track==None:
+            return
+
+        self.statusbar.showMessage(
+            "Loaded track of length {}".format(self.track.get_size()))      
+
+    def load_trajectory_dialog(self):
         filename, _ = QFileDialog.getOpenFileName(
             self, "Load track file", "", "Track files (*.csv)")
         if filename == '':
             return
-        self.track = Track.from_file(filename)
-        self.statusbar.showMessage(
-            "Loaded track of length {}".format(self.track.get_size()))
+        self.load_trajectory(filename, id=None)
 
     def analyze_msd(self):
         if self.track == None:
