@@ -85,7 +85,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Param 1</string>
+        <string>D</string>
        </property>
       </widget>
       <widget class="QLabel" name="labelParam2_1">
@@ -98,7 +98,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Param 2</string>
+        <string>delta^2</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="lineEditRelLikelihood_1">
@@ -226,7 +226,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Param 1</string>
+        <string>D</string>
        </property>
       </widget>
       <widget class="QLabel" name="labelParam2_2">
@@ -239,7 +239,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Param 2</string>
+        <string>delta^2</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="lineEditRelLikelihood_2">
@@ -308,7 +308,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Param 3</string>
+        <string>alpha</string>
        </property>
       </widget>
      </widget>

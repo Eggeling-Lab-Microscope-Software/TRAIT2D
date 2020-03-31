@@ -5,7 +5,7 @@ import pyqtgraph as pg
 import numpy as np
 from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QWidget, QDialog
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRectF
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -97,10 +97,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 mb.setWindowTitle("Error")
                 mb.setIcon(QMessageBox.Critical)
                 mb.exec()
-                print("RETURN")
 
         if self.track==None:
             return
+
+        self.initialize_plot_msd()
 
         self.statusbar.showMessage(
             "Loaded track of length {}".format(self.track.get_size()))      
@@ -111,6 +112,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if filename == '':
             return
         self.load_trajectory(filename, id=None)
+
+    def initialize_plot_msd(self):
+        self.plotMSD.clear()
 
     def analyze_msd(self):
         if self.track == None:
@@ -126,20 +130,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Show results for model 1 in GUI
         self.lineEditParam1_1.setText(
-            "{:5f}".format(results["model1"]["params"][0]))
+            "{:5e}".format(results["model1"]["params"][0]))
         self.lineEditParam2_1.setText(
-            "{:5f}".format(results["model1"]["params"][1]))
+            "{:5e}".format(results["model1"]["params"][1]))
         self.lineEditRelLikelihood_1.setText(
             "{:5f}".format(results["model1"]["rel_likelihood"]))
         self.lineEditBIC_1.setText("{:5f}".format(results["model1"]["BIC"]))
 
         # Show results for model 2 in GUI
         self.lineEditParam1_2.setText(
-            "{:5f}".format(results["model2"]["params"][0]))
+            "{:5e}".format(results["model2"]["params"][0]))
         self.lineEditParam2_2.setText(
-            "{:5f}".format(results["model2"]["params"][1]))
+            "{:5e}".format(results["model2"]["params"][1]))
         self.lineEditParam3_2.setText(
-            "{:5f}".format(results["model2"]["params"][2]))
+            "{:5e}".format(results["model2"]["params"][2]))
         self.lineEditRelLikelihood_2.setText(
             "{:5f}".format(results["model2"]["rel_likelihood"]))
         self.lineEditBIC_2.setText("{:5f}".format(results["model2"]["BIC"]))
@@ -164,17 +168,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.plotMSD.plot(T[0:n_points], m2[0:n_points],
                           pen=(2, 3), name='Model 2')
 
-        inf = pg.InfiniteLine(movable=True, pen=(3, 3))
+        self.inf = FixedInfiniteLine(movable=True, pen=(3, 3))
 
         def update_range_marker():
+            self.inf._invalidateCache()
             if self.checkBoxLogPlotMSD.isChecked():
-                inf.setPos(np.log10(T[n_points]))
+                self.inf.setPos(np.log10(T[n_points]))
             else:
-                inf.setPos(T[n_points])
+                self.inf.setPos(T[n_points])
 
-        inf.viewTransformChanged = update_range_marker
+        self.inf.viewTransformChanged = update_range_marker
+        self.plotMSD.addItem(self.inf)
         update_range_marker()
-        self.plotMSD.addItem(inf)
 
     def set_log_plot_msd(self, state):
         self.plotMSD.setLogMode(state, False)
