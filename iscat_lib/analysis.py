@@ -9,6 +9,9 @@ import csv
 from scipy import optimize
 from scipy import interpolate
 import matplotlib.pyplot as plt
+import pandas as pd
+
+from iscat_lib.exceptions import *
 
 import itertools
 import os
@@ -273,7 +276,7 @@ class Track:
         return cls(dict["x"], dict["y"], dict["t"])
 
     @classmethod
-    def from_file(cls, filename, format=None, unit='metres'):
+    def from_file(cls, filename, format=None, unit='metres', id=None):
         """Create a track from a file containing a single track.
         Parameters
         ----------
@@ -283,6 +286,8 @@ class Track:
             Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
         unit: str
             Unit of track data in space. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
+        id: int
+            Track ID in case the file contains more than one track.
         """
         unit_factor = None
         if unit == "metres":
@@ -305,16 +310,24 @@ class Track:
         if format != "csv" and format != "json" and format != "pcl":
             raise ValueError("Unknown format: {}".format(format))
         if format == "csv":
-            with open(filename, "r") as f:
-                reader = csv.DictReader(f)
-                x = []
-                y = []
-                t = []
-                for row in reader:
-                    x.append(float(row["x"]) * unit_factor)
-                    y.append(float(row["y"]) * unit_factor)
-                    t.append(row["t"])
-            return cls(x, y, t)
+            df = pd.read_csv(filename)
+            if not "id" in df:
+                x = df["x"]
+                y = df["y"]
+                t = df["t"]
+                return cls(x, y, t)
+            else:
+                if np.min(df["id"]) == np.max(df["id"]):
+                    id = np.min(df["id"])  # If there is only one id, we just select it
+                if id == None:
+                    raise LoadTrackMissingIdError("The file seems to contain more than one track. Please specify a track id using the keyword argument id.")
+                df_sub = df.loc[df["id"] == id]
+                if df_sub.empty:
+                    raise LoadTrackIdNotFoundError("There is no track associated with the specified id!")
+                x = df_sub["x"]
+                y = df_sub["y"]
+                t = df_sub["t"]
+                return cls(x, y, t)
         elif format == "json":
             # TODO: .json-specific import
             raise NotImplementedError(
