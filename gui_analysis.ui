@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>823</width>
-    <height>747</height>
+    <height>866</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>220</x>
       <y>10</y>
       <width>600</width>
-      <height>700</height>
+      <height>820</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -36,21 +36,55 @@
         <x>0</x>
         <y>0</y>
         <width>591</width>
-        <height>671</height>
+        <height>791</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="layoutMSD"/>
+      <layout class="QGridLayout" name="layoutMSD">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="tabADC">
      <attribute name="title">
       <string>ADC Analysis</string>
      </attribute>
+     <widget class="QWidget" name="gridLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>591</width>
+        <height>791</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="layoutADC">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+      </layout>
+     </widget>
     </widget>
     <widget class="QWidget" name="tabSD">
      <attribute name="title">
       <string>SD Analysis</string>
      </attribute>
+     <widget class="QWidget" name="gridLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>591</width>
+        <height>791</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="layoutSD">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+      </layout>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="pushButtonLoadTrack">

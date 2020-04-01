@@ -1,4 +1,4 @@
-from pyqtgraph import PlotWidget, InfiniteLine, mkPen
+from pyqtgraph import PlotWidget, InfiniteLine, TextItem, mkPen
 import numpy as np
 
 # A plot widget with some extra functionality for model fitting
@@ -6,12 +6,22 @@ class ModelFitWidget(PlotWidget):
     def __init__(self, *args, **kwargs):
         PlotWidget.__init__(self, *args, **kwargs)
         self.fit_range_marker = InfiniteLine(movable=True, pen=mkPen('w', width=2))
+        self.text_no_data = TextItem('Press "Analyze" to display results', anchor=(0.5, 0.5))
         self._log_mode = False
-        self.addItem(self.fit_range_marker)
+        self.reset()
 
     def reset(self):
         self.clear()
+        self.getPlotItem().setXRange(-1.0, 1.0)
+        self.getPlotItem().setYRange(-1.0, 1.0)
+        self.text_no_data.setVisible(True)
+        self.fit_range_marker.setVisible(False)
         self.addItem(self.fit_range_marker)
+        self.addItem(self.text_no_data)
+
+    def setup(self):
+        self.text_no_data.setVisible(False)
+        self.fit_range_marker.setVisible(True)
 
     def get_range(self):
         if self._log_mode:

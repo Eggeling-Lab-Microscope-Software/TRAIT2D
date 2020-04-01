@@ -4,6 +4,10 @@ from PyQt5 import QtGui
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
+# Prettier math font
+import matplotlib as mpl
+mpl.rcParams['mathtext.fontset'] = 'cm'
+
 class MathTextLabel(QWidget):
 
     def __init__(self, mathText, parent=None, **kwargs):
