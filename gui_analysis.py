@@ -14,6 +14,41 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
 
+# A plot widget with some extra functionality for model fitting
+class ModelFitWidget(pg.PlotWidget):
+    def __init__(self, *args, **kwargs):
+        pg.PlotWidget.__init__(self, *args, **kwargs)
+        self.fit_range_marker = pg.InfiniteLine(movable=True, pen=pg.mkPen('w', width=2))
+        self._log_mode = False
+        self.addItem(self.fit_range_marker)
+
+    def reset(self):
+        self.clear()
+        self.addItem(self.fit_range_marker)
+
+    def get_range(self):
+        if self._log_mode:
+            return np.power(10.0, self.fit_range_marker.pos().x())
+        else:
+            return self.fit_range_marker.pos().x()
+
+    def set_range(self, new_range : float):
+        self._update_range_marker(new_range)
+
+    def set_log(self, value : bool):
+        fit_range = self.get_range()
+        self._log_mode = value
+        self.setLogMode(self._log_mode, False)
+        self._update_range_marker(fit_range)
+
+
+    def _update_range_marker(self, marker_pos):
+        if self._log_mode:
+            if marker_pos <= 0.0:
+                marker_pos = 1.0
+            self.fit_range_marker.setPos(np.log10(marker_pos))
+        else:
+            self.fit_range_marker.setPos(marker_pos)
 
 class MathTextLabel(QtWidgets.QWidget):
 
@@ -45,18 +80,6 @@ class MathTextLabel(QtWidgets.QWidget):
 
         self._figure.set_size_inches(w/80, h/80)
         self.setFixedSize(w, h)
-
-# There is a bug in pyqtgraph which prevents an InfiniteLine from being drawn when the y
-# range is very small. We manually set the limits to very large values to prevent this.
-# We fix this by creating a new class that manually sets the end points to -1.0 and 1.0
-# AFTER each _computeBoundingRect() call. This way, only the paint() call is affected
-# and will always draw a line from -1.0 to 1.0 no matter the actual limits.
-# This fix only works on pyqtgraph 0.11 upwards
-class FixedInfiniteLine(pg.InfiniteLine):
-    def _computeBoundingRect(self):
-        super()._computeBoundingRect()
-        self._endPoints = (-1.0, 1.0)
-        return self._bounds
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -101,7 +124,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.track==None:
             return
 
-        self.initialize_plot_msd()
+        self.plotMSD.reset()
 
         self.statusbar.showMessage(
             "Loaded track of length {}".format(self.track.get_size()))      
@@ -113,9 +136,6 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         self.load_trajectory(filename, id=None)
 
-    def initialize_plot_msd(self):
-        self.plotMSD.clear()
-
     def analyze_msd(self):
         if self.track == None:
             self.statusbar.showMessage("Load a track first!")
@@ -126,7 +146,11 @@ class MainWindow(QtWidgets.QMainWindow):
             mb.exec()
             return
 
-        results = self.track.msd_analysis()["results"]
+        T = self.track.get_t()[0:-3]
+        fitPoints = np.argwhere(T >= self.plotMSD.get_range())[0]
+        if fitPoints <= 0:
+            fitPoints = None
+        results = self.track.msd_analysis(nFitPoints=fitPoints)["results"]
 
         # Show results for model 1 in GUI
         self.lineEditParam1_1.setText(
@@ -152,7 +176,6 @@ class MainWindow(QtWidgets.QMainWindow):
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
         def model2(t, D, delta2, alpha): return 4 * D * t**alpha + 2 * delta2
 
-        T = self.track.get_t()[0:-3]
         n_points = results["n_points"]
         MSD = self.track.get_msd()
         reg1 = results["model1"]["params"]
@@ -160,7 +183,7 @@ class MainWindow(QtWidgets.QMainWindow):
         m1 = model1(T, *reg1)
         m2 = model2(T, *reg2)
 
-        self.plotMSD.clear()
+        self.plotMSD.reset()
         self.plotMSD.addLegend()
         self.plotMSD.plot(T, MSD, name='MSD')
         self.plotMSD.plot(T[0:n_points], m1[0:n_points],
@@ -168,21 +191,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.plotMSD.plot(T[0:n_points], m2[0:n_points],
                           pen=(2, 3), name='Model 2')
 
-        self.inf = FixedInfiniteLine(movable=True, pen=(3, 3))
-
-        def update_range_marker():
-            self.inf._invalidateCache()
-            if self.checkBoxLogPlotMSD.isChecked():
-                self.inf.setPos(np.log10(T[n_points]))
-            else:
-                self.inf.setPos(T[n_points])
-
-        self.inf.viewTransformChanged = update_range_marker
-        self.plotMSD.addItem(self.inf)
-        update_range_marker()
+        self.plotMSD.set_range(T[n_points])
 
     def set_log_plot_msd(self, state):
-        self.plotMSD.setLogMode(state, False)
+        self.plotMSD.set_log(state)
 
     def show_formula_model_1(self):
         mathText = r'$\mathrm{MSD}(t_i) = 4 \cdot D \cdot t_i + 2 \delta^2$'

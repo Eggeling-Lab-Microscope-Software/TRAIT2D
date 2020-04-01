@@ -148,7 +148,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="PlotWidget" name="plotMSD">
+     <widget class="ModelFitWidget" name="plotMSD">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -368,9 +368,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PlotWidget</class>
+   <class>ModelFitWidget</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraph</header>
+   <header>gui_analysis</header>
   </customwidget>
  </customwidgets>
  <resources/>
