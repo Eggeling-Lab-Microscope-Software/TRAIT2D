@@ -7,6 +7,7 @@ from iscat_lib.analysis import Track
 from iscat_lib.exceptions import *
 
 import gui.tab.msd
+import gui.tab.adc
 
 class MainWindow(QMainWindow):
 
@@ -20,7 +21,9 @@ class MainWindow(QMainWindow):
 
         # Add widgets to tabs
         wid_msd = gui.tab.msd.widgetMSD(self)
+        wid_adc = gui.tab.adc.widgetADC(self)
         self.layoutMSD.addWidget(wid_msd, 0, 0)
+        self.layoutADC.addWidget(wid_adc, 0, 0)
 
         # Initialize with no track
         self.track = None

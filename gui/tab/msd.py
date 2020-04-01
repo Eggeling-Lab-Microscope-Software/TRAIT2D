@@ -1,25 +1,18 @@
 from iscat_lib.analysis import Track
 from iscat_lib.exceptions import *
-import sys
-import pyqtgraph as pg
+
 import numpy as np
-from PyQt5 import QtWidgets, QtGui, QtCore, uic
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QWidget, QDialog
-from PyQt5.QtCore import Qt, QRectF
 
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-
-# Prettier math font
-import matplotlib as mpl
-mpl.rcParams['mathtext.fontset'] = 'cm'
+from PyQt5 import uic
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMessageBox, QWidget
 
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
 
-class widgetMSD(QtWidgets.QWidget):
+class widgetMSD(QWidget):
     def __init__(self, parent):
-        QtWidgets.QWidget.__init__(self)
+        QWidget.__init__(self)
         uic.loadUi('gui/tab/msd.ui', self)
 
         self.parent = parent
@@ -80,6 +73,7 @@ class widgetMSD(QtWidgets.QWidget):
         m2 = model2(T, *reg2)
 
         self.plot.reset()
+        self.plot.setup()
         self.plot.addLegend()
         self.plot.plot(T, MSD, name='MSD')
         self.plot.plot(T[0:n_points], m1[0:n_points],
@@ -88,6 +82,8 @@ class widgetMSD(QtWidgets.QWidget):
                           pen=(2, 3), name='Model 2')
 
         self.plot.set_range(T[n_points])
+        self.plot.autoRange()
+
 
     def show_formula_model_1(self):
         mathText = r'$\mathrm{MSD}(t_i) = 4 \cdot D \cdot t_i + 2 \delta^2$'
@@ -102,8 +98,3 @@ class widgetMSD(QtWidgets.QWidget):
         mb.setFocus(True)
         mb.setWindowModality(Qt.ApplicationModal)
         mb.show()
-
-#     def not_implemented(self):
-#         mb = QMessageBox()
-#         mb.setText("Not implemented")
-#         mb.exec()
