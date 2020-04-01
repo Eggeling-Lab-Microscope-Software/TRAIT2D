@@ -92,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.pushButtonLoadTrack.clicked.connect(self.load_trajectory_dialog)
         self.pushButtonAnalyzeMSD.clicked.connect(self.analyze_msd)
-        self.checkBoxLogPlotMSD.stateChanged.connect(self.set_log_plot_msd)
+        self.checkBoxLogPlotMSD.stateChanged.connect(self.plotMSD.set_log)
         # TODO
         self.pushButtonClipboardMSD.clicked.connect(self.not_implemented)
         self.pushButtonFormula_1.clicked.connect(self.show_formula_model_1)
@@ -192,9 +192,6 @@ class MainWindow(QtWidgets.QMainWindow):
                           pen=(2, 3), name='Model 2')
 
         self.plotMSD.set_range(T[n_points])
-
-    def set_log_plot_msd(self, state):
-        self.plotMSD.set_log(state)
 
     def show_formula_model_1(self):
         mathText = r'$\mathrm{MSD}(t_i) = 4 \cdot D \cdot t_i + 2 \delta^2$'
