@@ -461,7 +461,7 @@
      <string>delta</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEditParam3_4">
+   <widget class="QLineEdit" name="lineEditParam4_3">
     <property name="geometry">
      <rect>
       <x>70</x>
