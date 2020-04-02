@@ -25,6 +25,10 @@ class widgetMSD(QWidget):
 
         self.parent.sigTrackLoaded.connect(self.plot.reset)
 
+        # Set plot labels
+        self.plot.setLabel('left', "MSD", units="m")
+        self.plot.setLabel('bottom', "T", units="s")
+
     def analyze(self):
         if self.parent.track == None:
             self.parent.statusbar.showMessage("Load a track first!")
@@ -77,9 +81,9 @@ class widgetMSD(QWidget):
         self.plot.addLegend()
         self.plot.plot(T, MSD, name='MSD')
         self.plot.plot(T[0:n_points], m1[0:n_points],
-                          pen=(1, 3), name='Model 1')
+                          pen=(1, 2), name='Model 1')
         self.plot.plot(T[0:n_points], m2[0:n_points],
-                          pen=(2, 3), name='Model 2')
+                          pen=(2, 2), name='Model 2')
 
         self.plot.set_range(T[n_points])
         self.plot.autoRange()
