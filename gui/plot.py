@@ -17,6 +17,7 @@ class ModelFitWidget(PlotWidget):
         self.getPlotItem().setYRange(-1.0, 1.0)
         self.text_no_data.setVisible(True)
         self.fit_range_marker.setVisible(False)
+        self.fit_range_marker.setPos(0.0)
         self.addItem(self.fit_range_marker)
         self.addItem(self.text_no_data)
 
