@@ -8,6 +8,7 @@ class ModelFitWidget(PlotWidget):
         self.fit_range_marker = InfiniteLine(movable=True, pen=mkPen('w', width=2))
         self.text_no_data = TextItem('Press "Analyze" to display results', anchor=(0.5, 0.5))
         self._log_mode = False
+        self.showGrid(x=True, y=True)
         self.reset()
 
     def reset(self):
