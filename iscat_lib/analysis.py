@@ -904,6 +904,8 @@ class Track:
         self.__sd_analysis_results["model"] = model
         self.__sd_analysis_results["results"] = results
 
+        return self.__sd_analysis_results
+
     def __categorize(self, Dapp, J, R: float = 1/6, fractionFitPoints: float = 0.25, maxfev=1000):
         if fractionFitPoints > 0.25:
             warnings.warn(
