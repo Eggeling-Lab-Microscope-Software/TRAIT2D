@@ -13,7 +13,7 @@ from gui.render_math import MathTextLabel
 class widgetSD(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self)
-        uic.loadUi('gui/tab/adc.ui', self)
+        uic.loadUi('gui/tab/sd.ui', self)
 
         self.parent = parent
 
