@@ -23,10 +23,31 @@ class widgetADC(QWidget):
         self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
         self.pushButtonFormula_3.clicked.connect(self.show_formula_model_3)
 
-        self.parent.sigTrackLoaded.connect(self.plot.reset)
+        self.parent.sigTrackLoaded.connect(self.reset)
 
         self.plot.setLabel('left', "Dapp")
         self.plot.setLabel('bottom', "T", units="s")
+
+    def reset(self):
+        self.lineEditParam1_1.setText("")
+        self.lineEditParam2_1.setText("")
+        self.lineEditRelLikelihood_1.setText("")
+        self.lineEditBIC_1.setText("")
+
+        self.lineEditParam1_2.setText("")
+        self.lineEditParam2_2.setText("")
+        self.lineEditParam3_2.setText("")
+        self.lineEditRelLikelihood_2.setText("")
+        self.lineEditBIC_2.setText("")
+
+        self.lineEditParam1_3.setText("")
+        self.lineEditParam2_3.setText("")
+        self.lineEditParam3_3.setText("")
+        self.lineEditParam4_3.setText("")
+        self.lineEditRelLikelihood_3.setText("")
+        self.lineEditBIC_3.setText("")
+
+        self.plot.reset()
 
     def analyze(self):
         if self.parent.track == None:
@@ -37,8 +58,6 @@ class widgetADC(QWidget):
             mb.setIcon(QMessageBox.Warning)
             mb.exec()
             return
-
-        results = self.parent.track.adc_analysis()
 
         T = self.parent.track.get_t()[0:-3]
         fracFitPoints = self.plot.get_range() / T[-1]

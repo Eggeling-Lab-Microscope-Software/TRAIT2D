@@ -23,11 +23,26 @@ class widgetMSD(QWidget):
         self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
         # TODO: Clipboard
 
-        self.parent.sigTrackLoaded.connect(self.plot.reset)
+        self.parent.sigTrackLoaded.connect(self.reset)
 
         # Set plot labels
         self.plot.setLabel('left', "MSD", units="m")
         self.plot.setLabel('bottom', "T", units="s")
+
+
+    def reset(self):
+        self.lineEditParam1_1.setText("")
+        self.lineEditParam2_1.setText("")
+        self.lineEditRelLikelihood_1.setText("")
+        self.lineEditBIC_1.setText("")
+
+        self.lineEditParam1_2.setText("")
+        self.lineEditParam2_2.setText("")
+        self.lineEditParam3_2.setText("")
+        self.lineEditRelLikelihood_2.setText("")
+        self.lineEditBIC_2.setText("")
+
+        self.plot.reset()
 
     def analyze(self):
         if self.parent.track == None:
