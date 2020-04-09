@@ -21,20 +21,21 @@ DEBUG = True
 
 # Abstract diffusion object
 class Diffusion(object):
-    def __init__(self, Tmax=1.0, dt=1e-3, L=1, dL=1e-3, d=1e-2, seed: int=None):
+    def __init__(self, Tmax=1.0, dt=1e-3, L=1, dL=1e-3, d=1e-2, seed: int=None, quantize=True):
         """ Abstract diffusion simulator
 
         The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables
         """
 
         ## Initializations
-        self.params_list = ["Tmax", "dt", "L", "dL", "d", "seed"]
+        self.params_list = ["Tmax", "dt", "L", "dL", "d", "seed", "quantize"]
         self.Tmax = Tmax
         self.dt = dt
         self.L = L
         self.dL = dL
         self.d = d
         self.seed = seed
+        self.quantize = quantize
 
         # Set random seed
         np.random.seed(self.seed)
@@ -152,6 +153,8 @@ class BrownianDiffusion(Diffusion):
             Diffusion coefficient (m^2/s)
         seed: int
             Seed to initialize the random generator (for reproducibility)
+        quantize: bool
+            Quantize the position to the simulation spatial resolution grid.
         """
         super(BrownianDiffusion, self).__init__(**kwargs)
 
@@ -188,13 +191,15 @@ class BrownianDiffusion(Diffusion):
             pbar.update()
 
         # Make sure the simulated track is expressed as dL spatial resolution
-        x_list = np.round(np.array(x_list) / self.dL) * self.dL
-        y_list = np.round(np.array(y_list) / self.dL) * self.dL
-        self.trajectory = {"x": x_list.tolist(), "y": y_list.tolist(), "t": t_list}
+        if self.quantize:
+            x_list = (np.round(np.array(x_list) / self.dL) * self.dL).tolist()
+            y_list = (np.round(np.array(y_list) / self.dL) * self.dL).tolist()
+
+        self.trajectory = {"x": x_list, "y": y_list, "t": t_list}
 
 # Hopping diffusion simulation
 class HoppingDiffusion(Diffusion):
-    def __init__(self, Tmax=100, dt=50e-6, L=10e-6, dL=20e-9, Df=8e-13, HL=40e-9, HP=0.01, seed: int = None):
+    def __init__(self, Tmax=100, dt=50e-6, L=10e-6, dL=20e-9, Df=8e-13, HL=40e-9, HP=0.01, seed: int = None, quantize=True):
         """ Simulates a hopping diffusion trajectory of a single molecule for a
         hopping diffusion model (i.e. free diffusion inside of compartments but
         changing from one compartment to the next only with a certain probability)
@@ -222,6 +227,8 @@ class HoppingDiffusion(Diffusion):
             Hopping probability [0-1]
         seed : float
             Random generator seed (nonnegative integer)
+        quantize: bool
+            Quantize the position to the simulation spatial resolution grid.
 
         Authors
         -------
@@ -236,7 +243,7 @@ class HoppingDiffusion(Diffusion):
         # super(HoppingDiffusion, self).__init__(seed=seed)
 
         # Set parameters
-        self.params_list = ["Tmax", "dt", "L", "dL", "Df", "HL", "HP", "seed"]
+        self.params_list = ["Tmax", "dt", "L", "dL", "Df", "HL", "HP", "seed", "quantize"]
         self.Tmax = Tmax
         self.dt = dt
         self.L = L
@@ -245,6 +252,7 @@ class HoppingDiffusion(Diffusion):
         self.HL = HL
         self.HP = HP
         self.seed = seed
+        self.quantize = quantize
 
         # Set random seed
         np.random.seed(self.seed)
@@ -367,6 +375,11 @@ class HoppingDiffusion(Diffusion):
             x_list.extend(list(store[key][:, 0]))
             y_list.extend(list(store[key][:, 1]))
             id_list.extend(list(store[key][:, 2]))
+
+        # Quantize the position
+        if self.quantize:
+            x_list = (np.round(np.array(x_list) / self.dL) * self.dL).tolist()
+            y_list = (np.round(np.array(y_list) / self.dL) * self.dL).tolist()
 
         t_list = list(np.linspace(0, len(x_list) * self.dt, len(x_list)))
         self.trajectory = dict()
