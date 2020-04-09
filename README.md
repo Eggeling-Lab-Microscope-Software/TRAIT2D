@@ -1,4 +1,4 @@
-# iSCAT_tracking
+# iSCAT_analysis
 particle tracker for iSCAT data (collaboration with Eggeling group)
 
 
