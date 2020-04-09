@@ -1,5 +1,4 @@
 # iSCAT_analysis
-particle tracker for iSCAT data (collaboration with Eggeling group)
 
 
 * data_processing.py - detection and tracking of a movie specified inside the script
