@@ -119,8 +119,8 @@ class widgetSD(QWidget):
             "{:5f}".format(results["hop"]["rel_likelihood"]))
         self.lineEditBIC_3.setText("{:5f}".format(results["hop"]["bic"]))
 
-        # Modelle definieren
-        R = 1/6
+        # Define Models
+        R = float(self.doubleSpinBoxInputParam1.value())
         def model_brownian(t, D, delta): return D + \
             delta**2 / (2 * t * (1 - 2*R*dt/t))
         def model_confined(t, D_micro, delta, tau): return D_micro * (tau/t) * \
