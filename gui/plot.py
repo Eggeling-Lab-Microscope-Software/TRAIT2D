@@ -1,8 +1,11 @@
+from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import PlotWidget, InfiniteLine, TextItem, mkPen
 import numpy as np
 
 # A plot widget with some extra functionality for model fitting
 class ModelFitWidget(PlotWidget):
+    sigFitRangeChanged = pyqtSignal()
+
     def __init__(self, *args, **kwargs):
         PlotWidget.__init__(self, *args, **kwargs)
         self.fit_range_marker = InfiniteLine(movable=True, pen=mkPen('w', width=2))
@@ -12,6 +15,7 @@ class ModelFitWidget(PlotWidget):
         self.addItem(self.fit_range_marker)
         self.addItem(self.text_no_data)
         self.reset()
+        self.fit_range_marker.sigPositionChangeFinished.connect(self.sigFitRangeChanged.emit)
 
     def reset(self):
         self.getPlotItem().setXRange(-1.0, 1.0)
@@ -46,3 +50,4 @@ class ModelFitWidget(PlotWidget):
             self.fit_range_marker.setPos(np.log10(marker_pos))
         else:
             self.fit_range_marker.setPos(marker_pos)
+        self.sigFitRangeChanged.emit()
