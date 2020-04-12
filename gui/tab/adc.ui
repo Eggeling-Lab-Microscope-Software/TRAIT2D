@@ -43,7 +43,7 @@
      <rect>
       <x>70</x>
       <y>20</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -53,7 +53,7 @@
      <rect>
       <x>70</x>
       <y>50</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -171,7 +171,7 @@
      <rect>
       <x>70</x>
       <y>20</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -181,7 +181,7 @@
      <rect>
       <x>70</x>
       <y>50</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -196,7 +196,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>D</string>
+     <string>D_micro</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelParam2_2">
@@ -263,7 +263,7 @@
      <rect>
       <x>70</x>
       <y>80</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -351,7 +351,7 @@
      <rect>
       <x>70</x>
       <y>20</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -361,7 +361,7 @@
      <rect>
       <x>70</x>
       <y>50</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -443,7 +443,7 @@
      <rect>
       <x>70</x>
       <y>80</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -466,7 +466,7 @@
      <rect>
       <x>70</x>
       <y>110</y>
-      <width>113</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
