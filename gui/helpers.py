@@ -13,4 +13,7 @@ def err_format(value, error, sigdig=2):
     if (dist > magn):
         magn = dist
         dist += dist - magn
-    return ("{:1."+str(magn-dist+sigdig-1)+"f}({:"+str(sigdig)+".0f})E{}").format(value / 10**magn, error / 10**(dist-sigdig+1), magn)
+    if (magn != 0):
+        return ("{:1."+str(magn-dist+sigdig-1)+"f}({:"+str(sigdig)+".0f})E{}").format(value / 10**magn, error / 10**(dist-sigdig+1), magn)
+    else:
+        return ("{:1."+str(magn-dist+sigdig-1)+"f}({:"+str(sigdig)+".0f})").format(value / 10**magn, error / 10**(dist-sigdig+1))
