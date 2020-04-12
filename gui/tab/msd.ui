@@ -321,6 +321,32 @@
     </rect>
    </property>
   </widget>
+  <widget class="QDoubleSpinBox" name="doubleSpinBoxRange">
+   <property name="geometry">
+    <rect>
+     <x>321</x>
+     <y>768</y>
+     <width>81</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <double>10000.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonSetRange">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>768</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set Range</string>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
