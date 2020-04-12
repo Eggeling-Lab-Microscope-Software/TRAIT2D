@@ -28,6 +28,8 @@ class MainWindow(QMainWindow):
         self.layoutADC.addWidget(wid_adc, 0, 0)
         self.layoutSD.addWidget(wid_sd, 0, 0)
 
+        self.statusBar().setSizeGripEnabled(False)
+
         # Initialize with no track
         self.track = None
 
