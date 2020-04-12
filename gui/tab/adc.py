@@ -5,7 +5,7 @@ import numpy as np
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox, QWidget
+from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication
 
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
@@ -22,11 +22,30 @@ class widgetADC(QWidget):
         self.pushButtonFormula_1.clicked.connect(self.show_formula_model_1)
         self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
         self.pushButtonFormula_3.clicked.connect(self.show_formula_model_3)
+        self.pushButtonClipboard.clicked.connect(self.results_to_clipboard)
 
         self.parent.sigTrackLoaded.connect(self.reset)
 
         self.plot.setLabel('left', "Dapp")
         self.plot.setLabel('bottom', "T", units="s")
+
+        self.legend = self.plot.addLegend()
+        self.plot_dapp = self.plot.plot([], name='Dapp')
+        self.plot_brownian = self.plot.plot([], pen=(1, 3), name = 'Brownian')
+        self.plot_confined = self.plot.plot([], pen=(2, 3), name = 'Confined')
+        self.plot_hopping  = self.plot.plot([], pen=(3, 3), name = 'Hopping')
+
+    def results_to_clipboard(self):
+        if self.parent.track == None or not self.parent.track.get_adc_analysis_results()["analyzed"]:
+            self.parent.statusbar.showMessage("Load a track first!")
+            mb = QMessageBox()
+            mb.setText("Analyze a track first!")
+            mb.setWindowTitle("Error")
+            mb.setIcon(QMessageBox.Warning)
+            mb.exec()
+            return
+
+        QApplication.clipboard().setText(str(self.parent.track.get_adc_analysis_results()["results"]))
 
     def reset(self):
         self.lineEditParam1_1.setText("")
@@ -117,11 +136,11 @@ class widgetADC(QWidget):
 
         self.plot.reset()
         self.plot.setup()
-        self.plot.addLegend()
-        self.plot.plot(T, Dapp, name='Dapp')
-        self.plot.plot(T[0:n_points], m1[0:n_points], pen=(1, 3), name = 'Brownian')
-        self.plot.plot(T[0:n_points], m2[0:n_points], pen=(2, 3), name = 'Confined')
-        self.plot.plot(T[0:n_points], m3[0:n_points], pen=(3, 3), name = 'Hopping')
+
+        self.plot_dapp.setData(T, Dapp)
+        self.plot_brownian.setData(T[0:n_points], m1[0:n_points])
+        self.plot_confined.setData(T[0:n_points], m2[0:n_points])
+        self.plot_hopping.setData(T[0:n_points], m3[0:n_points])
 
         self.plot.set_range(T[n_points])
         self.plot.autoRange()     
