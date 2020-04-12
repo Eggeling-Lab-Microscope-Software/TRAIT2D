@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication
 
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
+from gui.helpers import *
 
 class widgetSD(QWidget):
     def __init__(self, parent):

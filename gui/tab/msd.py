@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication
 
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
+from gui.helpers import *
 
 class widgetMSD(QWidget):
     def __init__(self, parent):
@@ -80,21 +81,16 @@ class widgetMSD(QWidget):
         results = self.parent.track.msd_analysis(nFitPoints=fitPoints)["results"]
 
         # Show results for model 1 in GUI
-        self.lineEditParam1_1.setText(
-            "{:5e}".format(results["model1"]["params"][0]))
-        self.lineEditParam2_1.setText(
-            "{:5e}".format(results["model1"]["params"][1]))
+        self.lineEditParam1_1.setText(err_format(results["model1"]["params"][0], results["model1"]["errors"][0]))
+        self.lineEditParam2_1.setText(err_format(results["model1"]["params"][1], results["model1"]["errors"][1]))
         self.lineEditRelLikelihood_1.setText(
             "{:5f}".format(results["model1"]["rel_likelihood"]))
         self.lineEditBIC_1.setText("{:5f}".format(results["model1"]["BIC"]))
 
         # Show results for model 2 in GUI
-        self.lineEditParam1_2.setText(
-            "{:5e}".format(results["model2"]["params"][0]))
-        self.lineEditParam2_2.setText(
-            "{:5e}".format(results["model2"]["params"][1]))
-        self.lineEditParam3_2.setText(
-            "{:5e}".format(results["model2"]["params"][2]))
+        self.lineEditParam1_2.setText(err_format(results["model2"]["params"][0], results["model2"]["errors"][0]))
+        self.lineEditParam2_2.setText(err_format(results["model2"]["params"][1], results["model2"]["errors"][1]))
+        self.lineEditParam3_2.setText(err_format(results["model2"]["params"][2], results["model2"]["errors"][2]))
         self.lineEditRelLikelihood_2.setText(
             "{:5f}".format(results["model2"]["rel_likelihood"]))
         self.lineEditBIC_2.setText("{:5f}".format(results["model2"]["BIC"]))
