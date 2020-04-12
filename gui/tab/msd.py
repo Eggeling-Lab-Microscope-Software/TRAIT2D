@@ -22,8 +22,10 @@ class widgetMSD(QWidget):
         self.pushButtonFormula_1.clicked.connect(self.show_formula_model_1)
         self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
         self.pushButtonClipboard.clicked.connect(self.results_to_clipboard)
+        self.pushButtonSetRange.clicked.connect(self.set_range_from_spinbox)
 
         self.parent.sigTrackLoaded.connect(self.reset)
+        self.plot.sigFitRangeChanged.connect(self.on_range_changed)
 
         # Set plot labels
         self.plot.setLabel('left', "MSD", units="m")
@@ -131,3 +133,9 @@ class widgetMSD(QWidget):
         mb.setFocus(True)
         mb.setWindowModality(Qt.ApplicationModal)
         mb.show()
+
+    def on_range_changed(self):
+        self.doubleSpinBoxRange.setValue(self.plot.get_range() * 1000.0)
+
+    def set_range_from_spinbox(self):
+        self.plot.set_range(self.doubleSpinBoxRange.value() / 1000.0)
