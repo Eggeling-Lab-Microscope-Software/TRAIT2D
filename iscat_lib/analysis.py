@@ -762,6 +762,10 @@ class Track:
         # reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
         # print(f"reg2 parameters: {reg2[0]}") #Debug
 
+        # Compute standard deviation of parameters
+        perr_m1 = np.sqrt(np.diag(reg1[1]))
+        perr_m2 = np.sqrt(np.diag(reg2[1]))
+
         # Compute BIC for both models
         m1 = model1(T, *reg1[0])
         m2 = model2(T, *reg2[0])
@@ -774,8 +778,8 @@ class Track:
         rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
 
         self.__msd_analysis_results["analyzed"] = True
-        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "BIC": bic1, "rel_likelihood": rel_likelihood_1},
-                                                  "model2": {"params": reg2[0], "BIC": bic2, "rel_likelihood": rel_likelihood_2},
+        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "BIC": bic1, "rel_likelihood": rel_likelihood_1},
+                                                  "model2": {"params": reg2[0], "errors" : perr_m2, "BIC": bic2, "rel_likelihood": rel_likelihood_2},
                                                   "n_points": n_points}
 
         return self.__msd_analysis_results
@@ -919,16 +923,23 @@ class Track:
         r_hop = optimize.curve_fit(
             model_hop, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
 
+        # Compute standard deviations of the parameters
+        perr_brownian = np.sqrt(np.diag(r_brownian[1]))
+        perr_confined = np.sqrt(np.diag(r_confined[1]))
+        perr_hop = np.sqrt(np.diag(r_hop[1]))
+
         # Compute BIC for each model.
         pred_brownian = model_brownian(T, *r_brownian[0])
         pred_confined = model_confined(T, *r_confined[0])
         pred_hop = model_hop(T, *r_hop[0])
+
         bic_brownian = BIC(
             pred_brownian[0:n_points], Dapp[0:n_points], len(r_brownian[0]), 1)
         bic_confined = BIC(
             pred_confined[0:n_points], Dapp[0:n_points], len(r_confined[0]), 1)
         bic_hop = BIC(pred_hop[0:n_points], Dapp[0:n_points], len(r_hop[0]), 1)
         bic_min = min([bic_brownian, bic_confined, bic_hop])
+        
         if bic_min == bic_brownian:
             category = "brownian"
         elif bic_min == bic_confined:
@@ -943,9 +954,9 @@ class Track:
         rel_likelihood_confined = np.exp((bic_confined - bic_min) * 0.5)
         rel_likelihood_hop = np.exp((bic_hop - bic_min) * 0.5)
 
-        return category, {"brownian": {"params": r_brownian[0], "bic": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
-                          "confined": {"params": r_confined[0], "bic": bic_confined, "rel_likelihood": rel_likelihood_confined},
-                          "hop": {"params": r_hop[0], "bic": bic_hop, "rel_likelihood": rel_likelihood_hop}, "n_points": n_points, "R": R}
+        return category, {"brownian": {"params": r_brownian[0], "errors": perr_brownian, "bic": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
+                          "confined": {"params": r_confined[0], "errors": perr_confined, "bic": bic_confined, "rel_likelihood": rel_likelihood_confined},
+                          "hop": {"params": r_hop[0], "errors": perr_hop, "bic": bic_hop, "rel_likelihood": rel_likelihood_hop}, "n_points": n_points, "R": R}
 
 
 class NormalizedTrack(Track):
