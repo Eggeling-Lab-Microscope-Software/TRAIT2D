@@ -9,17 +9,16 @@ class ModelFitWidget(PlotWidget):
         self.text_no_data = TextItem('Press "Analyze" to display results', anchor=(0.5, 0.5))
         self._log_mode = False
         self.showGrid(x=True, y=True)
+        self.addItem(self.fit_range_marker)
+        self.addItem(self.text_no_data)
         self.reset()
 
     def reset(self):
-        self.clear()
         self.getPlotItem().setXRange(-1.0, 1.0)
         self.getPlotItem().setYRange(-1.0, 1.0)
         self.text_no_data.setVisible(True)
         self.fit_range_marker.setVisible(False)
         self.fit_range_marker.setPos(0.0)
-        self.addItem(self.fit_range_marker)
-        self.addItem(self.text_no_data)
 
     def setup(self):
         self.text_no_data.setVisible(False)

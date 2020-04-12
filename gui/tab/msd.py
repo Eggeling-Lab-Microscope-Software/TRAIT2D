@@ -5,7 +5,7 @@ import numpy as np
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox, QWidget
+from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication
 
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
@@ -21,7 +21,7 @@ class widgetMSD(QWidget):
         self.checkBoxLogPlot.stateChanged.connect(self.plot.set_log)
         self.pushButtonFormula_1.clicked.connect(self.show_formula_model_1)
         self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
-        # TODO: Clipboard
+        self.pushButtonClipboard.clicked.connect(self.results_to_clipboard)
 
         self.parent.sigTrackLoaded.connect(self.reset)
 
@@ -29,6 +29,23 @@ class widgetMSD(QWidget):
         self.plot.setLabel('left', "MSD", units="m")
         self.plot.setLabel('bottom', "T", units="s")
 
+        self.plot_msd = self.plot.plot([], name='MSD')
+        self.plot_model1 = self.plot.plot([],
+                          pen=(1, 2), name='Model 1')
+        self.plot_model2 = self.plot.plot([],
+                          pen=(2, 2), name='Model 2')
+
+    def results_to_clipboard(self):
+        if self.parent.track == None or not self.parent.track.get_msd_analysis_results()["analyzed"]:
+            self.parent.statusbar.showMessage("Load a track first!")
+            mb = QMessageBox()
+            mb.setText("Analyze a track first!")
+            mb.setWindowTitle("Error")
+            mb.setIcon(QMessageBox.Warning)
+            mb.exec()
+            return
+
+        QApplication.clipboard().setText(str(self.parent.track.get_msd_analysis_results()["results"]))
 
     def reset(self):
         self.lineEditParam1_1.setText("")
@@ -93,12 +110,9 @@ class widgetMSD(QWidget):
 
         self.plot.reset()
         self.plot.setup()
-        self.plot.addLegend()
-        self.plot.plot(T, MSD, name='MSD')
-        self.plot.plot(T[0:n_points], m1[0:n_points],
-                          pen=(1, 2), name='Model 1')
-        self.plot.plot(T[0:n_points], m2[0:n_points],
-                          pen=(2, 2), name='Model 2')
+        self.plot_msd.setData(T, MSD)
+        self.plot_model1.setData(T[0:n_points], m1[0:n_points])
+        self.plot_model2.setData(T[0:n_points], m2[0:n_points])
 
         self.plot.set_range(T[n_points])
         self.plot.autoRange()
