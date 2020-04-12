@@ -50,7 +50,7 @@ class MainWindow(QMainWindow):
         except Exception as inst:
             if type(inst) == LoadTrackMissingIdError:
                 id = self.show_trackid_dialog()
-                self.load_trajectory(filename=filename, id=id)
+                self.load_track(filename=filename, id=id)
             if type(inst) == LoadTrackIdNotFoundError:
                 mb = QMessageBox()
                 mb.setText("There is no track with that ID!")
