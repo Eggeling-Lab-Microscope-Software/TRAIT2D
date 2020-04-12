@@ -92,32 +92,23 @@ class widgetSD(QWidget):
 
         results = self.parent.track.sd_analysis(fractionFitPoints=fracFitPoints)["results"]
 
-        self.lineEditParam1_1.setText(
-            "{:5e}".format(results["brownian"]["params"][0]))
-        self.lineEditParam2_1.setText(
-            "{:5e}".format(results["brownian"]["params"][1]))
+        self.lineEditParam1_1.setText(err_format(results["brownian"]["params"][0], results["brownian"]["errors"][0]) + " m^2/s")
+        self.lineEditParam2_1.setText(err_format(results["brownian"]["params"][1], results["brownian"]["errors"][1]) + " m")
         self.lineEditRelLikelihood_1.setText(
             "{:5f}".format(results["brownian"]["rel_likelihood"]))
         self.lineEditBIC_1.setText("{:5f}".format(results["brownian"]["bic"]))
 
-        self.lineEditParam1_2.setText(
-            "{:5e}".format(results["confined"]["params"][0]))
-        self.lineEditParam2_2.setText(
-            "{:5e}".format(results["confined"]["params"][1]))
-        self.lineEditParam3_2.setText(
-            "{:5e}".format(results["confined"]["params"][2]))
+        self.lineEditParam1_2.setText(err_format(results["confined"]["params"][0], results["confined"]["errors"][0]) + " m^2/s")
+        self.lineEditParam2_2.setText(err_format(results["confined"]["params"][1], results["confined"]["errors"][1]) + " m")
+        self.lineEditParam3_2.setText(err_format(results["confined"]["params"][2], results["confined"]["errors"][2]) + " s")
         self.lineEditRelLikelihood_2.setText(
             "{:5f}".format(results["confined"]["rel_likelihood"]))
         self.lineEditBIC_2.setText("{:5f}".format(results["confined"]["bic"]))
 
-        self.lineEditParam1_3.setText(
-            "{:5e}".format(results["hop"]["params"][0]))
-        self.lineEditParam2_3.setText(
-            "{:5e}".format(results["hop"]["params"][1]))
-        self.lineEditParam3_3.setText(
-            "{:5e}".format(results["hop"]["params"][2]))
-        self.lineEditParam4_3.setText(
-            "{:5e}".format(results["hop"]["params"][3]))
+        self.lineEditParam1_3.setText(err_format(results["hop"]["params"][0], results["hop"]["errors"][0]) + " m^2/s")
+        self.lineEditParam2_3.setText(err_format(results["hop"]["params"][1], results["hop"]["errors"][1]) + " m^2/s")
+        self.lineEditParam3_3.setText(err_format(results["hop"]["params"][2], results["hop"]["errors"][2]) + " m")
+        self.lineEditParam4_3.setText(err_format(results["hop"]["params"][3], results["hop"]["errors"][3]) + " s")
         self.lineEditRelLikelihood_3.setText(
             "{:5f}".format(results["hop"]["rel_likelihood"]))
         self.lineEditBIC_3.setText("{:5f}".format(results["hop"]["bic"]))
