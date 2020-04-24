@@ -44,19 +44,29 @@ class MainWindow(QMainWindow):
         if resp == QDialog.Accepted:
             return Dialog.spinBoxId.value()
 
-    def load_track(self, filename : str, id=None):
+    def show_units_dialog(self):
+        Dialog = QDialog()
+        uic.loadUi("gui/dialog_units.ui", Dialog)
+        Dialog.show()
+        resp = Dialog.exec_()
+
+        if resp == QDialog.Accepted:
+            return Dialog.comboBoxLength.currentText(), Dialog.comboBoxTime.currentText()
+
+    def load_track(self, filename : str, id=None, unit_length = None, unit_time = None):
+        if unit_length == None or unit_time == None:
+            unit_length, unit_time = self.show_units_dialog()
         try:
-            self.track = Track.from_file(filename, id=id)
-        except Exception as inst:
-            if type(inst) == LoadTrackMissingIdError:
-                id = self.show_trackid_dialog()
-                self.load_track(filename=filename, id=id)
-            if type(inst) == LoadTrackIdNotFoundError:
-                mb = QMessageBox()
-                mb.setText("There is no track with that ID!")
-                mb.setWindowTitle("Error")
-                mb.setIcon(QMessageBox.Critical)
-                mb.exec()
+            self.track = Track.from_file(filename, id=id, unit_length=unit_length, unit_time=unit_time)
+        except LoadTrackMissingIdError:
+            id = self.show_trackid_dialog()
+            self.load_track(filename=filename, id=id, unit_length=unit_length, unit_time=unit_time)
+        except LoadTrackIdNotFoundError:
+            mb = QMessageBox()
+            mb.setText("There is no track with that ID!")
+            mb.setWindowTitle("Error")
+            mb.setIcon(QMessageBox.Critical)
+            mb.exec()
 
         if self.track==None:
             return

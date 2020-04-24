@@ -276,7 +276,9 @@ class Track:
         return cls(dict["x"], dict["y"], dict["t"])
 
     @classmethod
-    def from_file(cls, filename, format=None, unit='metres', id=None):
+    def from_file(cls, filename, format=None, unit_length='metres', unit_time='seconds', id=None):
+        print(unit_length)
+        print(unit_time)
         """Create a track from a file containing a single track.
         Parameters
         ----------
@@ -289,15 +291,28 @@ class Track:
         id: int
             Track ID in case the file contains more than one track.
         """
-        unit_factor = None
-        if unit == "metres":
-            unit_factor = 1
-        elif unit == "millimetres":
-            unit_factor = 1e-3
-        elif unit == "micrometres":
-            unit_factor = 1e-6
-        elif unit == "nanometres":
-            unit_factor = 1e-9
+        length_factor = None
+        if unit_length == "metres":
+            length_factor = 1
+        elif unit_length == "millimetres":
+            length_factor = 1e-3
+        elif unit_length == "micrometres":
+            length_factor = 1e-6
+        elif unit_length == "nanometres":
+            length_factor = 1e-9
+        else:
+            raise ValueError(
+                "unit must be metres, millimetres, micrometres, or nanometres")
+
+        time_factor = None
+        if unit_time == "seconds":
+            time_factor = 1
+        elif unit_time == "milliseconds":
+            time_factor = 1e-3
+        elif unit_time == "microseconds":
+            time_factor = 1e-6
+        elif unit_time == "nanoseconds":
+            time_factor = 1e-9
         else:
             raise ValueError(
                 "unit must be metres, millimetres, micrometres, or nanometres")
@@ -315,7 +330,7 @@ class Track:
                 x = df["x"]
                 y = df["y"]
                 t = df["t"]
-                return cls(x, y, t)
+                return cls(x * length_factor, y * length_factor, t * time_factor)
             else:
                 if np.min(df["id"]) == np.max(df["id"]):
                     id = np.min(df["id"])  # If there is only one id, we just select it
@@ -327,7 +342,7 @@ class Track:
                 x = df_sub["x"]
                 y = df_sub["y"]
                 t = df_sub["t"]
-                return cls(x, y, t)
+                return cls(x * length_factor, y * length_factor, t * time_factor)
         elif format == "json":
             # TODO: .json-specific import
             raise NotImplementedError(

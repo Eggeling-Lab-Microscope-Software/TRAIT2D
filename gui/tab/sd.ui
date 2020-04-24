@@ -129,7 +129,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>delta^2 (m)</string>
+     <string>delta (m)</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditRelLikelihood_2">
@@ -485,12 +485,12 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>81</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>D_micro (m^2/s)</string>
+     <string>D_macro (m^2/s)</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelParam2_3">
@@ -498,12 +498,12 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>81</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>D_micro(m^2/s)</string>
+     <string>D_micro (m^2/s)</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditRelLikelihood_3">

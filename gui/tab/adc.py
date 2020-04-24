@@ -86,7 +86,7 @@ class widgetADC(QWidget):
 
         maxfev = int(self.lineEditMaxIt.text())
 
-        initial_guesses = {"brownian" : [1.0, 1.0], "confined" : [1.0, 1.0, 1.0], "hop" : [1.0, 1.0, 1.0, 1.0]}
+        initial_guesses = {"brownian" : [0.0, 0.0], "confined" : [0.0, 0.0, 0.0], "hop" : [0.0, 0.0, 0.0, 0.0]}
 
         if self.checkBoxUseInitial.checkState():
             if (self.lineEditParam1_1.text() != ""):
@@ -122,32 +122,32 @@ class widgetADC(QWidget):
             return
 
         # Show results for brownian model in GUI
-        self.lineEditParam1_1.setText("{:5f}".format(results["brownian"]["params"][0]))
-        self.lineEditParam1Error_1.setText("{:5f}".format(results["brownian"]["errors"][0]))
-        self.lineEditParam2_1.setText("{:5f}".format(results["brownian"]["params"][1]))
-        self.lineEditParam2Error_1.setText("{:5f}".format(results["brownian"]["errors"][1]))
+        self.lineEditParam1_1.setText("{:5e}".format(results["brownian"]["params"][0]))
+        self.lineEditParam1Error_1.setText("{:5e}".format(results["brownian"]["errors"][0]))
+        self.lineEditParam2_1.setText("{:5e}".format(results["brownian"]["params"][1]))
+        self.lineEditParam2Error_1.setText("{:5e}".format(results["brownian"]["errors"][1]))
         self.lineEditRelLikelihood_1.setText("{:5f}".format(results["brownian"]["rel_likelihood"]))
         self.lineEditBIC_1.setText("{:5f}".format(results["brownian"]["bic"]))
 
         # Show results for confined model in GUI
-        self.lineEditParam1_2.setText("{:5f}".format(results["confined"]["params"][0]))
-        self.lineEditParam1Error_2.setText("{:5f}".format(results["confined"]["errors"][0]))
-        self.lineEditParam2_2.setText("{:5f}".format(results["confined"]["params"][1]))
-        self.lineEditParam2Error_2.setText("{:5f}".format(results["confined"]["errors"][1]))
-        self.lineEditParam3_2.setText("{:5f}".format(results["confined"]["params"][2]))
-        self.lineEditParam3Error_2.setText("{:5f}".format(results["confined"]["errors"][2]))
+        self.lineEditParam1_2.setText("{:5e}".format(results["confined"]["params"][0]))
+        self.lineEditParam1Error_2.setText("{:5e}".format(results["confined"]["errors"][0]))
+        self.lineEditParam2_2.setText("{:5e}".format(results["confined"]["params"][1]))
+        self.lineEditParam2Error_2.setText("{:5e}".format(results["confined"]["errors"][1]))
+        self.lineEditParam3_2.setText("{:5e}".format(results["confined"]["params"][2]))
+        self.lineEditParam3Error_2.setText("{:5e}".format(results["confined"]["errors"][2]))
         self.lineEditRelLikelihood_2.setText("{:5f}".format(results["confined"]["rel_likelihood"]))
         self.lineEditBIC_2.setText("{:5f}".format(results["confined"]["bic"]))
 
         # Show results for hopping in GUI
-        self.lineEditParam1_3.setText("{:5f}".format(results["hop"]["params"][0]))
-        self.lineEditParam1Error_3.setText("{:5f}".format(results["hop"]["errors"][0]))
-        self.lineEditParam2_3.setText("{:5f}".format(results["hop"]["params"][1]))
-        self.lineEditParam2Error_3.setText("{:5f}".format(results["hop"]["errors"][1]))
-        self.lineEditParam3_3.setText("{:5f}".format(results["hop"]["params"][2]))
-        self.lineEditParam3Error_3.setText("{:5f}".format(results["hop"]["errors"][2]))
-        self.lineEditParam4_3.setText("{:5f}".format(results["hop"]["params"][3]))
-        self.lineEditParam4Error_3.setText("{:5f}".format(results["hop"]["errors"][3]))
+        self.lineEditParam1_3.setText("{:5e}".format(results["hop"]["params"][0]))
+        self.lineEditParam1Error_3.setText("{:5e}".format(results["hop"]["errors"][0]))
+        self.lineEditParam2_3.setText("{:5e}".format(results["hop"]["params"][1]))
+        self.lineEditParam2Error_3.setText("{:5e}".format(results["hop"]["errors"][1]))
+        self.lineEditParam3_3.setText("{:5e}".format(results["hop"]["params"][2]))
+        self.lineEditParam3Error_3.setText("{:5e}".format(results["hop"]["errors"][2]))
+        self.lineEditParam4_3.setText("{:5e}".format(results["hop"]["params"][3]))
+        self.lineEditParam4Error_3.setText("{:5e}".format(results["hop"]["errors"][3]))
         self.lineEditRelLikelihood_3.setText("{:5f}".format(results["hop"]["rel_likelihood"]))
         self.lineEditBIC_3.setText("{:5f}".format(results["hop"]["bic"]))
 
