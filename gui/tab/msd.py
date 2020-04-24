@@ -6,10 +6,10 @@ import numpy as np
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication
+from PyQt5.QtGui import QIntValidator
 
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
-from gui.helpers import *
 
 class widgetMSD(QWidget):
     def __init__(self, parent):
@@ -24,6 +24,8 @@ class widgetMSD(QWidget):
         self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
         self.pushButtonClipboard.clicked.connect(self.results_to_clipboard)
         self.pushButtonSetRange.clicked.connect(self.set_range_from_spinbox)
+
+        self.lineEditMaxIt.setValidator(QIntValidator())
 
         self.parent.sigTrackLoaded.connect(self.reset)
         self.plot.sigFitRangeChanged.connect(self.on_range_changed)
@@ -78,7 +80,34 @@ class widgetMSD(QWidget):
         fitPoints = np.argwhere(T >= self.plot.get_range())[0]
         if fitPoints <= 0:
             fitPoints = None
-        results = self.parent.track.msd_analysis(nFitPoints=fitPoints)["results"]
+
+        maxfev = int(self.lineEditMaxIt.text())
+
+        initial_guesses = {"model1" : [1.0, 1.0], "model2" : [1.0, 1.0, 1.0]}
+
+        if self.checkBoxUseInitial.checkState():
+            if (self.lineEditParam1_1.text() != ""):
+                initial_guesses["model1"][0] = float(self.lineEditParam1_1.text())
+            if (self.lineEditParam2_1.text() != ""):
+                initial_guesses["model1"][1] = float(self.lineEditParam2_1.text())
+
+
+            if (self.lineEditParam1_2.text() != ""):
+                initial_guesses["model2"][0] = float(self.lineEditParam1_2.text())
+            if (self.lineEditParam2_2.text() != ""):
+                initial_guesses["model2"][1] = float(self.lineEditParam2_2.text())
+            if (self.lineEditParam3_2.text() != ""):
+                initial_guesses["model2"][2] = float(self.lineEditParam3_2.text())
+
+        try:
+            results = self.parent.track.msd_analysis(nFitPoints=fitPoints, initial_guesses=initial_guesses, maxfev=maxfev)["results"]
+        except RuntimeError:
+            mb = QMessageBox()
+            mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")
+            mb.setWindowTitle("Fit Error")
+            mb.setIcon(QMessageBox.Warning)
+            mb.exec()
+            return
 
         # Show results for model 1 in GUI
         self.lineEditParam1_1.setText("{:5f}".format(results["model1"]["params"][0]))
@@ -86,7 +115,7 @@ class widgetMSD(QWidget):
         self.lineEditParam2_1.setText("{:5f}".format(results["model1"]["params"][1]))
         self.lineEditParam2Error_1.setText("{:5f}".format(results["model1"]["errors"][1]))
         self.lineEditRelLikelihood_1.setText("{:5f}".format(results["model1"]["rel_likelihood"]))
-        self.lineEditBIC_1.setText("{:5f}".format(results["model1"]["BIC"]))
+        self.lineEditBIC_1.setText("{:5f}".format(results["model1"]["bic"]))
 
         # Show results for model 2 in GUI
         self.lineEditParam1_2.setText("{:5f}".format(results["model2"]["params"][0]))
@@ -96,7 +125,7 @@ class widgetMSD(QWidget):
         self.lineEditParam3_2.setText("{:5f}".format(results["model2"]["params"][2]))
         self.lineEditParam3Error_2.setText("{:5f}".format(results["model2"]["errors"][2]))
         self.lineEditRelLikelihood_2.setText("{:5f}".format(results["model2"]["rel_likelihood"]))
-        self.lineEditBIC_2.setText("{:5f}".format(results["model2"]["BIC"]))
+        self.lineEditBIC_2.setText("{:5f}".format(results["model2"]["bic"]))
 
         # Plot analysis results
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
