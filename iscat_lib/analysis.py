@@ -724,7 +724,7 @@ class Track:
         self.__msd = MSD
         self.__msd_error = MSD_error
 
-    def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, linearPlot=False, numWorkers: int = None, chunksize: int = 100):
+    def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, initial_guesses = { }, maxfev = 1000, linearPlot=False, numWorkers: int = None, chunksize: int = 100):
         """ Classical Mean Squared Displacement Analysis for single track
         Parameters
         ----------
@@ -734,6 +734,9 @@ class Track:
             Number of points to user for fitting. Will override fractionFitPoints.
         dt: float
             Timestep.
+        initial_guesses: dict
+            Dictionary containing initial guesses for the parameters. Keys can be "model1" or "model2".
+            All None 
         linearPlot: bool
             Plot results on a liner scale instead of default logarithmic.
         numWorkers: int
@@ -741,6 +744,8 @@ class Track:
         chunksize: int
             Chunksize for process pool mapping. Small number might have negative performance impacts.
         """
+        p0 = {"model1" : [1.0, 1.0], "model2" : [1.0, 1.0, 1.0]}
+        p0.update(initial_guesses)
 
         # Calculate MSD if this has not been done yet.
         if self.__msd is None:
@@ -772,12 +777,9 @@ class Track:
         # Fit the data to these 2 models using weighted least-squares fit
         # TODO: normalize the curves to make the fit easier to perform.
         reg1 = optimize.curve_fit(
-            model1, T[0:n_points], self.__msd[0:n_points], sigma=self.__msd_error[0:n_points])
-        # print(f"reg1 parameters: {reg1[0]}") # Debug
-        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], [
-                                  *reg1[0][0:2], 1.0], sigma=self.__msd_error[0:n_points])
-        # reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
-        # print(f"reg2 parameters: {reg2[0]}") #Debug
+            model1, T[0:n_points], self.__msd[0:n_points], p0 = p0["model1"], sigma=self.__msd_error[0:n_points], maxfev=maxfev)
+        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], p0 = p0["model2"], sigma=self.__msd_error[0:n_points], maxfev=maxfev)
+
 
         # Compute standard deviation of parameters
         perr_m1 = np.sqrt(np.diag(reg1[1]))
@@ -795,13 +797,13 @@ class Track:
         rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
 
         self.__msd_analysis_results["analyzed"] = True
-        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "BIC": bic1, "rel_likelihood": rel_likelihood_1},
-                                                  "model2": {"params": reg2[0], "errors" : perr_m2, "BIC": bic2, "rel_likelihood": rel_likelihood_2},
+        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "bic": bic1, "rel_likelihood": rel_likelihood_1},
+                                                  "model2": {"params": reg2[0], "errors" : perr_m2, "bic": bic2, "rel_likelihood": rel_likelihood_2},
                                                   "n_points": n_points}
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fractionFitPoints=0.25, maxfev=1000, numWorkers=None, chunksize=100):
+    def adc_analysis(self, R: float = 1/6, fractionFitPoints=0.25, numWorkers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
         """Revised analysis using the apparent diffusion coefficient
         Parameters
         ----------
@@ -830,7 +832,7 @@ class Track:
         Dapp = self.__msd / (4 * T * (1 - 2*R*dt / T))
 
         model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), fractionFitPoints=fractionFitPoints, maxfev=maxfev)
+            1, N+1), fractionFitPoints=fractionFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -840,7 +842,7 @@ class Track:
         return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFitPoints: float = 0.25, maxfev=1000):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
@@ -900,7 +902,7 @@ class Track:
             dapp_list.append(dapp)
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), fractionFitPoints=fractionFitPoints, maxfev=maxfev)
+            J), fractionFitPoints=fractionFitPoints, initial_guesses=initial_guesses, maxfev=maxfev)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -910,7 +912,10 @@ class Track:
 
         return self.__sd_analysis_results
 
-    def __categorize(self, Dapp, J, R: float = 1/6, fractionFitPoints: float = 0.25, maxfev=1000):
+    def __categorize(self, Dapp, J, R: float = 1/6, fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
+        p0 = {"brownian" : [1.0, 1.0], "confined" : [1.0, 1.0, 1.0], "hop" : [1.0, 1.0, 1.0, 1.0]}
+        p0.update(initial_guesses)
+
         if fractionFitPoints > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
@@ -936,11 +941,11 @@ class Track:
             error = None
 
         r_brownian = optimize.curve_fit(
-            model_brownian, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
+            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0["brownian"], sigma=error, maxfev=maxfev)
         r_confined = optimize.curve_fit(
-            model_confined, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
+            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0["confined"], sigma=error, maxfev=maxfev)
         r_hop = optimize.curve_fit(
-            model_hop, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
+            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0["hop"], sigma=error, maxfev=maxfev)
 
         # Compute standard deviations of the parameters
         perr_brownian = np.sqrt(np.diag(r_brownian[1]))
