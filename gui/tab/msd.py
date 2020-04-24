@@ -83,7 +83,7 @@ class widgetMSD(QWidget):
 
         maxfev = int(self.lineEditMaxIt.text())
 
-        initial_guesses = {"model1" : [1.0, 1.0], "model2" : [1.0, 1.0, 1.0]}
+        initial_guesses = {"model1" : [0.0, 0.0], "model2" : [0.0, 0.0, 0.0]}
 
         if self.checkBoxUseInitial.checkState():
             if (self.lineEditParam1_1.text() != ""):
@@ -110,20 +110,20 @@ class widgetMSD(QWidget):
             return
 
         # Show results for model 1 in GUI
-        self.lineEditParam1_1.setText("{:5f}".format(results["model1"]["params"][0]))
-        self.lineEditParam1Error_1.setText("{:5f}".format(results["model1"]["errors"][0]))
-        self.lineEditParam2_1.setText("{:5f}".format(results["model1"]["params"][1]))
-        self.lineEditParam2Error_1.setText("{:5f}".format(results["model1"]["errors"][1]))
+        self.lineEditParam1_1.setText("{:5e}".format(results["model1"]["params"][0]))
+        self.lineEditParam1Error_1.setText("{:5e}".format(results["model1"]["errors"][0]))
+        self.lineEditParam2_1.setText("{:5e}".format(results["model1"]["params"][1]))
+        self.lineEditParam2Error_1.setText("{:5e}".format(results["model1"]["errors"][1]))
         self.lineEditRelLikelihood_1.setText("{:5f}".format(results["model1"]["rel_likelihood"]))
         self.lineEditBIC_1.setText("{:5f}".format(results["model1"]["bic"]))
 
         # Show results for model 2 in GUI
-        self.lineEditParam1_2.setText("{:5f}".format(results["model2"]["params"][0]))
-        self.lineEditParam1Error_2.setText("{:5f}".format(results["model2"]["errors"][0]))
-        self.lineEditParam2_2.setText("{:5f}".format(results["model2"]["params"][1]))
-        self.lineEditParam2Error_2.setText("{:5f}".format(results["model2"]["errors"][1]))
-        self.lineEditParam3_2.setText("{:5f}".format(results["model2"]["params"][2]))
-        self.lineEditParam3Error_2.setText("{:5f}".format(results["model2"]["errors"][2]))
+        self.lineEditParam1_2.setText("{:5e}".format(results["model2"]["params"][0]))
+        self.lineEditParam1Error_2.setText("{:5e}".format(results["model2"]["errors"][0]))
+        self.lineEditParam2_2.setText("{:5e}".format(results["model2"]["params"][1]))
+        self.lineEditParam2Error_2.setText("{:5e}".format(results["model2"]["errors"][1]))
+        self.lineEditParam3_2.setText("{:5e}".format(results["model2"]["params"][2]))
+        self.lineEditParam3Error_2.setText("{:5e}".format(results["model2"]["errors"][2]))
         self.lineEditRelLikelihood_2.setText("{:5f}".format(results["model2"]["rel_likelihood"]))
         self.lineEditBIC_2.setText("{:5f}".format(results["model2"]["bic"]))
 
