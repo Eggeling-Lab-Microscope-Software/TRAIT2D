@@ -9,6 +9,9 @@ import csv
 from scipy import optimize
 from scipy import interpolate
 import matplotlib.pyplot as plt
+import pandas as pd
+
+from iscat_lib.exceptions import *
 
 import itertools
 import os
@@ -273,7 +276,9 @@ class Track:
         return cls(dict["x"], dict["y"], dict["t"])
 
     @classmethod
-    def from_file(cls, filename, format=None, unit='metres'):
+    def from_file(cls, filename, format=None, unit_length='metres', unit_time='seconds', id=None):
+        print(unit_length)
+        print(unit_time)
         """Create a track from a file containing a single track.
         Parameters
         ----------
@@ -283,16 +288,31 @@ class Track:
             Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
         unit: str
             Unit of track data in space. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
+        id: int
+            Track ID in case the file contains more than one track.
         """
-        unit_factor = None
-        if unit == "metres":
-            unit_factor = 1
-        elif unit == "millimetres":
-            unit_factor = 1e-3
-        elif unit == "micrometres":
-            unit_factor = 1e-6
-        elif unit == "nanometres":
-            unit_factor = 1e-9
+        length_factor = None
+        if unit_length == "metres":
+            length_factor = 1
+        elif unit_length == "millimetres":
+            length_factor = 1e-3
+        elif unit_length == "micrometres":
+            length_factor = 1e-6
+        elif unit_length == "nanometres":
+            length_factor = 1e-9
+        else:
+            raise ValueError(
+                "unit must be metres, millimetres, micrometres, or nanometres")
+
+        time_factor = None
+        if unit_time == "seconds":
+            time_factor = 1
+        elif unit_time == "milliseconds":
+            time_factor = 1e-3
+        elif unit_time == "microseconds":
+            time_factor = 1e-6
+        elif unit_time == "nanoseconds":
+            time_factor = 1e-9
         else:
             raise ValueError(
                 "unit must be metres, millimetres, micrometres, or nanometres")
@@ -305,16 +325,24 @@ class Track:
         if format != "csv" and format != "json" and format != "pcl":
             raise ValueError("Unknown format: {}".format(format))
         if format == "csv":
-            with open(filename, "r") as f:
-                reader = csv.DictReader(f)
-                x = []
-                y = []
-                t = []
-                for row in reader:
-                    x.append(float(row["x"]) * unit_factor)
-                    y.append(float(row["y"]) * unit_factor)
-                    t.append(row["t"])
-            return cls(x, y, t)
+            df = pd.read_csv(filename)
+            if not "id" in df:
+                x = df["x"]
+                y = df["y"]
+                t = df["t"]
+                return cls(x * length_factor, y * length_factor, t * time_factor)
+            else:
+                if np.min(df["id"]) == np.max(df["id"]):
+                    id = np.min(df["id"])  # If there is only one id, we just select it
+                if id == None:
+                    raise LoadTrackMissingIdError("The file seems to contain more than one track. Please specify a track id using the keyword argument id.")
+                df_sub = df.loc[df["id"] == id]
+                if df_sub.empty:
+                    raise LoadTrackIdNotFoundError("There is no track associated with the specified id!")
+                x = df_sub["x"]
+                y = df_sub["y"]
+                t = df_sub["t"]
+                return cls(x * length_factor, y * length_factor, t * time_factor)
         elif format == "json":
             # TODO: .json-specific import
             raise NotImplementedError(
@@ -391,7 +419,7 @@ class Track:
 
         results = self.get_msd_analysis_results()["results"]
         N = self.__x.size
-        T = np.linspace(1, N, N-3,  endpoint=True)
+        T = self.__t[0:-3]
         n_points = results["n_points"]
         reg1 = results["model1"]["params"]
         reg2 = results["model2"]["params"]
@@ -582,6 +610,10 @@ class Track:
         """Return time coordinates of trajectory."""
         return self.__t
 
+    def get_size(self):
+        """Return number of points of the trajectory."""
+        return self.__t.size
+
     def get_trajectory(self):
         return {"t": self.__t.tolist(), "x": self.__x.tolist(), "y": self.__y.tolist()}
 
@@ -707,7 +739,7 @@ class Track:
         self.__msd = MSD
         self.__msd_error = MSD_error
 
-    def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, linearPlot=False, numWorkers: int = None, chunksize: int = 100):
+    def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, initial_guesses = { }, maxfev = 1000, linearPlot=False, numWorkers: int = None, chunksize: int = 100):
         """ Classical Mean Squared Displacement Analysis for single track
         Parameters
         ----------
@@ -717,6 +749,9 @@ class Track:
             Number of points to user for fitting. Will override fractionFitPoints.
         dt: float
             Timestep.
+        initial_guesses: dict
+            Dictionary containing initial guesses for the parameters. Keys can be "model1" or "model2".
+            All None 
         linearPlot: bool
             Plot results on a liner scale instead of default logarithmic.
         numWorkers: int
@@ -724,6 +759,8 @@ class Track:
         chunksize: int
             Chunksize for process pool mapping. Small number might have negative performance impacts.
         """
+        p0 = {"model1" : [1.0, 1.0], "model2" : [1.0, 1.0, 1.0]}
+        p0.update(initial_guesses)
 
         # Calculate MSD if this has not been done yet.
         if self.__msd is None:
@@ -746,7 +783,7 @@ class Track:
             # Selecting more points than 25% should be possible, but not advised
 
         # This is the time array, as the fits will be MSD vs T
-        T = np.linspace(1, N, N,  endpoint=True)
+        T = self.__t[0:-3]
 
         # Definining the models used for the fit
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
@@ -755,12 +792,9 @@ class Track:
         # Fit the data to these 2 models using weighted least-squares fit
         # TODO: normalize the curves to make the fit easier to perform.
         reg1 = optimize.curve_fit(
-            model1, T[0:n_points], self.__msd[0:n_points], sigma=self.__msd_error[0:n_points])
-        # print(f"reg1 parameters: {reg1[0]}") # Debug
-        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], [
-                                  *reg1[0][0:2], 1.0], sigma=self.__msd_error[0:n_points])
-        # reg2 = optimize.curve_fit(model2, T[0:n_points], this_msd[0:n_points], sigma=this_msd_error[0:n_points])
-        # print(f"reg2 parameters: {reg2[0]}") #Debug
+            model1, T[0:n_points], self.__msd[0:n_points], p0 = p0["model1"], sigma=self.__msd_error[0:n_points], maxfev=maxfev)
+        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], p0 = p0["model2"], sigma=self.__msd_error[0:n_points], maxfev=maxfev)
+
 
         # Compute standard deviation of parameters
         perr_m1 = np.sqrt(np.diag(reg1[1]))
@@ -784,7 +818,7 @@ class Track:
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fractionFitPoints=0.25, maxfev=1000, numWorkers=None, chunksize=100):
+    def adc_analysis(self, R: float = 1/6, fractionFitPoints=0.25, numWorkers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
         """Revised analysis using the apparent diffusion coefficient
         Parameters
         ----------
@@ -813,7 +847,7 @@ class Track:
         Dapp = self.__msd / (4 * T * (1 - 2*R*dt / T))
 
         model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), fractionFitPoints=fractionFitPoints, maxfev=maxfev)
+            1, N+1), fractionFitPoints=fractionFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -823,7 +857,7 @@ class Track:
         return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFitPoints: float = 0.25, maxfev=1000):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         Parameters
         ----------
@@ -883,7 +917,7 @@ class Track:
             dapp_list.append(dapp)
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), fractionFitPoints=fractionFitPoints, maxfev=maxfev)
+            J), fractionFitPoints=fractionFitPoints, initial_guesses=initial_guesses, maxfev=maxfev)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -891,7 +925,12 @@ class Track:
         self.__sd_analysis_results["model"] = model
         self.__sd_analysis_results["results"] = results
 
-    def __categorize(self, Dapp, J, R: float = 1/6, fractionFitPoints: float = 0.25, maxfev=1000):
+        return self.__sd_analysis_results
+
+    def __categorize(self, Dapp, J, R: float = 1/6, fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
+        p0 = {"brownian" : [1.0, 1.0], "confined" : [1.0, 1.0, 1.0], "hop" : [1.0, 1.0, 1.0, 1.0]}
+        p0.update(initial_guesses)
+
         if fractionFitPoints > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
@@ -917,11 +956,11 @@ class Track:
             error = None
 
         r_brownian = optimize.curve_fit(
-            model_brownian, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
+            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0["brownian"], sigma=error, maxfev=maxfev)
         r_confined = optimize.curve_fit(
-            model_confined, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
+            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0["confined"], sigma=error, maxfev=maxfev)
         r_hop = optimize.curve_fit(
-            model_hop, T[0:n_points], Dapp[0:n_points], sigma=error, maxfev=maxfev)
+            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0["hop"], sigma=error, maxfev=maxfev)
 
         # Compute standard deviations of the parameters
         perr_brownian = np.sqrt(np.diag(r_brownian[1]))
