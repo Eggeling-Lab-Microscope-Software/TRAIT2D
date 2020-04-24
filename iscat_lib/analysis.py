@@ -778,8 +778,8 @@ class Track:
         rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
 
         self.__msd_analysis_results["analyzed"] = True
-        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "BIC": bic1, "rel_likelihood": rel_likelihood_1},
-                                                  "model2": {"params": reg2[0], "errors" : perr_m2, "BIC": bic2, "rel_likelihood": rel_likelihood_2},
+        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "bic": bic1, "rel_likelihood": rel_likelihood_1},
+                                                  "model2": {"params": reg2[0], "errors" : perr_m2, "bic": bic2, "rel_likelihood": rel_likelihood_2},
                                                   "n_points": n_points}
 
         return self.__msd_analysis_results
