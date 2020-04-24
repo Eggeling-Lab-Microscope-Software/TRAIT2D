@@ -89,7 +89,42 @@ class widgetSD(QWidget):
         if fracFitPoints <= 0:
             fracFitPoints = 0.25
 
-        results = self.parent.track.sd_analysis(fractionFitPoints=fracFitPoints)["results"]
+        maxfev = int(self.lineEditMaxIt.text())
+
+        initial_guesses = {"brownian" : [1.0, 1.0], "confined" : [1.0, 1.0, 1.0], "hop" : [1.0, 1.0, 1.0, 1.0]}
+
+        if self.checkBoxUseInitial.checkState():
+            if (self.lineEditParam1_1.text() != ""):
+                initial_guesses["brownian"][0] = float(self.lineEditParam1_1.text())
+            if (self.lineEditParam2_1.text() != ""):
+                initial_guesses["brownian"][1] = float(self.lineEditParam2_1.text())
+
+
+            if (self.lineEditParam1_2.text() != ""):
+                initial_guesses["confined"][0] = float(self.lineEditParam1_2.text())
+            if (self.lineEditParam2_2.text() != ""):
+                initial_guesses["confined"][1] = float(self.lineEditParam2_2.text())
+            if (self.lineEditParam3_2.text() != ""):
+                initial_guesses["confined"][2] = float(self.lineEditParam3_2.text())
+
+            if (self.lineEditParam1_3.text() != ""):
+                initial_guesses["hop"][0] = float(self.lineEditParam1_3.text())
+            if (self.lineEditParam2_3.text() != ""):
+                initial_guesses["hop"][1] = float(self.lineEditParam2_3.text())
+            if (self.lineEditParam3_3.text() != ""):
+                initial_guesses["hop"][2] = float(self.lineEditParam3_3.text())
+            if (self.lineEditParam4_3.text() != ""):
+                initial_guesses["hop"][3] = float(self.lineEditParam4_3.text())
+
+        try:
+            results = self.parent.track.sd_analysis(fractionFitPoints=fracFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
+        except RuntimeError:
+            mb = QMessageBox()
+            mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")
+            mb.setWindowTitle("Fit Error")
+            mb.setIcon(QMessageBox.Warning)
+            mb.exec()
+            return
 
         # Show results for brownian model in GUI
         self.lineEditParam1_1.setText("{:5f}".format(results["brownian"]["params"][0]))
