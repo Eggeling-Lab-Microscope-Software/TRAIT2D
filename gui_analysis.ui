@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>823</width>
+    <width>900</width>
     <height>950</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>823</width>
+    <width>900</width>
     <height>950</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>823</width>
+    <width>900</width>
     <height>950</height>
    </size>
   </property>
@@ -37,12 +37,12 @@
      <rect>
       <x>220</x>
       <y>10</y>
-      <width>600</width>
+      <width>671</width>
       <height>911</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tabMSD">
      <attribute name="title">
@@ -53,7 +53,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>591</width>
+        <width>661</width>
         <height>881</height>
        </rect>
       </property>
@@ -73,7 +73,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>591</width>
+        <width>661</width>
         <height>881</height>
        </rect>
       </property>
@@ -93,7 +93,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>591</width>
+        <width>661</width>
         <height>881</height>
        </rect>
       </property>
