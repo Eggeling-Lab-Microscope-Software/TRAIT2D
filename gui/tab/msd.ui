@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>647</width>
     <height>800</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QCheckBox" name="checkBoxLogPlot">
    <property name="geometry">
     <rect>
-     <x>500</x>
+     <x>560</x>
      <y>770</y>
      <width>70</width>
      <height>17</height>
@@ -31,7 +31,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>561</width>
+     <width>621</width>
      <height>81</height>
     </rect>
    </property>
@@ -41,7 +41,7 @@
    <widget class="QPushButton" name="pushButtonFormula_1">
     <property name="geometry">
      <rect>
-      <x>464</x>
+      <x>520</x>
       <y>10</y>
       <width>91</width>
       <height>23</height>
@@ -54,9 +54,9 @@
    <widget class="QLineEdit" name="lineEditParam1_1">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>100</x>
       <y>20</y>
-      <width>131</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -64,9 +64,9 @@
    <widget class="QLineEdit" name="lineEditParam2_1">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>100</x>
       <y>50</y>
-      <width>131</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -76,12 +76,12 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>50</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>D</string>
+     <string>D (m^2/s)</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelParam2_1">
@@ -89,20 +89,20 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>47</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>delta^2</string>
+     <string>delta^2 (m^2)</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditRelLikelihood_1">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>421</x>
       <y>20</y>
-      <width>113</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -110,9 +110,9 @@
    <widget class="QLineEdit" name="lineEditBIC_1">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>421</x>
       <y>50</y>
-      <width>113</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -120,7 +120,7 @@
    <widget class="QLabel" name="labelRelLikelihood_1">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>341</x>
       <y>20</y>
       <width>71</width>
       <height>20</height>
@@ -133,7 +133,7 @@
    <widget class="QLabel" name="labelBIC_1">
     <property name="geometry">
      <rect>
-      <x>249</x>
+      <x>340</x>
       <y>50</y>
       <width>71</width>
       <height>20</height>
@@ -143,11 +143,57 @@
      <string>BIC</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="lineEditParam1Error_1">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>20</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditParam2Error_1">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>50</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>20</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+/-</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>50</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+/-</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QPushButton" name="pushButtonClipboard">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>350</x>
      <y>370</y>
      <width>131</width>
      <height>23</height>
@@ -162,7 +208,7 @@
     <rect>
      <x>10</x>
      <y>100</y>
-     <width>561</width>
+     <width>621</width>
      <height>111</height>
     </rect>
    </property>
@@ -172,7 +218,7 @@
    <widget class="QPushButton" name="pushButtonFormula_2">
     <property name="geometry">
      <rect>
-      <x>464</x>
+      <x>520</x>
       <y>10</y>
       <width>91</width>
       <height>23</height>
@@ -185,9 +231,9 @@
    <widget class="QLineEdit" name="lineEditParam1_2">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>100</x>
       <y>20</y>
-      <width>131</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -195,9 +241,9 @@
    <widget class="QLineEdit" name="lineEditParam2_2">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>100</x>
       <y>50</y>
-      <width>131</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -212,7 +258,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>D</string>
+     <string>D (m^2/s)</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelParam2_2">
@@ -220,20 +266,20 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>47</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>delta^2</string>
+     <string>delta^2 (m^2)</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditRelLikelihood_2">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>421</x>
       <y>20</y>
-      <width>113</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -241,9 +287,9 @@
    <widget class="QLineEdit" name="lineEditBIC_2">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>421</x>
       <y>50</y>
-      <width>113</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -251,7 +297,7 @@
    <widget class="QLabel" name="labelRelLikelihood_2">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>341</x>
       <y>20</y>
       <width>71</width>
       <height>20</height>
@@ -264,7 +310,7 @@
    <widget class="QLabel" name="labelBIC_2">
     <property name="geometry">
      <rect>
-      <x>249</x>
+      <x>340</x>
       <y>50</y>
       <width>71</width>
       <height>20</height>
@@ -277,9 +323,9 @@
    <widget class="QLineEdit" name="lineEditParam3_2">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>100</x>
       <y>80</y>
-      <width>131</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -289,7 +335,7 @@
      <rect>
       <x>10</x>
       <y>80</y>
-      <width>47</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
@@ -297,11 +343,80 @@
      <string>alpha</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="lineEditParam1Error_2">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>20</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditParam2Error_2">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>50</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditParam3Error_2">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>80</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>20</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+/-</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>50</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+/-</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>80</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+/-</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QPushButton" name="pushButtonAnalyze">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>500</x>
      <y>370</y>
      <width>131</width>
      <height>23</height>
@@ -316,7 +431,7 @@
     <rect>
      <x>10</x>
      <y>400</y>
-     <width>561</width>
+     <width>621</width>
      <height>361</height>
     </rect>
    </property>
@@ -324,7 +439,7 @@
   <widget class="QDoubleSpinBox" name="doubleSpinBoxRange">
    <property name="geometry">
     <rect>
-     <x>321</x>
+     <x>381</x>
      <y>768</y>
      <width>81</width>
      <height>22</height>
@@ -337,7 +452,7 @@
   <widget class="QPushButton" name="pushButtonSetRange">
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>470</x>
      <y>768</y>
      <width>75</width>
      <height>23</height>
