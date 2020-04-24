@@ -808,8 +808,8 @@ class Track:
         # FIXME: numerical instabilities due to low position values. should normalize before analysis, and then report those adimentional values.
 
         # Relative Likelihood for each model
-        rel_likelihood_1 = np.exp((bic1 - min([bic1, bic2])) * 0.5)
-        rel_likelihood_2 = np.exp((bic2 - min([bic1, bic2])) * 0.5)
+        rel_likelihood_1 = np.exp((-bic1 + min([bic1, bic2])) * 0.5)
+        rel_likelihood_2 = np.exp((-bic2 + min([bic1, bic2])) * 0.5)
 
         self.__msd_analysis_results["analyzed"] = True
         self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "bic": bic1, "rel_likelihood": rel_likelihood_1},
@@ -989,9 +989,9 @@ class Track:
             category = "unknown"
 
         # Calculate the relative likelihood for each model
-        rel_likelihood_brownian = np.exp((bic_brownian - bic_min) * 0.5)
-        rel_likelihood_confined = np.exp((bic_confined - bic_min) * 0.5)
-        rel_likelihood_hop = np.exp((bic_hop - bic_min) * 0.5)
+        rel_likelihood_brownian = np.exp((-bic_brownian + bic_min) * 0.5)
+        rel_likelihood_confined = np.exp((-bic_confined + bic_min) * 0.5)
+        rel_likelihood_hop = np.exp((-bic_hop + bic_min) * 0.5)
 
         return category, {"brownian": {"params": r_brownian[0], "errors": perr_brownian, "bic": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
                           "confined": {"params": r_confined[0], "errors": perr_confined, "bic": bic_confined, "rel_likelihood": rel_likelihood_confined},
