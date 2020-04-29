@@ -773,6 +773,7 @@ class Track:
 
     def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, linearPlot=False, numWorkers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
         """ Classical Mean Squared Displacement Analysis for single track
+
         Parameters
         ----------
         fractionFitPoints: float
@@ -854,6 +855,7 @@ class Track:
 
     def adc_analysis(self, R: float = 1/6, fractionFitPoints=0.25, numWorkers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
         """Revised analysis using the apparent diffusion coefficient
+
         Parameters
         ----------
         R: float
@@ -898,6 +900,7 @@ class Track:
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
                     J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
+        
         Parameters
         ----------
         dt: float
