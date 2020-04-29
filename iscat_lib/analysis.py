@@ -53,14 +53,27 @@ class ListOfTracks:
         ----------
         idx : int
             Index of track.
+
+        Returns
+        -------
+        track: Track
+            Track at index idx.
         """
         return self.__tracks[idx]
 
-    def load_trajectories(self, filename: str):
+    #def load_trajectories(self, filename: str):
         # TODO
-        pass
+    #    pass
 
     def plot_trajectories(self, cmap="plasma"):
+        """Plot all trajectories.
+
+        Parameters
+        ----------
+        cmap : str
+            Name of the colormap to use (see https://matplotlib.org/tutorials/colors/colormaps.html
+            for a list of possible values)
+        """
         from matplotlib.collections import LineCollection
         from matplotlib.ticker import FuncFormatter
         from matplotlib.cm import get_cmap
@@ -277,19 +290,29 @@ class Track:
 
     @classmethod
     def from_file(cls, filename, format=None, unit_length='metres', unit_time='seconds', id=None):
-        print(unit_length)
-        print(unit_time)
-        """Create a track from a file containing a single track.
+        """Create a track from a file containing a single track. Currently only supports '.csv' tracks.
+        The file must contain the fields 'x', 'y', 't'. Additionally, if there is more than one track
+        it must also contain the field 'id'.
+
         Parameters
         ----------
         filename: str
             Name of the file.
         format: str
             Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
-        unit: str
-            Unit of track data in space. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
+        unit_length: str
+            Length unit of track data. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
+        unit_time: str
+            Time unit of track data. Either 'seconds', 'milliseconds', 'microseconds' or 'nanoseconds'.
         id: int
             Track ID in case the file contains more than one track.
+
+        Raises
+        ------
+        LoadTrackIdNotFoundError
+            When no track with the given id is found
+        LodTrackIdMissingError
+            When the file contains multiple tracks but no id is specified.
         """
         length_factor = None
         if unit_length == "metres":
@@ -567,6 +590,14 @@ class Track:
         plt.show()
 
     def plot_trajectory(self, cmap='plasma'):
+        """Plot the trajectory.
+
+        Parameters
+        ----------
+        cmap : str
+            Name of the colormap to use (see https://matplotlib.org/tutorials/colors/colormaps.html
+            for a list of possible values)
+        """
         from matplotlib.collections import LineCollection
         from matplotlib.ticker import FuncFormatter
         from matplotlib.cm import get_cmap
@@ -615,6 +646,7 @@ class Track:
         return self.__t.size
 
     def get_trajectory(self):
+        """Returns the trajectory as a dictionary."""
         return {"t": self.__t.tolist(), "x": self.__x.tolist(), "y": self.__y.tolist()}
 
     def is_msd_calculated(self):
@@ -695,7 +727,7 @@ class Track:
         numWorkers: int
             Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
-            Chunksize for process pool mapping. Small number might have negative performance impacts.
+            Chunksize for process pool mapping. Small numbers might have negative performance impacts.
         """
 
         if N is None:
@@ -739,7 +771,7 @@ class Track:
         self.__msd = MSD
         self.__msd_error = MSD_error
 
-    def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, initial_guesses = { }, maxfev = 1000, linearPlot=False, numWorkers: int = None, chunksize: int = 100):
+    def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, linearPlot=False, numWorkers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
         """ Classical Mean Squared Displacement Analysis for single track
         Parameters
         ----------
@@ -749,15 +781,17 @@ class Track:
             Number of points to user for fitting. Will override fractionFitPoints.
         dt: float
             Timestep.
-        initial_guesses: dict
-            Dictionary containing initial guesses for the parameters. Keys can be "model1" or "model2".
-            All None 
         linearPlot: bool
             Plot results on a liner scale instead of default logarithmic.
         numWorkers: int
             Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
-            Chunksize for process pool mapping. Small number might have negative performance impacts.
+            Chunksize for process pool mapping. Small numbers might have negative performance impacts.
+        initial_guesses: dict
+            Dictionary containing initial guesses for the parameters. Keys can be "model1" and "model2".
+            All values default to 1.
+        maxfev: int
+            Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
         """
         p0 = {"model1" : [1.0, 1.0], "model2" : [1.0, 1.0, 1.0]}
         p0.update(initial_guesses)
@@ -824,12 +858,17 @@ class Track:
         ----------
         R: float
             Point scanning across the field of view.
-        nFitPoints: int
-            Number of points used for fitting. Defaults to 25 % of total points.
+        fractionFitPoints: float
+            Fraction of points to use for fitting. Defaults to 25 %.
+        numWorkers: int
+            Number or processes used for calculation. Defaults to number of system cores.
+        chunksize: int
+            Chunksize for process pool mapping. Small numbers might have negative performance impacts.
+        initial_guesses: dict
+            Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
+            All values default to 1.
         maxfev: int
-            maxfev used by Scipy fitting routine.
-        categorize: bool
-            categorize the track model after Dapp calculation
+            Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
         """
         # Calculate MSD if this has not been done yet.
         if self.__msd is None:
@@ -869,8 +908,13 @@ class Track:
             binsize in nm
         J: list
             list of timepoints to consider
-        categorize: bool
-            categorize the track model after Dapp calculation
+        fractionFitPoints: float
+            Fraction of track to use for fitting. Defaults to 25 %.
+        initial_guesses: dict
+            Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
+            All values default to 1.
+        maxfev: int
+            Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
         """
         # Convert binsize to m
         binsize = binsize_nm * 1e-9
