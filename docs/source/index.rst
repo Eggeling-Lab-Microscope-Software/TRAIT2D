@@ -10,7 +10,8 @@ Welcome to ISCAT_Tracking's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   analysis
+   auto_examples/index
 
 Indices and tables
 ==================
