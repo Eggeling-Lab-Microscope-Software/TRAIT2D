@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
         if unit_length == None or unit_time == None:
             unit_length, unit_time = self.show_units_dialog()
         try:
-            self.track = Track.from_file(filename, id=id, unit_length=unit_length, unit_time=unit_time)
+            self.track = Track.from_file(filename, id=id, unit_length=unit_length, unit_time=unit_time).normalized(normalize_t = True, normalize_xy = False)
         except LoadTrackMissingIdError:
             id = self.show_trackid_dialog()
             self.load_track(filename=filename, id=id, unit_length=unit_length, unit_time=unit_time)
