@@ -18,12 +18,12 @@ import os
 from concurrent.futures import ProcessPoolExecutor
 
 # Models used for MSD analysis
-class ModelMSD1:
+class ModelLinear:
     """Linear model for MSD analysis."""
     def __call__(self, t, D, delta2):
         return 4 * D * t + 2 * delta2
 
-class ModelMSD2:
+class ModelPower:
     """Generic power law model for MSD analysis."""
     def __call__(self, t, D, delta2, alpha):
         return 4 * D * t**alpha + 2 * delta2
@@ -502,8 +502,8 @@ class Track:
                 "Track as not been analyzed using msd_analysis yet!")
 
         # Definining the models used for the fit
-        model1 = ModelMSD1()
-        model2 = ModelMSD2()
+        model1 = ModelLinear()
+        model2 = ModelPower()
 
         results = self.get_msd_analysis_results()["results"]
         N = self.__x.size
@@ -878,8 +878,8 @@ class Track:
         # This is the time array, as the fits will be MSD vs T
         T = self.__t[0:-3]
 
-        model1 = ModelMSD1()
-        model2 = ModelMSD2()
+        model1 = ModelLinear()
+        model2 = ModelPower()
 
         # Fit the data to these 2 models using weighted least-squares fit
         # TODO: normalize the curves to make the fit easier to perform.
