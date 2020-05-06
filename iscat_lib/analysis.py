@@ -1053,12 +1053,27 @@ class Track:
         if not Dapp_err is None:
             error = Dapp_err[0:n_points]
 
+        p0_brownian = [20e-9, 0.5e-12]
+        for i in range(len(p0_brownian)):
+            if not p0["brownian"][i] is None:
+                p0_brownian[i] = p0["brownian"][i]
+
         r_brownian = optimize.curve_fit(
-            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0["brownian"], sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
+            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0_brownian, sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
+        
+        p0_confined = [*r_brownian[0], 1e-3]
+        for i in range(len(p0_confined)):
+            if not p0["confined"][i] is None:
+                p0_confined[i] = p0["confined"][i]
         r_confined = optimize.curve_fit(
-            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0["confined"], sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
+            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0_confined, sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
+
+        p0_hop = [r_confined[0][0], r_confined[0][0], r_confined[0][1], 1e-3]
+        for i in range(len(p0_hop)):
+            if not p0["hop"][i] is None:
+                p0_hop[i] = p0["hop"][i]
         r_hop = optimize.curve_fit(
-            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0["hop"], sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
+            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0_hop, sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
 
         # Compute standard deviations of the parameters
         perr_brownian = np.sqrt(np.diag(r_brownian[1]))

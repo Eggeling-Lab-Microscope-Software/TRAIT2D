@@ -86,7 +86,7 @@ class widgetADC(QWidget):
 
         maxfev = int(self.lineEditMaxIt.text())
 
-        initial_guesses = {"brownian" : [0.0, 0.0], "confined" : [0.0, 0.0, 0.0], "hop" : [0.0, 0.0, 0.0, 0.0]}
+        initial_guesses = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
 
         if self.checkBoxUseInitial.checkState():
             if (self.lineEditParam1_1.text() != ""):
