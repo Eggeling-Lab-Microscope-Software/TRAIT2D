@@ -685,7 +685,7 @@ class Track:
 
         return SD
 
-    def normalized(self):
+    def normalized(self, normalize_t = True, normalize_xy = True):
         """Normalize the track.
         Returns
         -------
@@ -710,12 +710,20 @@ class Track:
         # Normalizing the coordinates
         xy_min = min([xmin, ymin])
         xy_max = min([xmax, ymax])
-        x = (x - xy_min) / (xy_max - xy_min)
-        y = (y - xy_min) / (xy_max - xy_min)
-        t = (t - tmin) / (tmax - tmin)
+        if normalize_xy:
+            x = (x - xy_min) / (xy_max - xy_min)
+            y = (y - xy_min) / (xy_max - xy_min)
+        if normalize_t:
+            t = (t - tmin) / (tmax - tmin)
 
         # Create normalized Track object
         return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
+
+    def normalize_t(self):
+        t = self.__t
+        tmin = t.min()
+        tmax = t.max()
+        self.__t = t - tmin
 
     def calculate_msd(self, N: int = None, numWorkers: int = None, chunksize: int = 100):
         """Calculates the mean squared displacement of the track.
@@ -886,9 +894,10 @@ class Track:
 
         # Compute  the time-dependent apparent diffusion coefficient.
         Dapp = self.__msd / (4 * T * (1 - 2*R*dt / T))
+        Dapp_err = self.__msd_error / (4 * T * (1 - 2*R*dt / T))
 
         model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), fractionFitPoints=fractionFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)
+            1, N+1), Dapp_err = Dapp_err, fractionFitPoints=fractionFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -974,7 +983,7 @@ class Track:
 
         return self.__sd_analysis_results
 
-    def __categorize(self, Dapp, J, R: float = 1/6, fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
+    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
         p0 = {"brownian" : [1.0, 1.0], "confined" : [1.0, 1.0, 1.0], "hop" : [1.0, 1.0, 1.0, 1.0]}
         p0.update(initial_guesses)
 
@@ -997,17 +1006,16 @@ class Track:
             delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
 
         # Perform fits.
-        if self.is_msd_calculated():
-            error = self.__msd_error[J[0:n_points]]
-        else:
-            error = None
+        error = None
+        if not Dapp_err is None:
+            error = Dapp_err[0:n_points]
 
         r_brownian = optimize.curve_fit(
-            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0["brownian"], sigma=error, maxfev=maxfev)
+            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0["brownian"], sigma=error, maxfev=maxfev, method='dogbox', bounds=([0.0, 0.0], [np.inf, np.inf]))
         r_confined = optimize.curve_fit(
-            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0["confined"], sigma=error, maxfev=maxfev)
+            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0["confined"], sigma=error, maxfev=maxfev, method='dogbox', bounds=([0.0, 0.0, 0.0], [np.inf, np.inf, np.inf]))
         r_hop = optimize.curve_fit(
-            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0["hop"], sigma=error, maxfev=maxfev)
+            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0["hop"], sigma=error, maxfev=maxfev, method='dogbox', bounds=([0.0, 0.0, 0.0, 0.0], [np.inf, np.inf, np.inf, np.inf]))
 
         # Compute standard deviations of the parameters
         perr_brownian = np.sqrt(np.diag(r_brownian[1]))
