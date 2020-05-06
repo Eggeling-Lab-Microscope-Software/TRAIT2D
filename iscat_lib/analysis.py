@@ -17,6 +17,71 @@ import itertools
 import os
 from concurrent.futures import ProcessPoolExecutor
 
+# Models used for MSD analysis
+class ModelMSD1:
+    """Linear model for MSD analysis."""
+    def __call__(self, t, D, delta2):
+        return 4 * D * t + 2 * delta2
+
+class ModelMSD2:
+    """Generic power law model for MSD analysis."""
+    def __call__(self, t, D, delta2, alpha):
+        return 4 * D * t**alpha + 2 * delta2
+
+# Models used for ADC and SD analysis
+class ModelBrownian:
+    """Model for free, unrestricted diffusion.
+    
+    Parameters
+    ----------
+    R: float
+        Point scanning across the field of view.
+    dt: float
+        Uniform time step size.
+    """
+    def __init__(self, R, dt):
+        self.R = R
+        self.dt = dt
+
+    def __call__(self, t, D, delta):
+        return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
+
+class ModelConfined:
+    """Model for confined diffusion.
+    
+    Parameters
+    ----------
+    R: float
+        Point scanning across the field of view.
+    dt: float
+        Uniform time step size.
+    """
+    def __init__(self, R, dt):
+        self.R = R
+        self.dt = dt
+
+    def __call__(self, t, D_micro, delta, tau):
+        return D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
+            delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+
+class ModelHop:
+    """Model for hop diffusion.
+    
+    Parameters
+    ----------
+    R: float
+        Point scanning across the field of view.
+    dt: float
+        Uniform time step size.
+    """
+    def __init__(self, R, dt):
+        self.R = R
+        self.dt = dt
+
+    def __call__(self, t, D_macro, D_micro, delta, tau):
+        return D_macro + \
+            D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
+            delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
 class ListOfTracks:
     """Create an object that can hold multiple tracks and analyze them in bulk.
@@ -437,8 +502,8 @@ class Track:
                 "Track as not been analyzed using msd_analysis yet!")
 
         # Definining the models used for the fit
-        def model1(t, D, delta2): return 4 * D * t + 2 * delta2
-        def model2(t, D, delta2, alpha): return 4 * D * t**alpha + 2 * delta2
+        model1 = ModelMSD1()
+        model2 = ModelMSD2()
 
         results = self.get_msd_analysis_results()["results"]
         N = self.__x.size
@@ -498,16 +563,6 @@ class Track:
         Dapp = self.get_adc_analysis_results()["Dapp"]
         model = self.get_adc_analysis_results()["model"]
 
-        # Define the models to fit the Dapp
-        def model_brownian(t, D, delta): return D + \
-            delta**2 / (2 * t * (1 - 2*R*dt/t))
-        def model_confined(t, D_micro, delta, tau): return D_micro * (tau/t) * \
-            (1 - np.exp(-tau/t)) + delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
-
-        def model_hop(t, D_macro, D_micro, delta, tau): return D_macro + D_micro * \
-            (tau/t) * (1 - np.exp(-tau/t)) + \
-            delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
-
         pred_brownian = model_brownian(T, *r_brownian)
         pred_confined = model_confined(T, *r_confined)
         pred_hop = model_hop(T, *r_hop)
@@ -561,14 +616,9 @@ class Track:
         model = self.get_sd_analysis_results()["model"]
 
         # Define the models to fit the Dapp
-        def model_brownian(t, D, delta): return D + \
-            delta**2 / (2 * t * (1 - 2*R*dt/t))
-        def model_confined(t, D_micro, delta, tau): return D_micro * (tau/t) * \
-            (1 - np.exp(-tau/t)) + delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
-
-        def model_hop(t, D_macro, D_micro, delta, tau): return D_macro + D_micro * \
-            (tau/t) * (1 - np.exp(-tau/t)) + \
-            delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
+        model_brownian = ModelBrownian(R, dt)
+        model_confined = ModelConfined(R, dt)
+        model_hop = ModelHop(R, dt)
 
         pred_brownian = model_brownian(T, *r_brownian)
         pred_confined = model_confined(T, *r_confined)
@@ -828,9 +878,8 @@ class Track:
         # This is the time array, as the fits will be MSD vs T
         T = self.__t[0:-3]
 
-        # Definining the models used for the fit
-        def model1(t, D, delta2): return 4 * D * t + 2 * delta2
-        def model2(t, D, delta2, alpha): return 4 * D * t**alpha + 2 * delta2
+        model1 = ModelMSD1()
+        model2 = ModelMSD2()
 
         # Fit the data to these 2 models using weighted least-squares fit
         # TODO: normalize the curves to make the fit easier to perform.
@@ -996,26 +1045,20 @@ class Track:
 
         n_points = np.argmax(J > fractionFitPoints * J[-1])
         # Define the models to fit the Dapp
-        def model_brownian(t, D, delta): return D + \
-            delta**2 / (2 * t * (1 - 2*R*dt/t))
-        def model_confined(t, D_micro, delta, tau): return D_micro * (tau/t) * \
-            (1 - np.exp(-tau/t)) + delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
-
-        def model_hop(t, D_macro, D_micro, delta, tau): return D_macro + D_micro * \
-            (tau/t) * (1 - np.exp(-tau/t)) + \
-            delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
-
+        model_brownian = ModelBrownian(R, dt)
+        model_confined = ModelConfined(R, dt)
+        model_hop = ModelHop(R, dt)
         # Perform fits.
         error = None
         if not Dapp_err is None:
             error = Dapp_err[0:n_points]
 
         r_brownian = optimize.curve_fit(
-            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0["brownian"], sigma=error, maxfev=maxfev, method='dogbox', bounds=([0.0, 0.0], [np.inf, np.inf]))
+            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0["brownian"], sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
         r_confined = optimize.curve_fit(
-            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0["confined"], sigma=error, maxfev=maxfev, method='dogbox', bounds=([0.0, 0.0, 0.0], [np.inf, np.inf, np.inf]))
+            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0["confined"], sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
         r_hop = optimize.curve_fit(
-            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0["hop"], sigma=error, maxfev=maxfev, method='dogbox', bounds=([0.0, 0.0, 0.0, 0.0], [np.inf, np.inf, np.inf, np.inf]))
+            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0["hop"], sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
 
         # Compute standard deviations of the parameters
         perr_brownian = np.sqrt(np.diag(r_brownian[1]))
