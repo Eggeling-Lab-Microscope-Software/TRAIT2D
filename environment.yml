@@ -7,7 +7,6 @@ dependencies:
   - pip
   - pip:
       - opencv-python
-      - pgmpy
       - tqdm
   - numpy
   - scipy
