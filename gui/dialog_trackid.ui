@@ -51,17 +51,17 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QSpinBox" name="spinBoxId">
+  <widget class="QLineEdit" name="lineEditId">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>66</y>
-     <width>121</width>
+     <y>70</y>
+     <width>151</width>
      <height>20</height>
     </rect>
    </property>
-   <property name="value">
-    <number>0</number>
+   <property name="text">
+    <string>0</string>
    </property>
   </widget>
  </widget>
