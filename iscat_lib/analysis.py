@@ -354,7 +354,7 @@ class Track:
         return cls(dict["x"], dict["y"], dict["t"])
 
     @classmethod
-    def from_file(cls, filename, format=None, unit_length='metres', unit_time='seconds', id=None):
+    def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds', id=None):
         """Create a track from a file containing a single track. Currently only supports '.csv' tracks.
         The file must contain the fields 'x', 'y', 't'. Additionally, if there is more than one track
         it must also contain the field 'id'.
@@ -414,23 +414,23 @@ class Track:
             raise ValueError("Unknown format: {}".format(format))
         if format == "csv":
             df = pd.read_csv(filename)
-            if not "id" in df:
-                x = df["x"]
-                y = df["y"]
-                t = df["t"]
-                return cls(x * length_factor, y * length_factor, t * time_factor)
-            else:
-                if np.min(df["id"]) == np.max(df["id"]):
-                    id = np.min(df["id"])  # If there is only one id, we just select it
+            x = None
+            y = None
+            t = None
+            if col_name_id in df:
+                if np.min(df[col_name_id]) == np.max(df[col_name_id]):
+                    id = np.min(df[col_name_id])  # If there is only one id, we just select it
                 if id == None:
                     raise LoadTrackMissingIdError("The file seems to contain more than one track. Please specify a track id using the keyword argument id.")
-                df_sub = df.loc[df["id"] == id]
-                if df_sub.empty:
+                df = df.loc[df[col_name_id] == int(id)]
+                if df.empty:
                     raise LoadTrackIdNotFoundError("There is no track associated with the specified id!")
-                x = df_sub["x"]
-                y = df_sub["y"]
-                t = df_sub["t"]
-                return cls(x * length_factor, y * length_factor, t * time_factor)
+
+            x = np.array(df[col_name_x])
+            y = np.array(df[col_name_y])
+            t = np.array(df[col_name_t])
+
+            return cls(x * length_factor, y * length_factor, t * time_factor)
         elif format == "json":
             # TODO: .json-specific import
             raise NotImplementedError(
@@ -1033,7 +1033,7 @@ class Track:
         return self.__sd_analysis_results
 
     def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
-        p0 = {"brownian" : [1.0, 1.0], "confined" : [1.0, 1.0, 1.0], "hop" : [1.0, 1.0, 1.0, 1.0]}
+        p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
         p0.update(initial_guesses)
 
         if fractionFitPoints > 0.25:
