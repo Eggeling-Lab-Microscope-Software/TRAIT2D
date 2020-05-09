@@ -515,7 +515,7 @@ class ListOfTracks:
 
         if plot_msd and not avg_only_params:
             import matplotlib.pyplot as plt
-            plt.figure(0)
+            plt.figure()
             ax = plt.gca()
             ax.set_xlabel("t")
             ax.set_ylabel("Average MSD")
@@ -529,7 +529,7 @@ class ListOfTracks:
 
         if plot_dapp and not avg_only_params:
             import matplotlib.pyplot as plt
-            plt.figure(1)
+            plt.figure()
             ax = plt.gca()
             ax.set_xlabel("t")
             ax.set_ylabel("Average D_app")
@@ -542,7 +542,7 @@ class ListOfTracks:
 
         if plot_pie_chart:
             import matplotlib.pyplot as plt
-            plt.figure(2)
+            plt.figure()
             ax = plt.gca()
             ax.pie([sector_brownian_area, sector_confined_area, sector_hop_area],
                    labels=["Brownian", "Confined", "Hop"])
