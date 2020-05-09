@@ -96,6 +96,38 @@ class ListOfTracks:
 
     @classmethod
     def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds'):
+        """Create a ListOfTracks from a file containing multiple tracks. Currently only supports '.csv' files.
+        The file must contain the fields 'x', 'y', 't' as well as 'id'. Different column names can also be
+        specified using the appropriate arguments.
+
+        Parameters
+        ----------
+        filename: str
+            Name of the file.
+        format: str
+            Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
+        col_name_x: str
+            Column title of x positions.
+        col_name_y: str
+            Column title of y positions.
+        col_name_t: str
+            Column title of time.
+        col_name_id: str
+            Column title of track IDs.
+        unit_length: str
+            Length unit of track data. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
+        unit_time: str
+            Time unit of track data. Either 'seconds', 'milliseconds', 'microseconds' or 'nanoseconds'.
+        id: int
+            Track ID in case the file contains more than one track.
+
+        Raises
+        ------
+        LoadTrackIdNotFoundError
+            When no track with the given id is found
+        LodTrackIdMissingError
+            When the file contains multiple tracks but no id is specified.
+        """
         df = pd.read_csv(filename)
         ids = df["id"].unique()
         tracks = []
@@ -154,6 +186,24 @@ class ListOfTracks:
                 return track
 
     def get_sublist(self, method, model):
+        """Return a new ListOfTracks containing only tracks categorized as
+        the specified model using the specified method.
+
+        Parameters
+        ----------
+        method: str
+            Method used for classificiation can be either 'adc' or 'sd'.
+        model: str
+            Model the tracks are classified as. Can be one of 'brownian',
+            'confined' or 'hop'.
+
+        Returns
+        -------
+        track_list: ListOfTracks
+            ListOfTracks containing the tracks that meet the criteria.
+            Note: The tracks in the new list will still be references to to
+            the tracks in the original list.
+        """
         if not method in ['adc', 'sd']:
             raise ValueError("Method must be one of 'adc' or 'sd'.")
         if not model in ['brownian', 'confined', 'hop']:
@@ -307,13 +357,26 @@ class ListOfTracks:
             track.sd_analysis(**kwargs)
 
     def summary(self, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
-        """Average tracks by category, and report average track fit results and summary statistics
+        """Average tracks by model and optionally plot the results.
+
+        Parameters
+        ----------
+        avg_only_params: bool
+            Only average the model parameters but not D_app and MSD
+        interpolation: bool
+            User linear interpolation of averaging. Has to be used when
+            not all tracks have the same uniform time step size.
+        plot_msd: bool
+            Plot the averaged MSD for each model.
+        plot_dapp: bool
+            Plot the averaged D_app for each model.
+        plot_pie_chart: bool
+            Plot a pie chart showing the relative fractions of each model.
 
         Returns
         -------
-
         results : dict
-            Relative shares of each model.
+            Relative shares and averaged values of each model.
         """
 
         if avg_only_params and (plot_msd or plot_dapp):
@@ -531,16 +594,22 @@ class Track:
 
     @classmethod
     def from_dataframe(cls, df, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds', id=None):
-        """Create a track from a file containing a single track. Currently only supports '.csv' tracks.
-        The file must contain the fields 'x', 'y', 't'. Additionally, if there is more than one track
-        it must also contain the field 'id'.
+        """Create a single track from a DataFrame. Currently only supports '.csv' tracks.
+        The DataFrame must contain the fields 'x', 'y', 't' as well as 'id'. Different column names can also be
+        specified using the appropriate arguments.
 
         Parameters
         ----------
-        filename: str
-            Name of the file.
-        format: str
-            Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
+        df: pandas.DataFrame
+            DataFrame containing the data.
+        col_name_x: str
+            Column title of x positions.
+        col_name_y: str
+            Column title of y positions.
+        col_name_t: str
+            Column title of time.
+        col_name_id: str
+            Column title of track IDs.
         unit_length: str
             Length unit of track data. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
         unit_time: str
@@ -601,9 +670,9 @@ class Track:
 
     @classmethod
     def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds', id=None):
-        """Create a track from a file containing a single track. Currently only supports '.csv' tracks.
-        The file must contain the fields 'x', 'y', 't'. Additionally, if there is more than one track
-        it must also contain the field 'id'.
+        """Create a single track from a file. Currently only supports '.csv' tracks.
+        The DataFrame must contain the fields 'x', 'y', 't' as well as 'id'. Different column names can also be
+        specified using the appropriate arguments.
 
         Parameters
         ----------
@@ -611,6 +680,14 @@ class Track:
             Name of the file.
         format: str
             Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
+        col_name_x: str
+            Column title of x positions.
+        col_name_y: str
+            Column title of y positions.
+        col_name_t: str
+            Column title of time.
+        col_name_id: str
+            Column title of track IDs.
         unit_length: str
             Length unit of track data. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
         unit_time: str
