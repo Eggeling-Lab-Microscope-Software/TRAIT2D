@@ -8,7 +8,6 @@ import logging
 import csv
 from scipy import optimize
 from scipy import interpolate
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from iscat_lib.exceptions import *
@@ -95,6 +94,16 @@ class ListOfTracks:
     def __init__(self, tracks: list = None):
         self.__tracks = tracks
 
+    @classmethod
+    def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds'):
+        # TODO: This is not optimal since it opens and closes the file repeatedly
+        df = pd.read_csv(filename)
+        ids = df["id"].unique()
+        tracks = []
+        for id in ids:
+            tracks.append(Track.from_dataframe(df, col_name_x, col_name_y, col_name_t, col_name_id, unit_length, unit_time, id))
+        return cls(tracks)
+
     def __repr__(self):
         return ("<%s instance at %s>\n"
                 "Number of tracks: %s\n") % (self.__class__.__name__,
@@ -126,9 +135,39 @@ class ListOfTracks:
         """
         return self.__tracks[idx]
 
-    #def load_trajectories(self, filename: str):
-        # TODO
-    #    pass
+    def get_track_by_id(self, id):
+        """Return a single track with the specified ID.
+        If there are multiple tracks with the same ID,
+        only the first track is returned.
+
+        Parameters
+        ----------
+        id: int
+            ID of the track.
+
+        Returns
+        -------
+        track: Track
+            Track with the specified ID.
+        """
+        for track in self.__tracks:
+            if track.get_id() == id:
+                return track
+
+    def get_sublist(self, method, model):
+        if not method in ['adc', 'sd']:
+            raise ValueError("Method must be one of 'adc' or 'sd'.")
+        if not model in ['brownian', 'confined', 'hop']:
+            raise ValueError("Model must be on be one of 'brownian', 'confined' or 'hop'.")
+        track_list = []
+        for track in self.__tracks:
+            if method == 'adc':
+                if track.get_adc_analysis_results()["model"] == model:
+                    track_list.append(track)
+            elif method == 'sd':
+                if track.get_sd_analysis_results()["model"] == model:
+                    track_list.append(track)
+        return ListOfTracks(track_list)
 
     def plot_trajectories(self, cmap="plasma"):
         """Plot all trajectories.
@@ -139,6 +178,7 @@ class ListOfTracks:
             Name of the colormap to use (see https://matplotlib.org/tutorials/colors/colormaps.html
             for a list of possible values)
         """
+        import matplotlib.pyplot as plt
         from matplotlib.collections import LineCollection
         from matplotlib.ticker import FuncFormatter
         from matplotlib.cm import get_cmap
@@ -157,11 +197,12 @@ class ListOfTracks:
             t = track.get_t()
             x -= x[0]
             y -= y[0]
+            t -= t[0]
+            tmax = t.max()
             for i in range(1, t.size):
                 segs.append([(x[i-1], y[i-1]),
                              (x[i], y[i])])
-                colors.append(
-                    cmap(t[i] / (t.max() - t.min())))
+                colors.append(cmap(t[i] / tmax))
             lc = LineCollection(segs, colors=colors)
             ax.add_collection(lc)
             xmin = min(xmin, x.min())
@@ -184,6 +225,15 @@ class ListOfTracks:
         ax.set_ylabel("y (nm)")
         plt.show()
 
+    def normalize(self, **kwargs):
+        """Normalize all tracks.
+
+        Parameters
+        ----------
+            Keyword arguments to be used by normalized for each track.
+        """
+        self.__tracks = [track.normalized(**kwargs) for track in self.__tracks]
+
     def msd_analysis(self, **kwargs):
         """Analyze all tracks using MSD analysis.
 
@@ -191,9 +241,29 @@ class ListOfTracks:
         ----------
         **kwargs
             Keyword arguments to be used by msd_analysis for each track.
+
+        Returns
+        -------
+        list_failed
+            List containing the indices of the tracks for which the analysis failed.
         """
+        list_failed = []
+        i = 0
         for track in self.__tracks:
-            track.msd_analysis(**kwargs)
+            try:
+                track.msd_analysis(**kwargs)
+            except:
+                list_failed.append(i)
+            i += 1
+
+        if len(list_failed) > 0:
+            warnings.warn("MSD analysis failed for {}/{} tracks. \
+                Consider raising the maximum function evaluations using \
+                the maxfev keyword argument. \
+                To get a more detailed stacktrace, run the MSD analysis \
+                for a single track.".format(len(list_failed), len(self.__tracks)))
+
+        return list_failed
 
     def adc_analysis(self, **kwargs):
         """Analyze all tracks using ADC analysis.
@@ -202,9 +272,29 @@ class ListOfTracks:
         ----------
         **kwargs
             Keyword arguments to be used by adc_analysis for each track.
+
+        Returns
+        -------
+        list_failed
+            List containing the indices of the tracks for which the analysis failed.
         """
+        list_failed = []
+        i = 0
         for track in self.__tracks:
-            track.adc_analysis(**kwargs)
+            try:
+                track.adc_analysis(**kwargs)
+            except:
+                list_failed.append(i)
+            i+=1
+        
+        if len(list_failed) > 0:
+            warnings.warn("ADC analysis failed for {}/{} tracks. "
+                "Consider raising the maximum function evaluations using "
+                "the maxfev keyword argument. "
+                "To get a more detailed stacktrace, run the ADC analysis "
+                "for a single track.".format(len(list_failed), len(self.__tracks)))
+
+        return list_failed
 
     def sd_analysis(self, **kwargs):
         """Analyze all tracks using SD analyis.
@@ -217,7 +307,7 @@ class ListOfTracks:
         for track in self.__tracks:
             track.sd_analysis(**kwargs)
 
-    def smart_averaging(self):
+    def summary(self, avg_only_params = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
         """Average tracks by category, and report average track fit results and summary statistics
 
         Returns
@@ -227,7 +317,16 @@ class ListOfTracks:
             Relative shares of each model.
         """
 
-        track_length = self.__tracks[0].get_x().size
+        if avg_only_params and (plot_msd or plot_dapp):
+            warnings.warn("avg_only_params is True. plot_msd or plot_dapp will have no effect.")
+
+        track_length = 0
+        t = None
+        for track in self.__tracks:
+            if track.get_x().size > track_length:
+                track_length = track.get_x().size
+                t = track.get_t()
+
         average_D_app_brownian = np.zeros(track_length - 3)
         average_D_app_confined = np.zeros(track_length - 3)
         average_D_app_hop = np.zeros(track_length - 3)
@@ -236,58 +335,80 @@ class ListOfTracks:
         average_MSD_confined = np.zeros(track_length - 3)
         average_MSD_hop = np.zeros(track_length - 3)
 
+        average_params_brownian = np.array([0.0, 0.0])
+        average_params_confined = np.array([0.0, 0.0, 0.0])
+        average_params_hop = np.array([0.0, 0.0, 0.0, 0.0])
+
+        sampled_brownian = np.zeros(track_length - 3)
+        sampled_confined = np.zeros(track_length - 3)
+        sampled_hop = np.zeros(track_length - 3)
+
         counter_brownian = 0
         counter_confined = 0
         counter_hop = 0
 
+        dt = t[1] - t[0]
+
         k = 0
         for track in self.__tracks:
             k += 1
-            if track.get_adc_analysis_results()["analyzed"] == False:
-                raise ValueError(
-                    "All tracks have to be analyzed using adc_analysis() before averaging!")
-            if track.get_x().size != track_length:
-                raise ValueError("Encountered track with incorrect track length! (Got {}, expected {} for track {}.)".format(
-                    track.get_x().size, track_length - 3, k + 1))
-            if track.get_msd().size != track_length - 3:
-                raise ValueError("Encountered MSD with incorrect length! (Got {}, expected {} for track {}.)".format(
-                    track.get_msd().size, track_length - 3, k + 1))
-            if track.get_adc_analysis_results()["Dapp"].size != track_length - 3:
-                raise ValueError("Encountered D_app with incorrect length!(Got {}, expected {} for track {}.)".format(
-                    track.get_adc_analysis_results()["Dapp"].size, track_length - 3, k + 1))
+            if track.get_t()[1] - track.get_t()[0] != dt and not avg_only_params:
+                raise ValueError("Cannot average MSD and D_app: Encountered track with incorrect time step size! "
+                                 "(Got {}, expected {} for track {}.) Use the flag avg_only_params = True or "
+                                 "use data with uniform time step sizes.".format(
+                    track.get_t()[1] - track.get_t()[0], dt, k + 1))
 
         for track in self.__tracks:
+            if track.get_adc_analysis_results()["analyzed"] == False:
+                continue
             if track.get_adc_analysis_results()["model"] == "brownian":
                 counter_brownian += 1
-                average_D_app_brownian += track.get_adc_analysis_results()[
-                    "Dapp"]
-                average_MSD_brownian += track.get_msd()
+                average_params_brownian += track.get_adc_analysis_results()["results"]["brownian"]["params"]
             elif track.get_adc_analysis_results()["model"] == "confined":
                 counter_confined += 1
-                average_D_app_confined += track.get_adc_analysis_results()[
-                    "Dapp"]
-                average_MSD_confined += track.get_msd()
+                average_params_confined += track.get_adc_analysis_results()["results"]["confined"]["params"]
             elif track.get_adc_analysis_results()["model"] == "hop":
                 counter_hop += 1
-                average_D_app_hop += track.get_adc_analysis_results()["Dapp"]
-                average_MSD_hop += track.get_msd()
-            elif track.get_adc_analysis_results()["model"] == "unknown":
-                continue
+                average_params_hop += track.get_adc_analysis_results()["results"]["hop"]["params"]
             else:
                 raise ValueError(
                     'Invalid model name encountered: {}. Allowed are "brownian", "confined", "hop" and "unknown".'.format(track._model))
 
+        if not avg_only_params:
+            for track in self.__tracks:
+                if track.get_adc_analysis_results()["analyzed"] == False:
+                    continue
+                D_app = np.pad(track.get_adc_analysis_results()["Dapp"], (0, track_length - 3 - track.get_adc_analysis_results()["Dapp"].size))
+                MSD = np.pad(track.get_msd(), (0, track_length - 3 - track.get_msd().size))
+                mask = np.zeros(track_length - 3)
+                np.put(mask, np.where(D_app != 0.0), 1)
+                if track.get_adc_analysis_results()["model"] == "brownian":
+                    average_D_app_brownian += D_app
+                    average_MSD_brownian += MSD
+                    sampled_brownian += mask
+                elif track.get_adc_analysis_results()["model"] == "confined":
+                    average_D_app_confined += D_app
+                    average_MSD_confined += MSD
+                    sampled_confined += mask
+                elif track.get_adc_analysis_results()["model"] == "hop":
+                    average_D_app_hop += D_app
+                    average_MSD_hop += MSD
+                    sampled_hop += mask
+                else:
+                    raise ValueError(
+                        'Invalid model name encountered: {}. Allowed are "brownian", "confined", "hop" and "unknown".'.format(track._model))
+
         if counter_brownian:
-            average_D_app_brownian /= counter_brownian
-            average_MSD_brownian /= counter_brownian
+            average_D_app_brownian /= sampled_brownian
+            average_MSD_brownian /= sampled_brownian
 
         if counter_confined:
-            average_D_app_confined /= counter_confined
-            average_MSD_confined /= counter_confined
+            average_D_app_confined /= sampled_confined
+            average_MSD_confined /= sampled_confined
 
         if counter_hop:
-            average_D_app_hop /= counter_hop
-            average_MSD_hop /= counter_hop
+            average_D_app_hop /= sampled_hop
+            average_MSD_hop /= sampled_hop
 
         counter_sum = counter_brownian + counter_confined + counter_hop
         if counter_sum == 0:
@@ -296,24 +417,67 @@ class ListOfTracks:
         sector_confined_area = counter_confined / counter_sum
         sector_hop_area = counter_hop / counter_sum
 
-        # TODO: The whole fitting routine from ADC.
-        # TODO: Plot results.
-        # TODO: Print fit results.
+        if counter_brownian == 0:
+            average_MSD_brownian = None
+            average_D_app_brownian = None
+            average_params_brownian = None
 
-        plt.semilogx(average_D_app_brownian)
-        plt.semilogx(average_D_app_confined)
-        plt.semilogx(average_D_app_hop)
+        if counter_confined == 0:
+            average_MSD_confined = None
+            average_D_app_confined = None
+            average_params_confined = None
 
-        fig1, ax1 = plt.subplots()
-        ax1.pie([sector_brownian_area, sector_confined_area, sector_hop_area], labels=["brownian", "confined", "hop"], autopct='%1.1f%%',
-                shadow=True, startangle=90)
-        # Equal aspect ratio ensures that pie is drawn as a circle.
-        ax1.axis('equal')
-        ax1.legend()
+        if counter_hop == 0:
+            average_MSD_hop = None
+            average_D_app_hop = None
+            average_params_hop = None
 
-        plt.show()
+        if avg_only_params:
+            average_MSD_brownian = None
+            average_MSD_confined = None
+            average_MSD_hop = None
+            average_D_app_brownian = None
+            average_D_app_confined = None
+            average_D_app_hop = None
 
-        return {"sector_brownian_area": sector_brownian_area, "sector_confined_area": sector_confined_area, "sector_hop_area": sector_hop_area}
+        if plot_msd and not avg_only_params:
+            import matplotlib.pyplot as plt
+            plt.figure(0)
+            ax = plt.gca()
+            ax.set_xlabel("t")
+            ax.set_ylabel("Average MSD")
+            if counter_brownian > 0:
+                ax.semilogx(t[0:-3], average_MSD_brownian, label="Brownian")
+            if counter_confined > 0:
+                ax.semilogx(t[0:-3], average_MSD_confined, label="Confined")
+            if counter_hop > 0:
+                ax.semilogx(t[0:-3], average_MSD_hop, label="Hop")
+            ax.legend()
+
+        if plot_dapp and not avg_only_params:
+            import matplotlib.pyplot as plt
+            plt.figure(1)
+            ax = plt.gca()
+            ax.set_xlabel("t")
+            ax.set_ylabel("Average D_app")
+            if counter_brownian > 0:
+                ax.semilogx(t[0:-3], average_D_app_brownian, label="Brownian")
+            if counter_confined > 0:
+                ax.semilogx(t[0:-3], average_D_app_confined, label="Confined")
+            if counter_hop > 0:
+                ax.semilogx(t[0:-3], average_D_app_hop, label="Hop")
+
+        if plot_pie_chart:
+            import matplotlib.pyplot as plt
+            plt.figure(2)
+            ax = plt.gca()
+            ax.pie([sector_brownian_area, sector_confined_area, sector_hop_area],
+                   labels=["Brownian", "Confined", "Hop"])
+
+        return {"sector_brownian_area": sector_brownian_area, "sector_confined_area": sector_confined_area, "sector_hop_area": sector_hop_area,
+                "average_params": {"brownian" : average_params_brownian, "confined" : average_params_confined, "hop" : average_params_hop}, 
+                "average_msd": {"brownian": average_MSD_brownian, "confined" : average_MSD_confined, "hop" : average_MSD_hop},
+                "average_dapp": {"brownian" : average_D_app_brownian, "confined" : average_D_app_confined, "hop" : average_D_app_hop}}
 
 
 class Track:
@@ -329,10 +493,12 @@ class Track:
         time coordinates of trajectory.
     """
 
-    def __init__(self, x=None, y=None, t=None):
+    def __init__(self, x=None, y=None, t=None, id=None):
         self.__x = np.array(x, dtype=float)
         self.__y = np.array(y, dtype=float)
         self.__t = np.array(t, dtype=float)
+
+        self.__id = id
 
         self.__msd = None
         self.__msd_error = None
@@ -354,7 +520,7 @@ class Track:
         return cls(dict["x"], dict["y"], dict["t"])
 
     @classmethod
-    def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds', id=None):
+    def from_dataframe(cls, df, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds', id=None):
         """Create a track from a file containing a single track. Currently only supports '.csv' tracks.
         The file must contain the fields 'x', 'y', 't'. Additionally, if there is more than one track
         it must also contain the field 'id'.
@@ -404,6 +570,51 @@ class Track:
         else:
             raise ValueError(
                 "unit must be metres, millimetres, micrometres, or nanometres")
+
+        x = None
+        y = None
+        t = None
+        if col_name_id in df:
+            if np.min(df[col_name_id]) == np.max(df[col_name_id]):
+                id = np.min(df[col_name_id])  # If there is only one id, we just select it
+            if id == None:
+                raise LoadTrackMissingIdError("The file seems to contain more than one track. Please specify a track id using the keyword argument id.")
+            df = df.loc[df[col_name_id] == int(id)]
+            if df.empty:
+                raise LoadTrackIdNotFoundError("There is no track associated with the specified id!")
+
+        x = np.array(df[col_name_x])
+        y = np.array(df[col_name_y])
+        t = np.array(df[col_name_t])
+
+        return cls(x * length_factor, y * length_factor, t * time_factor, id=id)
+
+    @classmethod
+    def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds', id=None):
+        """Create a track from a file containing a single track. Currently only supports '.csv' tracks.
+        The file must contain the fields 'x', 'y', 't'. Additionally, if there is more than one track
+        it must also contain the field 'id'.
+
+        Parameters
+        ----------
+        filename: str
+            Name of the file.
+        format: str
+            Either 'csv' or 'json' or 'pcl'. Only csv is implemented at the moment.
+        unit_length: str
+            Length unit of track data. Either 'metres', 'millimetres', 'micrometres' or 'nanometres'.
+        unit_time: str
+            Time unit of track data. Either 'seconds', 'milliseconds', 'microseconds' or 'nanoseconds'.
+        id: int
+            Track ID in case the file contains more than one track.
+
+        Raises
+        ------
+        LoadTrackIdNotFoundError
+            When no track with the given id is found
+        LodTrackIdMissingError
+            When the file contains multiple tracks but no id is specified.
+        """
         if format == None:
             format = os.path.splitext(filename)[1].replace(".", "")
             if format == "":
@@ -414,23 +625,7 @@ class Track:
             raise ValueError("Unknown format: {}".format(format))
         if format == "csv":
             df = pd.read_csv(filename)
-            x = None
-            y = None
-            t = None
-            if col_name_id in df:
-                if np.min(df[col_name_id]) == np.max(df[col_name_id]):
-                    id = np.min(df[col_name_id])  # If there is only one id, we just select it
-                if id == None:
-                    raise LoadTrackMissingIdError("The file seems to contain more than one track. Please specify a track id using the keyword argument id.")
-                df = df.loc[df[col_name_id] == int(id)]
-                if df.empty:
-                    raise LoadTrackIdNotFoundError("There is no track associated with the specified id!")
-
-            x = np.array(df[col_name_x])
-            y = np.array(df[col_name_y])
-            t = np.array(df[col_name_t])
-
-            return cls(x * length_factor, y * length_factor, t * time_factor)
+            return cls.from_dataframe(df, col_name_x, col_name_y, col_name_t, col_name_id, unit_length, unit_time, id)
         elif format == "json":
             # TODO: .json-specific import
             raise NotImplementedError(
@@ -444,6 +639,7 @@ class Track:
         return ("<%s instance at %s>\n"
                 "------------------------\n"
                 "Track length:%s\n"
+                "Track ID:%s\n"
                 "------------------------\n"
                 "MSD calculated:%s\n"
                 "MSD analysis done:%s\n"
@@ -452,6 +648,7 @@ class Track:
             self.__class__.__name__,
             id(self),
             str(self.__t.size).rjust(11, ' '),
+            str(self.__id).rjust(15, ' '),
             str(self.is_msd_calculated()).rjust(9, ' '),
             str(self.__msd_analysis_results["analyzed"]).rjust(6, ' '),
             str(self.__sd_analysis_results["analyzed"]).rjust(7, ' '),
@@ -484,19 +681,20 @@ class Track:
         self.__adc_analysis_results = {
             "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
 
-    def plot_msd_analysis_results(self, linearPlot: bool = False):
+    def plot_msd_analysis_results(self, scale: str = 'log'):
         """Plot the MSD analysis results.
 
         Parameters
         ----------
-        linearPlot : bool
-            Whether to plot x values on a linear scale instead of the default logarithmic.
+        scale: str
+            How to scale the plot over time. Possible values: 'log', 'linear'.
 
         Raises
         ------
         ValueError
             Track has not been analyzed using MSD analysis yet.
         """
+        import matplotlib.pyplot as plt
         if self.get_msd_analysis_results()["analyzed"] == False:
             raise ValueError(
                 "Track as not been analyzed using msd_analysis yet!")
@@ -516,10 +714,12 @@ class Track:
         rel_likelihood_1 = results["model1"]["rel_likelihood"]
         rel_likelihood_2 = results["model2"]["rel_likelihood"]
         # Plot the results
-        if linearPlot:
+        if scale == 'linear':
             plt.plot(T, self.__msd, label="Data")
-        else:
+        elif scale == 'log':
             plt.semilogx(T, self.__msd, label="Data")
+        else:
+            raise ValueError("scale must be 'log' or 'linear'.")
         plt.plot(T[0:n_points], m1[0:n_points],
                  label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
         plt.plot(T[0:n_points], m2[0:n_points],
@@ -539,6 +739,7 @@ class Track:
         ValueError
             Track has not been analyzed using ADC analysis yet.
         """
+        import matplotlib.pyplot as plt
         if self.get_adc_analysis_results()["analyzed"] == False:
             raise ValueError(
                 "Track has not been analyzed using adc_analysis yet!")
@@ -562,6 +763,11 @@ class Track:
 
         Dapp = self.get_adc_analysis_results()["Dapp"]
         model = self.get_adc_analysis_results()["model"]
+
+        # Definining the models used for the fit
+        model_brownian = ModelBrownian(R, dt)
+        model_confined = ModelConfined(R, dt)
+        model_hop = ModelHop(R, dt)
 
         pred_brownian = model_brownian(T, *r_brownian)
         pred_confined = model_confined(T, *r_confined)
@@ -590,6 +796,7 @@ class Track:
         ValueError
             Track has not been analyzed using SD analyis yet.
         """
+        import matplotlib.pyplot as plt
         if self.get_sd_analysis_results()["analyzed"] == False:
             raise ValueError(
                 "Track has not been analyzed using sd_analysis yet!")
@@ -648,6 +855,7 @@ class Track:
             Name of the colormap to use (see https://matplotlib.org/tutorials/colors/colormaps.html
             for a list of possible values)
         """
+        import matplotlib.pyplot as plt
         from matplotlib.collections import LineCollection
         from matplotlib.ticker import FuncFormatter
         from matplotlib.cm import get_cmap
@@ -690,6 +898,10 @@ class Track:
     def get_t(self):
         """Return time coordinates of trajectory."""
         return self.__t
+
+    def get_id(self):
+        """Return ID of the track."""
+        return self.__id
 
     def get_size(self):
         """Return number of points of the trajectory."""
@@ -761,10 +973,10 @@ class Track:
         xy_min = min([xmin, ymin])
         xy_max = min([xmax, ymax])
         if normalize_xy:
-            x = (x - xy_min) / (xy_max - xy_min)
-            y = (y - xy_min) / (xy_max - xy_min)
+            x = x - xy_min
+            y = y - xy_min
         if normalize_t:
-            t = (t - tmin) / (tmax - tmin)
+            t = t - tmin
 
         # Create normalized Track object
         return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
@@ -775,14 +987,14 @@ class Track:
         tmax = t.max()
         self.__t = t - tmin
 
-    def calculate_msd(self, N: int = None, numWorkers: int = None, chunksize: int = 100):
+    def calculate_msd(self, N: int = None, num_workers: int = None, chunksize: int = 100):
         """Calculates the mean squared displacement of the track.
 
         Parameters
         ----------
         N: int
             Maximum MSD length to consider (if none, will be computed from the track length)
-        numWorkers: int
+        num_workers: int
             Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
             Chunksize for process pool mapping. Small numbers might have negative performance impacts.
@@ -796,15 +1008,38 @@ class Track:
         pos_x = self.__x
         pos_y = self.__y
 
-        if numWorkers == None:
+        if num_workers == None:
             workers = os.cpu_count()
         else:
-            workers = numWorkers
+            workers = num_workers
+
+        if N < 100 * chunksize:
+            warnings.warn("Track is not very long, switching to single worker as "
+                "this will probably be faster than setting up the process pool. Use "
+                "num_workers = 1 to suppress this warning.")
+            workers = 1
+
+        def MSD_loop(i, pos_x, pos_y, N):
+            idx_0 = np.arange(1, N-i-1, 1)
+            idx_t = idx_0 + i
+            this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + \
+                (pos_y[idx_t] - pos_y[idx_0])**2
+
+            MSD = np.mean(this_msd)
+            MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
+
+            return MSD, MSD_error
+
+        verbose = False
+        if verbose:
+            tqdm_wrapper = tqdm.tqdm
+        else:
+            tqdm_wrapper = lambda x, **kwargs: x
 
         if workers > 1:
             with ProcessPoolExecutor(max_workers=workers) as executor:
                 i = range(1, N-2)
-                results = list(tqdm.tqdm(executor.map(MSD_loop, i,
+                results = list(tqdm_wrapper(executor.map(MSD_loop, i,
                                                       itertools.repeat(pos_y),
                                                       itertools.repeat(pos_x),
                                                       itertools.repeat(N),
@@ -817,32 +1052,24 @@ class Track:
                 MSD_error[i] = MSD_error_i
                 i += 1
         else:
-            for i in tqdm.tqdm(range(1, N-2), desc="MSD calculation"):
-                idx_0 = np.arange(1, N-i-1, 1)
-                idx_t = idx_0 + i
-                this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + \
-                    (pos_y[idx_t] - pos_y[idx_0])**2
-
-                MSD[i-1] = np.mean(this_msd)
-                MSD_error[i-1] = np.std(this_msd) / np.sqrt(len(this_msd))
+            for i in tqdm_wrapper(range(1, N-2), desc="MSD calculation"):
+                MSD[i-1], MSD_error[i-1] = MSD_loop(i, pos_x, pos_y, N)
 
         self.__msd = MSD
         self.__msd_error = MSD_error
 
-    def msd_analysis(self, fractionFitPoints: float = 0.25, nFitPoints: int = None, dt: float = 1.0, linearPlot=False, numWorkers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
+    def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, dt: float = 1.0, num_workers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
         """ Classical Mean Squared Displacement Analysis for single track
 
         Parameters
         ----------
-        fractionFitPoints: float
-            Fraction of points to use for fitting if nFitPoints is not specified.
-        nFitPoints: int
-            Number of points to user for fitting. Will override fractionFitPoints.
+        fraction_fit_points: float
+            Fraction of points to use for fitting if n_fit_points is not specified.
+        n_fit_points: int
+            Number of points to user for fitting. Will override fraction_fit_points.
         dt: float
             Timestep.
-        linearPlot: bool
-            Plot results on a liner scale instead of default logarithmic.
-        numWorkers: int
+        num_workers: int
             Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
             Chunksize for process pool mapping. Small numbers might have negative performance impacts.
@@ -852,24 +1079,24 @@ class Track:
         maxfev: int
             Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
         """
-        p0 = {"model1" : [1.0, 1.0], "model2" : [1.0, 1.0, 1.0]}
+        p0 = {"model1" : 2 * [None], "model2" : 3*[None]}
         p0.update(initial_guesses)
 
         # Calculate MSD if this has not been done yet.
         if self.__msd is None:
-            self.calculate_msd(numWorkers=numWorkers, chunksize=chunksize)
+            self.calculate_msd(num_workers=num_workers, chunksize=chunksize)
 
         # Number time frames for this track
         N = self.__msd.size
 
         # Define the number of points to use for fitting
-        if nFitPoints is None:
-            n_points = int(fractionFitPoints * N)
+        if n_fit_points is None:
+            n_points = int(fraction_fit_points * N)
         else:
-            n_points = int(nFitPoints)
+            n_points = int(n_fit_points)
 
-        # Asserting that the nFitPoints is valid
-        assert n_points >= 2, f"nFitPoints={n_points} is not enough"
+        # Asserting that the n_fit_points is valid
+        assert n_points >= 2, f"n_fit_points={n_points} is not enough"
         if n_points > int(0.25 * N):
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
@@ -881,11 +1108,20 @@ class Track:
         model1 = ModelLinear()
         model2 = ModelPower()
 
-        # Fit the data to these 2 models using weighted least-squares fit
-        # TODO: normalize the curves to make the fit easier to perform.
+        p0_model1 = [0.0, 0.0]
+        for i in range(len(p0_model1)):
+            if not p0["model1"][i] is None:
+                p0_model1[i] = p0["model1"][i]
+
         reg1 = optimize.curve_fit(
-            model1, T[0:n_points], self.__msd[0:n_points], p0 = p0["model1"], sigma=self.__msd_error[0:n_points], maxfev=maxfev)
-        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], p0 = p0["model2"], sigma=self.__msd_error[0:n_points], maxfev=maxfev)
+            model1, T[0:n_points], self.__msd[0:n_points], p0 = p0_model1, sigma=self.__msd_error[0:n_points], maxfev=maxfev, method='trf', bounds=(0.0, np.inf))
+
+
+        p0_model2 = [reg1[0][0], 1.0, reg1[0][1]]
+        for i in range(len(p0_model2)):
+            if not p0["model2"][i] is None:
+                p0_model2[i] = p0["model2"][i]
+        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], p0 = p0_model2, sigma=self.__msd_error[0:n_points], maxfev=maxfev, method='trf', bounds=(0.0, np.inf))
 
 
         # Compute standard deviation of parameters
@@ -910,16 +1146,16 @@ class Track:
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fractionFitPoints=0.25, numWorkers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
+    def adc_analysis(self, R: float = 1/6, fraction_fit_points=0.25, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
         """Revised analysis using the apparent diffusion coefficient
 
         Parameters
         ----------
         R: float
             Point scanning across the field of view.
-        fractionFitPoints: float
+        fraction_fit_points: float
             Fraction of points to use for fitting. Defaults to 25 %.
-        numWorkers: int
+        num_workers: int
             Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
             Chunksize for process pool mapping. Small numbers might have negative performance impacts.
@@ -931,7 +1167,7 @@ class Track:
         """
         # Calculate MSD if this has not been done yet.
         if self.__msd is None:
-            self.calculate_msd(numWorkers=numWorkers, chunksize=chunksize)
+            self.calculate_msd(num_workers=num_workers, chunksize=chunksize)
 
         dt = self.__t[1] - self.__t[0]
 
@@ -946,7 +1182,7 @@ class Track:
         Dapp_err = self.__msd_error / (4 * T * (1 - 2*R*dt / T))
 
         model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), Dapp_err = Dapp_err, fractionFitPoints=fractionFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)
+            1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, initial_guesses = initial_guesses, maxfev=maxfev)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -956,7 +1192,7 @@ class Track:
         return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fraction_fit_points: float = 0.25, initial_guesses = {}, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         
         Parameters
@@ -969,7 +1205,7 @@ class Track:
             binsize in nm
         J: list
             list of timepoints to consider
-        fractionFitPoints: float
+        fraction_fit_points: float
             Fraction of track to use for fitting. Defaults to 25 %.
         initial_guesses: dict
             Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
@@ -1005,6 +1241,7 @@ class Track:
             popt, pcov = optimize.curve_fit(
                 rayleighPDF, bin_mids, hist_SD, p0=(max_x-min_x))
             if display_fit:
+                import matplotlib.pyplot as plt
                 # Plot binned data
                 plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]),
                         align='edge', alpha=0.5, label="Data")
@@ -1022,7 +1259,7 @@ class Track:
             dapp_list.append(dapp)
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), fractionFitPoints=fractionFitPoints, initial_guesses=initial_guesses, maxfev=maxfev)
+            J), fraction_fit_points=fraction_fit_points, initial_guesses=initial_guesses, maxfev=maxfev)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -1032,18 +1269,18 @@ class Track:
 
         return self.__sd_analysis_results
 
-    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fractionFitPoints: float = 0.25, initial_guesses = {}, maxfev=1000):
+    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, initial_guesses = {}, maxfev=1000):
         p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
         p0.update(initial_guesses)
 
-        if fractionFitPoints > 0.25:
+        if fraction_fit_points > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
 
         dt = self.__t[1] - self.__t[0]
         T = J * dt
 
-        n_points = np.argmax(J > fractionFitPoints * J[-1])
+        n_points = np.argmax(J > fraction_fit_points * J[-1])
         # Define the models to fit the Dapp
         model_brownian = ModelBrownian(R, dt)
         model_confined = ModelConfined(R, dt)

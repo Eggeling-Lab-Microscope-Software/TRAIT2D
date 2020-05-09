@@ -112,7 +112,7 @@ class widgetADC(QWidget):
                 initial_guesses["hop"][3] = float(self.lineEditParam4_3.text())
 
         try:
-            results = self.parent.track.adc_analysis(fractionFitPoints=fracFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
+            results = self.parent.track.adc_analysis(fraction_fit_points=fracFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
         except RuntimeError:
             mb = QMessageBox()
             mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")
