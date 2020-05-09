@@ -96,7 +96,6 @@ class ListOfTracks:
 
     @classmethod
     def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds'):
-        # TODO: This is not optimal since it opens and closes the file repeatedly
         df = pd.read_csv(filename)
         ids = df["id"].unique()
         tracks = []
@@ -307,7 +306,7 @@ class ListOfTracks:
         for track in self.__tracks:
             track.sd_analysis(**kwargs)
 
-    def summary(self, avg_only_params = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
+    def summary(self, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
         """Average tracks by category, and report average track fit results and summary statistics
 
         Returns
@@ -321,9 +320,11 @@ class ListOfTracks:
             warnings.warn("avg_only_params is True. plot_msd or plot_dapp will have no effect.")
 
         track_length = 0
+        max_t = 0.0
         t = None
         for track in self.__tracks:
-            if track.get_x().size > track_length:
+            if track.get_t()[-1] > max_t:
+                max_t = track.get_t()[-1]
                 track_length = track.get_x().size
                 t = track.get_t()
 
@@ -352,10 +353,10 @@ class ListOfTracks:
         k = 0
         for track in self.__tracks:
             k += 1
-            if track.get_t()[1] - track.get_t()[0] != dt and not avg_only_params:
+            if track.get_t()[1] - track.get_t()[0] != dt and not avg_only_params and not interpolation:
                 raise ValueError("Cannot average MSD and D_app: Encountered track with incorrect time step size! "
                                  "(Got {}, expected {} for track {}.) Use the flag avg_only_params = True or "
-                                 "use data with uniform time step sizes.".format(
+                                 "enable interpolation with interpolation = True.".format(
                     track.get_t()[1] - track.get_t()[0], dt, k + 1))
 
         for track in self.__tracks:
@@ -378,10 +379,19 @@ class ListOfTracks:
             for track in self.__tracks:
                 if track.get_adc_analysis_results()["analyzed"] == False:
                     continue
-                D_app = np.pad(track.get_adc_analysis_results()["Dapp"], (0, track_length - 3 - track.get_adc_analysis_results()["Dapp"].size))
-                MSD = np.pad(track.get_msd(), (0, track_length - 3 - track.get_msd().size))
+
+                D_app = np.zeros(track_length - 3)
+                MSD = np.zeros(track_length - 3)
+                if interpolation:
+                    interp_MSD = interpolate.interp1d(track.get_t()[0:-3], track.get_msd(), bounds_error = False, fill_value = 0)
+                    interp_D_app = interpolate.interp1d(track.get_t()[0:-3], track.get_adc_analysis_results()["Dapp"], bounds_error = False, fill_value = 0)
+                    MSD = interp_MSD(t[0:-3])
+                    D_app = interp_D_app(t[0:-3])
+                else:
+                    D_app[0:track.get_adc_analysis_results()["Dapp"].size] = track.get_adc_analysis_results()["Dapp"]
+                    MSD[0:track.get_msd().size] = track.get_msd()
                 mask = np.zeros(track_length - 3)
-                np.put(mask, np.where(D_app != 0.0), 1)
+                np.put(mask, np.where(MSD != 0.0), 1)
                 if track.get_adc_analysis_results()["model"] == "brownian":
                     average_D_app_brownian += D_app
                     average_MSD_brownian += MSD
