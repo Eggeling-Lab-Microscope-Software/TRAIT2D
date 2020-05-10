@@ -86,7 +86,7 @@ class widgetADC(QWidget):
 
         maxfev = int(self.lineEditMaxIt.text())
 
-        initial_guesses = {"brownian" : [0.0, 0.0], "confined" : [0.0, 0.0, 0.0], "hop" : [0.0, 0.0, 0.0, 0.0]}
+        initial_guesses = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
 
         if self.checkBoxUseInitial.checkState():
             if (self.lineEditParam1_1.text() != ""):
@@ -112,7 +112,7 @@ class widgetADC(QWidget):
                 initial_guesses["hop"][3] = float(self.lineEditParam4_3.text())
 
         try:
-            results = self.parent.track.adc_analysis(fractionFitPoints=fracFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
+            results = self.parent.track.adc_analysis(fraction_fit_points=fracFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
         except RuntimeError:
             mb = QMessageBox()
             mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")

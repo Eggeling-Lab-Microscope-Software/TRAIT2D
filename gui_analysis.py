@@ -1,5 +1,7 @@
 import sys
 
+import pandas as pd
+
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog, QFileDialog, QMessageBox
 
@@ -42,32 +44,70 @@ class MainWindow(QMainWindow):
         resp = Dialog.exec_()
 
         if resp == QDialog.Accepted:
-            return Dialog.spinBoxId.value()
+            return Dialog.lineEditId.text()
 
-    def show_units_dialog(self):
+    def show_import_dialog(self, column_names):
         Dialog = QDialog()
-        uic.loadUi("gui/dialog_units.ui", Dialog)
+        uic.loadUi("gui/dialog_import.ui", Dialog)
         Dialog.show()
-        resp = Dialog.exec_()
+
+        Dialog.comboBoxColId.addItem('')
+        for c in column_names:
+            Dialog.comboBoxColX.addItem(c)
+            Dialog.comboBoxColY.addItem(c)
+            Dialog.comboBoxColT.addItem(c)
+            Dialog.comboBoxColId.addItem(c)
+
+        Dialog.comboBoxColX.setCurrentText('')
+        Dialog.comboBoxColY.setCurrentText('')
+        Dialog.comboBoxColT.setCurrentText('')
+        Dialog.comboBoxColId.setCurrentText('')
+
+        if 'x' in column_names:
+            Dialog.comboBoxColX.setCurrentText('x')
+        if 'y' in column_names:
+            Dialog.comboBoxColY.setCurrentText('y')
+        if 't' in column_names:
+            Dialog.comboBoxColT.setCurrentText('t')
+        if 'id' in column_names:
+            Dialog.comboBoxColId.setCurrentText('id')
+
+        resp = Dialog.exec()
 
         if resp == QDialog.Accepted:
-            return Dialog.comboBoxLength.currentText(), Dialog.comboBoxTime.currentText()
+            return  Dialog.comboBoxLength.currentText(), \
+                    Dialog.comboBoxTime.currentText(), \
+                   [Dialog.comboBoxColX.currentText(),
+                    Dialog.comboBoxColY.currentText(),
+                    Dialog.comboBoxColT.currentText(),
+                    Dialog.comboBoxColId.currentText()]
 
-    def load_track(self, filename : str, id=None, unit_length = None, unit_time = None):
-        if unit_length == None or unit_time == None:
-            unit_length, unit_time = self.show_units_dialog()
+        return None, None, None
+
+    def load_track(self, filename : str, id=None, unit_length = None, unit_time = None, col_names = None):
+        if unit_length is None or unit_time is None or col_names is None:
+            unit_length, unit_time, col_names = self.show_import_dialog(pd.read_csv(filename).columns)
+            if unit_length is None or unit_time is None or col_names is None:
+                return
         try:
-            self.track = Track.from_file(filename, id=id, unit_length=unit_length, unit_time=unit_time)
+            self.track = Track.from_file(filename, id=id, unit_length=unit_length, unit_time=unit_time, col_name_x = col_names[0], col_name_y = col_names[1], col_name_t = col_names[2], col_name_id = col_names[3]).normalized(normalize_t = True, normalize_xy = False)
         except LoadTrackMissingIdError:
             id = self.show_trackid_dialog()
-            self.load_track(filename=filename, id=id, unit_length=unit_length, unit_time=unit_time)
+            if id is None:
+                return
+            self.load_track(filename=filename, id=id, unit_length=unit_length, unit_time=unit_time, col_names=col_names)
         except LoadTrackIdNotFoundError:
             mb = QMessageBox()
             mb.setText("There is no track with that ID!")
             mb.setWindowTitle("Error")
             mb.setIcon(QMessageBox.Critical)
             mb.exec()
-
+        except KeyError as e:
+            mb = QMessageBox()
+            mb.setText("Key not found: {}!".format(str(e)))
+            mb.setWindowTitle("Error")
+            mb.setIcon(QMessageBox.Critical)
+            mb.exec()
         if self.track==None:
             return
 
