@@ -77,9 +77,10 @@ class widgetMSD(QWidget):
             return
 
         T = self.parent.track.get_t()[0:-3]
-        fitPoints = np.argwhere(T >= self.plot.get_range())[0]
-        if fitPoints <= 0:
-            fitPoints = None
+
+        fit_max_time = self.plot.get_range()
+        if fit_max_time <= 0.0:
+            fit_max_time = None
 
         maxfev = int(self.lineEditMaxIt.text())
 
@@ -100,7 +101,7 @@ class widgetMSD(QWidget):
                 initial_guesses["model2"][2] = float(self.lineEditParam3_2.text())
 
         try:
-            results = self.parent.track.msd_analysis(n_fit_points=fitPoints, initial_guesses=initial_guesses, maxfev=maxfev)["results"]
+            results = self.parent.track.msd_analysis(fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)["results"]
         except RuntimeError:
             mb = QMessageBox()
             mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")

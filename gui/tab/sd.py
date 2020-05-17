@@ -85,9 +85,9 @@ class widgetSD(QWidget):
         dt = T[1] - T[0]
         J = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]
 
-        fracFitPoints = self.plot.get_range() / (J[-1] * dt)
-        if fracFitPoints <= 0:
-            fracFitPoints = 0.25
+        fit_max_time = self.plot.get_range()
+        if fit_max_time <= 0.0:
+            fit_max_time = None
 
         maxfev = int(self.lineEditMaxIt.text())
 
@@ -117,7 +117,7 @@ class widgetSD(QWidget):
                 initial_guesses["hop"][3] = float(self.lineEditParam4_3.text())
 
         try:
-            results = self.parent.track.sd_analysis(fraction_fit_points=fracFitPoints, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
+            results = self.parent.track.sd_analysis(fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
         except RuntimeError:
             mb = QMessageBox()
             mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")
@@ -177,7 +177,11 @@ class widgetSD(QWidget):
 
         T_dapp = self.parent.track.get_sd_analysis_results()["J"] * dt
 
-        n_points_t = int(fracFitPoints * T[0:J[-1]].size)
+        n_point_t = None
+        if fit_max_time is not None:
+            n_points_t = int(np.argwhere(T < fit_max_time)[-1])
+        else:
+            n_points_t = int(0.25 * T[0:J[-1]].size)
 
         self.plot.reset()
         self.plot.setup()
