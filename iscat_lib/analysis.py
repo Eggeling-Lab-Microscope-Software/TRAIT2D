@@ -1318,6 +1318,7 @@ class Track:
 
         # Perform the analysis for a single track
         dapp_list = []
+        err_list = []
         for j in tqdm.tqdm(J, desc="SD analysis for single track"):
             # Calculate the SD
             sd = self.calculate_sd_at(j)
@@ -1350,11 +1351,14 @@ class Track:
                 plt.show()
 
             sigma = popt[0]
+            error = np.sqrt(np.diag(pcov))[0]
+            error = error**2 / (2 * t_lag)
             dapp = sigma**2 / (2 * t_lag)
+            err_list.append(error)
             dapp_list.append(dapp)
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)
+            J), Dapp_err=np.array(err_list), fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
