@@ -1145,7 +1145,7 @@ class Track:
         self.__msd = MSD
         self.__msd_error = MSD_error
 
-    def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, dt: float = 1.0, num_workers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
+    def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, dt: float = 1.0, num_workers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
         """ Classical Mean Squared Displacement Analysis for single track
 
         Parameters
@@ -1154,6 +1154,8 @@ class Track:
             Fraction of points to use for fitting if n_fit_points is not specified.
         n_fit_points: int
             Number of points to user for fitting. Will override fraction_fit_points.
+        fit_max_time: float
+            Maximum time in fit range. Will override fraction_fit_points and n_fit_points.
         dt: float
             Timestep.
         num_workers: int
@@ -1176,11 +1178,16 @@ class Track:
         # Number time frames for this track
         N = self.__msd.size
 
+        # This is the time array, as the fits will be MSD vs T
+        T = self.__t[0:-3]
+
         # Define the number of points to use for fitting
-        if n_fit_points is None:
-            n_points = int(fraction_fit_points * N)
-        else:
+        if fit_max_time is not None:
+            n_points = int(np.argwhere(T < fit_max_time)[-1])
+        elif n_fit_points is not None:
             n_points = int(n_fit_points)
+        else:
+            n_points = int(fraction_fit_points * N)
 
         # Asserting that the n_fit_points is valid
         assert n_points >= 2, f"n_fit_points={n_points} is not enough"
@@ -1188,9 +1195,6 @@ class Track:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
             # Selecting more points than 25% should be possible, but not advised
-
-        # This is the time array, as the fits will be MSD vs T
-        T = self.__t[0:-3]
 
         model1 = ModelLinear()
         model2 = ModelPower()
@@ -1233,7 +1237,7 @@ class Track:
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fraction_fit_points=0.25, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
+    def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
         """Revised analysis using the apparent diffusion coefficient
 
         Parameters
@@ -1242,6 +1246,8 @@ class Track:
             Point scanning across the field of view.
         fraction_fit_points: float
             Fraction of points to use for fitting. Defaults to 25 %.
+        fit_max_time: float
+            Maximum time in fit range. Will override fraction_fit_points.
         num_workers: int
             Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
@@ -1269,7 +1275,7 @@ class Track:
         Dapp_err = self.__msd_error / (4 * T * (1 - 2*R*dt / T))
 
         model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, initial_guesses = initial_guesses, maxfev=maxfev)
+            1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -1279,7 +1285,7 @@ class Track:
         return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fraction_fit_points: float = 0.25, initial_guesses = {}, maxfev=1000):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fraction_fit_points: float = 0.25, fit_max_time: float = None, initial_guesses = {}, maxfev=1000):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         
         Parameters
@@ -1294,6 +1300,8 @@ class Track:
             list of timepoints to consider
         fraction_fit_points: float
             Fraction of track to use for fitting. Defaults to 25 %.
+        fit_max_time: float
+            Maximum time in fit range. Will override fraction_fit_points.
         initial_guesses: dict
             Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
             All values default to 1.
@@ -1346,7 +1354,7 @@ class Track:
             dapp_list.append(dapp)
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), fraction_fit_points=fraction_fit_points, initial_guesses=initial_guesses, maxfev=maxfev)
+            J), fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -1356,7 +1364,7 @@ class Track:
 
         return self.__sd_analysis_results
 
-    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, initial_guesses = {}, maxfev=1000):
+    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000):
         p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
         p0.update(initial_guesses)
 
@@ -1367,7 +1375,10 @@ class Track:
         dt = self.__t[1] - self.__t[0]
         T = J * dt
 
-        n_points = np.argmax(J > fraction_fit_points * J[-1])
+        if fit_max_time is not None:
+            n_points = int(np.argwhere(T < fit_max_time)[-1])
+        else:
+            n_points = np.argmax(J > fraction_fit_points * J[-1])
         # Define the models to fit the Dapp
         model_brownian = ModelBrownian(R, dt)
         model_confined = ModelConfined(R, dt)
