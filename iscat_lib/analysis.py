@@ -38,6 +38,9 @@ class ModelBrownian:
     dt: float
         Uniform time step size.
     """
+    upper = [np.inf, np.inf]
+    lower = [0.0, 0.0]
+    initial = [20e-9, 0.5e-12]
     def __init__(self, R, dt):
         self.R = R
         self.dt = dt
@@ -55,6 +58,9 @@ class ModelConfined:
     dt: float
         Uniform time step size.
     """
+    upper = [np.inf, np.inf, np.inf]
+    lower = [0.0, 0.0, 0.0]
+    initial = [0.0, 0.0, 0.0]
     def __init__(self, R, dt):
         self.R = R
         self.dt = dt
@@ -73,6 +79,9 @@ class ModelHop:
     dt: float
         Uniform time step size.
     """
+    upper = [np.inf, np.inf, np.inf, np.inf]
+    lower = [0.0, 0.0, 0.0, 0.0]
+    initial = [0.0, 0.0, 0.0, 0.0]
     def __init__(self, R, dt):
         self.R = R
         self.dt = dt
@@ -81,6 +90,55 @@ class ModelHop:
         return D_macro + \
             D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
             delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+
+class ModelImmobile:
+    """Model for immobile diffusion.
+
+    Parameters
+    ----------
+    R: float
+        Point scanning across the field of view.
+    dt: float
+        Uniform time step size.
+    """
+    def __init__(self, R, dt):
+        self.R = R
+        self.dt = dt
+
+    def __call__(self, t, delta):
+        return delta**2 / (2*t*(1-2*self.R*self.dt/t))
+
+
+class ModelHopModified:
+    """Model for hop diffusion.
+    
+    Parameters
+    ----------
+    R: float
+        Point scanning across the field of view.
+    dt: float
+        Uniform time step size.
+    """
+    def __init__(self, R, dt):
+        self.R = R
+        self.dt = dt
+
+    def __call__(self, t, D_macro, D_micro, alpha, tau):
+        return alpha * D_macro + \
+            (1.0 - alpha) * D_micro * (1 - np.exp(-t/tau))
+
+class Borg:
+    _shared_state = {}
+    def __init__(self):
+        self.__dict__ = self._shared_state
+
+class ModelDB(Borg):
+    """Singleton class holding all models that should be used in analysis."""
+    models = [ModelBrownian(1.0/6.0, 1.0), ModelConfined(1.0/6.0, 1.0), ModelHop(1.0/6.0, 1.0)]
+    def __init__(self):
+        Borg.__init__(self)
+    def add_model(self, model):
+        self.models.append(model)
 
 class ListOfTracks:
     """Create an object that can hold multiple tracks and analyze them in bulk.
@@ -206,8 +264,6 @@ class ListOfTracks:
         """
         if not method in ['adc', 'sd']:
             raise ValueError("Method must be one of 'adc' or 'sd'.")
-        if not model in ['brownian', 'confined', 'hop']:
-            raise ValueError("Model must be on be one of 'brownian', 'confined' or 'hop'.")
         track_list = []
         for track in self.__tracks:
             if method == 'adc':
@@ -391,25 +447,11 @@ class ListOfTracks:
                 track_length = track.get_x().size
                 t = track.get_t()
 
-        average_D_app_brownian = np.zeros(track_length - 3)
-        average_D_app_confined = np.zeros(track_length - 3)
-        average_D_app_hop = np.zeros(track_length - 3)
-
-        average_MSD_brownian = np.zeros(track_length - 3)
-        average_MSD_confined = np.zeros(track_length - 3)
-        average_MSD_hop = np.zeros(track_length - 3)
-
-        average_params_brownian = np.array([0.0, 0.0])
-        average_params_confined = np.array([0.0, 0.0, 0.0])
-        average_params_hop = np.array([0.0, 0.0, 0.0, 0.0])
-
-        sampled_brownian = np.zeros(track_length - 3)
-        sampled_confined = np.zeros(track_length - 3)
-        sampled_hop = np.zeros(track_length - 3)
-
-        counter_brownian = 0
-        counter_confined = 0
-        counter_hop = 0
+        average_D_app = {}
+        average_MSD = {}
+        average_params = {}
+        sampled = {}
+        counter = {}
 
         dt = t[1] - t[0]
 
@@ -425,23 +467,29 @@ class ListOfTracks:
         for track in self.__tracks:
             if track.get_adc_analysis_results()["analyzed"] == False:
                 continue
-            if track.get_adc_analysis_results()["model"] == "brownian":
-                counter_brownian += 1
-                average_params_brownian += track.get_adc_analysis_results()["results"]["brownian"]["params"]
-            elif track.get_adc_analysis_results()["model"] == "confined":
-                counter_confined += 1
-                average_params_confined += track.get_adc_analysis_results()["results"]["confined"]["params"]
-            elif track.get_adc_analysis_results()["model"] == "hop":
-                counter_hop += 1
-                average_params_hop += track.get_adc_analysis_results()["results"]["hop"]["params"]
-            else:
-                raise ValueError(
-                    'Invalid model name encountered: {}. Allowed are "brownian", "confined", "hop" and "unknown".'.format(track._model))
+            model = track.get_adc_analysis_results()["model"]
+            if not model in average_params.keys():
+                average_params[model] = len(track.get_adc_analysis_results()["results"]["models"][model]["params"]) * [0.0]
+            if not model in counter.keys():
+                counter[model] = 0
+            counter[model] += 1
+            average_params[model] += track.get_adc_analysis_results()["results"]["models"][model]["params"]
+        
+        k = 0
+        for track in self.__tracks:
+            k += 1
+            if track.get_t()[1] - track.get_t()[0] != dt and not avg_only_params and not interpolation:
+                raise ValueError("Cannot average MSD and D_app: Encountered track with incorrect time step size! "
+                                 "(Got {}, expected {} for track {}.) Use the flag avg_only_params = True or "
+                                 "enable interpolation with interpolation = True.".format(
+                    track.get_t()[1] - track.get_t()[0], dt, k + 1))
 
         if not avg_only_params:
             for track in self.__tracks:
                 if track.get_adc_analysis_results()["analyzed"] == False:
                     continue
+
+                model = track.get_adc_analysis_results()["model"]
 
                 D_app = np.zeros(track_length - 3)
                 MSD = np.zeros(track_length - 3)
@@ -455,63 +503,30 @@ class ListOfTracks:
                     MSD[0:track.get_msd().size] = track.get_msd()
                 mask = np.zeros(track_length - 3)
                 np.put(mask, np.where(MSD != 0.0), 1)
-                if track.get_adc_analysis_results()["model"] == "brownian":
-                    average_D_app_brownian += D_app
-                    average_MSD_brownian += MSD
-                    sampled_brownian += mask
-                elif track.get_adc_analysis_results()["model"] == "confined":
-                    average_D_app_confined += D_app
-                    average_MSD_confined += MSD
-                    sampled_confined += mask
-                elif track.get_adc_analysis_results()["model"] == "hop":
-                    average_D_app_hop += D_app
-                    average_MSD_hop += MSD
-                    sampled_hop += mask
-                else:
-                    raise ValueError(
-                        'Invalid model name encountered: {}. Allowed are "brownian", "confined", "hop" and "unknown".'.format(track._model))
 
-        if counter_brownian:
-            average_D_app_brownian /= sampled_brownian
-            average_MSD_brownian /= sampled_brownian
 
-        if counter_confined:
-            average_D_app_confined /= sampled_confined
-            average_MSD_confined /= sampled_confined
+                if not model in average_D_app.keys():
+                    average_D_app[model] = np.zeros(track_length - 3)
+                    average_MSD[model] = np.zeros(track_length - 3)
+                    sampled[model] = np.zeros(track_length - 3)
 
-        if counter_hop:
-            average_D_app_hop /= sampled_hop
-            average_MSD_hop /= sampled_hop
+                average_D_app[model] += D_app
+                average_MSD[model] += MSD
+                sampled[model] += mask
 
-        counter_sum = counter_brownian + counter_confined + counter_hop
+        counter_sum = 0
+        for model in counter:
+            counter_sum += counter[model]
+            if counter[model]:
+                average_D_app[model] /= sampled[model]
+                average_MSD[model] /= sampled[model]
+
         if counter_sum == 0:
             raise ValueError("No tracks are categorized!")
-        sector_brownian_area = counter_brownian / counter_sum
-        sector_confined_area = counter_confined / counter_sum
-        sector_hop_area = counter_hop / counter_sum
 
-        if counter_brownian == 0:
-            average_MSD_brownian = None
-            average_D_app_brownian = None
-            average_params_brownian = None
-
-        if counter_confined == 0:
-            average_MSD_confined = None
-            average_D_app_confined = None
-            average_params_confined = None
-
-        if counter_hop == 0:
-            average_MSD_hop = None
-            average_D_app_hop = None
-            average_params_hop = None
-
-        if avg_only_params:
-            average_MSD_brownian = None
-            average_MSD_confined = None
-            average_MSD_hop = None
-            average_D_app_brownian = None
-            average_D_app_confined = None
-            average_D_app_hop = None
+        sector = {}
+        for model in counter:
+            sector[model] = counter[model] / counter_sum
 
         if plot_msd and not avg_only_params:
             import matplotlib.pyplot as plt
@@ -519,12 +534,8 @@ class ListOfTracks:
             ax = plt.gca()
             ax.set_xlabel("t")
             ax.set_ylabel("Average MSD")
-            if counter_brownian > 0:
-                ax.semilogx(t[0:-3], average_MSD_brownian, label="Brownian")
-            if counter_confined > 0:
-                ax.semilogx(t[0:-3], average_MSD_confined, label="Confined")
-            if counter_hop > 0:
-                ax.semilogx(t[0:-3], average_MSD_hop, label="Hop")
+            for model in counter:
+                ax.semilogx(t[0:-3], average_MSD[model], label=model)
             ax.legend()
 
         if plot_dapp and not avg_only_params:
@@ -533,25 +544,20 @@ class ListOfTracks:
             ax = plt.gca()
             ax.set_xlabel("t")
             ax.set_ylabel("Average D_app")
-            if counter_brownian > 0:
-                ax.semilogx(t[0:-3], average_D_app_brownian, label="Brownian")
-            if counter_confined > 0:
-                ax.semilogx(t[0:-3], average_D_app_confined, label="Confined")
-            if counter_hop > 0:
-                ax.semilogx(t[0:-3], average_D_app_hop, label="Hop")
+            for model in counter:
+                ax.semilogx(t[0:-3], average_D_app[model], label=model)
 
         if plot_pie_chart:
             import matplotlib.pyplot as plt
             plt.figure()
             ax = plt.gca()
-            ax.pie([sector_brownian_area, sector_confined_area, sector_hop_area],
-                   labels=["Brownian", "Confined", "Hop"])
+            ax.pie(sector.values(),
+                   labels=sector.keys())
 
-        return {"sector_brownian_area": sector_brownian_area, "sector_confined_area": sector_confined_area, "sector_hop_area": sector_hop_area,
-                "average_params": {"brownian" : average_params_brownian, "confined" : average_params_confined, "hop" : average_params_hop}, 
-                "average_msd": {"brownian": average_MSD_brownian, "confined" : average_MSD_confined, "hop" : average_MSD_hop},
-                "average_dapp": {"brownian" : average_D_app_brownian, "confined" : average_D_app_confined, "hop" : average_D_app_hop}}
-
+        return {"sectors": sector,
+                "average_params": average_params, 
+                "average_msd": average_MSD,
+                "average_dapp": average_D_app}
 
 class Track:
     """Create a track that can hold trajectory and analysis information.
@@ -837,36 +843,21 @@ class Track:
 
         results = self.get_adc_analysis_results()["results"]
 
-        r_brownian = results["brownian"]["params"]
-        r_confined = results["confined"]["params"]
-        r_hop = results["hop"]["params"]
-
-        rel_likelihood_brownian = results["brownian"]["rel_likelihood"]
-        rel_likelihood_confined = results["confined"]["rel_likelihood"]
-        rel_likelihood_hop = results["hop"]["rel_likelihood"]
-
+        Dapp = self.get_adc_analysis_results()["Dapp"]
         n_points = results["n_points"]
         R = results["R"]
-
-        Dapp = self.get_adc_analysis_results()["Dapp"]
-        model = self.get_adc_analysis_results()["model"]
-
-        # Definining the models used for the fit
-        model_brownian = ModelBrownian(R, dt)
-        model_confined = ModelConfined(R, dt)
-        model_hop = ModelHop(R, dt)
-
-        pred_brownian = model_brownian(T, *r_brownian)
-        pred_confined = model_confined(T, *r_confined)
-        pred_hop = model_hop(T, *r_hop)
-
         plt.semilogx(T, Dapp, label="Data", marker="o")
-        plt.semilogx(T[0:n_points], pred_brownian[0:n_points],
-                     label=f"Brownian, Rel_Likelihood={rel_likelihood_brownian:.2e}")
-        plt.semilogx(T[0:n_points], pred_confined[0:n_points],
-                     label=f"Confined, Rel_Likelihood={rel_likelihood_confined:.2e}")
-        plt.semilogx(T[0:n_points], pred_hop[0:n_points],
-                     label=f"Hop, Rel_Likelihood={rel_likelihood_hop:.2e}")
+        for model in results["models"]:
+            print(model)
+            r = results["models"][model]["params"]
+            rel_likelihood = results["models"][model]["rel_likelihood"]
+            for c in ModelDB().models:
+                if c.__class__.__name__ == model:
+                    m = c
+            pred = m(T, *r)
+            plt.semilogx(T[0:n_points], pred[0:n_points],
+                     label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
+
         plt.axvspan(T[0], T[n_points], alpha=0.25,
                     color='gray', label="Fitted data")
         plt.xlabel("Time [step]")
@@ -895,36 +886,21 @@ class Track:
 
         results = self.get_sd_analysis_results()["results"]
 
-        r_brownian = results["brownian"]["params"]
-        r_confined = results["confined"]["params"]
-        r_hop = results["hop"]["params"]
-
-        rel_likelihood_brownian = results["brownian"]["rel_likelihood"]
-        rel_likelihood_confined = results["confined"]["rel_likelihood"]
-        rel_likelihood_hop = results["hop"]["rel_likelihood"]
-
+        Dapp = self.get_sd_analysis_results()["Dapp"]
         n_points = results["n_points"]
         R = results["R"]
-
-        Dapp = self.get_sd_analysis_results()["Dapp"]
-        model = self.get_sd_analysis_results()["model"]
-
-        # Define the models to fit the Dapp
-        model_brownian = ModelBrownian(R, dt)
-        model_confined = ModelConfined(R, dt)
-        model_hop = ModelHop(R, dt)
-
-        pred_brownian = model_brownian(T, *r_brownian)
-        pred_confined = model_confined(T, *r_confined)
-        pred_hop = model_hop(T, *r_hop)
-
         plt.semilogx(T, Dapp, label="Data", marker="o")
-        plt.semilogx(T[0:n_points], pred_brownian[0:n_points],
-                     label=f"Brownian, Rel_Likelihood={rel_likelihood_brownian:.2e}")
-        plt.semilogx(T[0:n_points], pred_confined[0:n_points],
-                     label=f"Confined, Rel_Likelihood={rel_likelihood_confined:.2e}")
-        plt.semilogx(T[0:n_points], pred_hop[0:n_points],
-                     label=f"Hop, Rel_Likelihood={rel_likelihood_hop:.2e}")
+        for model in results["models"]:
+            print(model)
+            r = results["models"][model]["params"]
+            rel_likelihood = results["models"][model]["rel_likelihood"]
+            for c in ModelDB().models:
+                if c.__class__.__name__ == model:
+                    m = c
+            pred = m(T, *r)
+            plt.semilogx(T[0:n_points], pred[0:n_points],
+                     label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
+
         plt.axvspan(T[0], T[n_points], alpha=0.25,
                     color='gray', label="Fitted data")
         plt.xlabel("Time [step]")
@@ -1369,8 +1345,9 @@ class Track:
         return self.__sd_analysis_results
 
     def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000):
-        p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
-        p0.update(initial_guesses)
+        #p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
+        #p0 = {"ModelBrownian" : 2 * [None], "ModelConfined" : 3 * [None], "ModelHop" : 4 * [None]}
+        #p0.update(initial_guesses)
 
         if fraction_fit_points > 0.25:
             warnings.warn(
@@ -1383,71 +1360,46 @@ class Track:
             n_points = int(np.argwhere(T < fit_max_time)[-1])
         else:
             n_points = np.argmax(J > fraction_fit_points * J[-1])
-        # Define the models to fit the Dapp
-        model_brownian = ModelBrownian(R, dt)
-        model_confined = ModelConfined(R, dt)
-        model_hop = ModelHop(R, dt)
-        # Perform fits.
+
         error = None
         if not Dapp_err is None:
             error = Dapp_err[0:n_points]
 
-        p0_brownian = [20e-9, 0.5e-12]
-        for i in range(len(p0_brownian)):
-            if not p0["brownian"][i] is None:
-                p0_brownian[i] = p0["brownian"][i]
+        # Perform fits for all included models
+        results = {"models": {}, "n_points": {}, "R": {}}
+        bic_min = 999.9
+        category = "unknown"
+        for model in ModelDB().models:
+            model.dt = dt
+            model_name = model.__class__.__name__
+            lower_model = model.lower
+            upper_model = model.upper
+            p0_model = model.initial
+            #for i in range(len(p0_model)):
+            #    if not p0[model_name][i] is None:
+            #        p0_model = p0[model_name][i]
 
-        r_brownian = optimize.curve_fit(
-            model_brownian, T[0:n_points], Dapp[0:n_points], p0 = p0_brownian, sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
-        
-        p0_confined = [*r_brownian[0], 1e-3]
-        for i in range(len(p0_confined)):
-            if not p0["confined"][i] is None:
-                p0_confined[i] = p0["confined"][i]
-        r_confined = optimize.curve_fit(
-            model_confined, T[0:n_points], Dapp[0:n_points], p0 = p0_confined, sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
+            r = optimize.curve_fit(model, T[0:n_points], Dapp[0:n_points], p0 = p0_model,
+                        sigma = error, maxfev = maxfev, method='dogbox', bounds=(0.0, np.inf))
 
-        p0_hop = [r_confined[0][0], r_confined[0][0], r_confined[0][1], 1e-3]
-        for i in range(len(p0_hop)):
-            if not p0["hop"][i] is None:
-                p0_hop[i] = p0["hop"][i]
-        r_hop = optimize.curve_fit(
-            model_hop, T[0:n_points], Dapp[0:n_points], p0 = p0_hop, sigma=error, maxfev=maxfev, method='dogbox', bounds=(0.0, np.inf))
+            perr = np.sqrt(np.diag(r[1]))
+            pred = model(T, *r[0])
+            bic = BIC(pred[0:n_points], Dapp[0:n_points], len(r[0]), 1)
+            if bic < bic_min:
+                bic_min = bic
+                category = model_name
 
-        # Compute standard deviations of the parameters
-        perr_brownian = np.sqrt(np.diag(r_brownian[1]))
-        perr_confined = np.sqrt(np.diag(r_confined[1]))
-        perr_hop = np.sqrt(np.diag(r_hop[1]))
-
-        # Compute BIC for each model.
-        pred_brownian = model_brownian(T, *r_brownian[0])
-        pred_confined = model_confined(T, *r_confined[0])
-        pred_hop = model_hop(T, *r_hop[0])
-
-        bic_brownian = BIC(
-            pred_brownian[0:n_points], Dapp[0:n_points], len(r_brownian[0]), 1)
-        bic_confined = BIC(
-            pred_confined[0:n_points], Dapp[0:n_points], len(r_confined[0]), 1)
-        bic_hop = BIC(pred_hop[0:n_points], Dapp[0:n_points], len(r_hop[0]), 1)
-        bic_min = min([bic_brownian, bic_confined, bic_hop])
-        
-        if bic_min == bic_brownian:
-            category = "brownian"
-        elif bic_min == bic_confined:
-            category = "confined"
-        elif bic_min == bic_hop:
-            category = "hop"
-        else:
-            category = "unknown"
+            results["models"][model_name] = {"params": r[0], "error": perr, "pred" : pred, "bic" : bic}
 
         # Calculate the relative likelihood for each model
-        rel_likelihood_brownian = np.exp((-bic_brownian + bic_min) * 0.5)
-        rel_likelihood_confined = np.exp((-bic_confined + bic_min) * 0.5)
-        rel_likelihood_hop = np.exp((-bic_hop + bic_min) * 0.5)
+        for model in ModelDB().models:
+            model_name = model.__class__.__name__
+            rel_likelihood = np.exp((-results["models"][model_name]["bic"] + bic_min) * 0.5)
+            results["models"][model_name]["rel_likelihood"] = rel_likelihood
 
-        return category, {"brownian": {"params": r_brownian[0], "errors": perr_brownian, "bic": bic_brownian, "rel_likelihood": rel_likelihood_brownian},
-                          "confined": {"params": r_confined[0], "errors": perr_confined, "bic": bic_confined, "rel_likelihood": rel_likelihood_confined},
-                          "hop": {"params": r_hop[0], "errors": perr_hop, "bic": bic_hop, "rel_likelihood": rel_likelihood_hop}, "n_points": n_points, "R": R}
+        results["n_points"] = n_points
+        results["R"] = R
+        return category, results
 
 
 class NormalizedTrack(Track):
