@@ -38,12 +38,12 @@ class ModelBrownian:
     dt: float
         Uniform time step size.
     """
-    upper = [np.inf, np.inf]
     lower = [0.0, 0.0]
-    initial = [20e-9, 0.5e-12]
-    def __init__(self, R, dt):
+    upper = np.inf
+    initial = [0.5e-12, 2.0e-9]
+    def __init__(self, R):
         self.R = R
-        self.dt = dt
+        self.dt = 0.0
 
     def __call__(self, t, D, delta):
         return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
@@ -58,12 +58,12 @@ class ModelConfined:
     dt: float
         Uniform time step size.
     """
-    upper = [np.inf, np.inf, np.inf]
     lower = [0.0, 0.0, 0.0]
-    initial = [0.0, 0.0, 0.0]
-    def __init__(self, R, dt):
+    upper = np.inf
+    initial = [0.5e-12, 2.0e-9, 1.0e-3]
+    def __init__(self, R):
         self.R = R
-        self.dt = dt
+        self.dt = 0.0
 
     def __call__(self, t, D_micro, delta, tau):
         return D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
@@ -79,12 +79,12 @@ class ModelHop:
     dt: float
         Uniform time step size.
     """
-    upper = [np.inf, np.inf, np.inf, np.inf]
     lower = [0.0, 0.0, 0.0, 0.0]
-    initial = [0.0, 0.0, 0.0, 0.0]
-    def __init__(self, R, dt):
+    upper = np.inf
+    initial = [0.5e-12, 0.5e-12, 2.0e-9, 1.0e-3]
+    def __init__(self, R):
         self.R = R
-        self.dt = dt
+        self.dt = 0.0
 
     def __call__(self, t, D_macro, D_micro, delta, tau):
         return D_macro + \
@@ -101,13 +101,15 @@ class ModelImmobile:
     dt: float
         Uniform time step size.
     """
+    upper = [np.inf]
+    lower = [0.0]
+    initial = [0.5e-12]
     def __init__(self, R, dt):
         self.R = R
         self.dt = dt
 
     def __call__(self, t, delta):
         return delta**2 / (2*t*(1-2*self.R*self.dt/t))
-
 
 class ModelHopModified:
     """Model for hop diffusion.
@@ -119,9 +121,12 @@ class ModelHopModified:
     dt: float
         Uniform time step size.
     """
-    def __init__(self, R, dt):
+    lower = [0.0, 0.0, 0.0, 0.0]
+    upper = np.inf
+    initial = [0.5e-12, 0.5e-12, 0.0, 1.0e-3]
+    def __init__(self, R):
         self.R = R
-        self.dt = dt
+        self.dt = 0.0
 
     def __call__(self, t, D_macro, D_micro, alpha, tau):
         return alpha * D_macro + \
@@ -134,11 +139,20 @@ class Borg:
 
 class ModelDB(Borg):
     """Singleton class holding all models that should be used in analysis."""
-    models = [ModelBrownian(1.0/6.0, 1.0), ModelConfined(1.0/6.0, 1.0), ModelHop(1.0/6.0, 1.0)]
+    models = [ModelBrownian(1.0/6.0), ModelConfined(1.0/6.0), ModelHop(1.0/6.0)]
     def __init__(self):
         Borg.__init__(self)
     def add_model(self, model):
+        for m in self.models:
+            if m.__class__ == model.__class__:
+                raise ValueError("ModelDB already contains an instance of the model {}.".format(model.__class__.__name__))
         self.models.append(model)
+    def remove_model(self, model):
+        for i in range(len(self.models)):
+            if model == self.models[i].__class__:
+                self.models.pop(i)
+                return
+        raise ValueError("ModelDB does not contain an instance of the model {}.".format(model.__name__))
 
 class ListOfTracks:
     """Create an object that can hold multiple tracks and analyze them in bulk.
@@ -267,10 +281,10 @@ class ListOfTracks:
         track_list = []
         for track in self.__tracks:
             if method == 'adc':
-                if track.get_adc_analysis_results()["model"] == model:
+                if track.get_adc_analysis_results()["model"] == model.__name__:
                     track_list.append(track)
             elif method == 'sd':
-                if track.get_sd_analysis_results()["model"] == model:
+                if track.get_sd_analysis_results()["model"] == model.__name__:
                     track_list.append(track)
         return ListOfTracks(track_list)
 
@@ -474,6 +488,7 @@ class ListOfTracks:
                 counter[model] = 0
             counter[model] += 1
             average_params[model] += track.get_adc_analysis_results()["results"]["models"][model]["params"]
+        average_params[model] /= counter[model]
         
         k = 0
         for track in self.__tracks:
@@ -545,7 +560,14 @@ class ListOfTracks:
             ax.set_xlabel("t")
             ax.set_ylabel("Average D_app")
             for model in counter:
-                ax.semilogx(t[0:-3], average_D_app[model], label=model)
+                l, = ax.semilogx(t[0:-3], average_D_app[model], label=model)
+                r = average_params[model]
+                for c in ModelDB().models:
+                    if c.__class__.__name__ == model:
+                        m = c
+                pred = m(t, *r)
+                plt.semilogx(t[0:-3], pred[0:-3], linestyle='dashed', color=l.get_color())
+            ax.legend()
 
         if plot_pie_chart:
             import matplotlib.pyplot as plt
@@ -646,6 +668,7 @@ class ListOfTracks:
         ax.set_ylabel("Average Dapp")
         ax.semilogx(t, dapp)
         ax.legend()
+
 class Track:
     """Create a track that can hold trajectory and analysis information.
 
@@ -935,7 +958,6 @@ class Track:
         R = results["R"]
         plt.semilogx(T, Dapp, label="Data", marker="o")
         for model in results["models"]:
-            print(model)
             r = results["models"][model]["params"]
             rel_likelihood = results["models"][model]["rel_likelihood"]
             for c in ModelDB().models:
@@ -978,7 +1000,6 @@ class Track:
         R = results["R"]
         plt.semilogx(T, Dapp, label="Data", marker="o")
         for model in results["models"]:
-            print(model)
             r = results["models"][model]["params"]
             rel_likelihood = results["models"][model]["rel_likelihood"]
             for c in ModelDB().models:
@@ -1129,7 +1150,7 @@ class Track:
             t = t - tmin
 
         # Create normalized Track object
-        return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax)
+        return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax, id=self.__id)
 
     def normalize_t(self):
         t = self.__t
@@ -1459,15 +1480,12 @@ class Track:
         for model in ModelDB().models:
             model.dt = dt
             model_name = model.__class__.__name__
-            lower_model = model.lower
-            upper_model = model.upper
-            p0_model = model.initial
             #for i in range(len(p0_model)):
             #    if not p0[model_name][i] is None:
             #        p0_model = p0[model_name][i]
 
-            r = optimize.curve_fit(model, T[0:n_points], Dapp[0:n_points], p0 = p0_model,
-                        sigma = error, maxfev = maxfev, method='dogbox', bounds=(0.0, np.inf))
+            r = optimize.curve_fit(model, T[0:n_points], Dapp[0:n_points], p0 = model.initial,
+                        sigma = error, maxfev = maxfev, method='trf', bounds=(model.lower, model.upper))
 
             perr = np.sqrt(np.diag(r[1]))
             pred = model(T, *r[0])
@@ -1476,7 +1494,7 @@ class Track:
                 bic_min = bic
                 category = model_name
 
-            results["models"][model_name] = {"params": r[0], "error": perr, "pred" : pred, "bic" : bic}
+            results["models"][model_name] = {"params": r[0], "error": perr, "bic" : bic}
 
         # Calculate the relative likelihood for each model
         for model in ModelDB().models:
@@ -1492,8 +1510,8 @@ class Track:
 class NormalizedTrack(Track):
     """A track with normalized coordinates and additional information about the normalization."""
 
-    def __init__(self, x=None, y=None, t=None, xy_min=None, xy_max=None, tmin=None, tmax=None):
-        Track.__init__(self, x, y, t)
+    def __init__(self, x=None, y=None, t=None, xy_min=None, xy_max=None, tmin=None, tmax=None, id=None):
+        Track.__init__(self, x, y, t, id=id)
         self.__xy_min = xy_min
         self.__xy_max = xy_max
         self.__tmin = tmin
