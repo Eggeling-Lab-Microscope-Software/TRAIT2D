@@ -559,6 +559,93 @@ class ListOfTracks:
                 "average_msd": average_MSD,
                 "average_dapp": average_D_app}
 
+    def get_msd(self, interpolation = False): # Get average MSD
+        track_length = 0
+        max_t = 0.0
+        t = None
+        for track in self.__tracks:
+            if track.get_t()[-1] > max_t:
+                max_t = track.get_t()[-1]
+                track_length = track.get_x().size
+                t = track.get_t()
+        average_MSD = np.zeros(track_length - 3)
+        sampled = np.zeros(track_length - 3)
+        for track in self.__tracks:
+            if track.get_msd() is None:
+                continue
+
+            MSD = np.zeros(track_length - 3)
+            if interpolation:
+                interp_MSD = interpolate.interp1d(track.get_t()[0:-3], track.get_msd(), bounds_error = False, fill_value = 0)
+                MSD = interp_MSD(t[0:-3])
+            else:
+                MSD[0:track.get_msd().size] = track.get_msd()
+            mask = np.zeros(track_length - 3)
+            np.put(mask, np.where(MSD != 0.0), 1)
+
+            average_MSD += MSD
+            sampled += mask
+        average_MSD /= sampled
+        return t[0:-3], average_MSD
+
+    def plot_msd(self):
+        t, msd = self.get_msd()
+        import matplotlib.pyplot as plt
+        plt.figure()
+        ax = plt.gca()
+        ax.set_xlabel("t")
+        ax.set_ylabel("Average MSD")
+        ax.semilogx(t, msd)
+        ax.legend()
+
+    def get_dapp(self, interpolation = False): # Get average MSD
+        track_length = 0
+        max_t = 0.0
+        t = None
+        for track in self.__tracks:
+            if track.get_t()[-1] > max_t:
+                max_t = track.get_t()[-1]
+                track_length = track.get_x().size
+                t = track.get_t()
+        average_dapp = np.zeros(track_length - 3)
+        sampled = np.zeros(track_length - 3)
+        for track in self.__tracks:
+            if track.get_adc_analysis_results()["analyzed"] == False:
+                continue
+
+            D_app = np.zeros(track_length - 3)
+            if interpolation:
+                interp_D_app = interpolate.interp1d(track.get_t()[0:-3], track.get_adc_analysis_results()["Dapp"], bounds_error = False, fill_value = 0)
+                D_app = interp_D_app(t[0:-3])
+            else:
+                D_app[0:track.get_adc_analysis_results()["Dapp"].size] = track.get_adc_analysis_results()["Dapp"]
+            mask = np.zeros(track_length - 3)
+            np.put(mask, np.where(D_app != 0.0), 1)
+
+            average_dapp += D_app
+            sampled += mask
+        average_dapp /= sampled
+        return t[0:-3], average_dapp
+
+    def plot_msd(self):
+        t, msd = self.get_msd()
+        import matplotlib.pyplot as plt
+        plt.figure()
+        ax = plt.gca()
+        ax.set_xlabel("t")
+        ax.set_ylabel("Average MSD")
+        ax.semilogx(t, msd)
+        ax.legend()
+
+    def plot_dapp(self):
+        t, dapp = self.get_dapp()
+        import matplotlib.pyplot as plt
+        plt.figure()
+        ax = plt.gca()
+        ax.set_xlabel("t")
+        ax.set_ylabel("Average Dapp")
+        ax.semilogx(t, dapp)
+        ax.legend()
 class Track:
     """Create a track that can hold trajectory and analysis information.
 
