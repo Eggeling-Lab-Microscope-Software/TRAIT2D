@@ -66,7 +66,7 @@ class ModelConfined:
         self.dt = 0.0
 
     def __call__(self, t, D_micro, delta, tau):
-        return D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
+        return D_micro * (tau/t) * (1 - np.exp(-t / tau)) + \
             delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
 class ModelHop:
@@ -88,7 +88,7 @@ class ModelHop:
 
     def __call__(self, t, D_macro, D_micro, delta, tau):
         return D_macro + \
-            D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
+            D_micro * (tau/t) * (1 - np.exp(-t / tau)) + \
             delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
 class ModelImmobile:
