@@ -909,7 +909,9 @@ class Track:
         results = self.get_msd_analysis_results()["results"]
         N = self.__x.size
         T = self.__t[0:-3]
-        n_points = results["n_points"]
+        idxs = results["idxs"]
+        n_points = idxs[-1]
+        print(n_points)
         reg1 = results["model1"]["params"]
         reg2 = results["model2"]["params"]
         m1 = model1(T, *reg1)
@@ -954,9 +956,11 @@ class Track:
         results = self.get_adc_analysis_results()["results"]
 
         Dapp = self.get_adc_analysis_results()["Dapp"]
-        n_points = results["n_points"]
+        idxs = results["indexes"]
+        n_points = idxs[-1]
         R = results["R"]
         plt.semilogx(T, Dapp, label="Data", marker="o")
+        plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="o")
         for model in results["models"]:
             r = results["models"][model]["params"]
             rel_likelihood = results["models"][model]["rel_likelihood"]
@@ -966,6 +970,7 @@ class Track:
             pred = m(T, *r)
             plt.semilogx(T[0:n_points], pred[0:n_points],
                      label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
+        model = self.get_adc_analysis_results()["model"]
 
         plt.axvspan(T[0], T[n_points], alpha=0.25,
                     color='gray', label="Fitted data")
@@ -996,7 +1001,8 @@ class Track:
         results = self.get_sd_analysis_results()["results"]
 
         Dapp = self.get_sd_analysis_results()["Dapp"]
-        n_points = results["n_points"]
+        idxs = results["indexes"]
+        n_points = idxs[-1]
         R = results["R"]
         plt.semilogx(T, Dapp, label="Data", marker="o")
         for model in results["models"]:
@@ -1321,7 +1327,7 @@ class Track:
 
         return self.__msd_analysis_results
 
-    def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000):
+    def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2):
         """Revised analysis using the apparent diffusion coefficient
 
         Parameters
@@ -1359,7 +1365,7 @@ class Track:
         Dapp_err = self.__msd_error / (4 * T * (1 - 2*R*dt / T))
 
         model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev)
+            1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
 
         self.__adc_analysis_results["analyzed"] = True
         self.__adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -1369,7 +1375,7 @@ class Track:
         return self.__adc_analysis_results
 
     def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fraction_fit_points: float = 0.25, fit_max_time: float = None, initial_guesses = {}, maxfev=1000):
+                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fraction_fit_points: float = 0.25, fit_max_time: float = None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2):
         """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
         
         Parameters
@@ -1442,7 +1448,7 @@ class Track:
             dapp_list.append(dapp)
 
         model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), Dapp_err=np.array(err_list), fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)
+            J), Dapp_err=np.array(err_list), fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
 
         self.__sd_analysis_results["analyzed"] = True
         self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -1452,7 +1458,7 @@ class Track:
 
         return self.__sd_analysis_results
 
-    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000):
+    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2):
         #p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
         #p0 = {"ModelBrownian" : 2 * [None], "ModelConfined" : 3 * [None], "ModelHop" : 4 * [None]}
         #p0.update(initial_guesses)
@@ -1469,9 +1475,20 @@ class Track:
         else:
             n_points = np.argmax(J > fraction_fit_points * J[-1])
 
+        cur_dist = 0
+        idxs = []
+        if enable_log_sampling:
+            idxs.append(0)
+            for i in range(1, n_points):
+                cur_dist += np.log10(T[i]/T[i-1])
+                if cur_dist >= log_sampling_dist:
+                    idxs.append(i)
+                    cur_dist = 0
+        else:
+            idxs = np.arange(0, n_points, dtype=int)
         error = None
         if not Dapp_err is None:
-            error = Dapp_err[0:n_points]
+            error = Dapp_err[idxs]
 
         # Perform fits for all included models
         results = {"models": {}, "n_points": {}, "R": {}}
@@ -1484,12 +1501,12 @@ class Track:
             #    if not p0[model_name][i] is None:
             #        p0_model = p0[model_name][i]
 
-            r = optimize.curve_fit(model, T[0:n_points], Dapp[0:n_points], p0 = model.initial,
+            r = optimize.curve_fit(model, T[idxs], Dapp[idxs], p0 = model.initial,
                         sigma = error, maxfev = maxfev, method='trf', bounds=(model.lower, model.upper))
 
             perr = np.sqrt(np.diag(r[1]))
             pred = model(T, *r[0])
-            bic = BIC(pred[0:n_points], Dapp[0:n_points], len(r[0]), 1)
+            bic = BIC(pred[idxs], Dapp[idxs], len(r[0]), 1)
             if bic < bic_min:
                 bic_min = bic
                 category = model_name
@@ -1502,7 +1519,7 @@ class Track:
             rel_likelihood = np.exp((-results["models"][model_name]["bic"] + bic_min) * 0.5)
             results["models"][model_name]["rel_likelihood"] = rel_likelihood
 
-        results["n_points"] = n_points
+        results["indexes"] = idxs
         results["R"] = R
         return category, results
 
