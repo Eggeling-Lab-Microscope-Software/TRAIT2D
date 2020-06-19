@@ -11,7 +11,7 @@ def get_adc_analysis_results(self):
     """Returns the ADC analysis results."""
     return self._adc_analysis_results
 
-def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2):
+def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
     """Revised analysis using the apparent diffusion coefficient
 
     Parameters
@@ -53,7 +53,7 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
     Dapp_err = self._msd_error / (4 * T * (1 - 2*R*dt / T))
 
     model, results = self._categorize(np.array(Dapp), np.arange(
-        1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
+        1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting = weighting)
 
     self._adc_analysis_results["analyzed"] = True
     self._adc_analysis_results["Dapp"] = np.array(Dapp)
