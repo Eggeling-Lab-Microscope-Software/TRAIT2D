@@ -944,7 +944,7 @@ class Track:
         self._msd = MSD
         self._msd_error = MSD_error
 
-    def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2):
+    def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
         #p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
         #p0 = {"ModelBrownian" : 2 * [None], "ModelConfined" : 3 * [None], "ModelHop" : 4 * [None]}
         #p0.update(initial_guesses)
@@ -980,6 +980,18 @@ class Track:
         results = {"models": {}, "n_points": {}, "R": {}}
         bic_min = 999.9
         category = "unknown"
+        sigma = None
+        if weighting == 'error':
+            sigma = error
+        elif weighting == 'inverse_variance':
+            sigma = np.power(error, 2.0)
+        elif weighting == 'variance':
+            sigma = 1 / np.power(error, 2.0)
+        elif weighting == 'disabled':
+            sigma = None
+        else:
+            raise ValueError("Unknown weighting method: {}. Possible values are: 'error', 'variance', 'inverse_variance', and 'disabled'.".format(weighting))
+
         for model in ModelDB().models:
             model.dt = dt
             model_name = model.__class__.__name__
@@ -988,7 +1000,7 @@ class Track:
             #        p0_model = p0[model_name][i]
 
             r = optimize.curve_fit(model, T[idxs], Dapp[idxs], p0 = model.initial,
-                        sigma = error, maxfev = maxfev, method='trf', bounds=(model.lower, model.upper))
+                        sigma = sigma, maxfev = maxfev, method='trf', bounds=(model.lower, model.upper))
 
             perr = np.sqrt(np.diag(r[1]))
             pred = model(T, *r[0])
