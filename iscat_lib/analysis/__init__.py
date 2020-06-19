@@ -240,11 +240,13 @@ class ListOfTracks:
         plt.show()
 
     def normalize(self, **kwargs):
-        """Normalize all tracks.
+        """Normalize all tracks. All Track instances of the ListOfTracks will be
+        replaced by NormalizedTrack instances containing individual information about
+        the normalization.
 
         Parameters
         ----------
-            Keyword arguments to be used by normalized for each track.
+            Keyword arguments to be used by Track.normalized() for each track.
         """
         self._tracks = [track.normalized(**kwargs) for track in self._tracks]
 
@@ -838,6 +840,15 @@ class Track:
         Returns
         -------
         Instance of NormalizedTrack containing the normalized track data.
+
+        Parameters
+        ----------
+        normalize_t: bool
+            Normalize the time component of the track by setting the first time in the
+            track to zero.
+        normalize_xy: bool
+            Normalize the x and y coordinates of the track by setting the initial
+            position in the track to zero.
         """
         if self.__class__ == NormalizedTrack:
             warnings.warn(
@@ -849,29 +860,18 @@ class Track:
 
         # Getting the span of the diffusion.
         xmin = x.min()
-        xmax = x.max()
         ymin = y.min()
-        ymax = y.max()
         tmin = t.min()
-        tmax = t.max()
 
         # Normalizing the coordinates
-        xy_min = min([xmin, ymin])
-        xy_max = min([xmax, ymax])
         if normalize_xy:
-            x = x - xy_min
-            y = y - xy_min
+            x = x - xmin
+            y = y - ymin
         if normalize_t:
             t = t - tmin
 
         # Create normalized Track object
-        return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax, id=self._id)
-
-    def normalize_t(self):
-        t = self._t
-        tmin = t.min()
-        tmax = t.max()
-        self._t = t - tmin
+        return NormalizedTrack(x, y, t, xmin, ymin, tmin, id=self._id)
 
     def calculate_msd(self, N: int = None, num_workers: int = None, chunksize: int = 100):
         """Calculates the mean squared displacement of the track.
@@ -1013,16 +1013,11 @@ class Track:
 class NormalizedTrack(Track):
     """A track with normalized coordinates and additional information about the normalization."""
 
-    def __init__(self, x=None, y=None, t=None, xy_min=None, xy_max=None, tmin=None, tmax=None, id=None):
+    def __init__(self, x=None, y=None, t=None, xmin=None, ymin=None, tmin=None, id=None):
         Track.__init__(self, x, y, t, id=id)
-        self._xy_min = xy_min
-        self._xy_max = xy_max
+        self._xmin = xmin
+        self._ymin = ymin
         self._tmin = tmin
-        self._tmax = tmax
-
-    # We define a list of timepoints at which to calculate the distribution
-     # can be more, I don't think less.
-
 
 def MSD_loop(i, pos_x, pos_y, N):
     idx_0 = np.arange(1, N-i-1, 1)

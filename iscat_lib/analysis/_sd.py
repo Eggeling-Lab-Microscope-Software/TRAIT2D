@@ -32,6 +32,10 @@ def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
         All values default to 1.
     maxfev: int
         Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
+    enable_log_sampling: bool
+        Only sample logarithmically spaced time points for analysis.
+    log_sampling_dist: float
+        Exponent of logarithmic sampling (base 10).
     """
     # Convert binsize to m
     binsize = binsize_nm * 1e-9
