@@ -27,111 +27,6 @@ class ModelPower:
     def __call__(self, t, D, delta2, alpha):
         return 4 * D * t**alpha + 2 * delta2
 
-# Models used for ADC and SD analysis
-class ModelBrownian:
-    """Model for free, unrestricted diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
-    """
-    lower = [0.0, 0.0]
-    upper = np.inf
-    initial = [0.5e-12, 2.0e-9]
-    def __init__(self, R):
-        self.R = R
-        self.dt = 0.0
-
-    def __call__(self, t, D, delta):
-        return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
-
-class ModelConfined:
-    """Model for confined diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
-    """
-    lower = [0.0, 0.0, 0.0]
-    upper = np.inf
-    initial = [0.5e-12, 2.0e-9, 1.0e-3]
-    def __init__(self, R):
-        self.R = R
-        self.dt = 0.0
-
-    def __call__(self, t, D_micro, delta, tau):
-        return D_micro * (tau/t) * (1 - np.exp(-t / tau)) + \
-            delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
-
-class ModelHop:
-    """Model for hop diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
-    """
-    lower = [0.0, 0.0, 0.0, 0.0]
-    upper = np.inf
-    initial = [0.5e-12, 0.5e-12, 2.0e-9, 1.0e-3]
-    def __init__(self, R):
-        self.R = R
-        self.dt = 0.0
-
-    def __call__(self, t, D_macro, D_micro, delta, tau):
-        return D_macro + \
-            D_micro * (tau/t) * (1 - np.exp(-t / tau)) + \
-            delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
-
-class ModelImmobile:
-    """Model for immobile diffusion.
-
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
-    """
-    upper = [np.inf]
-    lower = [0.0]
-    initial = [0.5e-12]
-    def __init__(self, R, dt):
-        self.R = R
-        self.dt = dt
-
-    def __call__(self, t, delta):
-        return delta**2 / (2*t*(1-2*self.R*self.dt/t))
-
-class ModelHopModified:
-    """Model for hop diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
-    """
-    lower = [0.0, 0.0, 0.0, 0.0]
-    upper = np.inf
-    initial = [0.5e-12, 0.5e-12, 0.0, 1.0e-3]
-    def __init__(self, R):
-        self.R = R
-        self.dt = 0.0
-
-    def __call__(self, t, D_macro, D_micro, alpha, tau):
-        return alpha * D_macro + \
-            (1.0 - alpha) * D_micro * (1 - np.exp(-t/tau))
-
 class Borg:
     _shared_state = {}
     def __init__(self):
@@ -139,7 +34,7 @@ class Borg:
 
 class ModelDB(Borg):
     """Singleton class holding all models that should be used in analysis."""
-    models = [ModelBrownian(1.0/6.0), ModelConfined(1.0/6.0), ModelHop(1.0/6.0)]
+    models = []
     def __init__(self):
         Borg.__init__(self)
     def add_model(self, model):
@@ -164,7 +59,7 @@ class ListOfTracks:
     """
 
     def __init__(self, tracks: list = None):
-        self.__tracks = tracks
+        self._tracks = tracks
 
     @classmethod
     def from_file(cls, filename, format=None, col_name_x='x', col_name_y='y', col_name_t='t', col_name_id='id', unit_length='metres', unit_time='seconds'):
@@ -211,7 +106,7 @@ class ListOfTracks:
         return ("<%s instance at %s>\n"
                 "Number of tracks: %s\n") % (self.__class__.__name__,
                                              id(self),
-                                             len(self.__tracks))
+                                             len(self._tracks))
 
     def get_tracks(self):
         """Return a Python list that contains the tracks.
@@ -221,7 +116,7 @@ class ListOfTracks:
         tracks : list
             List of tracks.
         """
-        return self.__tracks
+        return self._tracks
 
     def get_track(self, idx):
         """Return a single track at the specified index.
@@ -236,7 +131,7 @@ class ListOfTracks:
         track: Track
             Track at index idx.
         """
-        return self.__tracks[idx]
+        return self._tracks[idx]
 
     def get_track_by_id(self, id):
         """Return a single track with the specified ID.
@@ -253,7 +148,7 @@ class ListOfTracks:
         track: Track
             Track with the specified ID.
         """
-        for track in self.__tracks:
+        for track in self._tracks:
             if track.get_id() == id:
                 return track
 
@@ -279,7 +174,7 @@ class ListOfTracks:
         if not method in ['adc', 'sd']:
             raise ValueError("Method must be one of 'adc' or 'sd'.")
         track_list = []
-        for track in self.__tracks:
+        for track in self._tracks:
             if method == 'adc':
                 if track.get_adc_analysis_results()["model"] == model.__name__:
                     track_list.append(track)
@@ -308,7 +203,7 @@ class ListOfTracks:
         xmax = 0
         ymin = 0
         ymax = 0
-        for track in self.__tracks:
+        for track in self._tracks:
             segs = []
             colors = []
             x = track.get_x()
@@ -328,7 +223,7 @@ class ListOfTracks:
             xmax = max(xmax, x.max())
             ymin = min(ymin, y.min())
             ymax = max(ymax, y.max())
-        ax.set_title("Plot of {} trajectories".format(len(self.__tracks)))
+        ax.set_title("Plot of {} trajectories".format(len(self._tracks)))
         xspan = xmax - xmin
         yspan = ymax - ymin
         ax.set_xlim(xmin - 0.1 * xspan, xmax + 0.1 * xspan)
@@ -351,7 +246,7 @@ class ListOfTracks:
         ----------
             Keyword arguments to be used by normalized for each track.
         """
-        self.__tracks = [track.normalized(**kwargs) for track in self.__tracks]
+        self._tracks = [track.normalized(**kwargs) for track in self._tracks]
 
     def msd_analysis(self, **kwargs):
         """Analyze all tracks using MSD analysis.
@@ -368,7 +263,7 @@ class ListOfTracks:
         """
         list_failed = []
         i = 0
-        for track in self.__tracks:
+        for track in self._tracks:
             try:
                 track.msd_analysis(**kwargs)
             except:
@@ -380,7 +275,7 @@ class ListOfTracks:
                 Consider raising the maximum function evaluations using \
                 the maxfev keyword argument. \
                 To get a more detailed stacktrace, run the MSD analysis \
-                for a single track.".format(len(list_failed), len(self.__tracks)))
+                for a single track.".format(len(list_failed), len(self._tracks)))
 
         return list_failed
 
@@ -399,7 +294,7 @@ class ListOfTracks:
         """
         list_failed = []
         i = 0
-        for track in self.__tracks:
+        for track in self._tracks:
             try:
                 track.adc_analysis(**kwargs)
             except:
@@ -411,7 +306,7 @@ class ListOfTracks:
                 "Consider raising the maximum function evaluations using "
                 "the maxfev keyword argument. "
                 "To get a more detailed stacktrace, run the ADC analysis "
-                "for a single track.".format(len(list_failed), len(self.__tracks)))
+                "for a single track.".format(len(list_failed), len(self._tracks)))
 
         return list_failed
 
@@ -423,7 +318,7 @@ class ListOfTracks:
         **kwargs
             Keyword arguments to be used by sd_analysis for each track.
         """
-        for track in self.__tracks:
+        for track in self._tracks:
             track.sd_analysis(**kwargs)
 
     def summary(self, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
@@ -455,7 +350,7 @@ class ListOfTracks:
         track_length = 0
         max_t = 0.0
         t = None
-        for track in self.__tracks:
+        for track in self._tracks:
             if track.get_t()[-1] > max_t:
                 max_t = track.get_t()[-1]
                 track_length = track.get_x().size
@@ -470,7 +365,7 @@ class ListOfTracks:
         dt = t[1] - t[0]
 
         k = 0
-        for track in self.__tracks:
+        for track in self._tracks:
             k += 1
             if track.get_t()[1] - track.get_t()[0] != dt and not avg_only_params and not interpolation:
                 raise ValueError("Cannot average MSD and D_app: Encountered track with incorrect time step size! "
@@ -478,7 +373,7 @@ class ListOfTracks:
                                  "enable interpolation with interpolation = True.".format(
                     track.get_t()[1] - track.get_t()[0], dt, k + 1))
 
-        for track in self.__tracks:
+        for track in self._tracks:
             if track.get_adc_analysis_results()["analyzed"] == False:
                 continue
             model = track.get_adc_analysis_results()["model"]
@@ -491,7 +386,7 @@ class ListOfTracks:
         average_params[model] /= counter[model]
         
         k = 0
-        for track in self.__tracks:
+        for track in self._tracks:
             k += 1
             if track.get_t()[1] - track.get_t()[0] != dt and not avg_only_params and not interpolation:
                 raise ValueError("Cannot average MSD and D_app: Encountered track with incorrect time step size! "
@@ -500,7 +395,7 @@ class ListOfTracks:
                     track.get_t()[1] - track.get_t()[0], dt, k + 1))
 
         if not avg_only_params:
-            for track in self.__tracks:
+            for track in self._tracks:
                 if track.get_adc_analysis_results()["analyzed"] == False:
                     continue
 
@@ -585,14 +480,14 @@ class ListOfTracks:
         track_length = 0
         max_t = 0.0
         t = None
-        for track in self.__tracks:
+        for track in self._tracks:
             if track.get_t()[-1] > max_t:
                 max_t = track.get_t()[-1]
                 track_length = track.get_x().size
                 t = track.get_t()
         average_MSD = np.zeros(track_length - 3)
         sampled = np.zeros(track_length - 3)
-        for track in self.__tracks:
+        for track in self._tracks:
             if track.get_msd() is None:
                 continue
 
@@ -624,14 +519,14 @@ class ListOfTracks:
         track_length = 0
         max_t = 0.0
         t = None
-        for track in self.__tracks:
+        for track in self._tracks:
             if track.get_t()[-1] > max_t:
                 max_t = track.get_t()[-1]
                 track_length = track.get_x().size
                 t = track.get_t()
         average_dapp = np.zeros(track_length - 3)
         sampled = np.zeros(track_length - 3)
-        for track in self.__tracks:
+        for track in self._tracks:
             if track.get_adc_analysis_results()["analyzed"] == False:
                 continue
 
@@ -683,19 +578,19 @@ class Track:
     """
 
     def __init__(self, x=None, y=None, t=None, id=None):
-        self.__x = np.array(x, dtype=float)
-        self.__y = np.array(y, dtype=float)
-        self.__t = np.array(t, dtype=float)
+        self._x = np.array(x, dtype=float)
+        self._y = np.array(y, dtype=float)
+        self._t = np.array(t, dtype=float)
 
-        self.__id = id
+        self._id = id
 
-        self.__msd = None
-        self.__msd_error = None
+        self._msd = None
+        self._msd_error = None
 
-        self.__msd_analysis_results = {"analyzed": False, "results": None}
-        self.__adc_analysis_results = {
+        self._msd_analysis_results = {"analyzed": False, "results": None}
+        self._adc_analysis_results = {
             "analyzed": False, "model": "unknown", "Dapp": None, "results": None}
-        self.__sd_analysis_results = {
+        self._sd_analysis_results = {
             "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
 
     @classmethod
@@ -850,178 +745,20 @@ class Track:
                 "ADC analysis done:%s\n") % (
             self.__class__.__name__,
             id(self),
-            str(self.__t.size).rjust(11, ' '),
-            str(self.__id).rjust(15, ' '),
+            str(self._t.size).rjust(11, ' '),
+            str(self._id).rjust(15, ' '),
             str(self.is_msd_calculated()).rjust(9, ' '),
-            str(self.__msd_analysis_results["analyzed"]).rjust(6, ' '),
-            str(self.__sd_analysis_results["analyzed"]).rjust(7, ' '),
-            str(self.__adc_analysis_results["analyzed"]).rjust(6, ' ')
+            str(self._msd_analysis_results["analyzed"]).rjust(6, ' '),
+            str(self._sd_analysis_results["analyzed"]).rjust(7, ' '),
+            str(self._adc_analysis_results["analyzed"]).rjust(6, ' ')
         )
 
-    def get_msd_analysis_results(self):
-        """Returns the MSD analysis results."""
-        return self.__msd_analysis_results
-
-    def get_sd_analysis_results(self):
-        """Returns the SD analysis results."""
-        return self.__sd_analysis_results
-
-    def get_adc_analysis_results(self):
-        """Returns the ADC analysis results."""
-        return self.__adc_analysis_results
-
-    def delete_msd_analysis_results(self):
-        """Delete the MSD analysis results."""
-        self.__msd_analysis_results = {"analyzed": False, "results": None}
-
-    def delete_sd_analysis_results(self):
-        """Delete the SD analyis results."""
-        self.__sd_analysis_results = {
-            "analyzed": False, "model": "unknown", "Dapp": None, "results": None}
-
-    def delete_adc_analysis_results(self):
-        """ Delete the ADC analysis results."""
-        self.__adc_analysis_results = {
-            "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
-
-    def plot_msd_analysis_results(self, scale: str = 'log'):
-        """Plot the MSD analysis results.
-
-        Parameters
-        ----------
-        scale: str
-            How to scale the plot over time. Possible values: 'log', 'linear'.
-
-        Raises
-        ------
-        ValueError
-            Track has not been analyzed using MSD analysis yet.
-        """
-        import matplotlib.pyplot as plt
-        if self.get_msd_analysis_results()["analyzed"] == False:
-            raise ValueError(
-                "Track as not been analyzed using msd_analysis yet!")
-
-        # Definining the models used for the fit
-        model1 = ModelLinear()
-        model2 = ModelPower()
-
-        results = self.get_msd_analysis_results()["results"]
-        N = self.__x.size
-        T = self.__t[0:-3]
-        idxs = results["idxs"]
-        n_points = idxs[-1]
-        print(n_points)
-        reg1 = results["model1"]["params"]
-        reg2 = results["model2"]["params"]
-        m1 = model1(T, *reg1)
-        m2 = model2(T, *reg2)
-        rel_likelihood_1 = results["model1"]["rel_likelihood"]
-        rel_likelihood_2 = results["model2"]["rel_likelihood"]
-        # Plot the results
-        if scale == 'linear':
-            plt.plot(T, self.__msd, label="Data")
-        elif scale == 'log':
-            plt.semilogx(T, self.__msd, label="Data")
-        else:
-            raise ValueError("scale must be 'log' or 'linear'.")
-        plt.plot(T[0:n_points], m1[0:n_points],
-                 label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
-        plt.plot(T[0:n_points], m2[0:n_points],
-                 label=f"Model2, Rel_Likelihood={rel_likelihood_2:.2e}")
-        plt.axvspan(T[0], T[n_points], alpha=0.5,
-                    color='gray', label="Fitted data")
-        plt.xlabel("Time")
-        plt.ylabel("MSD")
-        plt.legend()
-        plt.show()
-
-    def plot_adc_analysis_results(self):
-        """Plot the ADC analysis results.
-
-        Raises
-        ------
-        ValueError
-            Track has not been analyzed using ADC analysis yet.
-        """
-        import matplotlib.pyplot as plt
-        if self.get_adc_analysis_results()["analyzed"] == False:
-            raise ValueError(
-                "Track has not been analyzed using adc_analysis yet!")
-
-        dt = self.__t[1] - self.__t[0]
-        N = self.__t.size
-        T = np.linspace(1, N, N-3,  endpoint=True) * dt
-
-        results = self.get_adc_analysis_results()["results"]
-
-        Dapp = self.get_adc_analysis_results()["Dapp"]
-        idxs = results["indexes"]
-        n_points = idxs[-1]
-        R = results["R"]
-        plt.semilogx(T, Dapp, label="Data", marker="o")
-        plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="o")
-        for model in results["models"]:
-            r = results["models"][model]["params"]
-            rel_likelihood = results["models"][model]["rel_likelihood"]
-            for c in ModelDB().models:
-                if c.__class__.__name__ == model:
-                    m = c
-            pred = m(T, *r)
-            plt.semilogx(T[0:n_points], pred[0:n_points],
-                     label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
-        model = self.get_adc_analysis_results()["model"]
-
-        plt.axvspan(T[0], T[n_points], alpha=0.25,
-                    color='gray', label="Fitted data")
-        plt.xlabel("Time [step]")
-        plt.ylabel("Normalized ADC")
-        plt.title("Diffusion Category: {}".format(model))
-        plt.legend()
-        plt.show()
-
-    def plot_sd_analysis_results(self):
-        """Plot the SD analysis results.
-
-        Raises
-        ------
-        ValueError
-            Track has not been analyzed using SD analyis yet.
-        """
-        import matplotlib.pyplot as plt
-        if self.get_sd_analysis_results()["analyzed"] == False:
-            raise ValueError(
-                "Track has not been analyzed using sd_analysis yet!")
-
-        J = self.get_sd_analysis_results()["J"]
-
-        dt = self.__t[1] - self.__t[0]
-        T = J * dt
-
-        results = self.get_sd_analysis_results()["results"]
-
-        Dapp = self.get_sd_analysis_results()["Dapp"]
-        idxs = results["indexes"]
-        n_points = idxs[-1]
-        R = results["R"]
-        plt.semilogx(T, Dapp, label="Data", marker="o")
-        for model in results["models"]:
-            r = results["models"][model]["params"]
-            rel_likelihood = results["models"][model]["rel_likelihood"]
-            for c in ModelDB().models:
-                if c.__class__.__name__ == model:
-                    m = c
-            pred = m(T, *r)
-            plt.semilogx(T[0:n_points], pred[0:n_points],
-                     label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
-
-        plt.axvspan(T[0], T[n_points], alpha=0.25,
-                    color='gray', label="Fitted data")
-        plt.xlabel("Time [step]")
-        plt.ylabel("Normalized ADC")
-        plt.title("Diffusion Category: {}".format(model))
-        plt.legend()
-        plt.show()
+    from ._msd import msd_analysis, get_msd_analysis_results,\
+                      delete_msd_analysis_results, plot_msd_analysis_results
+    from ._adc import adc_analysis, get_adc_analysis_results,\
+                      delete_adc_analysis_results, plot_adc_analysis_results
+    from ._sd import sd_analysis, get_sd_analysis_results,\
+                     delete_sd_analysis_results, plot_sd_analysis_results
 
     def plot_trajectory(self, cmap='plasma'):
         """Plot the trajectory.
@@ -1041,20 +778,20 @@ class Track:
         ax = plt.gca()
         segs = []
         colors = []
-        for i in range(1, self.__t.size):
-            segs.append([(self.__x[i-1], self.__y[i-1]),
-                         (self.__x[i], self.__y[i])])
+        for i in range(1, self._t.size):
+            segs.append([(self._x[i-1], self._y[i-1]),
+                         (self._x[i], self._y[i])])
             colors.append(
-                cmap(self.__t[i] / (self.__t.max() - self.__t.min())))
+                cmap(self._t[i] / (self._t.max() - self._t.min())))
         lc = LineCollection(segs, colors=colors)
-        ax.axhline(self.__y[0], linewidth=0.5, color='black', zorder=-1)
-        ax.axvline(self.__x[0], linewidth=0.5, color='black', zorder=-1)
+        ax.axhline(self._y[0], linewidth=0.5, color='black', zorder=-1)
+        ax.axvline(self._x[0], linewidth=0.5, color='black', zorder=-1)
         ax.add_collection(lc)
         ax.set_title("Trajectory")
-        xspan = self.__x.max() - self.__x.min()
-        yspan = self.__y.max() - self.__y.min()
-        ax.set_xlim(self.__x.min() - 0.1 * xspan, self.__x.max() + 0.1 * xspan)
-        ax.set_ylim(self.__y.min() - 0.1 * yspan, self.__y.max() + 0.1 * yspan)
+        xspan = self._x.max() - self._x.min()
+        yspan = self._y.max() - self._y.min()
+        ax.set_xlim(self._x.min() - 0.1 * xspan, self._x.max() + 0.1 * xspan)
+        ax.set_ylim(self._y.min() - 0.1 * yspan, self._y.max() + 0.1 * yspan)
         ax.set_aspect('equal', 'datalim')
         ax.xaxis.set_major_formatter(
             FuncFormatter(lambda x, pos: "%d" % int(x * 1e9)))
@@ -1066,63 +803,35 @@ class Track:
 
     def get_x(self):
         """Return x coordinates of trajectory."""
-        return self.__x
+        return self._x
 
     def get_y(self):
         """Return y coordinates of trajectory."""
-        return self.__y
+        return self._y
 
     def get_t(self):
         """Return time coordinates of trajectory."""
-        return self.__t
+        return self._t
 
     def get_id(self):
         """Return ID of the track."""
-        return self.__id
+        return self._id
 
     def get_size(self):
         """Return number of points of the trajectory."""
-        return self.__t.size
+        return self._t.size
 
     def get_trajectory(self):
         """Returns the trajectory as a dictionary."""
-        return {"t": self.__t.tolist(), "x": self.__x.tolist(), "y": self.__y.tolist()}
+        return {"t": self._t.tolist(), "x": self._x.tolist(), "y": self._y.tolist()}
 
     def is_msd_calculated(self):
         """Returns True if the MSD of this track has already been calculated."""
-        return self.__msd is not None
+        return self._msd is not None
 
     def get_msd(self):
         """Returns the MSD values of the track."""
-        return self.__msd
-
-    def calculate_sd_at(self, j: int):
-        """Squared displacement calculation for single time point
-        Parameters
-        ----------
-        j: int
-            Index of timepoint in 2D track
-
-        Returns
-        -------
-        SD: ndarray
-            Squared displacements at timepoint j sorted
-            from smallest to largest value
-        """
-        length_array = self.__x.size  # Length of the track
-
-        pos_x = np.array(self.__x)
-        pos_y = np.array(self.__y)
-
-        idx_0 = np.arange(0, length_array-j-1, 1)
-        idx_t = idx_0 + j
-
-        SD = (pos_x[idx_t] - pos_x[idx_0])**2 + \
-            (pos_y[idx_t] - pos_y[idx_0])**2
-
-        SD.sort()
-
-        return SD
+        return self._msd
 
     def normalized(self, normalize_t = True, normalize_xy = True):
         """Normalize the track.
@@ -1134,9 +843,9 @@ class Track:
             warnings.warn(
                 "Track is already an instance of NormalizedTrack. This will do nothing.")
 
-        x = self.__x
-        y = self.__y
-        t = self.__t
+        x = self._x
+        y = self._y
+        t = self._t
 
         # Getting the span of the diffusion.
         xmin = x.min()
@@ -1156,13 +865,13 @@ class Track:
             t = t - tmin
 
         # Create normalized Track object
-        return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax, id=self.__id)
+        return NormalizedTrack(x, y, t, xy_min, xy_max, tmin, tmax, id=self._id)
 
     def normalize_t(self):
-        t = self.__t
+        t = self._t
         tmin = t.min()
         tmax = t.max()
-        self.__t = t - tmin
+        self._t = t - tmin
 
     def calculate_msd(self, N: int = None, num_workers: int = None, chunksize: int = 100):
         """Calculates the mean squared displacement of the track.
@@ -1178,12 +887,12 @@ class Track:
         """
 
         if N is None:
-            N = self.__x.size
+            N = self._x.size
 
         MSD = np.zeros((N-3,))
         MSD_error = np.zeros((N-3,))
-        pos_x = self.__x
-        pos_y = self.__y
+        pos_x = self._x
+        pos_y = self._y
 
         if num_workers == None:
             workers = os.cpu_count()
@@ -1232,233 +941,10 @@ class Track:
             for i in tqdm_wrapper(range(1, N-2), desc="MSD calculation"):
                 MSD[i-1], MSD_error[i-1] = MSD_loop(i, pos_x, pos_y, N)
 
-        self.__msd = MSD
-        self.__msd_error = MSD_error
+        self._msd = MSD
+        self._msd_error = MSD_error
 
-    def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, dt: float = 1.0, num_workers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
-        """ Classical Mean Squared Displacement Analysis for single track
-
-        Parameters
-        ----------
-        fraction_fit_points: float
-            Fraction of points to use for fitting if n_fit_points is not specified.
-        n_fit_points: int
-            Number of points to user for fitting. Will override fraction_fit_points.
-        fit_max_time: float
-            Maximum time in fit range. Will override fraction_fit_points and n_fit_points.
-        dt: float
-            Timestep.
-        num_workers: int
-            Number or processes used for calculation. Defaults to number of system cores.
-        chunksize: int
-            Chunksize for process pool mapping. Small numbers might have negative performance impacts.
-        initial_guesses: dict
-            Dictionary containing initial guesses for the parameters. Keys can be "model1" and "model2".
-            All values default to 1.
-        maxfev: int
-            Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
-        """
-        p0 = {"model1" : 2 * [None], "model2" : 3*[None]}
-        p0.update(initial_guesses)
-
-        # Calculate MSD if this has not been done yet.
-        if self.__msd is None:
-            self.calculate_msd(num_workers=num_workers, chunksize=chunksize)
-
-        # Number time frames for this track
-        N = self.__msd.size
-
-        # This is the time array, as the fits will be MSD vs T
-        T = self.__t[0:-3]
-
-        # Define the number of points to use for fitting
-        if fit_max_time is not None:
-            n_points = int(np.argwhere(T < fit_max_time)[-1])
-        elif n_fit_points is not None:
-            n_points = int(n_fit_points)
-        else:
-            n_points = int(fraction_fit_points * N)
-
-        # Asserting that the n_fit_points is valid
-        assert n_points >= 2, f"n_fit_points={n_points} is not enough"
-        if n_points > int(0.25 * N):
-            warnings.warn(
-                "Using too many points for the fit means including points which have higher measurment errors.")
-            # Selecting more points than 25% should be possible, but not advised
-
-        model1 = ModelLinear()
-        model2 = ModelPower()
-
-        p0_model1 = [0.0, 0.0]
-        for i in range(len(p0_model1)):
-            if not p0["model1"][i] is None:
-                p0_model1[i] = p0["model1"][i]
-
-        reg1 = optimize.curve_fit(
-            model1, T[0:n_points], self.__msd[0:n_points], p0 = p0_model1, sigma=self.__msd_error[0:n_points], maxfev=maxfev, method='trf', bounds=(0.0, np.inf))
-
-
-        p0_model2 = [reg1[0][0], 1.0, reg1[0][1]]
-        for i in range(len(p0_model2)):
-            if not p0["model2"][i] is None:
-                p0_model2[i] = p0["model2"][i]
-        reg2 = optimize.curve_fit(model2, T[0:n_points], self.__msd[0:n_points], p0 = p0_model2, sigma=self.__msd_error[0:n_points], maxfev=maxfev, method='trf', bounds=(0.0, np.inf))
-
-
-        # Compute standard deviation of parameters
-        perr_m1 = np.sqrt(np.diag(reg1[1]))
-        perr_m2 = np.sqrt(np.diag(reg2[1]))
-
-        # Compute BIC for both models
-        m1 = model1(T, *reg1[0])
-        m2 = model2(T, *reg2[0])
-        bic1 = BIC(m1[0:n_points], self.__msd[0:n_points], 2, 1)
-        bic2 = BIC(m2[0:n_points], self.__msd[0:n_points], 2, 1)
-        # FIXME: numerical instabilities due to low position values. should normalize before analysis, and then report those adimentional values.
-
-        # Relative Likelihood for each model
-        rel_likelihood_1 = np.exp((-bic1 + min([bic1, bic2])) * 0.5)
-        rel_likelihood_2 = np.exp((-bic2 + min([bic1, bic2])) * 0.5)
-
-        self.__msd_analysis_results["analyzed"] = True
-        self.__msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "bic": bic1, "rel_likelihood": rel_likelihood_1},
-                                                  "model2": {"params": reg2[0], "errors" : perr_m2, "bic": bic2, "rel_likelihood": rel_likelihood_2},
-                                                  "n_points": n_points}
-
-        return self.__msd_analysis_results
-
-    def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2):
-        """Revised analysis using the apparent diffusion coefficient
-
-        Parameters
-        ----------
-        R: float
-            Point scanning across the field of view.
-        fraction_fit_points: float
-            Fraction of points to use for fitting. Defaults to 25 %.
-        fit_max_time: float
-            Maximum time in fit range. Will override fraction_fit_points.
-        num_workers: int
-            Number or processes used for calculation. Defaults to number of system cores.
-        chunksize: int
-            Chunksize for process pool mapping. Small numbers might have negative performance impacts.
-        initial_guesses: dict
-            Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
-            All values default to 1.
-        maxfev: int
-            Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
-        """
-        # Calculate MSD if this has not been done yet.
-        if self.__msd is None:
-            self.calculate_msd(num_workers=num_workers, chunksize=chunksize)
-
-        dt = self.__t[1] - self.__t[0]
-
-        N = self.__msd.size
-
-        # Time coordinates
-        # This is the time array, as the fits will be MSD vs T
-        T = np.linspace(dt, dt*N, N, endpoint=True)
-
-        # Compute  the time-dependent apparent diffusion coefficient.
-        Dapp = self.__msd / (4 * T * (1 - 2*R*dt / T))
-        Dapp_err = self.__msd_error / (4 * T * (1 - 2*R*dt / T))
-
-        model, results = self.__categorize(np.array(Dapp), np.arange(
-            1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
-
-        self.__adc_analysis_results["analyzed"] = True
-        self.__adc_analysis_results["Dapp"] = np.array(Dapp)
-        self.__adc_analysis_results["model"] = model
-        self.__adc_analysis_results["results"] = results
-
-        return self.__adc_analysis_results
-
-    def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
-                    J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fraction_fit_points: float = 0.25, fit_max_time: float = None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2):
-        """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
-        
-        Parameters
-        ----------
-        dt: float
-            timestep
-        display_fit: bool
-            display fit for every timepoint
-        binsize_nm: float
-            binsize in nm
-        J: list
-            list of timepoints to consider
-        fraction_fit_points: float
-            Fraction of track to use for fitting. Defaults to 25 %.
-        fit_max_time: float
-            Maximum time in fit range. Will override fraction_fit_points.
-        initial_guesses: dict
-            Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
-            All values default to 1.
-        maxfev: int
-            Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
-        """
-        # Convert binsize to m
-        binsize = binsize_nm * 1e-9
-
-        dt = self.__t[1] - self.__t[0]
-
-        # We define a list of timepoints at which to calculate the distribution
-        # can be more, I don't think less.
-
-        # Perform the analysis for a single track
-        dapp_list = []
-        err_list = []
-        for j in tqdm.tqdm(J, desc="SD analysis for single track"):
-            # Calculate the SD
-            sd = self.calculate_sd_at(j)
-
-            t_lag = j * dt
-
-            x_fit = np.sqrt(sd)
-            # Calculate bins, x_fit is already sorted
-            max_x = x_fit[-1]
-            min_x = x_fit[0]
-            num_bins = int(np.ceil((max_x - min_x) / binsize))
-            hist_SD, bins = np.histogram(x_fit, bins=num_bins, density=True)
-            bin_mids = (bins[1:] + bins[:-1]) / 2.0
-            # Fit Rayleigh PDF to histogram. The bin size gives a good order-of-maginutde approximation
-            # for the initial guess of sigma
-            popt, pcov = optimize.curve_fit(
-                rayleighPDF, bin_mids, hist_SD, p0=(max_x-min_x))
-            if display_fit:
-                import matplotlib.pyplot as plt
-                # Plot binned data
-                plt.bar(bins[:-1], hist_SD, width=(bins[1] - bins[0]),
-                        align='edge', alpha=0.5, label="Data")
-                plt.gca().set_xlim(0, 4.0e-7)
-                # Plot the fit
-                eval_x = np.linspace(bins[0], bins[-1], 100)
-                plt.plot(eval_x, rayleighPDF(
-                    eval_x, popt[0]), label="Rayleigh Fit")
-                plt.legend()
-                plt.title("$n = {}$".format(j))
-                plt.show()
-
-            sigma = popt[0]
-            error = np.sqrt(np.diag(pcov))[0]
-            error = error**2 / (2 * t_lag)
-            dapp = sigma**2 / (2 * t_lag)
-            err_list.append(error)
-            dapp_list.append(dapp)
-
-        model, results = self.__categorize(np.array(dapp_list), np.array(
-            J), Dapp_err=np.array(err_list), fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
-
-        self.__sd_analysis_results["analyzed"] = True
-        self.__sd_analysis_results["Dapp"] = np.array(dapp_list)
-        self.__sd_analysis_results["J"] = np.array(J)
-        self.__sd_analysis_results["model"] = model
-        self.__sd_analysis_results["results"] = results
-
-        return self.__sd_analysis_results
-
-    def __categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2):
+    def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2):
         #p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
         #p0 = {"ModelBrownian" : 2 * [None], "ModelConfined" : 3 * [None], "ModelHop" : 4 * [None]}
         #p0.update(initial_guesses)
@@ -1467,7 +953,7 @@ class Track:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
 
-        dt = self.__t[1] - self.__t[0]
+        dt = self._t[1] - self._t[0]
         T = J * dt
 
         if fit_max_time is not None:
@@ -1529,10 +1015,10 @@ class NormalizedTrack(Track):
 
     def __init__(self, x=None, y=None, t=None, xy_min=None, xy_max=None, tmin=None, tmax=None, id=None):
         Track.__init__(self, x, y, t, id=id)
-        self.__xy_min = xy_min
-        self.__xy_max = xy_max
-        self.__tmin = tmin
-        self.__tmax = tmax
+        self._xy_min = xy_min
+        self._xy_max = xy_max
+        self._tmin = tmin
+        self._tmax = tmax
 
     # We define a list of timepoints at which to calculate the distribution
      # can be more, I don't think less.
