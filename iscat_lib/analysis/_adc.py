@@ -31,6 +31,10 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
         All values default to 1.
     maxfev: int
         Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
+    enable_log_sampling: bool
+        Only sample logarithmically spaced time points for analysis.
+    log_sampling_dist: float
+        Exponent of logarithmic sampling (base 10).
     """
     # Calculate MSD if this has not been done yet.
     if self._msd is None:
