@@ -1,3 +1,8 @@
+from scipy import optimize
+import numpy as np
+import warnings
+import tqdm
+
 def delete_msd_analysis_results(self):
     """Delete the MSD analysis results."""
     self._msd_analysis_results = {"analyzed": False, "results": None}
@@ -57,6 +62,7 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
             "Using too many points for the fit means including points which have higher measurment errors.")
         # Selecting more points than 25% should be possible, but not advised
 
+    from iscat_lib.analysis.models import ModelLinear, ModelPower
     model1 = ModelLinear()
     model2 = ModelPower()
 
@@ -149,3 +155,42 @@ def plot_msd_analysis_results(self, scale: str = 'log'):
     plt.ylabel("MSD")
     plt.legend()
     plt.show()
+
+def MSD_loop(i, pos_x, pos_y, N):
+    idx_0 = np.arange(1, N-i-1, 1)
+    idx_t = idx_0 + i
+    this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + \
+        (pos_y[idx_t] - pos_y[idx_0])**2
+
+    MSD = np.mean(this_msd)
+    MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
+
+    return MSD, MSD_error
+
+
+def rayleighPDF(x, sigma):
+    return x / sigma**2 * np.exp(- x**2 / (2 * sigma**2))
+
+
+def BIC(pred: list, target: list, k: int, n: int):
+    """Bayesian Information Criterion
+    Parameters
+    ----------
+    pred: list
+        Model prediction
+    target: list
+        Model targe
+
+    k: int
+        Number of free parameters in the fit
+    n: int
+        Number of data points used to fit the model
+    Returns
+    -------
+    bic : float
+        Bayesian Information Criterion
+    """
+    # Compute RSS
+    RSS = np.sum((np.array(pred) - np.array(target)) ** 2)
+    bic = k * np.log(n) + n * np.log(RSS / n)
+    return bic
