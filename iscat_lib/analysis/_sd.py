@@ -1,5 +1,9 @@
 from iscat_lib.analysis import ModelDB
 
+import tqdm
+import numpy as np
+from scipy import optimize
+
 def get_sd_analysis_results(self):
     """Returns the SD analysis results."""
     return self._sd_analysis_results
@@ -9,7 +13,7 @@ def delete_sd_analysis_results(self):
     self._sd_analysis_results = {
         "analyzed": False, "model": "unknown", "Dapp": None, "results": None}
 
-def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
+def sd_analysis(self, display_fit: bool = False, R=1/6, binsize_nm: float = 10.0,
                 J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], fraction_fit_points: float = 0.25, fit_max_time: float = None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2):
     """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
     
@@ -87,7 +91,7 @@ def sd_analysis(self, display_fit: bool = False, binsize_nm: float = 10.0,
         dapp_list.append(dapp)
 
     model, results = self._categorize(np.array(dapp_list), np.array(
-        J), Dapp_err=np.array(err_list), fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
+        J), Dapp_err=np.array(err_list), R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
 
     self._sd_analysis_results["analyzed"] = True
     self._sd_analysis_results["Dapp"] = np.array(dapp_list)
@@ -120,15 +124,17 @@ def plot_sd_analysis_results(self):
     Dapp = self.get_sd_analysis_results()["Dapp"]
     idxs = results["indexes"]
     n_points = idxs[-1]
-    R = results["R"]
     plt.semilogx(T, Dapp, label="Data", marker="o")
     for model in results["models"]:
         r = results["models"][model]["params"]
         rel_likelihood = results["models"][model]["rel_likelihood"]
+        m = None
         for c in ModelDB().models:
             if c.__class__.__name__ == model:
                 m = c
-        pred = m(T, *r)
+                break
+        if m is None:
+            raise ValueError("Can't plot results for model {}; make sure the model is loaded in ModelDB()".format(model))
         plt.semilogx(T[0:n_points], pred[0:n_points],
                     label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
 
@@ -167,3 +173,6 @@ def _calculate_sd_at(self, j: int):
     SD.sort()
 
     return SD
+
+def rayleighPDF(x, sigma):
+    return x / sigma**2 * np.exp(- x**2 / (2 * sigma**2))

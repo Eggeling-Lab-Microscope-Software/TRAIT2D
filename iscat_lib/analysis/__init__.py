@@ -16,17 +16,6 @@ import itertools
 import os
 from concurrent.futures import ProcessPoolExecutor
 
-# Models used for MSD analysis
-class ModelLinear:
-    """Linear model for MSD analysis."""
-    def __call__(self, t, D, delta2):
-        return 4 * D * t + 2 * delta2
-
-class ModelPower:
-    """Generic power law model for MSD analysis."""
-    def __call__(self, t, D, delta2, alpha):
-        return 4 * D * t**alpha + 2 * delta2
-
 class Borg:
     _shared_state = {}
     def __init__(self):
@@ -760,7 +749,8 @@ class Track:
     from ._adc import adc_analysis, get_adc_analysis_results,\
                       delete_adc_analysis_results, plot_adc_analysis_results
     from ._sd import sd_analysis, get_sd_analysis_results,\
-                     delete_sd_analysis_results, plot_sd_analysis_results
+                     delete_sd_analysis_results, plot_sd_analysis_results,\
+                     _calculate_sd_at
 
     def plot_trajectory(self, cmap='plasma'):
         """Plot the trajectory.
@@ -945,10 +935,6 @@ class Track:
         self._msd_error = MSD_error
 
     def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
-        #p0 = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
-        #p0 = {"ModelBrownian" : 2 * [None], "ModelConfined" : 3 * [None], "ModelHop" : 4 * [None]}
-        #p0.update(initial_guesses)
-
         if fraction_fit_points > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")
@@ -956,6 +942,7 @@ class Track:
         dt = self._t[1] - self._t[0]
         T = J * dt
 
+        print(fit_max_time)
         if fit_max_time is not None:
             n_points = int(np.argwhere(T < fit_max_time)[-1])
         else:
@@ -972,12 +959,13 @@ class Track:
                     cur_dist = 0
         else:
             idxs = np.arange(0, n_points, dtype=int)
+        print(T[idxs[-1]])
         error = None
         if not Dapp_err is None:
             error = Dapp_err[idxs]
 
         # Perform fits for all included models
-        results = {"models": {}, "n_points": {}, "R": {}}
+        results = {"models": {}, "indexes": {}}
         bic_min = 999.9
         category = "unknown"
         sigma = None
@@ -993,11 +981,9 @@ class Track:
             raise ValueError("Unknown weighting method: {}. Possible values are: 'error', 'variance', 'inverse_variance', and 'disabled'.".format(weighting))
 
         for model in ModelDB().models:
+            model.R = R
             model.dt = dt
             model_name = model.__class__.__name__
-            #for i in range(len(p0_model)):
-            #    if not p0[model_name][i] is None:
-            #        p0_model = p0[model_name][i]
 
             r = optimize.curve_fit(model, T[idxs], Dapp[idxs], p0 = model.initial,
                         sigma = sigma, maxfev = maxfev, method='trf', bounds=(model.lower, model.upper))
@@ -1009,7 +995,7 @@ class Track:
                 bic_min = bic
                 category = model_name
 
-            results["models"][model_name] = {"params": r[0], "error": perr, "bic" : bic}
+            results["models"][model_name] = {"params": r[0], "errors": perr, "bic" : bic}
 
         # Calculate the relative likelihood for each model
         for model in ModelDB().models:
@@ -1018,7 +1004,6 @@ class Track:
             results["models"][model_name]["rel_likelihood"] = rel_likelihood
 
         results["indexes"] = idxs
-        results["R"] = R
         return category, results
 
 
@@ -1041,11 +1026,6 @@ def MSD_loop(i, pos_x, pos_y, N):
     MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
 
     return MSD, MSD_error
-
-
-def rayleighPDF(x, sigma):
-    return x / sigma**2 * np.exp(- x**2 / (2 * sigma**2))
-
 
 def BIC(pred: list, target: list, k: int, n: int):
     """Bayesian Information Criterion

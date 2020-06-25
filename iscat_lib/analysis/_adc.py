@@ -53,7 +53,7 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
     Dapp_err = self._msd_error / (4 * T * (1 - 2*R*dt / T))
 
     model, results = self._categorize(np.array(Dapp), np.arange(
-        1, N+1), Dapp_err = Dapp_err, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting = weighting)
+        1, N+1), Dapp_err = Dapp_err, R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting = weighting)
 
     self._adc_analysis_results["analyzed"] = True
     self._adc_analysis_results["Dapp"] = np.array(Dapp)
@@ -85,15 +85,18 @@ def plot_adc_analysis_results(self):
     Dapp = self.get_adc_analysis_results()["Dapp"]
     idxs = results["indexes"]
     n_points = idxs[-1]
-    R = results["R"]
     plt.semilogx(T, Dapp, label="Data", marker="o")
     plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="o")
     for model in results["models"]:
         r = results["models"][model]["params"]
         rel_likelihood = results["models"][model]["rel_likelihood"]
+        m = None
         for c in ModelDB().models:
             if c.__class__.__name__ == model:
                 m = c
+                break
+        if m is None:
+            raise ValueError("Can't plot results for model {}; make sure the model is loaded in ModelDB()".format(model))
         pred = m(T, *r)
         plt.semilogx(T[0:n_points], pred[0:n_points],
                     label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
