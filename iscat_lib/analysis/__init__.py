@@ -27,11 +27,33 @@ class ModelDB(Borg):
     def __init__(self):
         Borg.__init__(self)
     def add_model(self, model):
+        """Add an already instanced model the ModelDB.
+
+        Parameters
+        ----------
+        model:
+            Instance of the model class. There are predefined models available in
+            iscat_lib.analysis.models. Example usage:
+
+            ``from iscat_lib.analysis.models import ModelConfined``
+            ``ModelDB().add_model(ModelConfined())``
+        """
         for m in self.models:
             if m.__class__ == model.__class__:
                 raise ValueError("ModelDB already contains an instance of the model {}.".format(model.__class__.__name__))
         self.models.append(model)
     def remove_model(self, model):
+        """
+        Remove a model from ModelDB.
+
+        Parameters
+        ----------
+        model:
+            Model class (*not* an instance) to remove. Example usage:
+
+            ``from iscat_lib.analysis.models import ModelConfined``
+            ``ModelDB().remove_model(ModelConfined)``
+        """
         for i in range(len(self.models)):
             if model == self.models[i].__class__:
                 self.models.pop(i)
@@ -863,7 +885,7 @@ class Track:
         # Create normalized Track object
         return NormalizedTrack(x, y, t, xmin, ymin, tmin, id=self._id)
 
-    def calculate_msd(self, N: int = None, num_workers: int = None, chunksize: int = 100):
+    def calculate_msd(self, N: int = None, num_workers: int = None, chunksize: int = 500, verbose = False):
         """Calculates the mean squared displacement of the track.
 
         Parameters
@@ -906,7 +928,6 @@ class Track:
 
             return MSD, MSD_error
 
-        verbose = False
         if verbose:
             tqdm_wrapper = tqdm.tqdm
         else:
@@ -942,7 +963,6 @@ class Track:
         dt = self._t[1] - self._t[0]
         T = J * dt
 
-        print(fit_max_time)
         if fit_max_time is not None:
             n_points = int(np.argwhere(T < fit_max_time)[-1])
         else:
@@ -959,7 +979,7 @@ class Track:
                     cur_dist = 0
         else:
             idxs = np.arange(0, n_points, dtype=int)
-        print(T[idxs[-1]])
+
         error = None
         if not Dapp_err is None:
             error = Dapp_err[idxs]
@@ -1015,17 +1035,6 @@ class NormalizedTrack(Track):
         self._xmin = xmin
         self._ymin = ymin
         self._tmin = tmin
-
-def MSD_loop(i, pos_x, pos_y, N):
-    idx_0 = np.arange(1, N-i-1, 1)
-    idx_t = idx_0 + i
-    this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + \
-        (pos_y[idx_t] - pos_y[idx_0])**2
-
-    MSD = np.mean(this_msd)
-    MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
-
-    return MSD, MSD_error
 
 def BIC(pred: list, target: list, k: int, n: int):
     """Bayesian Information Criterion
