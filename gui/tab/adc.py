@@ -1,4 +1,5 @@
-from iscat_lib.analysis import Track
+from iscat_lib.analysis import Track, ModelDB
+from iscat_lib.analysis.models import ModelBrownian, ModelConfined, ModelHop
 from iscat_lib.exceptions import *
 
 import numpy as np
@@ -86,33 +87,48 @@ class widgetADC(QWidget):
 
         maxfev = int(self.lineEditMaxIt.text())
 
-        initial_guesses = {"brownian" : 2 * [None], "confined" : 3 * [None], "hop" : 4 * [None]}
+        try:
+            ModelDB().remove_model(ModelBrownian)
+            ModelDB().remove_model(ModelConfined)
+            ModelDB().remove_model(ModelHop)
+        except:
+            pass
+
+        model_brownian = ModelBrownian()
+        model_confined = ModelConfined()
+        model_hop = ModelHop()
 
         if self.checkBoxUseInitial.checkState():
             if (self.lineEditParam1_1.text() != ""):
-                initial_guesses["brownian"][0] = float(self.lineEditParam1_1.text())
+                model_brownian.initial[0] = float(self.lineEditParam1_1.text())
             if (self.lineEditParam2_1.text() != ""):
-                initial_guesses["brownian"][1] = float(self.lineEditParam2_1.text())
+                model_brownian.initial[1] = float(self.lineEditParam2_1.text())
 
 
             if (self.lineEditParam1_2.text() != ""):
-                initial_guesses["confined"][0] = float(self.lineEditParam1_2.text())
+               model_confined.initial[0] = float(self.lineEditParam1_2.text())
             if (self.lineEditParam2_2.text() != ""):
-                initial_guesses["confined"][1] = float(self.lineEditParam2_2.text())
+                model_confined.initial[1] = float(self.lineEditParam2_2.text())
             if (self.lineEditParam3_2.text() != ""):
-                initial_guesses["confined"][2] = float(self.lineEditParam3_2.text())
+                model_confined.initial[2] = float(self.lineEditParam3_2.text())
 
             if (self.lineEditParam1_3.text() != ""):
-                initial_guesses["hop"][0] = float(self.lineEditParam1_3.text())
+                model_hop.initial[0] = float(self.lineEditParam1_3.text())
             if (self.lineEditParam2_3.text() != ""):
-                initial_guesses["hop"][1] = float(self.lineEditParam2_3.text())
+                model_hop.initial[1] = float(self.lineEditParam2_3.text())
             if (self.lineEditParam3_3.text() != ""):
-                initial_guesses["hop"][2] = float(self.lineEditParam3_3.text())
+                model_hop.initial[2] = float(self.lineEditParam3_3.text())
             if (self.lineEditParam4_3.text() != ""):
-                initial_guesses["hop"][3] = float(self.lineEditParam4_3.text())
+                model_hop.initial[3] = float(self.lineEditParam4_3.text())
+
+        ModelDB().add_model(model_brownian)
+        ModelDB().add_model(model_confined)
+        ModelDB().add_model(model_hop)
+
+        R = float(self.doubleSpinBoxInputParam1.value())
 
         try:
-            results = self.parent.track.adc_analysis(fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev)["results"]
+            results = self.parent.track.adc_analysis(R=R, fit_max_time=fit_max_time, maxfev=maxfev)["results"]
         except RuntimeError:
             mb = QMessageBox()
             mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")
@@ -122,51 +138,41 @@ class widgetADC(QWidget):
             return
 
         # Show results for brownian model in GUI
-        self.lineEditParam1_1.setText("{:5e}".format(results["brownian"]["params"][0]))
-        self.lineEditParam1Error_1.setText("{:5e}".format(results["brownian"]["errors"][0]))
-        self.lineEditParam2_1.setText("{:5e}".format(results["brownian"]["params"][1]))
-        self.lineEditParam2Error_1.setText("{:5e}".format(results["brownian"]["errors"][1]))
-        self.lineEditRelLikelihood_1.setText("{:5f}".format(results["brownian"]["rel_likelihood"]))
-        self.lineEditBIC_1.setText("{:5f}".format(results["brownian"]["bic"]))
+        self.lineEditParam1_1.setText("{:5e}".format(results["models"]["ModelBrownian"]["params"][0]))
+        self.lineEditParam1Error_1.setText("{:5e}".format(results["models"]["ModelBrownian"]["errors"][0]))
+        self.lineEditParam2_1.setText("{:5e}".format(results["models"]["ModelBrownian"]["params"][1]))
+        self.lineEditParam2Error_1.setText("{:5e}".format(results["models"]["ModelBrownian"]["errors"][1]))
+        self.lineEditRelLikelihood_1.setText("{:5f}".format(results["models"]["ModelBrownian"]["rel_likelihood"]))
+        self.lineEditBIC_1.setText("{:5f}".format(results["models"]["ModelBrownian"]["bic"]))
 
         # Show results for confined model in GUI
-        self.lineEditParam1_2.setText("{:5e}".format(results["confined"]["params"][0]))
-        self.lineEditParam1Error_2.setText("{:5e}".format(results["confined"]["errors"][0]))
-        self.lineEditParam2_2.setText("{:5e}".format(results["confined"]["params"][1]))
-        self.lineEditParam2Error_2.setText("{:5e}".format(results["confined"]["errors"][1]))
-        self.lineEditParam3_2.setText("{:5e}".format(results["confined"]["params"][2]))
-        self.lineEditParam3Error_2.setText("{:5e}".format(results["confined"]["errors"][2]))
-        self.lineEditRelLikelihood_2.setText("{:5f}".format(results["confined"]["rel_likelihood"]))
-        self.lineEditBIC_2.setText("{:5f}".format(results["confined"]["bic"]))
+        self.lineEditParam1_2.setText("{:5e}".format(results["models"]["ModelConfined"]["params"][0]))
+        self.lineEditParam1Error_2.setText("{:5e}".format(results["models"]["ModelConfined"]["errors"][0]))
+        self.lineEditParam2_2.setText("{:5e}".format(results["models"]["ModelConfined"]["params"][1]))
+        self.lineEditParam2Error_2.setText("{:5e}".format(results["models"]["ModelConfined"]["errors"][1]))
+        self.lineEditParam3_2.setText("{:5e}".format(results["models"]["ModelConfined"]["params"][2]))
+        self.lineEditParam3Error_2.setText("{:5e}".format(results["models"]["ModelConfined"]["errors"][2]))
+        self.lineEditRelLikelihood_2.setText("{:5f}".format(results["models"]["ModelConfined"]["rel_likelihood"]))
+        self.lineEditBIC_2.setText("{:5f}".format(results["models"]["ModelConfined"]["bic"]))
 
         # Show results for hopping in GUI
-        self.lineEditParam1_3.setText("{:5e}".format(results["hop"]["params"][0]))
-        self.lineEditParam1Error_3.setText("{:5e}".format(results["hop"]["errors"][0]))
-        self.lineEditParam2_3.setText("{:5e}".format(results["hop"]["params"][1]))
-        self.lineEditParam2Error_3.setText("{:5e}".format(results["hop"]["errors"][1]))
-        self.lineEditParam3_3.setText("{:5e}".format(results["hop"]["params"][2]))
-        self.lineEditParam3Error_3.setText("{:5e}".format(results["hop"]["errors"][2]))
-        self.lineEditParam4_3.setText("{:5e}".format(results["hop"]["params"][3]))
-        self.lineEditParam4Error_3.setText("{:5e}".format(results["hop"]["errors"][3]))
-        self.lineEditRelLikelihood_3.setText("{:5f}".format(results["hop"]["rel_likelihood"]))
-        self.lineEditBIC_3.setText("{:5f}".format(results["hop"]["bic"]))
+        self.lineEditParam1_3.setText("{:5e}".format(results["models"]["ModelHop"]["params"][0]))
+        self.lineEditParam1Error_3.setText("{:5e}".format(results["models"]["ModelHop"]["errors"][0]))
+        self.lineEditParam2_3.setText("{:5e}".format(results["models"]["ModelHop"]["params"][1]))
+        self.lineEditParam2Error_3.setText("{:5e}".format(results["models"]["ModelHop"]["errors"][1]))
+        self.lineEditParam3_3.setText("{:5e}".format(results["models"]["ModelHop"]["params"][2]))
+        self.lineEditParam3Error_3.setText("{:5e}".format(results["models"]["ModelHop"]["errors"][2]))
+        self.lineEditParam4_3.setText("{:5e}".format(results["models"]["ModelHop"]["params"][3]))
+        self.lineEditParam4Error_3.setText("{:5e}".format(results["models"]["ModelHop"]["errors"][3]))
+        self.lineEditRelLikelihood_3.setText("{:5f}".format(results["models"]["ModelHop"]["rel_likelihood"]))
+        self.lineEditBIC_3.setText("{:5f}".format(results["models"]["ModelHop"]["bic"]))
 
-        # Define Models
-        R = float(self.doubleSpinBoxInputParam1.value())
         dt = T[1] - T[0]
-        def model_brownian(t, D, delta): return D + \
-            delta**2 / (2 * t * (1 - 2*R*dt/t))
-        def model_confined(t, D_micro, delta, tau): return D_micro * (tau/t) * \
-            (1 - np.exp(-tau/t)) + delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
-        def model_hop(t, D_macro, D_micro, delta, tau): return D_macro + D_micro * \
-            (tau/t) * (1 - np.exp(-tau/t)) + \
-            delta ** 2 / (2 * t * (1 - 2 * R * dt / t))
 
-        n_points = results["n_points"]
         Dapp = self.parent.track.get_adc_analysis_results()["Dapp"]
-        reg1 = results["brownian"]["params"]
-        reg2 = results["confined"]["params"]
-        reg3 = results["hop"]["params"]
+        reg1 = results["models"]["ModelBrownian"]["params"]
+        reg2 = results["models"]["ModelConfined"]["params"]
+        reg3 = results["models"]["ModelHop"]["params"]
         m1 = model_brownian(T, *reg1)
         m2 = model_confined(T, *reg2)
         m3 = model_hop(T, *reg3)       
@@ -174,12 +180,14 @@ class widgetADC(QWidget):
         self.plot.reset()
         self.plot.setup()
 
-        self.plot_dapp.setData(T, Dapp)
-        self.plot_brownian.setData(T[0:n_points], m1[0:n_points])
-        self.plot_confined.setData(T[0:n_points], m2[0:n_points])
-        self.plot_hopping.setData(T[0:n_points], m3[0:n_points])
+        indexes = results["indexes"]
 
-        self.plot.set_range(T[n_points])
+        self.plot_dapp.setData(T, Dapp)
+        self.plot_brownian.setData(T[indexes], m1[indexes])
+        self.plot_confined.setData(T[indexes], m2[indexes])
+        self.plot_hopping.setData(T[indexes], m3[indexes])
+
+        self.plot.set_range(T[indexes[-1]])
         self.plot.autoRange()     
 
     def show_formula_model_1(self):
