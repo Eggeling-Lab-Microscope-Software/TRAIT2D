@@ -11,7 +11,7 @@ def get_adc_analysis_results(self):
     """Returns the ADC analysis results."""
     return self._adc_analysis_results
 
-def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
+def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error', verbose = False):
     """Revised analysis using the apparent diffusion coefficient
 
     Parameters
@@ -38,7 +38,7 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
     """
     # Calculate MSD if this has not been done yet.
     if self._msd is None:
-        self.calculate_msd(num_workers=num_workers, chunksize=chunksize)
+        self.calculate_msd(num_workers=num_workers, chunksize=chunksize, verbose=verbose)
 
     dt = self._t[1] - self._t[0]
 
