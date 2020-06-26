@@ -917,17 +917,6 @@ class Track:
                 "num_workers = 1 to suppress this warning.")
             workers = 1
 
-        def MSD_loop(i, pos_x, pos_y, N):
-            idx_0 = np.arange(1, N-i-1, 1)
-            idx_t = idx_0 + i
-            this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + \
-                (pos_y[idx_t] - pos_y[idx_0])**2
-
-            MSD = np.mean(this_msd)
-            MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
-
-            return MSD, MSD_error
-
         if verbose:
             tqdm_wrapper = tqdm.tqdm
         else:
@@ -937,8 +926,8 @@ class Track:
             with ProcessPoolExecutor(max_workers=workers) as executor:
                 i = range(1, N-2)
                 results = list(tqdm_wrapper(executor.map(MSD_loop, i,
-                                                      itertools.repeat(pos_y),
                                                       itertools.repeat(pos_x),
+                                                      itertools.repeat(pos_y),
                                                       itertools.repeat(N),
                                                       chunksize=chunksize),
                                          total=len(i),
@@ -1058,3 +1047,14 @@ def BIC(pred: list, target: list, k: int, n: int):
     RSS = np.sum((np.array(pred) - np.array(target)) ** 2)
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
+
+def MSD_loop(i, pos_x, pos_y, N):
+    idx_0 = np.arange(1, N-i-1, 1)
+    idx_t = idx_0 + i
+    this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + \
+        (pos_y[idx_t] - pos_y[idx_0])**2
+
+    MSD = np.mean(this_msd)
+    MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
+
+    return MSD, MSD_error
