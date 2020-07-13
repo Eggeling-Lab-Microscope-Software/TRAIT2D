@@ -386,12 +386,13 @@ class ListOfTracks:
                                  "enable interpolation with interpolation = True.".format(
                     track.get_t()[1] - track.get_t()[0], dt, k + 1))
 
+        # Parameter averaging
         for track in self._tracks:
             if track.get_adc_analysis_results()["analyzed"] == False:
                 continue
             model = track.get_adc_analysis_results()["model"]
             if not model in average_params.keys():
-                average_params[model] = len(track.get_adc_analysis_results()["results"]["models"][model]["params"]) * [0.0]
+                average_params[model] = np.zeros(len(track.get_adc_analysis_results()["results"]["models"][model]["params"]))
             if not model in counter.keys():
                 counter[model] = 0
             counter[model] += 1
@@ -408,6 +409,7 @@ class ListOfTracks:
                     track.get_t()[1] - track.get_t()[0], dt, k + 1))
 
         if not avg_only_params:
+            # D_app and MSD averaging
             for track in self._tracks:
                 if track.get_adc_analysis_results()["analyzed"] == False:
                     continue
