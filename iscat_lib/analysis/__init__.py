@@ -492,6 +492,21 @@ class ListOfTracks:
                 "average_dapp": average_D_app}
 
     def get_msd(self, interpolation = False): # Get average MSD
+        """Get the mean squared displacement averaged over all tracks.
+
+        Parameters
+        ----------
+        interpolation: bool
+            Linearly interpolate all msd values over the time points of the first track.
+            Use when working with differently spaced tracks.
+
+        Returns
+        -------
+        t : ndarray
+            1-dimensional array containing time points at which msd was sampled
+        msd: ndarray
+            1-dimensional array containing averaged msd values
+        """
         track_length = 0
         max_t = 0.0
         t = None
@@ -520,8 +535,17 @@ class ListOfTracks:
         average_MSD /= sampled
         return t[0:-3], average_MSD
 
-    def plot_msd(self):
-        t, msd = self.get_msd()
+    def plot_msd(self, interpolation = False):
+        """Plot the mean squared displacement averaged over all tracks.
+
+        Parameters
+        ----------
+        interpolation: bool
+            Linearly interpolate all msd values over the time points of the first track.
+            Use when working with differently spaced tracks.
+        """
+
+        t, msd = self.get_msd(interpolation)
         import matplotlib.pyplot as plt
         plt.figure()
         ax = plt.gca()
@@ -530,7 +554,22 @@ class ListOfTracks:
         ax.semilogx(t, msd)
         ax.legend()
 
-    def get_dapp(self, interpolation = False): # Get average MSD
+    def get_dapp(self, interpolation = False):
+        """Get the apparent diffusion coefficient averaged over all tracks.
+
+        Parameters
+        ----------
+        interpolation: bool
+            Linearly interpolate all msd values over the time points of the first track.
+            Use when working with differently spaced tracks.
+
+        Returns
+        -------
+        t : ndarray
+            1-dimensional array containing time points at which msd was sampled
+        average_dapp: ndarray
+            1-dimensional array containing averaged D_app values
+        """
         track_length = 0
         max_t = 0.0
         t = None
@@ -559,17 +598,15 @@ class ListOfTracks:
         average_dapp /= sampled
         return t[0:-3], average_dapp
 
-    def plot_msd(self):
-        t, msd = self.get_msd()
-        import matplotlib.pyplot as plt
-        plt.figure()
-        ax = plt.gca()
-        ax.set_xlabel("t")
-        ax.set_ylabel("Average MSD")
-        ax.semilogx(t, msd)
-        ax.legend()
-
     def plot_dapp(self):
+        """Plot the apparent diffusion coefficient averaged over all tracks.
+
+        Parameters
+        ----------
+        interpolation: bool
+            Linearly interpolate all msd values over the time points of the first track.
+            Use when working with differently spaced tracks.
+        """
         t, dapp = self.get_dapp()
         import matplotlib.pyplot as plt
         plt.figure()
@@ -851,9 +888,6 @@ class Track:
 
     def normalized(self, normalize_t = True, normalize_xy = True):
         """Normalize the track.
-        Returns
-        -------
-        Instance of NormalizedTrack containing the normalized track data.
 
         Parameters
         ----------
@@ -863,6 +897,10 @@ class Track:
         normalize_xy: bool
             Normalize the x and y coordinates of the track by setting the initial
             position in the track to zero.
+
+        Returns
+        -------
+        Instance of NormalizedTrack containing the normalized track data.
         """
         if self.__class__ == NormalizedTrack:
             warnings.warn(
@@ -888,7 +926,7 @@ class Track:
         return NormalizedTrack(x, y, t, xmin, ymin, tmin, id=self._id)
 
     def calculate_msd(self, N: int = None, num_workers: int = None, chunksize: int = 500, verbose = False):
-        """Calculates the mean squared displacement of the track.
+        """Calculates the mean squared displacement of the track. Result is stored in the Track object.
 
         Parameters
         ----------
