@@ -32,16 +32,17 @@ class ModelDB(Borg):
         Parameters
         ----------
         model:
-            Instance of the model class. There are predefined models available in
+            Model class (*not* an instance) to add. There are predefined models available in
             iscat_lib.analysis.models. Example usage:
 
             ``from iscat_lib.analysis.models import ModelConfined``
-            ``ModelDB().add_model(ModelConfined())``
+            ``ModelDB().add_model(ModelConfined)``
         """
         for m in self.models:
-            if m.__class__ == model.__class__:
+            if m.__class__ == model:
                 raise ValueError("ModelDB already contains an instance of the model {}.".format(model.__class__.__name__))
-        self.models.append(model)
+        self.models.append(model())
+
     def remove_model(self, model):
         """
         Remove a model from ModelDB.
