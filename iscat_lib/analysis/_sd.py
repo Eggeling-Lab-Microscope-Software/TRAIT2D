@@ -19,8 +19,6 @@ def sd_analysis(self, display_fit: bool = False, R=1/6, binsize_nm: float = 10.0
     
     Parameters
     ----------
-    dt: float
-        timestep
     display_fit: bool
         display fit for every timepoint
     binsize_nm: float

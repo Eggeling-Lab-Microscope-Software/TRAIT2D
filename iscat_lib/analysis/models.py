@@ -6,13 +6,6 @@ import numpy as np
 # Models used for ADC and SD analysis
 class ModelBrownian:
     """Model for free, unrestricted diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
     """
     lower = [0.0, 0.0]
     upper = np.inf
@@ -26,13 +19,6 @@ class ModelBrownian:
 
 class ModelConfined:
     """Model for confined diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
     """
     lower = [0.0, 0.0, 0.0]
     upper = np.inf
@@ -47,13 +33,6 @@ class ModelConfined:
 
 class ModelHop:
     """Model for hop diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
     """
     lower = [0.0, 0.0, 0.0, 0.0]
     upper = np.inf
@@ -69,13 +48,6 @@ class ModelHop:
 
 class ModelImmobile:
     """Model for immobile diffusion.
-
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
     """
     upper = [np.inf]
     lower = [0.0]
@@ -88,14 +60,7 @@ class ModelImmobile:
         return delta**2 / (2*t*(1-2*self.R*self.dt/t))
 
 class ModelHopModified:
-    """Model for hop diffusion.
-    
-    Parameters
-    ----------
-    R: float
-        Point scanning across the field of view.
-    dt: float
-        Uniform time step size.
+    """Modified model for hop diffusion.
     """
     lower = [0.0, 0.0, 0.0, 0.0]
     upper = np.inf
