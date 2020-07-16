@@ -561,7 +561,7 @@ class ListOfTracks:
         Parameters
         ----------
         interpolation: bool
-            Linearly interpolate all msd values over the time points of the first track.
+            Linearly interpolate all D_app values over the time points of the first track.
             Use when working with differently spaced tracks.
 
         Returns
@@ -605,7 +605,7 @@ class ListOfTracks:
         Parameters
         ----------
         interpolation: bool
-            Linearly interpolate all msd values over the time points of the first track.
+            Linearly interpolate all D_app values over the time points of the first track.
             Use when working with differently spaced tracks.
         """
         t, dapp = self.get_dapp()
