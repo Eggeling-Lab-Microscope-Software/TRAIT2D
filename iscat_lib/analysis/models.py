@@ -28,7 +28,7 @@ class ModelConfined:
         self.dt = 0.0
 
     def __call__(self, t, D_micro, delta, tau):
-        return D_micro * (tau/t) * (1 - np.exp(-t / tau)) + \
+        return D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
             delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
 class ModelHop:
@@ -43,7 +43,7 @@ class ModelHop:
 
     def __call__(self, t, D_macro, D_micro, delta, tau):
         return D_macro + \
-            D_micro * (tau/t) * (1 - np.exp(-t / tau)) + \
+            D_micro * (tau/t) * (1 - np.exp(-tau/t)) + \
             delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
 class ModelImmobile:
@@ -71,7 +71,7 @@ class ModelHopModified:
 
     def __call__(self, t, D_macro, D_micro, alpha, tau):
         return alpha * D_macro + \
-            (1.0 - alpha) * D_micro * (1 - np.exp(-t/tau))
+            (1.0 - alpha) * D_micro * (1 - np.exp(-tau/t))
 
 
 # Models used for MSD analysis
