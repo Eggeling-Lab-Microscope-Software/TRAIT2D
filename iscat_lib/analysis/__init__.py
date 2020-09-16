@@ -335,7 +335,7 @@ class ListOfTracks:
         for track in self._tracks:
             track.sd_analysis(**kwargs)
 
-    def summary(self, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
+    def adc_summary(self, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
         """Average tracks by model and optionally plot the results.
 
         Parameters
