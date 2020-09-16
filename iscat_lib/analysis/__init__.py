@@ -903,24 +903,23 @@ class Track:
         -------
         Instance of NormalizedTrack containing the normalized track data.
         """
-        if self.__class__ == NormalizedTrack:
-            warnings.warn(
-                "Track is already an instance of NormalizedTrack. This will do nothing.")
 
         x = self._x
         y = self._y
         t = self._t
-
-        # Getting the span of the diffusion.
-        xmin = x.min()
-        ymin = y.min()
-        tmin = t.min()
+        
+        xmin = 0.0
+        ymin = 0.0
+        tmin = 0.0
 
         # Normalizing the coordinates
         if normalize_xy:
+            xmin = x.min()
+            ymin = y.min()
             x = x - xmin
             y = y - ymin
         if normalize_t:
+            tmin = t.min()
             t = t - tmin
 
         # Create normalized Track object
