@@ -40,8 +40,26 @@ class ModelDB(Borg):
         """
         for m in self.models:
             if m.__class__ == model:
-                raise ValueError("ModelDB already contains an instance of the model {}.".format(model.__class__.__name__))
+                raise ValueError("ModelDB already contains an instance of the model {}.".format(model.__name__))
         self.models.append(model())
+
+    def get_model(self, model):
+        """
+        Return the model instance from ModelDB.
+
+        Parameters
+        ----------
+        model:
+            Model class (*not* and instance) to remove. Example usage:
+
+            ``from iscat_lib.analysis.models import ModelConfined``
+            ``ModelDB().get_model(ModelConfined).initial = [1.0e-12, 1.0e-9, 0.5e-3]
+        """
+
+        for i in range(len(self.models)):
+            if model == self.models[i].__class__:
+                return self.models[i]
+        raise ValueError("ModelDB does not contain an instance of the model {}.".format(model.__name__))
 
     def remove_model(self, model):
         """
@@ -188,10 +206,10 @@ class ListOfTracks:
         track_list = []
         for track in self._tracks:
             if method == 'adc':
-                if track.get_adc_analysis_results()["model"] == model.__name__:
+                if track.get_adc_analysis_results()["best_model"] == model.__name__:
                     track_list.append(track)
             elif method == 'sd':
-                if track.get_sd_analysis_results()["model"] == model.__name__:
+                if track.get_sd_analysis_results()["best_model"] == model.__name__:
                     track_list.append(track)
         return ListOfTracks(track_list)
 
@@ -389,14 +407,15 @@ class ListOfTracks:
 
         # Parameter averaging
         for track in self._tracks:
-            if track.get_adc_analysis_results()["analyzed"] == False:
+            if track.get_adc_analysis_results() is None:
                 continue
-            model = track.get_adc_analysis_results()["model"]
-            if not model in average_params.keys():
-                average_params[model] = len(track.get_adc_analysis_results()["results"]["models"][model]["params"]) * [0.0]
-                counter[model] = 0
-            counter[model] += 1
-            average_params[model] += track.get_adc_analysis_results()["results"]["models"][model]["params"]
+            model = track.get_adc_analysis_results()["best_model"]
+            if model is not None:
+                if not model in average_params.keys():
+                    average_params[model] = len(track.get_adc_analysis_results()["fit_results"][model]["params"]) * [0.0]
+                    counter[model] = 0
+                counter[model] += 1
+                average_params[model] += track.get_adc_analysis_results()["fit_results"][model]["params"]
         
         for model in average_params.keys():
             average_params[model] /= counter[model]
@@ -412,10 +431,10 @@ class ListOfTracks:
 
         if not avg_only_params:
             for track in self._tracks:
-                if track.get_adc_analysis_results()["analyzed"] == False:
+                if track.get_adc_analysis_results() is None:
                     continue
 
-                model = track.get_adc_analysis_results()["model"]
+                model = track.get_adc_analysis_results()["best_model"]
 
                 D_app = np.zeros(track_length - 3)
                 MSD = np.zeros(track_length - 3)
@@ -448,11 +467,12 @@ class ListOfTracks:
                 average_MSD[model] /= sampled[model]
 
         if counter_sum == 0:
-            raise ValueError("No tracks are categorized!")
+            warnings.warn("No tracks are categorized!")
 
         sector = {}
         for model in counter:
-            sector[model] = counter[model] / counter_sum
+            sector[model] = counter[model] / len(self._tracks)
+        sector["not catergorized"] = (len(self._tracks) - counter_sum) / len(self._tracks)
 
         if plot_msd and not avg_only_params:
             import matplotlib.pyplot as plt
@@ -582,7 +602,7 @@ class ListOfTracks:
         average_dapp = np.zeros(track_length - 3)
         sampled = np.zeros(track_length - 3)
         for track in self._tracks:
-            if track.get_adc_analysis_results()["analyzed"] == False:
+            if track.get_adc_analysis_results() is None:
                 continue
 
             D_app = np.zeros(track_length - 3)
@@ -640,11 +660,9 @@ class Track:
         self._msd = None
         self._msd_error = None
 
-        self._msd_analysis_results = {"analyzed": False, "results": None}
-        self._adc_analysis_results = {
-            "analyzed": False, "model": "unknown", "Dapp": None, "results": None}
-        self._sd_analysis_results = {
-            "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
+        self._msd_analysis_results = None
+        self._adc_analysis_results = None
+        self._sd_analysis_results = None
 
     @classmethod
     def from_dict(cls, dict):
@@ -801,9 +819,9 @@ class Track:
             str(self._t.size).rjust(11, ' '),
             str(self._id).rjust(15, ' '),
             str(self.is_msd_calculated()).rjust(9, ' '),
-            str(self._msd_analysis_results["analyzed"]).rjust(6, ' '),
-            str(self._sd_analysis_results["analyzed"]).rjust(7, ' '),
-            str(self._adc_analysis_results["analyzed"]).rjust(6, ' ')
+            str(self._msd_analysis_results is not None).rjust(6, ' '),
+            str(self._sd_analysis_results is not None).rjust(7, ' '),
+            str(self._adc_analysis_results is not None).rjust(6, ' ')
         )
 
     from ._msd import msd_analysis, get_msd_analysis_results,\
@@ -936,6 +954,8 @@ class Track:
             Number or processes used for calculation. Defaults to number of system cores.
         chunksize: int
             Chunksize for process pool mapping. Small numbers might have negative performance impacts.
+        verbose: bool
+            If `True`, a progress bar will be printed in the console.
         """
 
         if N is None:
@@ -986,6 +1006,7 @@ class Track:
         dt = self._t[1] - self._t[0]
         T = J * dt
 
+        # Get number of points for fit from either fit_max_time or fraction_fit_points
         if fit_max_time is not None:
             n_points = int(np.argwhere(T < fit_max_time)[-1])
         else:
@@ -994,6 +1015,7 @@ class Track:
         cur_dist = 0
         idxs = []
         if enable_log_sampling:
+            # Get indexes that are (approximately) logarithmically spaced
             idxs.append(0)
             for i in range(1, n_points):
                 cur_dist += np.log10(T[i]/T[i-1])
@@ -1001,6 +1023,7 @@ class Track:
                     idxs.append(i)
                     cur_dist = 0
         else:
+            # Get every index up to n_points
             idxs = np.arange(0, n_points, dtype=int)
 
         error = None
@@ -1008,9 +1031,10 @@ class Track:
             error = Dapp_err[idxs]
 
         # Perform fits for all included models
-        results = {"models": {}, "indexes": {}}
+        fit_results = {}
+
         bic_min = 999.9
-        category = "unknown"
+        category = None
         sigma = None
         if weighting == 'error':
             sigma = error
@@ -1038,16 +1062,16 @@ class Track:
                 bic_min = bic
                 category = model_name
 
-            results["models"][model_name] = {"params": r[0], "errors": perr, "bic" : bic}
+            fit_results[model_name] = {"params": r[0], "errors": perr, "bic" : bic}
 
         # Calculate the relative likelihood for each model
         for model in ModelDB().models:
             model_name = model.__class__.__name__
-            rel_likelihood = np.exp((-results["models"][model_name]["bic"] + bic_min) * 0.5)
-            results["models"][model_name]["rel_likelihood"] = rel_likelihood
+            rel_likelihood = np.exp((-fit_results[model_name]["bic"] + bic_min) * 0.5)
+            fit_results[model_name]["rel_likelihood"] = rel_likelihood
 
-        results["indexes"] = idxs
-        return category, results
+        fit_indices = idxs
+        return category, fit_indices, fit_results
 
 
 class NormalizedTrack(Track):

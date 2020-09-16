@@ -4,8 +4,7 @@ import numpy as np
 
 def delete_adc_analysis_results(self):
     """ Delete the ADC analysis results."""
-    self._adc_analysis_results = {
-        "analyzed": False, "model": "unknown", "Dapp": None, "J": None, "results": None}
+    self._adc_analysis_results = None
 
 def get_adc_analysis_results(self):
     """Returns the ADC analysis results."""
@@ -52,13 +51,14 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
     Dapp = self._msd / (4 * T * (1 - 2*R*dt / T))
     Dapp_err = self._msd_error / (4 * T * (1 - 2*R*dt / T))
 
-    model, results = self._categorize(np.array(Dapp), np.arange(
+    model, fit_indices, fit_results = self._categorize(np.array(Dapp), np.arange(
         1, N+1), Dapp_err = Dapp_err, R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting = weighting)
 
-    self._adc_analysis_results["analyzed"] = True
+    self._adc_analysis_results = {}
     self._adc_analysis_results["Dapp"] = np.array(Dapp)
-    self._adc_analysis_results["model"] = model
-    self._adc_analysis_results["results"] = results
+    self._adc_analysis_results["fit_indices"] = fit_indices
+    self._adc_analysis_results["fit_results"] = fit_results
+    self._adc_analysis_results["best_model"] = model
 
     return self._adc_analysis_results
 
@@ -72,7 +72,7 @@ def plot_adc_analysis_results(self):
         Track has not been analyzed using ADC analysis yet.
     """
     import matplotlib.pyplot as plt
-    if self.get_adc_analysis_results()["analyzed"] == False:
+    if self.get_adc_analysis_results() is None:
         raise ValueError(
             "Track has not been analyzed using adc_analysis yet!")
 
@@ -80,16 +80,17 @@ def plot_adc_analysis_results(self):
     N = self._t.size
     T = np.linspace(1, N, N-3,  endpoint=True) * dt
 
-    results = self.get_adc_analysis_results()["results"]
+    fit_results = self.get_adc_analysis_results()["fit_results"]
 
     Dapp = self.get_adc_analysis_results()["Dapp"]
-    idxs = results["indexes"]
+    idxs = self.get_adc_analysis_results()["fit_indices"]
+
     n_points = idxs[-1]
     plt.semilogx(T, Dapp, label="Data", marker="o")
     plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="o")
-    for model in results["models"]:
-        r = results["models"][model]["params"]
-        rel_likelihood = results["models"][model]["rel_likelihood"]
+    for model in fit_results:
+        r = fit_results[model]["params"]
+        rel_likelihood = fit_results[model]["rel_likelihood"]
         m = None
         for c in ModelDB().models:
             if c.__class__.__name__ == model:
@@ -100,7 +101,7 @@ def plot_adc_analysis_results(self):
         pred = m(T, *r)
         plt.semilogx(T[0:n_points], pred[0:n_points],
                     label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
-    model = self.get_adc_analysis_results()["model"]
+    model = self.get_adc_analysis_results()["best_model"]
 
     plt.axvspan(T[0], T[n_points], alpha=0.25,
                 color='gray', label="Fitted data")

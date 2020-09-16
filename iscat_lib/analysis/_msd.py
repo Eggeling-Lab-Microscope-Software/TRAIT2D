@@ -3,9 +3,11 @@ import numpy as np
 import warnings
 import tqdm
 
+from iscat_lib.analysis.models import ModelLinear, ModelPower
+
 def delete_msd_analysis_results(self):
     """Delete the MSD analysis results."""
-    self._msd_analysis_results = {"analyzed": False, "results": None}
+    self._msd_analysis_results = None
 
 def get_msd_analysis_results(self):
     """Returns the MSD analysis results."""
@@ -97,10 +99,10 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
     rel_likelihood_1 = np.exp((-bic1 + min([bic1, bic2])) * 0.5)
     rel_likelihood_2 = np.exp((-bic2 + min([bic1, bic2])) * 0.5)
 
-    self._msd_analysis_results["analyzed"] = True
-    self._msd_analysis_results["results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "bic": bic1, "rel_likelihood": rel_likelihood_1},
-                                                "model2": {"params": reg2[0], "errors" : perr_m2, "bic": bic2, "rel_likelihood": rel_likelihood_2},
-                                                "n_points": n_points}
+    self._msd_analysis_results = {}
+    self._msd_analysis_results["fit_results"] = {"model1": {"params": reg1[0], "errors" : perr_m1, "bic": bic1, "rel_likelihood": rel_likelihood_1},
+                                                "model2": {"params": reg2[0], "errors" : perr_m2, "bic": bic2, "rel_likelihood": rel_likelihood_2}}
+    self._msd_analysis_results["n_points"] = n_points
 
     return self._msd_analysis_results
 
@@ -126,12 +128,10 @@ def plot_msd_analysis_results(self, scale: str = 'log'):
     model1 = ModelLinear()
     model2 = ModelPower()
 
-    results = self.get_msd_analysis_results()["results"]
+    results = self.get_msd_analysis_results()["fit_results"]
     N = self._x.size
     T = self._t[0:-3]
-    idxs = results["idxs"]
-    n_points = idxs[-1]
-    print(n_points)
+    n_points = self.get_msd_analysis_results()["n_points"]
     reg1 = results["model1"]["params"]
     reg2 = results["model2"]["params"]
     m1 = model1(T, *reg1)
