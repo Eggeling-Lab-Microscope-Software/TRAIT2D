@@ -951,12 +951,6 @@ class Track:
         else:
             workers = num_workers
 
-        if N < 100 * chunksize:
-            warnings.warn("Track is not very long, switching to single worker as "
-                "this will probably be faster than setting up the process pool. Use "
-                "num_workers = 1 to suppress this warning.")
-            workers = 1
-
         if verbose:
             tqdm_wrapper = tqdm.tqdm
         else:
