@@ -82,8 +82,10 @@ def plot_adc_analysis_results(self):
     idxs = self.get_adc_analysis_results()["fit_indices"]
 
     n_points = idxs[-1]
-    plt.semilogx(T, Dapp, label="Data", marker="o")
-    plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="o")
+
+    plt.grid(linestyle='dashed', color='grey')
+    plt.semilogx(T, Dapp, label="Data", color='black')
+    plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="x", color='black')
     for model in fit_results:
         r = fit_results[model]["params"]
         rel_likelihood = fit_results[model]["rel_likelihood"]
@@ -96,13 +98,14 @@ def plot_adc_analysis_results(self):
             raise ValueError("Can't plot results for model {}; make sure the model is loaded in ModelDB()".format(model))
         pred = m(T, *r)
         plt.semilogx(T[0:n_points], pred[0:n_points],
-                    label=f"{model}, Rel_Likelihood={rel_likelihood:.2e}")
+                    label=f"{model}, rel. likelihood={rel_likelihood:.2e}")
     model = self.get_adc_analysis_results()["best_model"]
 
     plt.axvspan(T[0], T[n_points], alpha=0.25,
-                color='gray', label="Fitted data")
-    plt.xlabel("Time [step]")
+                color='gray', label="Fit region")
+    plt.xlabel("Time in s")
     plt.ylabel("Normalized ADC")
     plt.title("Diffusion Category: {}".format(model))
+    plt.xlim(T[0], T[-1])
     plt.legend()
     plt.show()
