@@ -10,7 +10,7 @@ def get_adc_analysis_results(self):
     """Returns the ADC analysis results."""
     return self._adc_analysis_results
 
-def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, num_workers=None, chunksize=100, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error', verbose = False):
+def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
     """Revised analysis using the apparent diffusion coefficient
 
     Parameters
@@ -21,10 +21,6 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
         Fraction of points to use for fitting. Defaults to 25 %.
     fit_max_time: float
         Maximum time in fit range. Will override fraction_fit_points.
-    num_workers: int
-        Number or processes used for calculation. Defaults to number of system cores.
-    chunksize: int
-        Chunksize for process pool mapping. Small numbers might have negative performance impacts.
     initial_guesses: dict
         Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
         All values default to 1.
@@ -37,7 +33,7 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
     """
     # Calculate MSD if this has not been done yet.
     if self._msd is None:
-        self.calculate_msd(num_workers=num_workers, chunksize=chunksize, verbose=verbose)
+        self.calculate_msd()
 
     dt = self._t[1] - self._t[0]
 

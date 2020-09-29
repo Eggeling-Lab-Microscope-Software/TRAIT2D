@@ -943,60 +943,27 @@ class Track:
         # Create normalized Track object
         return NormalizedTrack(x, y, t, xmin, ymin, tmin, id=self._id)
 
-    def calculate_msd(self, N: int = None, num_workers: int = None, chunksize: int = 500, verbose = False):
+    def calculate_msd(self):
         """Calculates the mean squared displacement of the track. Result is stored in the Track object.
-
-        Parameters
-        ----------
-        N: int
-            Maximum MSD length to consider (if none, will be computed from the track length)
-        num_workers: int
-            Number or processes used for calculation. Defaults to number of system cores.
-        chunksize: int
-            Chunksize for process pool mapping. Small numbers might have negative performance impacts.
-        verbose: bool
-            If `True`, a progress bar will be printed in the console.
         """
 
-        if N is None:
-            N = self._x.size
+        def circular_matrix(ar):
+            a = np.concatenate(( ar, ar[:-1] ))
+            L = len(ar)
+            n = a.strides[0]
+            return np.lib.stride_tricks.as_strided(a[L-1:], (L,L), (-n,n))
 
-        MSD = np.zeros((N-3,))
-        MSD_error = np.zeros((N-3,))
-        pos_x = self._x
-        pos_y = self._y
+        xc = circular_matrix(self._x)
+        yc = circular_matrix(self._y)
 
-        if num_workers == None:
-            workers = os.cpu_count()
-        else:
-            workers = num_workers
+        sdm = (self._x - xc)**2 + (self._y - yc)**2
+        sdm = np.triu(sdm, 1)[:-3]
 
-        if verbose:
-            tqdm_wrapper = tqdm.tqdm
-        else:
-            tqdm_wrapper = lambda x, **kwargs: x
-
-        if workers > 1:
-            with ProcessPoolExecutor(max_workers=workers) as executor:
-                i = range(1, N-2)
-                results = list(tqdm_wrapper(executor.map(MSD_loop, i,
-                                                      itertools.repeat(pos_x),
-                                                      itertools.repeat(pos_y),
-                                                      itertools.repeat(N),
-                                                      chunksize=chunksize),
-                                         total=len(i),
-                                         desc="MSD calculation (workers: {})".format(workers)))
-            i = 0
-            for (MSD_i, MSD_error_i) in results:
-                MSD[i] = MSD_i
-                MSD_error[i] = MSD_error_i
-                i += 1
-        else:
-            for i in tqdm_wrapper(range(1, N-2), desc="MSD calculation"):
-                MSD[i-1], MSD_error[i-1] = MSD_loop(i, pos_x, pos_y, N)
-
-        self._msd = MSD
-        self._msd_error = MSD_error
+        # MSD is the mean of each upper triangular row (except the last)
+        d = np.arange(sdm.shape[1] - 1, 2, -1)
+        
+        self._msd = np.sum(sdm, axis=1) / d
+        self._msd_error = np.sqrt(np.sum(np.triu((sdm - self._msd[:, None])**2, 1), axis=1) / d**2) # stddev weighted by inverse square of msd length
 
     def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
         if fraction_fit_points > 0.25:
@@ -1105,14 +1072,3 @@ def BIC(pred: list, target: list, k: int, n: int):
     RSS = np.sum((np.array(pred) - np.array(target)) ** 2)
     bic = k * np.log(n) + n * np.log(RSS / n)
     return bic
-
-def MSD_loop(i, pos_x, pos_y, N):
-    idx_0 = np.arange(1, N-i-1, 1)
-    idx_t = idx_0 + i
-    this_msd = (pos_x[idx_t] - pos_x[idx_0])**2 + \
-        (pos_y[idx_t] - pos_y[idx_0])**2
-
-    MSD = np.mean(this_msd)
-    MSD_error = np.std(this_msd) / np.sqrt(len(this_msd))
-
-    return MSD, MSD_error
