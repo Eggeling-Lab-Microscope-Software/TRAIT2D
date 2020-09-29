@@ -488,10 +488,16 @@ class ListOfTracks:
         if plot_dapp and not avg_only_params:
             import matplotlib.pyplot as plt
             plt.figure()
+            min_val = 9999999.9
+            max_val = 0.0
             ax = plt.gca()
             ax.set_xlabel("t")
             ax.set_ylabel("Average D_app")
             for model in counter:
+                new_min = np.min(average_D_app[model])
+                new_max = np.max(average_D_app[model])
+                min_val = min(min_val, new_min)
+                max_val = max(max_val, new_max)
                 l, = ax.semilogx(t[0:-3], average_D_app[model], label=model)
                 r = average_params[model]
                 for c in ModelDB().models:
@@ -499,6 +505,7 @@ class ListOfTracks:
                         m = c
                 pred = m(t, *r)
                 plt.semilogx(t[0:-3], pred[0:-3], linestyle='dashed', color=l.get_color())
+            ax.set_ylim(0.95*min_val, 1.05*max_val)
             ax.legend()
 
         if plot_pie_chart:
