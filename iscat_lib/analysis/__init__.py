@@ -205,12 +205,13 @@ class ListOfTracks:
             raise ValueError("Method must be one of 'adc' or 'sd'.")
         track_list = []
         for track in self._tracks:
-            if method == 'adc':
-                if track.get_adc_analysis_results()["best_model"] == model.__name__:
-                    track_list.append(track)
-            elif method == 'sd':
-                if track.get_sd_analysis_results()["best_model"] == model.__name__:
-                    track_list.append(track)
+            if track.get_adc_analysis_results() is not None:
+                if method == 'adc':
+                    if track.get_adc_analysis_results()["best_model"] == model.__name__:
+                        track_list.append(track)
+                elif method == 'sd':
+                    if track.get_sd_analysis_results()["best_model"] == model.__name__:
+                        track_list.append(track)
         return ListOfTracks(track_list)
 
     def plot_trajectories(self, cmap="plasma"):
