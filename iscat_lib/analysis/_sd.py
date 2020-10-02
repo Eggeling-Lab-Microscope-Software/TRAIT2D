@@ -105,7 +105,7 @@ def sd_analysis(self, display_fit: bool = False, R=1/6, binsize_nm: float = 10.0
             i += 1
 
     model, indices, results = self._categorize(np.array(dapp_list), np.array(
-        J), Dapp_err=np.array(err_list), R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weghting=weighting)
+        J), Dapp_err=np.array(err_list), R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting=weighting)
 
     self._sd_analysis_results = {}
     self._sd_analysis_results["Dapp"] = np.array(dapp_list)
