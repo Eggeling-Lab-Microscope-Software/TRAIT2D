@@ -30,6 +30,10 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
         Only sample logarithmically spaced time points for analysis.
     log_sampling_dist: float
         Exponent of logarithmic sampling (base 10).
+    weighting: str
+        Weighting of the datapoints used in the fit residual calculation. Can be `error` (weight by inverse standard
+        deviation), `inverse_variance` (weight by inverse variance), `variance` (weight by variance)
+        or `disabled` (no weighting). Default is `error`.
     """
     # Calculate MSD if this has not been done yet.
     if self._msd is None:

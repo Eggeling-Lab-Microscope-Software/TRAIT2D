@@ -19,7 +19,8 @@ def delete_sd_analysis_results(self):
 def sd_analysis(self, display_fit: bool = False, R=1/6, binsize_nm: float = 10.0,
                 J: list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100],
                 fraction_fit_points: float = 0.25, fit_max_time: float = None, initial_guesses = {}, maxfev=1000,
-                enable_log_sampling = False, log_sampling_dist = 0.2, num_workers: int = None, verbose: bool = False):
+                enable_log_sampling = False, log_sampling_dist = 0.2, num_workers: int = None, verbose: bool = False,
+                weighting = 'error'):
     """Squared Displacement Analysis strategy to obtain apparent diffusion coefficient.
     
     Parameters
@@ -47,6 +48,10 @@ def sd_analysis(self, display_fit: bool = False, R=1/6, binsize_nm: float = 10.0
         Number or processes used for calculation. Defaults to number of system cores.
     verbose: bool
         If `True`, a progress bar will be printed in the console.
+    weighting: str
+        Weighting of the datapoints used in the fit residual calculation. Can be `error` (weight by inverse standard
+        deviation), `inverse_variance` (weight by inverse variance), `variance` (weight by variance)
+        or `disabled` (no weighting). Default is `error`.
     """
     # Convert binsize to m
     binsize = binsize_nm * 1e-9
@@ -100,7 +105,7 @@ def sd_analysis(self, display_fit: bool = False, R=1/6, binsize_nm: float = 10.0
             i += 1
 
     model, indices, results = self._categorize(np.array(dapp_list), np.array(
-        J), Dapp_err=np.array(err_list), R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist)
+        J), Dapp_err=np.array(err_list), R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weghting=weighting)
 
     self._sd_analysis_results = {}
     self._sd_analysis_results["Dapp"] = np.array(dapp_list)
