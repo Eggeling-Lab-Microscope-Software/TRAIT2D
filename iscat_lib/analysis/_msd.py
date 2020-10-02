@@ -13,7 +13,7 @@ def get_msd_analysis_results(self):
     """Returns the MSD analysis results."""
     return self._msd_analysis_results
 
-def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, dt: float = 1.0, num_workers: int = None, chunksize: int = 100, initial_guesses = { }, maxfev = 1000):
+def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, dt: float = 1.0, initial_guesses = { }, maxfev = 1000):
     """ Classical Mean Squared Displacement Analysis for single track
 
     Parameters
@@ -26,10 +26,6 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
         Maximum time in fit range. Will override fraction_fit_points and n_fit_points.
     dt: float
         Timestep.
-    num_workers: int
-        Number or processes used for calculation. Defaults to number of system cores.
-    chunksize: int
-        Chunksize for process pool mapping. Small numbers might have negative performance impacts.
     initial_guesses: dict
         Dictionary containing initial guesses for the parameters. Keys can be "model1" and "model2".
         All values default to 1.
@@ -41,7 +37,7 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
 
     # Calculate MSD if this has not been done yet.
     if self._msd is None:
-        self.calculate_msd(num_workers=num_workers, chunksize=chunksize)
+        self.calculate_msd()
 
     # Number time frames for this track
     N = self._msd.size
