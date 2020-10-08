@@ -5,7 +5,8 @@ import pandas as pd
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog, QFileDialog, QMessageBox
 
-from iscat_lib.analysis import Track
+from iscat_lib.analysis import Track, ModelDB
+from iscat_lib.analysis.models import ModelBrownian, ModelConfined, ModelHop
 from iscat_lib.exceptions import *
 
 import gui.tab.msd
@@ -36,6 +37,10 @@ class MainWindow(QMainWindow):
         self.track = None
 
         self.pushButtonLoadTrack.clicked.connect(self.load_track_dialog)
+
+        ModelDB().add_model(ModelBrownian)
+        ModelDB().add_model(ModelConfined)
+        ModelDB().add_model(ModelHop)
 
     def show_trackid_dialog(self):
         Dialog = QDialog()

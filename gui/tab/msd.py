@@ -101,7 +101,7 @@ class widgetMSD(QWidget):
                 initial_guesses["model2"][2] = float(self.lineEditParam3_2.text())
 
         try:
-            results = self.parent.track.msd_analysis(fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)["results"]
+            results = self.parent.track.msd_analysis(fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)
         except RuntimeError:
             mb = QMessageBox()
             mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")
@@ -110,23 +110,25 @@ class widgetMSD(QWidget):
             mb.exec()
             return
 
-        # Show results for model 1 in GUI
-        self.lineEditParam1_1.setText("{:5e}".format(results["model1"]["params"][0]))
-        self.lineEditParam1Error_1.setText("{:5e}".format(results["model1"]["errors"][0]))
-        self.lineEditParam2_1.setText("{:5e}".format(results["model1"]["params"][1]))
-        self.lineEditParam2Error_1.setText("{:5e}".format(results["model1"]["errors"][1]))
-        self.lineEditRelLikelihood_1.setText("{:5f}".format(results["model1"]["rel_likelihood"]))
-        self.lineEditBIC_1.setText("{:5f}".format(results["model1"]["bic"]))
+        fit_results = results["fit_results"]
 
-        # Show results for model 2 in GUI
-        self.lineEditParam1_2.setText("{:5e}".format(results["model2"]["params"][0]))
-        self.lineEditParam1Error_2.setText("{:5e}".format(results["model2"]["errors"][0]))
-        self.lineEditParam2_2.setText("{:5e}".format(results["model2"]["params"][1]))
-        self.lineEditParam2Error_2.setText("{:5e}".format(results["model2"]["errors"][1]))
-        self.lineEditParam3_2.setText("{:5e}".format(results["model2"]["params"][2]))
-        self.lineEditParam3Error_2.setText("{:5e}".format(results["model2"]["errors"][2]))
-        self.lineEditRelLikelihood_2.setText("{:5f}".format(results["model2"]["rel_likelihood"]))
-        self.lineEditBIC_2.setText("{:5f}".format(results["model2"]["bic"]))
+        # Show fit results for model 1 in GUI
+        self.lineEditParam1_1.setText("{:5e}".format(fit_results["model1"]["params"][0]))
+        self.lineEditParam1Error_1.setText("{:5e}".format(fit_results["model1"]["errors"][0]))
+        self.lineEditParam2_1.setText("{:5e}".format(fit_results["model1"]["params"][1]))
+        self.lineEditParam2Error_1.setText("{:5e}".format(fit_results["model1"]["errors"][1]))
+        self.lineEditRelLikelihood_1.setText("{:5f}".format(fit_results["model1"]["rel_likelihood"]))
+        self.lineEditBIC_1.setText("{:5f}".format(fit_results["model1"]["bic"]))
+
+        # Show fit results for model 2 in GUI
+        self.lineEditParam1_2.setText("{:5e}".format(fit_results["model2"]["params"][0]))
+        self.lineEditParam1Error_2.setText("{:5e}".format(fit_results["model2"]["errors"][0]))
+        self.lineEditParam2_2.setText("{:5e}".format(fit_results["model2"]["params"][1]))
+        self.lineEditParam2Error_2.setText("{:5e}".format(fit_results["model2"]["errors"][1]))
+        self.lineEditParam3_2.setText("{:5e}".format(fit_results["model2"]["params"][2]))
+        self.lineEditParam3Error_2.setText("{:5e}".format(fit_results["model2"]["errors"][2]))
+        self.lineEditRelLikelihood_2.setText("{:5f}".format(fit_results["model2"]["rel_likelihood"]))
+        self.lineEditBIC_2.setText("{:5f}".format(fit_results["model2"]["bic"]))
 
         # Plot analysis results
         def model1(t, D, delta2): return 4 * D * t + 2 * delta2
@@ -134,8 +136,8 @@ class widgetMSD(QWidget):
 
         n_points = results["n_points"]
         MSD = self.parent.track.get_msd()
-        reg1 = results["model1"]["params"]
-        reg2 = results["model2"]["params"]
+        reg1 = fit_results["model1"]["params"]
+        reg2 = fit_results["model2"]["params"]
         m1 = model1(T, *reg1)
         m2 = model2(T, *reg2)
 
