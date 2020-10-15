@@ -2,8 +2,10 @@ import sys
 
 import pandas as pd
 
-from PyQt5 import QtCore, uic
+from PyQt5 import QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog, QFileDialog, QMessageBox
+
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
 from iscat_lib.analysis import Track, ModelDB
 from iscat_lib.analysis.models import ModelBrownian, ModelConfined, ModelHop
