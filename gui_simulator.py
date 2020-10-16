@@ -108,10 +108,10 @@ class MainVisual(tk.Frame):
             self.dynamics_switch=var.get()
 
         # dynamics type switch: # 1 - diffusion 0 - hopping diffusion
-        self.R1 = tk.Radiobutton(root, text=" diffusion ", variable=var, value=1, bg='gray', command =update_switch )
+        self.R1 = tk.Radiobutton(root, text=" Free Diffusion ", variable=var, value=1, bg='gray', command =update_switch )
         self.R1.grid(row=2, column=1, columnspan=2)
 
-        self.R2 = tk.Radiobutton(root, text=" hopping diffusion ", variable=var, value=0, bg='gray',command = update_switch ) #  command=sel)
+        self.R2 = tk.Radiobutton(root, text=" Hopping Diffusion ", variable=var, value=0, bg='gray',command = update_switch ) #  command=sel)
         self.R2.grid(row=2, column=3, columnspan=3,pady=5)        
         
         # setting trajectory parameters
