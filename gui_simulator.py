@@ -3,7 +3,7 @@
 """
 GUI iSCAT simulator
 
-@author: mariaa
+@author: mariaa, joel
 """
 
 import matplotlib
@@ -46,7 +46,7 @@ class MainVisual(tk.Frame):
         #define a window
         tk.Frame.__init__(self, master)
         self.master = master
-        master.title("iSCAT simulator 0.0 ")
+        master.title("TRAiT Simulator")
         master.configure(background='gray')
         # get the monitor size
         self.dpi=100
