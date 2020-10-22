@@ -34,6 +34,12 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
         Weighting of the datapoints used in the fit residual calculation. Can be `error` (weight by inverse standard
         deviation), `inverse_variance` (weight by inverse variance), `variance` (weight by variance)
         or `disabled` (no weighting). Default is `error`.
+
+    Returns
+    -------
+    adc_analysis_results: dict
+        Dictionary containing all analysis results.
+        Can also be retreived using `Track.get_adc_analysis_results()`.
     """
     # Calculate MSD if this has not been done yet.
     if self._msd is None:

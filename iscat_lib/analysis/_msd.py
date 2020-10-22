@@ -31,6 +31,10 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
         All values default to 1.
     maxfev: int
         Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
+    Returns
+    -------
+    msd_analysis_results: dict
+        Dictionary containing all MSD analysis results. Can also be retreived using `Track.get_msd_analysis_results()`.
     """
     p0 = {"model1" : 2 * [None], "model2" : 3*[None]}
     p0.update(initial_guesses)
