@@ -27,7 +27,7 @@ class ModelDB(Borg):
     def __init__(self):
         Borg.__init__(self)
     def add_model(self, model):
-        """Add an already instanced model the ModelDB.
+        """Add a new model class to the ModelDB.
 
         Parameters
         ----------
@@ -91,7 +91,7 @@ class ListOfTracks:
     Parameters
     ----------
     tracks : list
-        A Python list containing the tracks.
+        A Python list containing the tracks as `Track` objects.
     """
 
     def __init__(self, tracks: list = None):
@@ -150,7 +150,7 @@ class ListOfTracks:
         Returns
         -------
         tracks : list
-            List of tracks.
+            List of tracks. Each element will be a `Track` object.
         """
         return self._tracks
 
@@ -196,9 +196,9 @@ class ListOfTracks:
         ----------
         method: str
             Method used for classificiation can be either 'adc' or 'sd'.
-        model: str
-            Model the tracks are classified as. Can be one of 'brownian',
-            'confined' or 'hop'.
+        model
+            Class (*not* an instance) of the model the tracks should be categorized as.
+            Predefined models can be found at `iscat_lib.analysis.models`.
 
         Returns
         -------
