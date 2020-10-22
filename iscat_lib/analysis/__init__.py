@@ -860,11 +860,16 @@ class Track:
         ax = plt.gca()
         segs = []
         colors = []
+
+        tmax = self._t.max()
+        tmin = self._t.min()
+        tdif = tmax - tmin
+
         for i in range(1, self._t.size):
             segs.append([(self._x[i-1], self._y[i-1]),
                          (self._x[i], self._y[i])])
             colors.append(
-                cmap(self._t[i] / (self._t.max() - self._t.min())))
+                cmap((self._t[i] - tmin) / tdif))
         lc = LineCollection(segs, colors=colors)
         ax.axhline(self._y[0], linewidth=0.5, color='black', zorder=-1)
         ax.axvline(self._x[0], linewidth=0.5, color='black', zorder=-1)
