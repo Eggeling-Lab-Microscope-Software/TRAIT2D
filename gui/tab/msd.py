@@ -104,8 +104,10 @@ class widgetMSD(QWidget):
             if (self.lineEditParam3_2.text() != ""):
                 initial_guesses["model2"][2] = float(self.lineEditParam3_2.text())
 
+        R = float(self.doubleSpinBoxInputParam1.value())
+
         try:
-            results = self.parent.track.msd_analysis(fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev)
+            results = self.parent.track.msd_analysis(fit_max_time=fit_max_time, initial_guesses=initial_guesses, maxfev=maxfev, R=R)
         except RuntimeError:
             mb = QMessageBox()
             mb.setText("A model fit failed! Try raising the maximum iterations or different initial values.")
