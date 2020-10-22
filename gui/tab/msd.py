@@ -41,8 +41,8 @@ class widgetMSD(QWidget):
                           pen=(2, 2), name='Model 2')
 
     def results_to_clipboard(self):
-        if self.parent.track == None or not self.parent.track.get_msd_analysis_results()["analyzed"]:
-            self.parent.statusbar.showMessage("Load a track first!")
+        if self.parent.track is None or self.parent.track.get_msd_analysis_results() is None:
+            self.parent.statusbar.showMessage("Analyze a track first!")
             mb = QMessageBox()
             mb.setText("Analyze a track first!")
             mb.setWindowTitle("Error")
@@ -50,7 +50,7 @@ class widgetMSD(QWidget):
             mb.exec()
             return
 
-        QApplication.clipboard().setText(str(self.parent.track.get_msd_analysis_results()["results"]))
+        QApplication.clipboard().setText(str(self.parent.track.get_msd_analysis_results()["fit_results"]))
 
     def reset(self):
         self.lineEditParam1_1.setText("")
