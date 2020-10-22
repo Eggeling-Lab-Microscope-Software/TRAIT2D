@@ -35,8 +35,10 @@ class ModelDB(Borg):
             Model class (*not* an instance) to add. There are predefined models available in
             iscat_lib.analysis.models. Example usage:
 
-            ``from iscat_lib.analysis.models import ModelConfined``
-            ``ModelDB().add_model(ModelConfined)``
+            .. code-block:: python
+
+                from iscat_lib.analysis.models import ModelConfined
+                ModelDB().add_model(ModelConfined)
         """
         for m in self.models:
             if m.__class__ == model:
@@ -52,8 +54,10 @@ class ModelDB(Borg):
         model:
             Model class (*not* and instance) to remove. Example usage:
 
-            ``from iscat_lib.analysis.models import ModelConfined``
-            ``ModelDB().get_model(ModelConfined).initial = [1.0e-12, 1.0e-9, 0.5e-3]
+            .. code-block:: python
+            
+                from iscat_lib.analysis.models import ModelConfined
+                ModelDB().get_model(ModelConfined).initial = [1.0e-12, 1.0e-9, 0.5e-3]
         """
 
         for i in range(len(self.models)):
@@ -70,8 +74,10 @@ class ModelDB(Borg):
         model:
             Model class (*not* an instance) to remove. Example usage:
 
-            ``from iscat_lib.analysis.models import ModelConfined``
-            ``ModelDB().remove_model(ModelConfined)``
+            .. code-block:: python
+
+                from iscat_lib.analysis.models import ModelConfined
+                ModelDB().remove_model(ModelConfined)
         """
         for i in range(len(self.models)):
             if model == self.models[i].__class__:
