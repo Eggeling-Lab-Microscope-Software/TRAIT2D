@@ -986,7 +986,7 @@ class Track:
         self._msd = np.sum(sdm, axis=1) / d
         self._msd_error = np.sqrt(np.sum(np.triu((sdm - self._msd[:, None])**2, 1), axis=1) / d**2) # stddev weighted by inverse square of msd length
 
-    def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, initial_guesses = {}, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
+    def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
         if fraction_fit_points > 0.25:
             warnings.warn(
                 "Using too many points for the fit means including points which have higher measurment errors.")

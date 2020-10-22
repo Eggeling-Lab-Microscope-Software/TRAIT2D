@@ -10,7 +10,7 @@ def get_adc_analysis_results(self):
     """Returns the ADC analysis results."""
     return self._adc_analysis_results
 
-def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, initial_guesses = {}, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
+def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
     """Revised analysis using the apparent diffusion coefficient
 
     Parameters
@@ -21,9 +21,6 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
         Fraction of points to use for fitting. Defaults to 25 %.
     fit_max_time: float
         Maximum time in fit range. Will override fraction_fit_points.
-    initial_guesses: dict
-        Dictionary containing initial guesses for the parameters. Keys can be "brownian", "confined" and "hop".
-        All values default to 1.
     maxfev: int
         Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
     enable_log_sampling: bool
@@ -58,7 +55,7 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
     Dapp_err = self._msd_error / (4 * T * (1 - 2*R*dt / T))
 
     model, fit_indices, fit_results = self._categorize(np.array(Dapp), np.arange(
-        1, N+1), Dapp_err = Dapp_err, R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, initial_guesses = initial_guesses, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting = weighting)
+        1, N+1), Dapp_err = Dapp_err, R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting = weighting)
 
     self._adc_analysis_results = {}
     self._adc_analysis_results["Dapp"] = np.array(Dapp)
