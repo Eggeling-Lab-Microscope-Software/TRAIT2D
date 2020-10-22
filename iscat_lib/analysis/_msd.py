@@ -13,7 +13,7 @@ def get_msd_analysis_results(self):
     """Returns the MSD analysis results."""
     return self._msd_analysis_results
 
-def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, dt: float = 1.0, initial_guesses = { }, maxfev = 1000):
+def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, dt: float = 1.0, initial_guesses = { }, maxfev = 1000, R : float = 0):
     """ Classical Mean Squared Displacement Analysis for single track
 
     Parameters
@@ -31,6 +31,8 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
         All values default to 1.
     maxfev: int
         Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.
+    R: float
+        Point scanning across the field of view.
     Returns
     -------
     msd_analysis_results: dict
@@ -68,6 +70,9 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
     model1 = ModelLinear()
     model2 = ModelPower()
 
+    model1.R = R
+    model2.R = R
+
     p0_model1 = [0.0, 0.0]
     for i in range(len(p0_model1)):
         if not p0["model1"][i] is None:
@@ -75,7 +80,6 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
 
     reg1 = optimize.curve_fit(
         model1, T[0:n_points], self._msd[0:n_points], p0 = p0_model1, sigma=self._msd_error[0:n_points], maxfev=maxfev, method='trf', bounds=(0.0, np.inf))
-
 
     p0_model2 = [reg1[0][0], 1.0, reg1[0][1]]
     for i in range(len(p0_model2)):
