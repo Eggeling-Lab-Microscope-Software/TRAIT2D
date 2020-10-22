@@ -244,10 +244,12 @@ class ListOfTracks:
             y -= y[0]
             t -= t[0]
             tmax = t.max()
+            tmin = t.min()
+            tdif = tmax - tmin
             for i in range(1, t.size):
                 segs.append([(x[i-1], y[i-1]),
                              (x[i], y[i])])
-                colors.append(cmap(t[i] / tmax))
+                colors.append(cmap((t[i] - tmin) / tdif))
             lc = LineCollection(segs, colors=colors)
             ax.add_collection(lc)
             xmin = min(xmin, x.min())
