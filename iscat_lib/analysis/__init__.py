@@ -126,7 +126,7 @@ class ListOfTracks:
             When the file contains multiple tracks but no id is specified.
         """
         df = pd.read_csv(filename)
-        ids = df["id"].unique()
+        ids = df[col_name_id].unique()
         tracks = []
         for id in ids:
             tracks.append(Track.from_dataframe(df, col_name_x, col_name_y, col_name_t, col_name_id, unit_length, unit_time, id))
