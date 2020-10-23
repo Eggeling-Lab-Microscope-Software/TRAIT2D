@@ -9,4 +9,4 @@ call activate iscat
 
 cd %CODE_FOLDER%
 
-python gui_iscat.py
+python gui_tracker.py
