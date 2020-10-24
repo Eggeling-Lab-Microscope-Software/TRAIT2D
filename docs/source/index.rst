@@ -3,14 +3,41 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ISCAT_Tracking's documentation!
+Welcome to 2D TRAiT's documentation!
 ==========================================
+
+Features
+~~~~~~~~
+
+TODO
+
+Installation
+~~~~~~~~~~~~
+
+TODO
+
+Documentation
+~~~~~~~~~~~~~
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Libraries
 
    analysis
+   simulators
+   exceptions
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Graphical Applications
+   
+   analysis_gui
+   simulator_gui
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tutorials and Examples
+   
    auto_examples/index
 
 Indices and tables

@@ -34,7 +34,8 @@ release = '0.1'
 
 extensions = [ 'sphinx.ext.autodoc',
                'sphinx.ext.napoleon',
-               'sphinx_gallery.gen_gallery'
+               'sphinx_gallery.gen_gallery',
+               'sphinx.ext.autosectionlabel'
 ]
 
 sphinx_gallery_conf = {

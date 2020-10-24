@@ -17,6 +17,7 @@ Below is a gallery of examples
 .. only:: html
 
  .. figure:: /auto_examples/images/thumb/sphx_glr_plot_analyse_imported_data_thumb.png
+     :alt: Analyze Imported Data
 
      :ref:`sphx_glr_auto_examples_plot_analyse_imported_data.py`
 
@@ -32,13 +33,14 @@ Below is a gallery of examples
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example will guide you through the process of simulating some data and analyzing it using ...">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates some of the library&#x27;s core features, namely simulation and analysis o...">
 
 .. only:: html
 
- .. figure:: /auto_examples/images/thumb/sphx_glr_plot_squared_displacement_analysis_thumb.png
+ .. figure:: /auto_examples/images/thumb/sphx_glr_plot_tutorial_thumb.png
+     :alt: TRAiT Tutorial
 
-     :ref:`sphx_glr_auto_examples_plot_squared_displacement_analysis.py`
+     :ref:`sphx_glr_auto_examples_plot_tutorial.py`
 
 .. raw:: html
 
@@ -48,47 +50,7 @@ Below is a gallery of examples
 .. toctree::
    :hidden:
 
-   /auto_examples/plot_squared_displacement_analysis
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example will guide you through the process of simulating some data and analyzing it using ...">
-
-.. only:: html
-
- .. figure:: /auto_examples/images/thumb/sphx_glr_plot_apparent_diffusion_coefficient_analysis_thumb.png
-
-     :ref:`sphx_glr_auto_examples_plot_apparent_diffusion_coefficient_analysis.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/plot_apparent_diffusion_coefficient_analysis
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example will guide you through the process of simulating some data and analyzing it using ...">
-
-.. only:: html
-
- .. figure:: /auto_examples/images/thumb/sphx_glr_plot_mean_squared_displacement_analysis_thumb.png
-
-     :ref:`sphx_glr_auto_examples_plot_mean_squared_displacement_analysis.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/plot_mean_squared_displacement_analysis
+   /auto_examples/plot_tutorial
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
@@ -103,13 +65,13 @@ Below is a gallery of examples
 
   .. container:: sphx-glr-download sphx-glr-download-python
 
-    :download:`Download all examples in Python source code: auto_examples_python.zip </C:/Users/John/Projekte/iSCAT_tracking/docs/source/auto_examples/auto_examples_python.zip>`
+    :download:`Download all examples in Python source code: auto_examples_python.zip </C:/Users/John/Projekte/iSCAT_analysis/docs/source/auto_examples/auto_examples_python.zip>`
 
 
 
   .. container:: sphx-glr-download sphx-glr-download-jupyter
 
-    :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip </C:/Users/John/Projekte/iSCAT_tracking/docs/source/auto_examples/auto_examples_jupyter.zip>`
+    :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip </C:/Users/John/Projekte/iSCAT_analysis/docs/source/auto_examples/auto_examples_jupyter.zip>`
 
 
 .. only:: html
