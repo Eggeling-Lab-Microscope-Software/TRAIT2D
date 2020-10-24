@@ -14,6 +14,11 @@ def main():
         description      = 'Particle tracker for iSCAT data (collaboration with Eggeling group)',
         install_requires = ['setuptools', 'wheel', 'numpy', 'scipy', 'scikit-image',
                             'matplotlib', 'opencv-python', 'tqdm', 'pandas'],
+        entry_points={
+            'console_scripts': [
+                'trait_analysis_gui = gui_analysis:main',
+            ],
+        },
     )
 
 if __name__ == "__main__":
