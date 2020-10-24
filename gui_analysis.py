@@ -15,6 +15,8 @@ import gui.tab.msd
 import gui.tab.adc
 import gui.tab.sd
 
+import os
+
 class MainWindow(QMainWindow):
 
     sigTrackLoaded = QtCore.Signal()
@@ -23,7 +25,8 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(*args, **kwargs)
 
         # Load .ui file
-        uic.loadUi('gui_analysis.ui', self)
+        dirname = os.path.dirname(__file__)
+        uic.loadUi(os.path.join(dirname, 'gui_analysis.ui'), self)
 
         # Add widgets to tabs
         wid_msd = gui.tab.msd.widgetMSD(self)

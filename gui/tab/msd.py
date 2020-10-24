@@ -11,10 +11,14 @@ from PyQt5.QtGui import QIntValidator
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
 
+import os
+
 class widgetMSD(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self)
-        uic.loadUi('gui/tab/msd.ui', self)
+        
+        dirname = os.path.dirname(__file__)
+        uic.loadUi(os.path.join(dirname, 'msd.ui'), self)
 
         self.parent = parent
 

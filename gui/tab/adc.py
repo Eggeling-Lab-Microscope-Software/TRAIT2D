@@ -11,10 +11,14 @@ from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication
 from gui.plot import ModelFitWidget
 from gui.render_math import MathTextLabel
 
+import os
+
 class widgetADC(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self)
-        uic.loadUi('gui/tab/adc.ui', self)
+        
+        dirname = os.path.dirname(__file__)
+        uic.loadUi(os.path.join(dirname, 'adc.ui'), self)
 
         self.parent = parent
 
