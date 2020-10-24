@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analysis GUI &mdash; ISCAT_Tracking 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example gallery" href="auto_examples/index.html" />
+    <link rel="prev" title="Exceptions" href="exceptions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ISCAT_Tracking
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis GUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#starting-the-gui">Starting the GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#description-of-the-gui">Description of the GUI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general">General</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#both-tabs-msd-analysis-adc-analysis">Both Tabs “MSD Analysis” &amp; “ADC Analysis”</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ISCAT_Tracking</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Analysis GUI</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/analysis_gui.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="analysis-gui">
+<span id="id1"></span><h1>Analysis GUI<a class="headerlink" href="#analysis-gui" title="Permalink to this headline">¶</a></h1>
+<p>The analysis GUI allows single-track analysis without the need for writing Python code or notebooks yourself. It allows to import single tracks from <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files and then apply MSD or ADC analysis to them.</p>
+<div class="section" id="starting-the-gui">
+<h2>Starting the GUI<a class="headerlink" href="#starting-the-gui" title="Permalink to this headline">¶</a></h2>
+<p>The GUI can be started from command line by entering <code class="docutils literal notranslate"><span class="pre">trait_analysis_gui</span></code>. The GUI and its components are described below.</p>
+</div>
+<div class="section" id="description-of-the-gui">
+<h2>Description of the GUI<a class="headerlink" href="#description-of-the-gui" title="Permalink to this headline">¶</a></h2>
+<p>TODO: Insert screenshot.</p>
+<div class="section" id="general">
+<h3>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>Button “Load Track”:</dt><dd><ul class="simple">
+<li><p>Load a single track from a CSV file. The CSV file can contain multiple tracks, each identified by a unique track ID, from which a single track can be selected.</p></li>
+</ul>
+</dd>
+<dt>Tabs “MSD Analysis” &amp; “ADC Analysis”:</dt><dd><p>Switch between the different analysis interfaces.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="both-tabs-msd-analysis-adc-analysis">
+<h2>Both Tabs “MSD Analysis” &amp; “ADC Analysis”<a class="headerlink" href="#both-tabs-msd-analysis-adc-analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Group box with model name:</dt><dd><p>Displays results, errors, relative likelihoods and Bayesian Information Critetion for each analysis model.</p>
+</dd>
+</dl>
+<p>Input “R (Motion blur correction)”:
+[Note: I will add this to the MSD analysis tab as well.]</p>
+<blockquote>
+<div><p>Input the constant R for all models.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Button “Results to Clipboard”:</dt><dd><p>Copy a dictionary containing all analysis results to the clipboard.</p>
+</dd>
+<dt>Input “Max. fit iterations”:</dt><dd><p>Maximum iterations until the least squares fit will abort.</p>
+</dd>
+<dt>Checkbox “Use parameters as initial guesses”:</dt><dd><p>If checked, the results of the previous fit attempt will be used as initial guesses for the new fit.</p>
+</dd>
+<dt>Button “Analyze”:</dt><dd><p>Start model fitting and analysis.</p>
+</dd>
+<dt>Graph display:</dt><dd><p>Displays the fit results and range. Fit range can be modified by dragging the vertical lines.</p>
+</dd>
+<dt>Button and SpinBox “Set Range”:</dt><dd><p>Manual input of fit range.</p>
+</dd>
+<dt>Checkbox “Log Scale”:</dt><dd><p>If checked, the time axis will be scaled logarithmically.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="auto_examples/index.html" class="btn btn-neutral float-right" title="Example gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="exceptions.html" class="btn btn-neutral float-left" title="Exceptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
