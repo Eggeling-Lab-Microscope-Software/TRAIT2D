@@ -17,6 +17,7 @@ def main():
         entry_points={
             'console_scripts': [
                 'trait_analysis_gui = gui_analysis:main',
+                'trait_simulator_gui = gui_simulator:main'
             ],
         },
     )
