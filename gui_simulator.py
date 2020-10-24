@@ -507,8 +507,11 @@ class MainVisual(tk.Frame):
         '''
         self.quit()
 
-
-if __name__ == "__main__":
+root = None
+def main():
     root = tk.Tk()
     MainVisual(root)
     root.mainloop()
+
+if __name__ == "__main__":
+    main()
