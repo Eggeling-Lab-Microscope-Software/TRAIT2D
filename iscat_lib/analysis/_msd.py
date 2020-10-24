@@ -120,7 +120,7 @@ def plot_msd_analysis_results(self, scale: str = 'log'):
         Track has not been analyzed using MSD analysis yet.
     """
     import matplotlib.pyplot as plt
-    if self.get_msd_analysis_results()["analyzed"] == False:
+    if self.get_msd_analysis_results() is None:
         raise ValueError(
             "Track as not been analyzed using msd_analysis yet!")
 
