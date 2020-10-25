@@ -16,9 +16,6 @@ Installation
 
 TODO
 
-Documentation
-~~~~~~~~~~~~~
-
 .. toctree::
    :maxdepth: 2
    :caption: Libraries
@@ -33,6 +30,12 @@ Documentation
    
    analysis_gui
    simulator_gui
+
+.. toctree::
+   :maxdepth: 2
+   :caption: File Formats
+
+   csv_files
 
 .. toctree::
    :maxdepth: 2
