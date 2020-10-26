@@ -6,7 +6,7 @@ GUI TRAiT tracker
 """
 
 import matplotlib
-matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
+matplotlib.use('TkAgg') # This is a fix to use the GUI on Mac
 
 import sys
 from iscat_lib.detectors import Detectors
@@ -17,13 +17,12 @@ import skimage
 from skimage import io
 import matplotlib.pyplot as plt
 
-import json
 import numpy as np
 import cv2
-import random
 import tkinter as tk
 from tkinter import filedialog
 import csv
+
 # for plotting
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
@@ -42,7 +41,7 @@ class MainVisual(tk.Frame):
 
     def __init__(self, master):
 
-        #define a window
+        #define the window
         tk.Frame.__init__(self, master)
         self.master = master
         master.title("TRAiT tracker")
@@ -192,17 +191,14 @@ class MainVisual(tk.Frame):
         self.button2 = tk.Button(text="    Preview    ", command=self.preview, width=int(self.button_size/3), bg='gray') #, height=30)
         self.button2.grid(row=14, column=1, columnspan=1,pady=5, padx=5)
 
-        # button to run the tracker and save results
+        # button to run the tracker and save image sequence with plotted trakectories (for visualisation)
         self.button2 = tk.Button(text="    Run tracking    ", command=self.tracking, width=int(self.button_size/3), bg='gray')
         self.button2.grid(row=14, column=2, columnspan=1, pady=5, padx=5)
 
-        # button to run the tracker and save results
+        # button to save csv file
         self.button2 = tk.Button(text="    Save data    ", command=self.save_data, width=int(self.button_size/3), bg='gray')
         self.button2.grid(row=15, column=2, columnspan=1, pady=5, padx=5)
 
-
-
-        # show the movie frame: use matplotlib imshow and plotting
 
         # show dark screen until movie is selected
         self.fig, self.ax = plt.subplots(1,1,figsize=self.figsize_value)
@@ -223,8 +219,9 @@ class MainVisual(tk.Frame):
 
     def show_frame(self , centers=[]):
         '''
-        show the frame 
+        show current frame 
         '''
+        
         self.ax.clear() # clean the plot 
         self.ax.imshow(self.movie_processed[self.frame_pos,:,:], cmap="gray")
         self.ax.axis('off')
@@ -235,15 +232,12 @@ class MainVisual(tk.Frame):
         self.canvas = FigureCanvasTkAgg(self.fig, master=root)
         self.canvas.get_tk_widget().grid(row=20, column=1, columnspan=3,pady=5)
         self.canvas.draw()
-       
-#        frameN_text = tk.Label(master=root, text=" frame NaN ", width=int(self.button_size/1.5), bg='white')
-#        frameN_text.grid(row=16, column=1, columnspan=3,pady=5)   
+        
         
     def save_data(self):
         '''
         save csv file
         '''
-        
         
         # select file location and name
         save_file = tk.filedialog.asksaveasfilename()
@@ -296,13 +290,12 @@ class MainVisual(tk.Frame):
         '''
         self.movie_processed = background_substraction(self.movie.copy())
 
-        # show first frame in the monitor
-
+        # show the frame in the monitor
         self.show_frame()
 
     def preview(self):
         '''
-        show random frame with detection on the monitor
+        show random frame with detection on the monitor - connected to a button
         '''
         
         #read parameters
@@ -338,7 +331,7 @@ class MainVisual(tk.Frame):
 
     def select_movie(self):
         '''
-        Select movie for processing - connected to a button
+        select movie for processing - connected to a button
         '''
 
         filename = tk.filedialog.askopenfilename()
@@ -375,11 +368,10 @@ class MainVisual(tk.Frame):
         '''
         detection and linking from the selected movie - connected to a button
         '''
-        print("tracker running ...")
+        print("tracker is running ...")
         
         #read parameters
         self.read_parameters()
-        
         
 
         def track_to_frame(data):

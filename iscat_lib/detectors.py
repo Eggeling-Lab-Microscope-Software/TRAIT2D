@@ -1,26 +1,20 @@
 '''
-    Spot detector
-    Python Version    : 3.6
+class for particle detection
 '''
 
-# Import python libraries
 import numpy as np
-
 import scipy as sp
 import matplotlib.pyplot as plt
-#from skimage import exposure, filters # to import file
 
 from skimage.feature import peak_local_max # find local max on the image
 
 
-
-
 class Detectors(object):
     """
-    Detectors class to detect objects in video frame
+    detectors class for particle detection and subpixel localisation
     """
     def __init__(self):
-        """Initialize variables
+        """Initialise variables
         """
 
         self.img_sef=[]
@@ -28,7 +22,7 @@ class Detectors(object):
         
         # parameters for approach
         #SEF
-        self.c=0.8 #0.01 # coef for the thresholding
+        self.c=0.8 # coef for the thresholding
         self.sigma=3. # max sigma for LOG     
         
         #thresholding
@@ -37,13 +31,11 @@ class Detectors(object):
         
         self.expected_size=20 # expected size of the particle
         
-    def sef(self, img, img_sef_bin_prev, sigma, c, print_val=0):   
+    def sef(self, img, sigma, c):   
         '''
         spot enhancing filter
         '''
-    #function to calculate spot-enhancing filter for a single scale
-        
-        img_filtered=img*img_sef_bin_prev # multiply image with the binary from the pervious iteration
+        img_filtered=img*np.ones(img.shape)
         img_sef1=sp.ndimage.gaussian_laplace(img_filtered, sigma) # calculate laplacian of gaussian
         img_sef1=abs(img_sef1-np.abs(np.max(img_sef1))) # remove negative values keeping the proportion b/w pixels
 
@@ -57,51 +49,17 @@ class Detectors(object):
         img_sef_bin[img_sef_bin<th]=0
         img_sef_bin[img_sef_bin>=th]=1
     
-        # plot the image if print_val==1
-        if print_val==1:
-            fig = plt.figure()
-            plt.gray()
-            ax1=fig.add_subplot(411)
-            ax2=fig.add_subplot(412)
-            ax3=fig.add_subplot(413)
-            ax4=fig.add_subplot(414)
-            ax1.imshow(img)
-            ax2.imshow(img_sef1)
-            ax3.imshow(img_sef_bin)
-            ax4.imshow(img_sef)
-            plt.show()
-    
         return img_sef, img_sef_bin
     
     def radialsym_centre(self, img):
         '''
-         Calculates the center of a 2D intensity distribution.
-         
-     Method: Considers lines passing through each half-pixel point with slope
-     parallel to the gradient of the intensity at that point.  Considers the
-     distance of closest approach between these lines and the coordinate
-     origin, and determines (analytically) the origin that minimizes the
-     weighted sum of these distances-squared.
-     
-     code is based on the paper: Raghuveer Parthasarathy 
-    "Rapid, accurate particle tracking by calculation of radial symmetry centers"   
+         Calculates the center of a 2D intensity distribution (calculation of radial symmetry centers)  
     
-    input: 
-        img: array
-        image itself. Image dimensions should be even(not odd) number for both axis
-        
-    output:
-        x: float
-        x coordinate of the radial symmetry
-        y: float
-        y coordinate of the radial symmetry
         '''
         
         def lsradialcenterfit(m, b, w):
             '''
             least squares solution to determine the radial symmetry center
-            inputs m, b, w are defined on a grid
-            w are the weights for each point
             '''
             wm2p1=np.divide(w,(np.multiply(m,m)+1))
             sw=np.sum(wm2p1)
@@ -175,59 +133,21 @@ class Detectors(object):
         
         return x, y
 
-    def gaussian(self, height, center_x, center_y, width_x, width_y):
-        """Returns a gaussian function with the given parameters"""
-        width_x = float(width_x)
-        width_y = float(width_y)
-        return lambda x,y: height*np.exp(-(((center_x-x)/width_x)**2+((center_y-y)/width_y)**2)/2)
-    
-    def moments(self, data):
-        '''
-         Returns (height, x, y, width_x, width_y)
-        the gaussian parameters of a 2D distribution by calculating its
-        moments 
-        '''
-        total = data.sum()
-        
-        X, Y = np.indices(data.shape)
-        x = (X*data).sum()/total
-        y = (Y*data).sum()/total
-        col = data[:, int(y)]
-        width_x = np.sqrt(np.abs((np.arange(col.size)-y)**2*col).sum()/col.sum())
-        row = data[int(x), :]
-        width_y = np.sqrt(np.abs((np.arange(row.size)-x)**2*row).sum()/row.sum())
-        height = data.max()
-        return height, x, y, width_x, width_y
-    
-    def fitgaussian(self, data):
-        '''
-        nonlinear leastsquare fit of gaussian parameters of a 2D distribution: 
-        Returns (height, x, y, width_x, width_y)
-        '''
-         
-        params = self.moments(data)
-        errorfunction = lambda p: np.ravel(self.gaussian(*p)(*np.indices(data.shape)) -
-                                     data)
-        p, success = sp.optimize.leastsq(errorfunction, params)
-        return p
-
     def detect(self, frame):
         '''
-        Detect vesicles
+        detect vesicles
         '''
 
-            # Spot enhancing filter
-   
-        self.img_sef, self.binary_sef=self.sef(frame, np.ones(frame.shape), self.sigma, self.c)
-        # 3. find local maximum in the 
+        # Spot enhancing filter   
+        self.img_sef, self.binary_sef=self.sef(frame, self.sigma, self.c)
+        
+        # find local maximum
         peaks_coor=peak_local_max(self.img_sef, min_distance=self.min_distance, threshold_rel=self.threshold_rel) # min distance between peaks and threshold_rel - min value of the peak - in relation to the max value
 
-        # remove the area where the membrane is
+
         coordinates=[]  
         for point in peaks_coor:
             
-#            print("point ", point)
-#            print("size ", frame.shape)
             data=np.zeros((self.expected_size,self.expected_size))
             
             #start point
@@ -243,7 +163,7 @@ class Detectors(object):
             y_0=0
             y_1=self.expected_size
             
-            #possible cases to avoid our of boudary case
+            # define ROI coordinates
             
             if start_x<0:
                 start_x=0
@@ -266,17 +186,9 @@ class Detectors(object):
             
             # radial symmetry centers
             x,y=self.radialsym_centre(data)
-
-            # nonlinear least square fitting
-#            params  = self.fitgaussian(data)
-#            (height, y, x, width_x, width_y) = params
-
             
-            # check that the centre is inside of the spot
-            
+            # check that the centre is inside of the spot            
             if y<self.expected_size and x<self.expected_size and y>=0 and x>=0:               
-            # insurt another approach
                 coordinates.append([x+int(point[0]-self.expected_size/2),y+int(point[1]-self.expected_size/2)])
-
 
         return coordinates

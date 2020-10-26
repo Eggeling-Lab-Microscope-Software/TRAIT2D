@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 30 16:01:03 2019
-
-@author: mariaa
-"""
 
 '''
-Tracker Using  Hungarian Algorithm
+Class for detection linking
 '''
 
 
@@ -18,13 +13,17 @@ class Track(object):
 
     def __init__(self, first_point, first_frame, trackIdCount):
 
-        self.track_id = trackIdCount  # identification of each track object
-        self.trace_frame = [first_frame]  # predicted centroids (x,y)
+        self.track_id = trackIdCount  # track ID
+        self.trace_frame = [first_frame]  # frame
         self.skipped_frames = 0  # number of frames skipped undetected
         self.trace = [first_point]  # trace path
 
 
 class Tracker(object):
+    """
+    links detections frame to frame
+    
+    """
 
     def __init__(self, dist_thresh=30, max_frames_to_skip=20, trackIdCount=0):
 
@@ -87,8 +86,8 @@ class Tracker(object):
                 self.trackIdCount += 1
                 self.tracks.append(track)
 
+        # tracking the targets if there were tracks before
         else:
-            # tracking the targets if there were tracks before
             
             # Calculate cost using sum of square distance between predicted vs detected centroids
             cost=self.cost_calculation(detections)
@@ -134,8 +133,7 @@ class Tracker(object):
                     self.trackIdCount += 1
                     self.tracks.append(track)
                         
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-     
+                    
             del_tracks = [] # list of tracks to delete
             
         #remove tracks which have too many skipped frames
