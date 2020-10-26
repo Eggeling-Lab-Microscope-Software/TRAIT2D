@@ -6,15 +6,27 @@
 Welcome to TRAIT-2D's documentation!
 ==========================================
 
+***This is taken directly from the preprint as of yet.***
+
+TRAIT-2D is a cross-platform Python software package withcompilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, for simplicity, in three main sections:  the tracker, the simulator and the data analyzer.
+
 Features
 ~~~~~~~~
 
-TODO
+* user-friendly GUIs for simple tasks
+* customisable libraries for more advanced users
+* open source under the GNU General Public License
 
 Installation
 ~~~~~~~~~~~~
 
-TODO
+This method of installation has been tested on Linux and Windows.
+
+* install a conda distribution (e.g. `Anaconda<https://www.anaconda.com/>` or `Miniconda<https://docs.conda.io/en/latest/miniconda.html>`)
+* Launch a terminal (or the Anaconda Prompt on Windows)
+* Go to the source directory, and create a conda environment with: ``conda env create -f environment.yml``
+* Activate your virtual environment with: conda activate iscat
+* Install the ``iscat_lib`` package with ``pip install -e``.
 
 .. toctree::
    :maxdepth: 2
