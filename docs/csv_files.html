@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>CSV Files &mdash; ISCAT_Tracking 0.1 documentation</title>
+  <title>CSV Files &mdash; TRAIT-2D 0.1 documentation</title>
   
 
   
@@ -55,7 +55,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ISCAT_Tracking
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TRAIT-2D
           
 
           
@@ -123,7 +123,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">ISCAT_Tracking</a>
+          <a href="index.html">TRAIT-2D</a>
         
       </nav>
 
@@ -175,7 +175,7 @@
             
   <div class="section" id="csv-files">
 <span id="id1"></span><h1>CSV Files<a class="headerlink" href="#csv-files" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">.csv</span></code> is currently the only supported file format for data input using <a class="reference internal" href="analysis.html#iscat_lib.analysis.Track.from_file" title="iscat_lib.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iscat_lib.analysis.Track.from_file()</span></code></a> or <a class="reference internal" href="analysis.html#iscat_lib.analysis.ListOfTracks.from_file" title="iscat_lib.analysis.ListOfTracks.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iscat_lib.analysis.ListOfTracks.from_file()</span></code></a>. Other file formats will have to be converted to a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code> first which can then be imported using <a class="reference internal" href="analysis.html#iscat_lib.analysis.Track.from_dataframe" title="iscat_lib.analysis.Track.from_dataframe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iscat_lib.analysis.Track.from_dataframe()</span></code></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.csv</span></code> is currently the only supported file format for data input using <a class="reference internal" href="analysis.html#iscat_lib.analysis.Track.from_file" title="iscat_lib.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iscat_lib.analysis.Track.from_file()</span></code></a> or <a class="reference internal" href="analysis.html#iscat_lib.analysis.ListOfTracks.from_file" title="iscat_lib.analysis.ListOfTracks.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iscat_lib.analysis.ListOfTracks.from_file()</span></code></a>. Other file formats will have to be converted to a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> first which can then be imported using <a class="reference internal" href="analysis.html#iscat_lib.analysis.Track.from_dataframe" title="iscat_lib.analysis.Track.from_dataframe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iscat_lib.analysis.Track.from_dataframe()</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><em>Rudimentary</em> import form native Python dictionaries is supported through <a class="reference internal" href="analysis.html#iscat_lib.analysis.Track.from_dict" title="iscat_lib.analysis.Track.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iscat_lib.analysis.Track.from_dict()</span></code></a>. It is the least flexible though, and thus <em>not</em> recommended.</p>
@@ -183,7 +183,7 @@
 <p>Below, the expected strucure of the <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files is described. The same structure also applies to <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> objects used for data import.</p>
 <div class="section" id="data-structure">
 <h2>Data Structure<a class="headerlink" href="#data-structure" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file <em>has</em> to contain the following columns:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file has to contain the following columns:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x-component of the particle localisations</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y-component of the particle localisations</p></li>

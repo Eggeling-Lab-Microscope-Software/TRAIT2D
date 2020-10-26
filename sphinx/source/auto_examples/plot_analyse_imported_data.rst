@@ -62,7 +62,7 @@ The representation of the track instance holds some information about it.
  .. code-block:: none
 
 
-    <Track instance at 2171836544336>
+    <Track instance at 2470714383720>
     ------------------------
     Track length:       1000
     Track ID:           None
@@ -109,12 +109,12 @@ We can choose the range of data used for the fits with the keyword argument `fra
 .. code-block:: default
 
 
-    track.msd_analysis(fraction_fit_points = 0.15)
-    track.plot_msd_analysis_results()
+    track.adc_analysis(fraction_fit_points = 0.15)
+    track.plot_adc_analysis_results()
 
 
 .. image:: /auto_examples/images/sphx_glr_plot_analyse_imported_data_002.png
-    :alt: plot analyse imported data
+    :alt: Diffusion Category: None
     :class: sphx-glr-single-img
 
 
@@ -124,7 +124,7 @@ We can choose the range of data used for the fits with the keyword argument `fra
 
  .. code-block:: none
 
-    C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\analysis\_msd.py:157: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+    C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\analysis\_adc.py:118: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
       plt.show()
 
 
@@ -133,7 +133,7 @@ We can choose the range of data used for the fits with the keyword argument `fra
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.733 seconds)
+   **Total running time of the script:** ( 0 minutes  1.481 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_analyse_imported_data.py:
