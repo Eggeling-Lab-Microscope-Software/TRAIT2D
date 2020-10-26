@@ -54,6 +54,7 @@ class MainVisual(tk.Frame):
         self.monitor_height = master.winfo_screenheight()
         self.button_size=int(self.monitor_width/25)
         self.figsize_value=(int(self.monitor_height/3/self.dpi), int(self.monitor_height/3/self.dpi)) # parameters for the figure
+        self.scale_length=int(self.monitor_height/3)
         
         master.protocol('WM_DELETE_WINDOW', self.close_app)
 
@@ -214,7 +215,7 @@ class MainVisual(tk.Frame):
             self.frame_pos=int(v)
             self.show_frame() 
           
-        self.scale_movie = tk.Scale(root, from_=0, to=self.movie_processed.shape[0], tickinterval=int(self.movie_processed.shape[0]/5), length=400, width=10, orient="horizontal", command=show_values)
+        self.scale_movie = tk.Scale(root, from_=0, to=self.movie_processed.shape[0]-1, tickinterval=int(self.movie_processed.shape[0]/5), length=self.scale_length, width=10, orient="horizontal", command=show_values)
         self.scale_movie.set(self.frame_pos)        
         self.scale_movie.grid(row=21, column=1, columnspan=3, pady=5, padx=5) 
         
@@ -366,7 +367,7 @@ class MainVisual(tk.Frame):
             self.frame_pos=int(v)
             self.show_frame() 
           
-        self.scale_movie = tk.Scale(root, from_=0, to=self.movie_processed.shape[0], tickinterval=int(self.movie_processed.shape[0]/5), length=400, width=10, orient="horizontal", command=show_values)
+        self.scale_movie = tk.Scale(root, from_=0, to=self.movie_processed.shape[0]-1, tickinterval=int(self.movie_processed.shape[0]/5), length=self.scale_length, width=10, orient="horizontal", command=show_values)
         self.scale_movie.set(self.frame_pos)        
         self.scale_movie.grid(row=21, column=1, columnspan=3, pady=5, padx=5) 
 
