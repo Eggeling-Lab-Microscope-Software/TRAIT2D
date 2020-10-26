@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to 2D TRAiT's documentation!
+Welcome to TRAIT-2D's documentation!
 ==========================================
 
 Features
