@@ -48,7 +48,7 @@ class Diffusion(object):
         self.trajectory["t"] = []
         self.trajectory["id"] = []
 
-    def display_trajectory(self, time_resolution=None, limit_fov=False, alpha=0.8):
+    def display_trajectory(self, time_resolution=None, limit_fov=False, alpha=0.8, title="Diffusion"):
         """ Display the simulated trajectory.
         :param time_resolution: [s]
         :param limit_fov
@@ -67,8 +67,8 @@ class Diffusion(object):
             plt.xlim((0, self.parameters["L"]))
             plt.ylim((0, self.parameters["L"]))
 
-        plt.title("Hopping Diffusion")
-        plt.show()
+        plt.title(title)
+        #plt.show()
 
     def _gather_parameters(self):
         self.parameters = dict()
@@ -192,6 +192,8 @@ class BrownianDiffusion(Diffusion):
             t_list.append(t_list[-1]+self.dt)
             iteration += 1
             pbar.update()
+        pbar.close()
+        print(f"Free diffusion simulation was completed in {iteration} iterations.")
 
         # Make sure the simulated track is expressed as dL spatial resolution
         if self.quantize:
@@ -347,6 +349,7 @@ class HoppingDiffusion(Diffusion):
             x = x0
             y = y0
             id = id0
+            iteration += 1
 
             # Store position and compartment
             buffer[buffer_counter,:] = [x, y, id]
@@ -363,6 +366,7 @@ class HoppingDiffusion(Diffusion):
             if t > self.Tmax:
                 diffuse = False
         pbar.close()
+        print(f"Hopping diffusion simulation was completed in {iteration} iterations.")
 
         # Trim buffer
         buffer = buffer[0:buffer_counter,:]
