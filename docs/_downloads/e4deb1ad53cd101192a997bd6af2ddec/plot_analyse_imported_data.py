@@ -27,5 +27,5 @@ track.plot_trajectory()
 # %%
 # We can choose the range of data used for the fits with the keyword argument `fractionFitPoints`.
 
-track.msd_analysis(fraction_fit_points = 0.15)
-track.plot_msd_analysis_results()
+track.adc_analysis(fraction_fit_points = 0.15)
+track.plot_adc_analysis_results()

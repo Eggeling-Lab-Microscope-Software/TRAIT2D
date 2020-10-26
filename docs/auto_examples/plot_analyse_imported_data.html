@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analyze Imported Data &mdash; ISCAT_Tracking 0.1 documentation</title>
+  <title>Analyze Imported Data &mdash; TRAIT-2D 0.1 documentation</title>
   
 
   
@@ -55,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ISCAT_Tracking
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> TRAIT-2D
           
 
           
@@ -97,6 +97,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../analysis_gui.html">Analysis GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../simulator_gui.html">Simulator GUI</a></li>
 </ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../csv_files.html">CSV Files</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Example gallery</a><ul class="current">
@@ -119,7 +123,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">ISCAT_Tracking</a>
+          <a href="../index.html">TRAIT-2D</a>
         
       </nav>
 
@@ -192,7 +196,7 @@ The representation of the track instance holds some information about it.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Track instance at 2171836544336&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Track instance at 2470714383720&gt;
 ------------------------
 Track length:       1000
 Track ID:           None
@@ -214,17 +218,17 @@ ADC analysis done: False
 </pre></div>
 </div>
 <p>We can choose the range of data used for the fits with the keyword argument <cite>fractionFitPoints</cite>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">track</span><span class="o">.</span><span class="n">msd_analysis</span><span class="p">(</span><span class="n">fraction_fit_points</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">)</span>
-<span class="n">track</span><span class="o">.</span><span class="n">plot_msd_analysis_results</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">track</span><span class="o">.</span><span class="n">adc_analysis</span><span class="p">(</span><span class="n">fraction_fit_points</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">)</span>
+<span class="n">track</span><span class="o">.</span><span class="n">plot_adc_analysis_results</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="plot analyse imported data" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_analyse_imported_data_002.png" />
+<img alt="Diffusion Category: None" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_analyse_imported_data_002.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\analysis\_msd.py:157: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\analysis\_adc.py:118: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
   plt.show()
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.733 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.481 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-analyse-imported-data-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/e4deb1ad53cd101192a997bd6af2ddec/plot_analyse_imported_data.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_analyse_imported_data.py</span></code></a></p>

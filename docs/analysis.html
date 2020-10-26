@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analysis Library &mdash; ISCAT_Tracking 0.1 documentation</title>
+  <title>Analysis Library &mdash; TRAIT-2D 0.1 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Simulation Library" href="simulators.html" />
-    <link rel="prev" title="Welcome to 2D TRAiT’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to TRAIT-2D’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -55,7 +55,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ISCAT_Tracking
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TRAIT-2D
           
 
           
@@ -103,6 +103,10 @@
 <li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
 </ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
@@ -121,7 +125,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">ISCAT_Tracking</a>
+          <a href="index.html">TRAIT-2D</a>
         
       </nav>
 
@@ -191,7 +195,7 @@
 </dl>
 <dl class="py method">
 <dt id="iscat_lib.analysis.Track.adc_analysis">
-<code class="sig-name descname">adc_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">R</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.16666666666666666</span></em>, <em class="sig-param"><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">initial_guesses</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">enable_log_sampling</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log_sampling_dist</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">weighting</span><span class="o">=</span><span class="default_value">'error'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#iscat_lib.analysis.Track.adc_analysis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">adc_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">R</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.16666666666666666</span></em>, <em class="sig-param"><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">enable_log_sampling</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log_sampling_dist</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">weighting</span><span class="o">=</span><span class="default_value">'error'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#iscat_lib.analysis.Track.adc_analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Revised analysis using the apparent diffusion coefficient</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -199,8 +203,6 @@
 <li><p><strong>R</strong> (<em>float</em>) – Point scanning across the field of view.</p></li>
 <li><p><strong>fraction_fit_points</strong> (<em>float</em>) – Fraction of points to use for fitting. Defaults to 25 %.</p></li>
 <li><p><strong>fit_max_time</strong> (<em>float</em>) – Maximum time in fit range. Will override fraction_fit_points.</p></li>
-<li><p><strong>initial_guesses</strong> (<em>dict</em>) – Dictionary containing initial guesses for the parameters. Keys can be “brownian”, “confined” and “hop”.
-All values default to 1.</p></li>
 <li><p><strong>maxfev</strong> (<em>int</em>) – Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.</p></li>
 <li><p><strong>enable_log_sampling</strong> (<em>bool</em>) – Only sample logarithmically spaced time points for analysis.</p></li>
 <li><p><strong>log_sampling_dist</strong> (<em>float</em>) – Exponent of logarithmic sampling (base 10).</p></li>
@@ -376,7 +378,7 @@ specified using the appropriate arguments.</p>
 
 <dl class="py method">
 <dt id="iscat_lib.analysis.Track.msd_analysis">
-<code class="sig-name descname">msd_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">n_fit_points</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dt</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">initial_guesses</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="headerlink" href="#iscat_lib.analysis.Track.msd_analysis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">msd_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">n_fit_points</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dt</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">initial_guesses</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">R</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#iscat_lib.analysis.Track.msd_analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Classical Mean Squared Displacement Analysis for single track</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -388,6 +390,7 @@ specified using the appropriate arguments.</p>
 <li><p><strong>initial_guesses</strong> (<em>dict</em>) – Dictionary containing initial guesses for the parameters. Keys can be “model1” and “model2”.
 All values default to 1.</p></li>
 <li><p><strong>maxfev</strong> (<em>int</em>) – Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – Point scanning across the field of view.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -891,7 +894,7 @@ iscat_lib.analysis.models. Example usage:</p>
         <a href="simulators.html" class="btn btn-neutral float-right" title="Simulation Library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to 2D TRAiT’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to TRAIT-2D’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
