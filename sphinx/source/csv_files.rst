@@ -3,7 +3,7 @@
 CSV Files
 =========
 
-``.csv`` is currently the only supported file format for data input using :meth:`iscat_lib.analysis.Track.from_file` or :meth:`iscat_lib.analysis.ListOfTracks.from_file`. Other file formats will have to be converted to a ``pandas.DataFrame`` or ``dict`` first which can then be imported using :meth:`iscat_lib.analysis.Track.from_dataframe`.
+``.csv`` is currently the only supported file format for data input using :meth:`iscat_lib.analysis.Track.from_file` or :meth:`iscat_lib.analysis.ListOfTracks.from_file`. Other file formats will have to be converted to a ``pandas.DataFrame`` first which can then be imported using :meth:`iscat_lib.analysis.Track.from_dataframe`.
 
 .. note:: *Rudimentary* import form native Python dictionaries is supported through :meth:`iscat_lib.analysis.Track.from_dict`. It is the least flexible though, and thus *not* recommended.
 
@@ -12,7 +12,7 @@ Below, the expected strucure of the ``.csv`` files is described. The same struct
 Data Structure
 --------------
 
-The ``.csv`` file *has* to contain the following columns:
+The ``.csv`` file has to contain the following columns:
 
 * ``x``: x-component of the particle localisations
 * ``y``: y-component of the particle localisations
