@@ -1,7 +1,7 @@
 .. _simulator_gui:
 
 Simulator GUI
-============
+=============
 
 TODO
 
