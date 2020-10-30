@@ -25,7 +25,7 @@ This method of installation has been tested on Linux and Windows.
 * install a conda distribution (e.g. `Anaconda <https://www.anaconda.com/>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_)
 * Launch a terminal (or the Anaconda Prompt on Windows)
 * Go to the source directory, and create a conda environment with: ``conda env create -f environment.yml``
-* Activate your virtual environment with: conda activate iscat
+* Activate your virtual environment with ``conda activate iscat``
 * Install the ``iscat_lib`` package with ``pip install -e``.
 
 .. toctree::
