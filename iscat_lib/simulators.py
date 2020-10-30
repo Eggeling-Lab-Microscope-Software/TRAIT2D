@@ -22,7 +22,7 @@ DEBUG = True
 # Abstract diffusion object
 class Diffusion(object):
     def __init__(self, Tmax=1.0, dt=1e-3, L=1, dL=1e-3, d=1e-2, seed: int=None, quantize=True):
-        """ Abstract diffusion simulator
+        """Abstract diffusion simulator
 
         The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables
         """
@@ -49,10 +49,13 @@ class Diffusion(object):
         self.trajectory["id"] = []
 
     def display_trajectory(self, time_resolution=None, limit_fov=False, alpha=0.8, title="Diffusion"):
-        """ Display the simulated trajectory.
-        :param time_resolution: [s]
-        :param limit_fov
-        :return:
+        """Display the simulated trajectory.
+
+        Parameters
+        ----------
+
+        param time_resolution:
+            [s]
         """
         assert hasattr(self, "trajectory"), "You must first run the simulator"
         if time_resolution is not None:
@@ -86,12 +89,14 @@ class Diffusion(object):
             np.random.seed(parameters["seed"])
 
     def print_parameters(self):
-        """Print the simulation parameters, accessible from self._gather_parameters()"""
+        """Print the simulation parameters, accessible from self._gather_parameters()
+        """
         self._gather_parameters()
         pprint.pprint(self.parameters)
 
     def save_trajectory(self, filename, format=None):
-        """Save the simulated trajectory as either a json, cvs or pcl file with fiels t, x, and y"""
+        """Save the simulated trajectory as either a json, cvs or pcl file with fiels t, x, and y
+        """
         supported_formats = ["json", "csv", "pcl"]
         if format is None:
             format = Path(filename).suffix.replace(".","")
@@ -118,7 +123,8 @@ class Diffusion(object):
                 pickle.dump(self.trajectory, f)
 
     def save_parameters(self, filename, mkdir=True):
-        """Save the simulation parameters, accessible through _gather_parameter"""
+        """Save the simulation parameters, accessible through _gather_parameter
+        """
         self._gather_parameters()
 
         # Create the parent directory
@@ -130,7 +136,8 @@ class Diffusion(object):
             json.dumps(f, self.parameters)
 
     def load_parameters(self, filename):
-        """Load the simulation parameters"""
+        """Load the simulation parameters
+        """
         # Load the parameters from a JSON file
         with open(filename, 'r') as f:
             parameters = json.load(f)
@@ -141,7 +148,7 @@ class Diffusion(object):
 # Brownian diffusion simulation
 class BrownianDiffusion(Diffusion):
     def __init__(self, **kwargs):
-        """" BrownianDiffusion Initialization
+        """BrownianDiffusion Initialization
         Parameters
         ----------
         Tmax: float
@@ -162,7 +169,8 @@ class BrownianDiffusion(Diffusion):
         super(BrownianDiffusion, self).__init__(**kwargs)
 
     def run(self):
-        """Run a random walk simulation (Brownian diffusion)"""
+        """Run a random walk simulation (Brownian diffusion)
+        """
         # Starting values is in the center.
         x = self.L / 2.0
         y = self.L / 2.0
@@ -205,7 +213,7 @@ class BrownianDiffusion(Diffusion):
 # Hopping diffusion simulation
 class HoppingDiffusion(Diffusion):
     def __init__(self, Tmax=100, dt=50e-6, L=10e-6, dL=20e-9, Df=8e-13, HL=40e-9, HP=0.01, seed: int = None, quantize=True):
-        """ Simulates a hopping diffusion trajectory of a single molecule for a
+        """Simulates a hopping diffusion trajectory of a single molecule for a
         hopping diffusion model (i.e. free diffusion inside of compartments but
         changing from one compartment to the next only with a certain probability)
 
