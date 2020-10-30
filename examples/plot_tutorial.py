@@ -150,20 +150,20 @@ tracks.adc_analysis(fit_max_time=50e-3, enable_log_sampling=True)
 #
 # (We need to set ``interpolation = True`` since some of the time differences in the simulated tracks deviate *slightly* from the expected value.)
 
-tracks.adc_summary(plot_dapp=True, plot_pie_chart=True, interpolation=True)
+#tracks.adc_summary(plot_dapp=True, plot_pie_chart=True, interpolation=True)
 
 # %%
 # Now that analysis is done we can also retrieve all tracks that fit a certain diffusion category best:
 
-tracks_brownian = tracks.get_sublist(method="adc", model=ModelBrownian)
-tracks_brownian.adc_summary(plot_dapp=True, interpolation=True)
+#tracks_brownian = tracks.get_sublist(method="adc", model=ModelBrownian)
+#tracks_brownian.adc_summary(plot_dapp=True, interpolation=True)
 
 # %%
 # As mentioned before, we can retreive the analysis results for any track, at any time. Single tracks can be received with ``ListOfTracks.get_track``.
 
-tracks_brownian.get_track(0).get_adc_analysis_results()
+#tracks_brownian.get_track(0).get_adc_analysis_results()
 
 # %%
 # We can also plot them:
 
-tracks_brownian.get_track(0).plot_adc_analysis_results()
+#tracks_brownian.get_track(0).plot_adc_analysis_results()
