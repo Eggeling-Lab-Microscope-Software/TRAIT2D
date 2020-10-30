@@ -1,3 +1,14 @@
-# docs/requirements.txt
+# sphinx/requirements.txt
 sphinx==3.2.1
+sphinx-gallery==0.8.1
 sphinx_rtd_theme==0.5.0
+
+# Requirements of example scripts.
+# Add any new requirements here.
+matplotlib==3.3.2
+tqdm==2.2.3
+numpy==1.19.3
+scipy==1.5.3
+pandas==1.1.3
+scikit-image==0.17.2
+imageio==2.9.0
