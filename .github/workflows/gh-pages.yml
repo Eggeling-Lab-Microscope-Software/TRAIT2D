@@ -37,9 +37,22 @@ jobs:
       - name: Build static html
         run: make html
         working-directory: sphinx
+      
+      - name: Get branch name
+        id: vars
+        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
-      - name: Deploy
+      - name: Deploy main branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./sphinx/build/html
+        if: ${{ steps.vars.outputs.short_ref == 'master' || steps.vars.outputs.short_ref == 'main' }}     
+
+      - name: Deploy other branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./sphinx/build/html
+          destination_dir: ${{ steps.vars.outputs.short_ref }}
+        if: ${{ steps.vars.outputs.short_ref != 'master' && steps.vars.outputs.short_ref != 'main' }}    
