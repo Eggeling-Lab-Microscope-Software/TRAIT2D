@@ -45,7 +45,7 @@ MSD Analysis Tab
 
 4. **Input R**: Input value for the point scanning across the field of view that will be used for all models.
 
-5. **Copy results to clipboard**: Copy all ADC analysis results to the clipboard as a Python dictionary.
+5. **Copy results to clipboard**: Copy all MSD analysis results to the clipboard as a Python dictionary.
 
 6. **Select maximum fit iterations**: Select the maximum number of iterations used internally by ``scipy.optmize`` until the fit aborts.
 
