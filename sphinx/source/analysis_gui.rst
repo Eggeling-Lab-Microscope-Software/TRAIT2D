@@ -16,19 +16,24 @@ Description of the GUI
 Data Import Dialog
 ~~~~~~~~~~~~~~~~~~
 
-TODO: Insert screenshot.
+.. image:: images/data_import_dialog.png
 
 1. **Select track ID**: Select the ID of the track you want to import. Leave blank for files containing only a single track.
+
 2. **Select x position column**: Select the name of the column containing the x positions.
+
 3. **Select y position column**: Select the name of the column containing the y positions.
+
 4. **Select time column**: Select the name of the column containing the time values.
+
 5. **Select unit of length**: Select the unit of the x and y positions.
+
 6. **Select unit of time**: Select the unit of the time values.
 
 MSD Analysis Tab
 ~~~~~~~~~~~~~~~~
 
-TODO: Insert screenshot.
+.. image:: images/msd_analysis_tab.png
 
 1. **Load new track**: Opens the :ref:`Data Import Dialog` to load a new track.
 
@@ -56,13 +61,13 @@ TODO: Insert screenshot.
 
 .. note:: The maximum fit time ``tmax`` can also be set by dragging the white vertical line in the plot window.
 
-12. **Scale time values logarithmically**: If checked, the time axis is scaled logarithmically in the plot window.
+11. **Scale time values logarithmically**: If checked, the time axis is scaled logarithmically in the plot window.
 
 
 ADC Analysis Tab
 ~~~~~~~~~~~~~~~~
 
-TODO: Insert screenshot.
+.. image:: images/adc_analysis_tab.png
 
 1. **Load new track**: Opens the :ref:`Data Import Dialog` to load a new track.
 
