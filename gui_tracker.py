@@ -604,7 +604,11 @@ class MainVisual(tk.Frame):
         self.quit()
 
 
-if __name__ == "__main__":
+def main():
+    global root
     root = tk.Tk()
     MainVisual(root)
     root.mainloop()
+
+if __name__ == "__main__":
+    main()
