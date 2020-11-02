@@ -460,27 +460,26 @@ class MainVisual(tk.Frame):
 
 
         # detector settings
-
         detect_particle=Detectors()
+        
         #MSSEF settings
-
-        detect_particle.c=self.threshold # coef for the thresholding
+        detect_particle.c=self.threshold # coef for thresholding
         detect_particle.sigma=self.sigma # max sigma for LOG
 
-        #thresholding
+        #other settings
         detect_particle.min_distance=5 # minimum distance between two max after MSSEF
         detect_particle.threshold_rel=self.min_peak # min peak value in relation to the image
-        detect_particle.expected_size=self.maximum_diameter
+        detect_particle.expected_size=self.maximum_diameter # expected particle size
 
 
         tracker = Tracker(self.max_dist, self.frame_gap,  0)
 
 
-        # tracking itself
+        # frame to frame detection and linking loop
         for frameN in range(0, self.movie_processed.shape[0]):
             print('frame', frameN)
+            
             #detection
-
             frame_img=self.movie_processed[frameN,:,:]
             if self.spot_switch==0:
                 frame_img=skimage.util.invert(frame_img)
@@ -490,37 +489,108 @@ class MainVisual(tk.Frame):
             #tracking
             tracker.update(centers,  frameN)
 
+        #add remaining tracks
         for trackN in range(0, len(tracker.tracks)):
             tracker.completeTracks.append(tracker.tracks[trackN])
 
 
-         # # rearrange the data for saving: 
+        # rearrange the data for saving
+         
         self.tracks_data=[]
         self.tracks_data.append(['X', 'Y', 'TrackID',
                                  't'])
 
         data_tracks={}
-
+        trackID=0
         for trackN in range(0, len(tracker.completeTracks)):
             #save trajectories 
-            trackID=tracker.completeTracks[trackN].track_id
             
             #if track is long enough:
             if len(tracker.completeTracks[trackN].trace)>=self.min_track_length:
-                
-                for pos in range(0, len(tracker.completeTracks[trackN].trace)):
-                    point=tracker.completeTracks[trackN].trace[pos]
-                    frame=tracker.completeTracks[trackN].trace_frame[pos]
-                    self.tracks_data.append([ point[1]*self.img_resolution, point[0]*self.img_resolution, trackID, frame*self.frame_rate])
+                trackID+=1
+              
+                # check the track for missing detections
+                frames=tracker.completeTracks[trackN].trace_frame
+                trace=tracker.completeTracks[trackN].trace
+                pos=0
+                new_frames=[]
+                new_trace=[]
+                for frame_pos in range(frames[0], frames[-1]+1):
+                    frame=frames[pos]
                     
+                    if frame_pos==frame:
+                        new_frames.append(frame_pos)
+                        new_trace.append(trace[pos])
+                        pos=pos+1
+                        
+                    else:
+                        new_frames.append(frame_pos)
+                        frame_img=self.movie_processed[frame_pos,:,:]
+                        
+                        # find  particle location
+                        
+                        point=trace[pos] # previous frame
+                        
+                        # define ROI 
+                        data=np.zeros((detect_particle.expected_size,detect_particle.expected_size))
+            
+                        #start point
+                        start_x=int(point[0]-detect_particle.expected_size/2)
+                        start_y=int(point[1]-detect_particle.expected_size/2)
+                        
+                        #end point
+                        end_x=int(point[0]+detect_particle.expected_size/2)
+                        end_y=int(point[1]+detect_particle.expected_size/2)
+                        
+                        x_0=0
+                        x_1=detect_particle.expected_size
+                        y_0=0
+                        y_1=detect_particle.expected_size
+                        
+                        # define ROI coordinates
+                        
+                        if start_x<0:
+                            start_x=0
+                            x_0=int(detect_particle.expected_size/2-point[0])
+                            
+                        if start_y<0:
+                            start_y=0
+                            y_0=int(detect_particle.expected_size/2-point[1]) 
+                            
+                        if end_x>frame_img.shape[0]:
+                            end_x=frame_img.shape[0]
+                            x_1=int(frame_img.shape[0]-point[0]+detect_particle.expected_size/2)
+            
+                        if end_y>frame_img.shape[1]:
+                            end_y=frame_img.shape[1]
+                            y_1=int(frame_img.shape[1]-point[1]+detect_particle.expected_size/2)
+                        
+                        
+                        data[x_0:x_1,y_0:y_1]=frame_img[start_x:end_x, start_y:end_y]
+                        
+                        # subpixel localisatopm
+                        x,y=detect_particle.radialsym_centre(data)
+                        
+                        # check that the centre is inside of the spot            
+                        if y<detect_particle.expected_size and x<detect_particle.expected_size and y>=0 and x>=0:               
+                            new_trace.append([x+int(point[0]-detect_particle.expected_size/2),y+int(point[1]-detect_particle.expected_size/2)])
+   
+                        else: # if not use the previous point
+                            new_trace.append(trace[pos])                
+                
+                
+                for pos in range(0, len(new_trace)):
+                    point=new_trace[pos]
+                    frame=new_frames[pos]
+                    self.tracks_data.append([ point[1]*self.img_resolution, point[0]*self.img_resolution, trackID, frame*self.frame_rate])
+
                 #save for plotting tracks
                 data_tracks.update({tracker.completeTracks[trackN].track_id:{
-                        'trackID':tracker.completeTracks[trackN].track_id,
-                        'trace': tracker.completeTracks[trackN].trace,
-                        'frames':tracker.completeTracks[trackN].trace_frame,
-                        'skipped_frames': tracker.completeTracks[trackN].skipped_frames
+                        'trackID':trackID,
+                        'trace': new_trace,
+                        'frames': new_frames,
+                        'skipped_frames': 0
                         }})
-
 
         save_file = tk.filedialog.asksaveasfilename(title="save the movie with trajectories")
         if save_file:
