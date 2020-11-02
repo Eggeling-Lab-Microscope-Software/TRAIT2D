@@ -507,8 +507,8 @@ class MainVisual(tk.Frame):
         '''
         self.quit()
 
-root = None
 def main():
+    global root
     root = tk.Tk()
     MainVisual(root)
     root.mainloop()
