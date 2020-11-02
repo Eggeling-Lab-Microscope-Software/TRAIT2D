@@ -42,6 +42,7 @@ This method of installation has been tested on Linux and Windows.
    
    analysis_gui
    simulator_gui
+   tracker_gui
 
 .. toctree::
    :maxdepth: 2
