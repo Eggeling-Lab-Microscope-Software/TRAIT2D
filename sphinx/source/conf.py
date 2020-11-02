@@ -59,6 +59,16 @@ exclude_patterns = []
 #
 html_theme = 'sphinx_rtd_theme'
 
+# CAPITALIZED key values will be replaced by the GitHub workflow
+html_context = {
+     "display_github": True, # Integrate GitHub
+     "github_user": "GH_USER", # Username
+     "github_repo": "GH_REPO", # Repo name
+     "github_version": "GH_BRANCH", # Version
+     "conf_py_path": "/sphinx/source/", # Path in the checkout to the docs root
+}
+
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
