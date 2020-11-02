@@ -13,4 +13,6 @@ The GUI can be started from command line by entering ``trait_simulator_gui``. Th
 Description of the GUI
 ----------------------
 
+.. image:: images/simulator_gui.png
+
 TODO
