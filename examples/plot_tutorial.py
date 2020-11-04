@@ -119,11 +119,10 @@ from iscat_lib.analysis import ListOfTracks
 import random
 tracks = []
 for i in range(10):
-    simulator_brownian.run();
-    simulator_hop.run();
+    simulator_brownian.run()
+    simulator_hop.run()
     tracks.append(Track.from_dict(simulator_brownian.trajectory))
     tracks.append(Track.from_dict(simulator_hop.trajectory))
-    print(tracks[-1].get_t().size)
     
 tracks = ListOfTracks(tracks)
 
