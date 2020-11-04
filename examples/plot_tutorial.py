@@ -155,7 +155,7 @@ tracks.adc_summary(plot_dapp=True, plot_pie_chart=True, interpolation=True)
 # %%
 # Now that analysis is done we can also retrieve all tracks that fit a certain diffusion category best:
 
-tracks_brownian = tracks.get_sublist(ModelBrownian)
+tracks_brownian = tracks.get_sublist(method='adc', model=ModelBrownian)
 tracks_brownian.adc_summary(plot_dapp=True, interpolation=True)
 
 # %%
