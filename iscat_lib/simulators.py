@@ -21,11 +21,11 @@ DEBUG = True
 
 # Abstract diffusion object
 class Diffusion(object):
-    def __init__(self, Tmax=1.0, dt=1e-3, L=1, dL=1e-3, d=1e-2, seed: int=None, quantize=True):
-        """Abstract diffusion simulator
+    """Abstract diffusion simulator
 
-        The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables
-        """
+    The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables
+    """
+    def __init__(self, Tmax=1.0, dt=1e-3, L=1, dL=1e-3, d=1e-2, seed: int=None, quantize=True):
 
         ## Initializations
         self.params_list = ["Tmax", "dt", "L", "dL", "d", "seed", "quantize"]
@@ -147,25 +147,26 @@ class Diffusion(object):
 
 # Brownian diffusion simulation
 class BrownianDiffusion(Diffusion):
+    """BrownianDiffusion Initialization
+
+    Parameters
+    ----------
+    Tmax: float
+        Maximum simulation time (s)
+    dt: float
+        Simulation time resolution (s)
+    L: float
+        Simulation domain size (m)
+    dL: float
+        Simulation spatial resolution (m)
+    d: float
+        Diffusion coefficient (m^2/s)
+    seed: int
+        Seed to initialize the random generator (for reproducibility)
+    quantize: bool
+        Quantize the position to the simulation spatial resolution grid.
+    """
     def __init__(self, **kwargs):
-        """BrownianDiffusion Initialization
-        Parameters
-        ----------
-        Tmax: float
-            Maximum simulation time (s)
-        dt: float
-            Simulation time resolution (s)
-        L: float
-            Simulation domain size (m)
-        dL: float
-            Simulation spatial resolution (m)
-        d: float
-            Diffusion coefficient (m^2/s)
-        seed: int
-            Seed to initialize the random generator (for reproducibility)
-        quantize: bool
-            Quantize the position to the simulation spatial resolution grid.
-        """
         super(BrownianDiffusion, self).__init__(**kwargs)
 
     def run(self):
@@ -212,46 +213,48 @@ class BrownianDiffusion(Diffusion):
 
 # Hopping diffusion simulation
 class HoppingDiffusion(Diffusion):
-    def __init__(self, Tmax=100, dt=50e-6, L=10e-6, dL=20e-9, Df=8e-13, HL=40e-9, HP=0.01, seed: int = None, quantize=True):
-        """Simulates a hopping diffusion trajectory of a single molecule for a
-        hopping diffusion model (i.e. free diffusion inside of compartments but
-        changing from one compartment to the next only with a certain probability)
+    """Simulates a hopping diffusion trajectory of a single molecule for a
+    hopping diffusion model (i.e. free diffusion inside of compartments but
+    changing from one compartment to the next only with a certain probability)
 
-        Syntax
-        ------
+    **Syntax**:
+
+    .. code-block:: python
+
         simulator = hopping_trajectories(Tmax, dt, L, Df, HL, HP, seed)
         simulator.run()
 
-        Parameters
-        ----------
-        Tmax : float
-            Maximal total length [s]
-        dt : float
-            Time step [s]
-        L : float
-            Sandbox length [m]
-        dL : float
-            Compartment map pixel size [m]
-        Df : float
-            Free diffusion coefficient [m^2/s]
-        HL : float
-            Average compartment diameter/length [m]
-        HP : float
-            Hopping probability [0-1]
-        seed : float
-            Random generator seed (nonnegative integer)
-        quantize: bool
-            Quantize the position to the simulation spatial resolution grid.
+    **Authors**:
 
-        Authors
-        -------
-        Jan Keller-Findeisen (jkeller1@gwdg.de)
-        Department of NanoBiophotonics
-        Max Planck Institute of Biophysical Chemistry
-        Am Fassberg 11, 3077 Goettingen, Germany
+    | Jan Keller-Findeisen (jkeller1@gwdg.de)
+    | Department of NanoBiophotonics
+    | Max Planck Institute of Biophysical Chemistry
+    | Am Fassberg 11, 3077 Goettingen, Germany
 
-        Converted to Python by Joel Lefebvre
-        """
+    Converted to Python by Joel Lefebvre
+
+    Parameters
+    ----------
+    Tmax : float
+        Maximal total length [s]
+    dt : float
+        Time step [s]
+    L : float
+        Sandbox length [m]
+    dL : float
+        Compartment map pixel size [m]
+    Df : float
+        Free diffusion coefficient [m^2/s]
+    HL : float
+        Average compartment diameter/length [m]
+    HP : float
+        Hopping probability [0-1]
+    seed : float
+        Random generator seed (nonnegative integer)
+    quantize: bool
+        Quantize the position to the simulation spatial resolution grid.
+    """
+    def __init__(self, Tmax=100, dt=50e-6, L=10e-6, dL=20e-9, Df=8e-13, HL=40e-9, HP=0.01, seed: int = None, quantize=True):
 
         # super(HoppingDiffusion, self).__init__(seed=seed)
 
@@ -524,6 +527,7 @@ class iscat_movie(object):
 
     def load_tracks(self, filename, field_x="x", field_y="y", field_t="t", field_id="id", file_format=None): # TODO: Load other tracks format
         """Load the tracks from a csv file.
+        
         Parameters
         ----------
         filename : str
