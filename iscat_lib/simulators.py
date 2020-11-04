@@ -332,7 +332,7 @@ class HoppingDiffusion(Diffusion):
         t = 0
 
         pbar = tqdm.tqdm(desc="Simulation", total=int(self.Tmax / self.dt))
-        while iteration < self.Tmax and diffuse: # the indefinitely long loop for each time step
+        while iteration * self.dt < self.Tmax and diffuse: # the indefinitely long loop for each time step
             # Update position and compartment
             x0 = x + self.d * np.random.randn()
             y0 = y + self.d * np.random.randn()
