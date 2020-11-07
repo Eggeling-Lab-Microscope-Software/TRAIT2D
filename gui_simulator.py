@@ -54,7 +54,7 @@ class MainVisual(tk.Frame):
         self.Df = 8e-13  # Free diffusion coefficient [m^2/s]
         self.HL = 40e-9  # Average compartment diameter/length [m]
         self.HP = 0.01  #Hopping probability [0-1]
-        self.seed = 23  #Random generator seed (nonnegative integer)
+        self.seed = None  #Random generator seed (nonnegative integer)
 
         self.dynamics_switch = 0  # dynamics type: 0 - diffusion 1 - hopping diffusion
         
@@ -389,6 +389,8 @@ class MainVisual(tk.Frame):
 
         if self.param_seed.get()!='':
             self.seed=int(self.param_seed.get())
+        else:
+            self.seed = None # To use a random seed
             
         # image sequence
 
