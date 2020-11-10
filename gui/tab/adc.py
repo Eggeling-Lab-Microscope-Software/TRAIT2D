@@ -1,6 +1,6 @@
-from iscat_lib.analysis import Track, ModelDB
-from iscat_lib.analysis.models import ModelBrownian, ModelConfined, ModelHop
-from iscat_lib.exceptions import *
+from trait2d.analysis import Track, ModelDB
+from trait2d.analysis.models import ModelBrownian, ModelConfined, ModelHop
+from trait2d.exceptions import *
 
 import numpy as np
 

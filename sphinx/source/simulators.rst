@@ -3,5 +3,5 @@
 Simulation Library
 ==================
 
-.. automodule:: iscat_lib.simulators
+.. automodule:: trait2d.simulators
     :members:

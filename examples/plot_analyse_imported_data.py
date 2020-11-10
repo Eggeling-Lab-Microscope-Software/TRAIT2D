@@ -8,7 +8,7 @@ This example will guide you through the process of importing and analyzing data.
 # %%
 # To import data and analyse it, we only need the ``Track`` class.
 
-from iscat_lib.analysis import Track
+from trait2d.analysis import Track
 
 # %%
 # We can now import data from a ``.csv`` file.

@@ -21,8 +21,8 @@ This example demonstrates some of the library's core features, namely simulation
 # %%
 # First, import the required simulators:
 
-from iscat_lib.simulators import BrownianDiffusion
-from iscat_lib.simulators import HoppingDiffusion
+from trait2d.simulators import BrownianDiffusion
+from trait2d.simulators import HoppingDiffusion
 
 # %%
 # A simulator can be initialised with different parameters. For Brownian diffusion, we choose the following:
@@ -67,17 +67,17 @@ simulator_brownian.display_trajectory()
 simulator_hop.display_trajectory()
 
 # %%
-# It is also possible to export the simulated tracks as videos using the ``iscat_lib.simulators.iscat_movie`` class. Currently, the tracks need first to be saved e.g. as a ``.csv`` using ``BrownianDiffusion.save()`` (or any other Diffusion model) and then load them again using ``iscat_movie.load_tracks()``. You also need to load a PSF with ``iscat_movie.load_psf()``.
+# It is also possible to export the simulated tracks as videos using the ``trait2d.simulators.iscat_movie`` class. Currently, the tracks need first to be saved e.g. as a ``.csv`` using ``BrownianDiffusion.save()`` (or any other Diffusion model) and then load them again using ``iscat_movie.load_tracks()``. You also need to load a PSF with ``iscat_movie.load_psf()``.
 
 # %%
 # Analyse tracks
 # --------------
 
 # %%
-# Before we start fitting our data, we need to add some models. ``iscat_lib.analysis.models`` contains a few models that we can add to ``ModelDB``. All models added this way will be used during analysis.
+# Before we start fitting our data, we need to add some models. ``trait2d.analysis.models`` contains a few models that we can add to ``ModelDB``. All models added this way will be used during analysis.
 
-from iscat_lib.analysis import ModelDB
-from iscat_lib.analysis.models import ModelBrownian, ModelConfined, ModelHop
+from trait2d.analysis import ModelDB
+from trait2d.analysis.models import ModelBrownian, ModelConfined, ModelHop
 
 ModelDB().add_model(ModelBrownian)
 ModelDB().add_model(ModelConfined)
@@ -86,7 +86,7 @@ ModelDB().add_model(ModelHop)
 # %%
 # Single tracks are stored in a ``Track`` object.
 
-from iscat_lib.analysis import Track
+from trait2d.analysis import Track
 
 # %%
 # We can create a single track from our last simulation:
@@ -111,7 +111,7 @@ single_track.plot_adc_analysis_results()
 # %%
 # Multiple tracks are then stored in a ``ListOfTracks`` object.
 
-from iscat_lib.analysis import ListOfTracks
+from trait2d.analysis import ListOfTracks
 
 # %%
 # For now, we just simulate some more tracks and create a single ``ListOfTracks`` from these tracks. Multiple tracks can also be loaded from a single file using ``ListOfTracks.from_file()``.

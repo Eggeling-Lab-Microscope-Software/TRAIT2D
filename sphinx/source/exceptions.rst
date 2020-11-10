@@ -3,5 +3,5 @@
 Exceptions
 ==========
 
-.. automodule:: iscat_lib.exceptions
+.. automodule:: trait2d.exceptions
     :members:

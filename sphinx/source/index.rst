@@ -4,29 +4,67 @@
    contain the root `toctree` directive.
 
 Welcome to TRAIT-2D's documentation!
-==========================================
+====================================
 
-***This is taken directly from the preprint as of yet.***
-
-TRAIT-2D is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, for simplicity, in three main sections:  the tracker, the simulator and the data analyzer.
+TRAIT-2D (available as ``trait2d``) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, for simplicity, in three main sections:  the tracker, the simulator and the data analyzer.
 
 Features
-~~~~~~~~
+--------
 
 * user-friendly GUIs for simple tasks
 * customisable libraries for more advanced users
 * open source under the GNU General Public License
 
 Installation
-~~~~~~~~~~~~
+------------
 
-This method of installation has been tested on Linux and Windows.
+Installation methods have been tested on Linux and Windows.
 
-* install a conda distribution (e.g. `Anaconda <https://www.anaconda.com/>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_)
+Install from Conda Forge (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Prerequisites:
+
+* An installed Conda distribution (e.g. `Anaconda <https://www.anaconda.com/>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_)
+
+Installation:
+
 * Launch a terminal (or the Anaconda Prompt on Windows)
-* Go to the source directory, and create a conda environment with: ``conda env create -f environment.yml``
-* Activate your virtual environment with ``conda activate iscat``
-* Install the ``iscat_lib`` package with ``pip install -e``.
+* *Optional*: Create a new conda environment (e.g. ``conda create --name trait2d``)
+* Install the conda package from the ``conda-forge`` channel with ``conda instlal -c conda-forge trait2d``
+
+Install from PyPI
+~~~~~~~~~~~~~~~~~
+
+Prerequisites:
+
+* A Python installation (version >= 3.7 is required)
+
+Installation:
+
+* run ``pip install trait2d``
+
+Install from Source (Not Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Prerequisites:
+
+* A Python installation (version >= 3.7 is required)
+* *Optional*: A Git installation
+
+Installation:
+
+* clone the GitHub repository
+
+   * run ``git clone https://github.com/FReina/TRAIT-2D``
+   * **OR**
+
+      * visit `https://github.com/FReina/TRAIT-2D`
+      * click the green *Code* button and then *Download ZIP*
+      * extract the downloaded ``.zip`` file anywhere on your computer
+
+* change to the directory that was just created (should contain a ``setup.py`` file)
+* run ``pip install -e .``
 
 .. toctree::
    :maxdepth: 2
@@ -57,16 +95,16 @@ This method of installation has been tested on Linux and Windows.
    auto_examples/index
 
 Indices and tables
-~~~~~~~~~~~~~~~~~~
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
 
 Dependencies
-~~~~~~~~~~~~
+------------
 
-The ``trait-2d`` package depends on external libraries. If you followed the instructions in the :ref:`Installation` section, these should be installed automatically.
+The ``trait2d`` package depends on external libraries. If you followed the instructions in the :ref:`Installation` section, these should be installed automatically.
 
 They are nevertheless listed here for completeness:
 

@@ -9,7 +9,7 @@ GUI iSCAT simulator
 import matplotlib
 matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
 
-from iscat_lib.simulators import HoppingDiffusion, iscat_movie, BrownianDiffusion
+from trait2d.simulators import HoppingDiffusion, iscat_movie, BrownianDiffusion
 import matplotlib.pyplot as plt
 import numpy as np
 import tkinter as tk
