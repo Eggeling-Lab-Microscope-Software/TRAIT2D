@@ -57,8 +57,31 @@ This method of installation has been tested on Linux and Windows.
    auto_examples/index
 
 Indices and tables
-==================
+~~~~~~~~~~~~~~~~~~
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Dependencies
+~~~~~~~~~~~~
+
+The ``trait-2d`` package depends on external libraries. If you followed the instructions in the :ref:`Installation` section, these should be installed automatically.
+
+They are nevertheless listed here for completeness:
+
+================= =========================================================================
+Package Name      License
+================= =========================================================================
+``imageio``       BSD License (BSD-2-Clause)
+``matplotlib``    Python Software Foundation License (PSF)
+``numpy``         OSI Approved (BSD)
+``opencv-python`` MIT License (MIT)
+``pandas``        BSD
+``pyqtgraph``     MIT License (MIT)
+``PyQt5``         GPL v3
+``scikit-image``  BSD License (Modified BSD)
+``scipy``         BSD License (BSD)
+``tk``            Apache Software License (Apache 2.0 Licence)
+``tqdm``          MIT License, Mozilla Public License 2.0 (MPL 2.0) (MPLv2.0, MIT Licences)
+================= =========================================================================
