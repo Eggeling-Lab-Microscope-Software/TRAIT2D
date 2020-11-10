@@ -14,22 +14,53 @@
   * Recommended clients for Windows are [Github Desktop](https://desktop.github.com/) or [Sourcetree](https://www.sourcetreeapp.com/)
 
 ## Installation
-* Install [Anaconda](https://www.anaconda.com/distribution/)  (Python 3.7 version)
-* Launch a terminal (or the `Anaconda Prompt` on Windows)
-* Go to the source directory, and create a conda environment with:
-```conda env create -f environment.yml```
-* Activate your virtual environment with: `conda activate iscat`
-* Install the `trait2d` package with `pip install -e .`
 
-## Simplified installation on Windows (tested on Windows 10 Pro)
-* Install [Anaconda](https://www.anaconda.com/distribution/)  (Python 3.7 version) - don't change the default installation path
-* run (double click) run_environmentSetup.bat to install all necessary packages 
-* run (double click) run_gui.bat to activate the environment and run the software (if necessary change the "CODE_FOLDER" to the location of the folder with code on your PC)
+Installation methods have been tested on Linux and Windows.
 
-## Update
-* On Linux or Mac, Open a terminal. On Windows, open the application `Anaconda Prompt`
-* Go to the repository directory
-* Update the environment with: `conda env update -f environment.yml`
+### Install from Conda Forge (Recommended)
+
+Prerequisites:
+
+* An installed Conda distribution (e.g. `Anaconda <https://www.anaconda.com/>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_)
+
+Installation:
+
+* Launch a terminal (or the Anaconda Prompt on Windows)
+* *Optional*: Create a new conda environment (e.g. ``conda create --name trait2d``)
+* Install the conda package from the ``conda-forge`` channel with ``conda instlal -c conda-forge trait2d``
+
+Install from PyPI
+~~~~~~~~~~~~~~~~~
+
+Prerequisites:
+
+* A Python installation (version >= 3.7 is required)
+
+Installation:
+
+* run ``pip install trait2d``
+
+Install from Source (Not Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Prerequisites:
+
+* A Python installation (version >= 3.7 is required)
+* *Optional*: A Git installation
+
+Installation:
+
+* clone the GitHub repository
+
+   * run ``git clone https://github.com/FReina/TRAIT-2D``
+   * **OR**
+
+      * visit `https://github.com/FReina/TRAIT-2D`
+      * click the green *Code* button and then *Download ZIP*
+      * extract the downloaded ``.zip`` file anywhere on your computer
+
+* change to the directory that was just created (should contain a ``setup.py`` file)
+* run ``pip install -e .``
 
 ## Usage
 ### Detection and Tracking
