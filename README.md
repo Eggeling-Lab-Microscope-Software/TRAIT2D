@@ -6,13 +6,6 @@
 * gui_simulator.py - GUI with code for a simulator (in development)
 * trait2d - classes and functions for detection and tracking
 
-## Dependencies
-* [Anaconda 3](https://www.anaconda.com/distribution/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-* Python 3
-* A git client to clone the repository, and pull the latest version.
-  * Linux and Mac user can use the command line git client
-  * Recommended clients for Windows are [Github Desktop](https://desktop.github.com/) or [Sourcetree](https://www.sourcetreeapp.com/)
-
 ## Installation
 
 Installation methods have been tested on Linux and Windows.
@@ -21,16 +14,15 @@ Installation methods have been tested on Linux and Windows.
 
 Prerequisites:
 
-* An installed Conda distribution (e.g. `Anaconda <https://www.anaconda.com/>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_)
+* An installed Conda distribution (e.g. [Anaconda](https://www.anaconda.com/>) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html))
 
 Installation:
 
 * Launch a terminal (or the Anaconda Prompt on Windows)
-* *Optional*: Create a new conda environment (e.g. ``conda create --name trait2d``)
-* Install the conda package from the ``conda-forge`` channel with ``conda instlal -c conda-forge trait2d``
+* *Optional*: Create a new conda environment (e.g. `conda create --name trait2d`)
+* Install the conda package from the `conda-forge` channel with `conda instlal -c conda-forge trait2d`
 
-Install from PyPI
-~~~~~~~~~~~~~~~~~
+### Install from PyPI
 
 Prerequisites:
 
@@ -38,10 +30,9 @@ Prerequisites:
 
 Installation:
 
-* run ``pip install trait2d``
+* run `pip install trait2d`
 
-Install from Source (Not Recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Install from Source (Not Recommended)
 
 Prerequisites:
 
@@ -52,15 +43,15 @@ Installation:
 
 * clone the GitHub repository
 
-   * run ``git clone https://github.com/FReina/TRAIT-2D``
+   * run `git clone https://github.com/FReina/TRAIT-2D`
    * **OR**
 
-      * visit `https://github.com/FReina/TRAIT-2D`
+      * visit https://github.com/FReina/TRAIT-2D
       * click the green *Code* button and then *Download ZIP*
-      * extract the downloaded ``.zip`` file anywhere on your computer
+      * extract the downloaded `.zip` file anywhere on your computer
 
-* change to the directory that was just created (should contain a ``setup.py`` file)
-* run ``pip install -e .``
+* change to the directory that was just created (should contain a `setup.py` file)
+* run `pip install -e .`
 
 ## Usage
 ### Detection and Tracking
