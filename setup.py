@@ -13,7 +13,7 @@ setuptools.setup(
     url              = "https://github.com/FReina/TRAIT-2D",
     packages         = setuptools.find_packages(),
     version_config={
-        "version_format": "{tag}.dev{sha}",
+        "version_format": "{tag}.dev-{sha}",
         "starting_version": "0.1.0"
     },
     setup_requires=['better-setuptools-git-version'],
