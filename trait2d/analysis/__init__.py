@@ -10,7 +10,7 @@ from scipy import optimize
 from scipy import interpolate
 import pandas as pd
 
-from iscat_lib.exceptions import *
+from trait2d.exceptions import *
 
 import itertools
 import os
@@ -33,11 +33,11 @@ class ModelDB(Borg):
         ----------
         model:
             Model class (*not* an instance) to add. There are predefined models available in
-            iscat_lib.analysis.models. Example usage:
+            trait2d.analysis.models. Example usage:
 
             .. code-block:: python
 
-                from iscat_lib.analysis.models import ModelConfined
+                from trait2d.analysis.models import ModelConfined
                 ModelDB().add_model(ModelConfined)
         """
         for m in self.models:
@@ -56,7 +56,7 @@ class ModelDB(Borg):
 
             .. code-block:: python
             
-                from iscat_lib.analysis.models import ModelConfined
+                from trait2d.analysis.models import ModelConfined
                 ModelDB().get_model(ModelConfined).initial = [1.0e-12, 1.0e-9, 0.5e-3]
         """
 
@@ -76,7 +76,7 @@ class ModelDB(Borg):
 
             .. code-block:: python
 
-                from iscat_lib.analysis.models import ModelConfined
+                from trait2d.analysis.models import ModelConfined
                 ModelDB().remove_model(ModelConfined)
         """
         for i in range(len(self.models)):
@@ -198,7 +198,7 @@ class ListOfTracks:
             Method used for classificiation can be either 'adc' or 'sd'.
         model
             Class (*not* an instance) of the model the tracks should be categorized as.
-            Predefined models can be found at `iscat_lib.analysis.models`.
+            Predefined models can be found at `trait2d.analysis.models`.
 
         Returns
         -------

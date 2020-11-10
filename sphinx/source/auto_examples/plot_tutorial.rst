@@ -32,8 +32,8 @@ First, import the required simulators:
 .. code-block:: default
 
 
-    from iscat_lib.simulators import BrownianDiffusion
-    from iscat_lib.simulators import HoppingDiffusion
+    from trait2d.simulators import BrownianDiffusion
+    from trait2d.simulators import HoppingDiffusion
 
 
 
@@ -111,8 +111,12 @@ After initialisation the simulations can be run. The results will be stored in t
 
  .. code-block:: none
 
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 62638.95it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 22542.99it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 62638.95it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 22542.99it/s]
 
 
 
@@ -136,27 +140,27 @@ The simulated trajectoies can be plotted:
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
+ Out:trait2d
 
- .. code-block:: none
+ .. code-block:: nonetrait2d
 
     C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\simulators.py:71: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
       plt.show()
     C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\simulators.py:71: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
       plt.show()
-
+trait2d
 
 
 
 It is also possible to export the simulated tracks as videos using the ``iscat_lib.simulators.iscat_movie`` class. Currently, the tracks need first to be saved e.g. as a ``.csv`` using ``BrownianDiffusion.save()`` (or any other Diffusion model) and then load them again using ``iscat_movie.load_tracks()``. You also need to load a PSF with ``iscat_movie.load_psf()``.
-
+trait2d
 Analyse tracks
 --------------
 
 Before we start fitting our data, we need to add some models. ``iscat_lib.analysis.models`` contains a few models that we can add to ``ModelDB``. All models added this way will be used during analysis.
 
-
-.. code-block:: default
+trait2d
+.. code-btrait2dfault
 
 
     from iscat_lib.analysis import ModelDB
@@ -175,7 +179,7 @@ Before we start fitting our data, we need to add some models. ``iscat_lib.analys
 
 Single tracks are stored in a ``Track`` object.
 
-
+trait2d
 .. code-block:: default
 
 
@@ -243,7 +247,7 @@ Analysis results like the calculated values for :math:`D_{app}`, fit parameters 
 
  Out:
 
- .. code-block:: none
+ .. code-block:: nonetrait2d
 
     {'ModelBrownian': {'params': array([4.46310675e-13, 1.86600237e-08]), 'errors': array([3.48246193e-15, 7.38199703e-10]), 'bic': -59.13204598291758, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([4.46313924e-13, 1.86596139e-08, 1.91965686e+03]), 'errors': array([3.52115612e-15, 7.46408833e-10, 1.29716831e-24]), 'bic': -59.13193731884821, 'rel_likelihood': 0.9999456694412718}, 'ModelHop': {'params': array([4.46310675e-13, 3.63682711e-24, 1.86596937e-08, 2.04153169e-05]), 'errors': array([4.69403019e-15, 9.50391306e-12, 5.38174168e-09, 2.11581843e-24]), 'bic': -59.13203548996835, 'rel_likelihood': 0.999994753539148}}
     ModelBrownian
@@ -255,7 +259,7 @@ Analysis results like the calculated values for :math:`D_{app}`, fit parameters 
 
 Multiple tracks are then stored in a ``ListOfTracks`` object.
 
-
+trait2d
 .. code-block:: default
 
 
@@ -294,28 +298,68 @@ For now, we just simulate some more tracks and create a single ``ListOfTracks`` 
 
  .. code-block:: none
 
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 29497.05it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 15667.93it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 22260.16it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 15253.46it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 26678.61it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 17285.83it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 45575.40it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 25927.58it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 41765.12it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 25008.07it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 55713.09it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 23823.96it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 38578.96it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 22782.50it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 41609.33it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 29416.37it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 38482.68it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 23870.33it/s]
-    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 38586.05it/s]
-    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 31327.43it/s]
 
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 29497.05it/s]
 
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 15667.93it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 22260.16it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 15253.46it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 26678.61it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 17285.83it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 45575.40it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 25927.58it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 41765.12it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 25008.07it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 55713.09it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 23823.96it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 38578.96it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 22782.50it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 41609.33it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 29416.37it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 38482.68it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 23870.33it/s]
+
+    Brownian Diffusion Simulation:   0%|                                                             | 0/500 [00:00<?, ?it/s]
+    Brownian Diffusion Simulation: 100%|################################################| 500/500 [00:00<00:00, 38586.05it/s]
+
+    Simulation:   0%|                                                                                | 0/500 [00:00<?, ?it/s]
+    Simulation: 100%|###################################################################| 500/500 [00:00<00:00, 31327.43it/s]
+
+trait2d
 
 
 In order to set initial parameters or bounds for the fits, we need to modify the models inside ``ModelDB``. These will then be applied during all analysis from this point on.
@@ -357,29 +401,29 @@ Enabling logarithmic sampling is a good idea since the time axis will be scaled 
 
  Out:
 
- .. code-block:: none
+ .. code-block:: nonetrait2d
 
-    C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\analysis\__init__.py:350: UserWarning: ADC analysis failed for 1/20 tracks. Consider raising the maximum function evaluations using the maxfev keyword argument. To get a more detailed stacktrace, run the ADC analysis for a single track.
+    C:\Users\John\Projekte\iSCAT_analysis\trait2d\analysis\__init__.py:350: UserWarning: ADC analysis failed for 1/20 tracks. Consider raising the maximum function evaluations using the maxfev keyword argument. To get a more detailed stacktrace, run the ADC analysis for a single track.
       "for a single track.".format(len(list_failed), len(self._tracks)))
-
+trait2d
     [8]
+trait2d
 
-
-
+trait2d
 ``adc_summary`` gives an overview of the analysis results including optional plots, the averaged parameters for each model, the averaged MSD for each model and the averaged $D_{app}$ for each model.
-
+trait2d
 (We need to set ``interpolation = True`` since some of the time differences in the simulated tracks deviate *slightly* from the expected value.)
+trait2d
 
+.. code-block:: defaulttrait2d
 
-.. code-block:: default
-
-
+trait2d
     tracks.adc_summary(plot_dapp=True, plot_pie_chart=True, interpolation=True)
+trait2d
 
+trait2d
 
-
-
-.. rst-class:: sphx-glr-horizontal
+.. rst-class:: sphx-glr-horizontaltrait2d
 
 
     *
@@ -1153,9 +1197,9 @@ Enabling logarithmic sampling is a good idea since the time axis will be scaled 
            8.28461344e-13, 8.29122843e-13, 8.29352982e-13, 8.29844956e-13,
            8.30482216e-13, 8.30974327e-13, 8.31641793e-13, 8.32216501e-13,
            8.32320173e-13, 8.32121181e-13, 8.31839026e-13, 8.31636230e-13,
-           8.31093154e-13, 8.30520922e-13, 8.29388039e-13, 8.27894308e-13,
+           8.31093154e-13, 8.30520922e-13,trait2d39e-13, 8.27894308e-13,
            8.26022255e-13, 8.24473523e-13, 8.22902230e-13, 8.21636597e-13,
-           8.20600097e-13, 8.19274739e-13, 8.17488965e-13, 8.15138149e-13,
+           8.20600097e-13, 8.19274739e-13,trait2d65e-13, 8.15138149e-13,
            8.13395947e-13, 8.11119082e-13, 8.08879489e-13, 8.06555178e-13,
            8.04015027e-13, 8.01171083e-13, 7.98457064e-13, 7.95639869e-13,
            7.92893205e-13, 7.90239533e-13, 7.86646205e-13, 7.83248924e-13,
@@ -1577,7 +1621,7 @@ As mentioned before, we can retreive the analysis results for any track, at any 
            9.74585291e-14, 9.73327791e-14, 9.68149601e-14, 9.68723859e-14,
            9.75645182e-14, 9.80692542e-14, 9.86064024e-14, 9.90591860e-14,
            1.00049563e-13, 1.00851662e-13, 1.02251519e-13, 1.03972459e-13,
-           1.05407580e-13, 1.06160635e-13, 1.06882490e-13, 1.07905177e-13,
+           1.05407580e-13, 1.06160635e-13,trait2d90e-13, 1.07905177e-13,
            1.09315343e-13, 1.11422388e-13, 1.13269976e-13, 1.15482205e-13,
            1.17333625e-13, 1.19394576e-13, 1.21254587e-13, 1.24101999e-13,
            1.27322422e-13, 1.30531614e-13, 1.32864533e-13, 1.36102739e-13,

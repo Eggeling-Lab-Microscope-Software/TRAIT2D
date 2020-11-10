@@ -11,7 +11,7 @@ from skimage import util as sk_util
 from scipy.signal import fftconvolve
 import numpy as np
 import tqdm
-from iscat_lib import simulators
+from trait2d import simulators
 
 def parse_arguments():
     """Parse the input arguments for the simulator"""

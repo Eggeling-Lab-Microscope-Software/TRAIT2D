@@ -20,7 +20,7 @@ To import data and analyse it, we only need the ``Track`` class.
 .. code-block:: default
 
 
-    from iscat_lib.analysis import Track
+    from trait2d.analysis import Track
 
 
 
@@ -97,7 +97,7 @@ To view the trajectory, we can use `Track.plot_trajectory()`.
 
  .. code-block:: none
 
-    C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\analysis\__init__.py:895: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+    C:\Users\John\Projekte\iSCAT_analysis\trait2d\analysis\__init__.py:895: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
       plt.show()
 
 
@@ -124,7 +124,7 @@ We can choose the range of data used for the fits with the keyword argument `fra
 
  .. code-block:: none
 
-    C:\Users\John\Projekte\iSCAT_analysis\iscat_lib\analysis\_adc.py:118: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+    C:\Users\John\Projekte\iSCAT_analysis\trait2d\analysis\_adc.py:118: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
       plt.show()
 
 

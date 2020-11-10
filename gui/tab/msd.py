@@ -1,5 +1,5 @@
-from iscat_lib.analysis import Track
-from iscat_lib.exceptions import *
+from trait2d.analysis import Track
+from trait2d.exceptions import *
 
 import numpy as np
 

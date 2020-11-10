@@ -7,9 +7,9 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog, QFileDialog, QMe
 
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
-from iscat_lib.analysis import Track, ModelDB
-from iscat_lib.analysis.models import ModelBrownian, ModelConfined, ModelHop
-from iscat_lib.exceptions import *
+from trait2d.analysis import Track, ModelDB
+from trait2d.analysis.models import ModelBrownian, ModelConfined, ModelHop
+from trait2d.exceptions import *
 
 import gui.tab.msd
 import gui.tab.adc

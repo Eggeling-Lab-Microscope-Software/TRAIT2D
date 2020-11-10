@@ -1,4 +1,4 @@
-from iscat_lib.analysis import ModelDB
+from trait2d.analysis import ModelDB
 
 import numpy as np
 

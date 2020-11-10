@@ -7,11 +7,11 @@ iSCAT data - detection and tracking
 """
 
 import sys
-from iscat_lib.detectors import Detectors
+from trait2d.detectors import Detectors
 import skimage
 from skimage import io
 import matplotlib.pyplot as plt
-from iscat_lib.tracker import Tracker
+from trait2d.tracker import Tracker
 import json
 import numpy as np
 import scipy as sp

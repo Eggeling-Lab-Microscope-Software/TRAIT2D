@@ -4,9 +4,9 @@
 # In[1]:
 
 
-from iscat_lib import simulators
+from trait2d import simulators
 import matplotlib.pyplot as plt
-from iscat_lib import analysis
+from trait2d import analysis
 import numpy as np
 from scipy.optimize import minimize, curve_fit
 from scipy.stats import rayleigh
@@ -23,7 +23,7 @@ plt.style.use('seaborn-poster')
 # In[3]:
 
 
-from iscat_lib import simulators
+from trait2d import simulators
 from importlib import reload
 reload(simulators)
 
@@ -159,7 +159,7 @@ plt.legend()
 # curve_fit raise an error if there is a convergence problem, but minimize will instead set the success to False
 # This part will likely fail, which is the reason it is commented
 
-# from iscat_lib import analysis
+# from trait2d import analysis
 # from importlib import reload
 # reload(analysis)
 # analysis.adc_analysis([s.trajectory], useNormalization=False)

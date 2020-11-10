@@ -3,7 +3,7 @@ import numpy as np
 import warnings
 import tqdm
 
-from iscat_lib.analysis.models import ModelLinear, ModelPower
+from trait2d.analysis.models import ModelLinear, ModelPower
 
 def delete_msd_analysis_results(self):
     """Delete the MSD analysis results."""
@@ -66,7 +66,7 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
             "Using too many points for the fit means including points which have higher measurment errors.")
         # Selecting more points than 25% should be possible, but not advised
 
-    from iscat_lib.analysis.models import ModelLinear, ModelPower
+    from trait2d.analysis.models import ModelLinear, ModelPower
     model1 = ModelLinear()
     model2 = ModelPower()
 

@@ -1,10 +1,10 @@
-# iSCAT_analysis
+# TRAIT-2D
 
 
 * data_processing.py - detection and tracking of a movie specified inside the script
 * gui_iscat.py - GUI with code for tracking inside
 * gui_simulator.py - GUI with code for a simulator (in development)
-* iscat_lib - classes and functions for detection and tracking
+* trait2d - classes and functions for detection and tracking
 
 ## Dependencies
 * [Anaconda 3](https://www.anaconda.com/distribution/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
@@ -19,7 +19,7 @@
 * Go to the source directory, and create a conda environment with:
 ```conda env create -f environment.yml```
 * Activate your virtual environment with: `conda activate iscat`
-* Install the `iscat_lib` package with `pip install -e .`
+* Install the `trait2d` package with `pip install -e .`
 
 ## Simplified installation on Windows (tested on Windows 10 Pro)
 * Install [Anaconda](https://www.anaconda.com/distribution/)  (Python 3.7 version) - don't change the default installation path

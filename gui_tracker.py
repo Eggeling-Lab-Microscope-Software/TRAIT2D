@@ -9,9 +9,9 @@ import matplotlib
 matplotlib.use('TkAgg') # This is a fix to use the GUI on Mac
 
 import sys
-from iscat_lib.detectors import Detectors
-from iscat_lib.movie_processor import background_substraction
-from iscat_lib.tracker import Tracker
+from trait2d.detectors import Detectors
+from trait2d.movie_processor import background_substraction
+from trait2d.tracker import Tracker
 
 import skimage
 from skimage import io
