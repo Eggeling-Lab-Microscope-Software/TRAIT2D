@@ -4,14 +4,18 @@ TRAiT Tutorial
 
 This example demonstrates some of the library's core features, namely simulation and analysis of 2D diffusion tracks. You will learn about:
 
-**Simulation**
+Simulation
+~~~~~~~~~~
+
 - Simulating multiple tracks with different diffusion models
 
-**Analysis**
-* Apparent Diffusion Coefficient (ADC) analysis of a single track
-* ADC analysis of multiple tracks in bulk
-* Retreiving an analysis summary of multiple tracks
-* Filtering tracks by diffusion category
+Analysis
+~~~~~~~~
+
+- Apparent Diffusion Coefficient (ADC) analysis of a single track
+- ADC analysis of multiple tracks in bulk
+- Retreiving an analysis summary of multiple tracks
+- Filtering tracks by diffusion category
 """
 
 # %%
