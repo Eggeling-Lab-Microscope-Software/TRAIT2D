@@ -1,10 +1,17 @@
 # TRAIT-2D
 
+![](https://img.shields.io/pypi/v/trait2d) ![](https://img.shields.io/pypi/wheel/trait2d) ![](https://img.shields.io/pypi/pyversions/trati2d) ![](https://img.shields.io/pypi/l/trait2d)
 
-* data_processing.py - detection and tracking of a movie specified inside the script
-* gui_iscat.py - GUI with code for tracking inside
-* gui_simulator.py - GUI with code for a simulator (in development)
-* trait2d - classes and functions for detection and tracking
+TRAIT-2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
+
+The documentation is available at [GitHub Pages](FReina.github.io/iSCAT_analysis).
+
+## Features
+
+* SPT simulation, tracking and analysis
+* user-friendly GUIs for simple tasks
+* customisable libraries for more advanced users
+* open source under the GNU General Public License
 
 ## Installation
 
@@ -53,13 +60,36 @@ Installation:
 * change to the directory that was just created (should contain a `setup.py` file)
 * run `pip install -e .`
 
-## Usage
+## Quickstart
+
+### GUIs
+
+There are GUIs available for simple simulation, tracking and analysis tasks.
+
+To start using them follow these steps:
+
+* open a terminal
+* if you installed the package with conda to a separate environment, activate it (e.g. `conda activate trait2d`)
+* type `trait2d_analysis_gui`, `trait2d_simulator_gui` or `trait2d_tracker_gui` and hit enter
+
+### Library Modules
+
+To use the `trait2d` modules, you can import them in your Python scripts or notebooks.
+
+The simulator module is available as `trait2d.simulators` and the analysis module as `trait2d.analysis`. 
+
+For more information, check the documentation on the [simulation](https://FReina.github.io/iSCAT_analysis/release/analysis.html) and [analysis](https://FReina.github.io/iSCAT_analysis/release/simulators.html) libraries.
+
+Examples are available in the [gallery](https://FReina.github.io/iSCAT_analysis/release/auto_examples/index.html).
+
+## Further GUI Usage
+
+You can find more information and GUI descriptions in the documentation on the [analysis](https://FReina.github.io/iSCAT_analysis/release/analysis_gui.html), [simulator](https://FReina.github.io/iSCAT_analysis/release/simulator_gui.html), and [tracker](https://FReina.github.io/iSCAT_analysis/release/tracker_gui.html) GUIs.
+
 ### Detection and Tracking
 * Launch a terminal (or the `Anaconda Prompt` on Windows)
-* Activate the environment with: `conda activate iscat`
-* Go to the source directory
-* Run the GUI with: `python gui_iscat.py`
-* After the analysis, to close the environment use the command `conda deactivate`
+* if neccessary, activate the environment (e.g. `conda activate trait2d`)
+* run `trait2d_tracker_gui`
 
 #### Setting parameters: 
 
@@ -97,11 +127,10 @@ Proposed strategy:
   * The PSF can be generated with the ImageJ plugin [DeconvolutionLab2](http://bigwww.epfl.ch/deconvolution/deconvolutionlab2/)
   * Other simulation options can be listed with: `python scripts/simulate_iscat_movie.py --help`
   
-### iScat Movie simulation: GUI
+### Movie Simulation: GUI
 * Launch a terminal (or the `Anaconda Prompt` on Windows)
-* Activate the environment with: `conda activate iscat`
-* Go to the source directory
-* Run the simulator `python gui_simulator.py`
+* If neccessary activate the environment (e.g. `conda activate trait2d`)
+* run `trait2d_simulator_gui`
 * Generate/load trajectory first, then generate the image sequence and save it
 
  **Simulated track and iscat movie example. (Left) Raw image, (Right) convolved with a synthetic PSF.**
