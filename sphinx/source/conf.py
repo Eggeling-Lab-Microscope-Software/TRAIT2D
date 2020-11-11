@@ -23,7 +23,8 @@ copyright = '2020, FR,MD,JL,JW'
 author = 'FR,MD,JL,JW'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = "GH_VERSION"
+version = "GH_VERSION"
 
 
 # -- General configuration ---------------------------------------------------

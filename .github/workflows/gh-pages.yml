@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -34,16 +36,18 @@ jobs:
         run: python3 -m pip install -r ./requirements.txt
         working-directory: sphinx
 
-      - name: Get branch name
+      - name: Get vars
         id: vars
         run: |
           echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+          echo ::set-output name=tag_version::$(git describe --tags)
 
       - name: Set conf.py html_context
         run: |
           sed -i 's/GH_USER/${{ github.actor }}/g' ./sphinx/source/conf.py
           sed -i 's/GH_REPO/${{ github.event.repository.name }}/g' ./sphinx/source/conf.py
           sed -i 's/GH_BRANCH/${{ steps.vars.outputs.short_ref }}/g' ./sphinx/source/conf.py
+          sed -i 's/GH_VERSION/${{ steps.vars.outputs.tag_version }}/g' ./sphinx/source/conf.py
 
       - name: Build static html
         run: make html
