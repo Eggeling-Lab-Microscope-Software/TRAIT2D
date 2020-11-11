@@ -85,6 +85,9 @@ class ModelDB(Borg):
                 return
         raise ValueError("ModelDB does not contain an instance of the model {}.".format(model.__name__))
 
+    def cleanup(self):
+        self.models = []
+
 class ListOfTracks:
     """Create an object that can hold multiple tracks and analyze them in bulk.
 
