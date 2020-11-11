@@ -6,7 +6,7 @@ Simulator GUI
 Starting the GUI
 ----------------
 
-The GUI can be started from command line by entering ``trait_simulator_gui``. The GUI and its components are described below.
+The GUI can be started from command line by entering ``trait2d_simulator_gui``. The GUI and its components are described below.
 
 Description of the GUI
 ----------------------
