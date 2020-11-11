@@ -38,3 +38,8 @@ ModelDB().add_model(ModelHop)
 
 track.adc_analysis(fraction_fit_points = 0.15)
 track.plot_adc_analysis_results()
+
+# %%
+# It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to remove all models again. Otherwise they may carry over into other open notebooks.
+
+ModelDB().cleanup()

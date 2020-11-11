@@ -171,3 +171,8 @@ tracks_brownian.get_track(0).get_adc_analysis_results()
 # We can also plot them:
 
 tracks_brownian.get_track(0).plot_adc_analysis_results()
+
+# %%
+# It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to remove all models again. Otherwise they may carry over into other open notebooks.
+
+ModelDB().cleanup()
