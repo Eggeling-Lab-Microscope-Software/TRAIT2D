@@ -86,6 +86,11 @@ class ModelDB(Borg):
         raise ValueError("ModelDB does not contain an instance of the model {}.".format(model.__name__))
 
     def cleanup(self):
+        """
+        Remove all models from ModelDB. It is good practice to call this
+        at the end of your scripts since other scripts might share the same
+        instance.
+        """
         self.models = []
 
 class ListOfTracks:
