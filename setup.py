@@ -22,9 +22,9 @@ setuptools.setup(
                         'tk', 'imageio', 'PyQt5', 'pyqtgraph'],
     entry_points     = {
                        'console_scripts': [
-                            'trait_analysis_gui = gui_analysis:main',
-                            'trait_simulator_gui = gui_simulator:main',
-                            'trait_tracker_gui = gui_tracker:main'
+                            'trait2d_analysis_gui = gui_analysis:main',
+                            'trait2d_simulator_gui = gui_simulator:main',
+                            'trait2d_tracker_gui = gui_tracker:main'
                         ],
     },
     classifiers      = [

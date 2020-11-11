@@ -6,11 +6,12 @@
 Welcome to TRAIT-2D's documentation!
 ====================================
 
-TRAIT-2D (available as ``trait2d``) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, for simplicity, in three main sections:  the tracker, the simulator and the data analyzer.
+TRAIT-2D (available as ``trait2d``) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking (SPT) experiments.
 
 Features
 --------
 
+* SPT simulation, tracking and analysis
 * user-friendly GUIs for simple tasks
 * customisable libraries for more advanced users
 * open source under the GNU General Public License

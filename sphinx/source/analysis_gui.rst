@@ -8,7 +8,7 @@ The analysis GUI allows single-track analysis without the need for writing Pytho
 Starting the GUI
 ----------------
 
-The GUI can be started from command line by entering ``trait_analysis_gui``. The GUI and its components are described below.
+The GUI can be started from command line by entering ``trait2d_analysis_gui``. The GUI and its components are described below.
 
 Description of the GUI
 ----------------------
