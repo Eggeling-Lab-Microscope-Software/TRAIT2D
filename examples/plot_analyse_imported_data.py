@@ -24,6 +24,15 @@ track
 
 track.plot_trajectory()
 
+# %% In order to run an analysis, we need to load models first.
+
+from trait2d.analysis.models import ModelBrownian, ModelConfined, ModelHop
+from trait2d.analysis import ModelDB
+
+ModelDB().add_model(ModelBrownian)
+ModelDB().add_model(ModelConfined)
+ModelDB().add_model(ModelHop)
+
 # %%
 # We can choose the range of data used for the fits with the keyword argument `fractionFitPoints`.
 
