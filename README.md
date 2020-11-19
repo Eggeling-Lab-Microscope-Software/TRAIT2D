@@ -2,6 +2,8 @@
 
 ![](https://img.shields.io/pypi/v/trait2d) ![](https://img.shields.io/pypi/wheel/trait2d) ![](https://img.shields.io/pypi/pyversions/trati2d) ![](https://img.shields.io/pypi/l/trait2d)
 
+![](https://img.shields.io/conda/v/trait2d/trait2d)
+
 TRAIT-2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
 
 The documentation is available at [GitHub Pages](FReina.github.io/iSCAT_analysis).
@@ -17,7 +19,7 @@ The documentation is available at [GitHub Pages](FReina.github.io/iSCAT_analysis
 
 Installation methods have been tested on Linux and Windows.
 
-### Install from Conda Forge (Recommended)
+### Install using Conda (Recommended)
 
 Prerequisites:
 
@@ -27,7 +29,7 @@ Installation:
 
 * Launch a terminal (or the Anaconda Prompt on Windows)
 * *Optional*: Create a new conda environment (e.g. `conda create --name trait2d`)
-* Install the conda package from the `conda-forge` channel with `conda instlal -c conda-forge trait2d`
+* Install the conda package from the `trait2d` channel with `conda install -c trait2d trait2d`
 
 ### Install from PyPI
 
