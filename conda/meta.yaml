@@ -1,0 +1,59 @@
+{% set name = "trait2d" %}
+{% set version = "GH_VERSION" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+
+build:
+  number: 0
+  entry_points:
+    - trait_analysis_gui = gui_analysis:main
+    - trait_simulator_gui = gui_simulator:main
+    - trait_tracker_gui = gui_tracker:main
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - imageio
+    - matplotlib
+    - numpy
+    - opencv
+    - pandas
+    - pip
+    - pyqt
+    - pyqtgraph
+    - python
+    - scikit-image
+    - scipy
+    - setuptools
+    - tk
+    - tqdm
+    - wheel
+  run:
+    - imageio
+    - matplotlib
+    - numpy
+    - opencv
+    - pandas
+    - pyqt
+    - pyqtgraph
+    - python
+    - scikit-image
+    - scipy
+    - setuptools
+    - tk
+    - tqdm
+    - wheel
+
+about:
+  home: "https://github.com/FReina/TRAIT-2D"
+  license: "GNU General Public v3 (GPLv3)"
+  license_family: GPL3
+  license_file: 
+  summary: "Cross-platform Python software package and GUIs to support Single Particle Tracking experiments."
+  doc_url: 
+  dev_url: 

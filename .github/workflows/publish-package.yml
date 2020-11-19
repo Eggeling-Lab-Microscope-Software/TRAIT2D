@@ -1,4 +1,4 @@
-name: Publish Python 🐍 distributions 📦 to PyPI
+name: Publish Python 🐍 distributions 📦 to PyPI and Conda
 
 on:
   release:
@@ -18,6 +18,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get vars
+        id: vars
+        run: |
+          echo ::set-output name=tag_version::$(git describe --tags)
+
+      - name: Set version in meta.yaml
+        run: |
+          sed -i 's/GH_VERSION/${{ steps.vars.outputs.tag_version }}/g' ./conda/meta.yaml
+          sed -i 's/GH_VERSION/${{ steps.vars.outputs.tag_version }}/g' ./setup.py
+
+
       - name: Set up Python 3.7
         uses: actions/setup-python@v1
         with:
@@ -35,3 +46,9 @@ jobs:
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.pypi_password }}
+
+      - name: Publish package to conda
+        uses: john-wigg/conda-package-publish-action@v1.2
+        with:
+          subDir: 'conda'
+          AnacondaToken: ${{ secrets.ANACONDA_TOKEN }}
