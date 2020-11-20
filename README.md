@@ -117,7 +117,7 @@ Proposed workflow:
 5) run linking by pressing "Run tracking" button. It will run linking algorithm and offer to save tiff file with plotted trajectories. Check the trajectories and change the linking parameters if needed.  Use minimum track length parameter to eliminate short tracks 
 6) when the tracks provided by the tracker is good enough - save csv file with the particle trajectories (button “Save data”) 
 
-##### Tips: 
+##### Advice: 
 
 * If the final trajectory is broken into parts - it means, that the detection is failing in a sequence of frames. Firstly, detection settings can be tuned to detect particles in the sequence, secondly the frame gap can be increased to connect the detection after the sequence.  
 
