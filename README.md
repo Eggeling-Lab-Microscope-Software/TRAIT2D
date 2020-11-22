@@ -2,6 +2,8 @@
 
 ![](https://img.shields.io/pypi/v/trait2d) ![](https://img.shields.io/pypi/wheel/trait2d) ![](https://img.shields.io/pypi/pyversions/trati2d) ![](https://img.shields.io/pypi/l/trait2d)
 
+![](https://img.shields.io/conda/v/trait2d/trait2d)
+
 TRAIT-2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
 
 The documentation is available at [GitHub Pages](FReina.github.io/iSCAT_analysis).
@@ -17,7 +19,7 @@ The documentation is available at [GitHub Pages](FReina.github.io/iSCAT_analysis
 
 Installation methods have been tested on Linux and Windows.
 
-### Install from Conda Forge (Recommended)
+### Install using Conda (Recommended)
 
 Prerequisites:
 
@@ -27,7 +29,7 @@ Installation:
 
 * Launch a terminal (or the Anaconda Prompt on Windows)
 * *Optional*: Create a new conda environment (e.g. `conda create --name trait2d`)
-* Install the conda package from the `conda-forge` channel with `conda instlal -c conda-forge trait2d`
+* Install the conda package from the `trait2d` channel with `conda install -c trait2d trait2d`
 
 ### Install from PyPI
 
@@ -93,24 +95,27 @@ You can find more information and GUI descriptions in the documentation on the [
 
 #### Setting parameters: 
 
-Use “preview” button to evaluate detection of the particles.  It shows detection for a random frame with a given parameters. 
+Use “Preview” button to evaluate performance of the detector. It shows detections for the current frame. 
 
 Parameters:  
-* SEF: sigma – relates to the spot size (increase to detect bigger particles) 
-* SEF: threshold – relates to the intensity of the spots (decrease to detect particles with less intensity) 
-* SEF: min peak value – relates to the intensity of the spots (decrease to detect particles with less intensity) 
-* patch size – size of the region of interest with the particle (bigger than expected particle size). It can influence the particle localisation accuracy.  
-* Linking: max distance – maximum possible distance between detections to be linked (decrease to eliminate wrong linking, increase if the right detections are not linked) 
+* SEF: sigma – parameters of the Laplacian-of-Gaussian kernel .It relates to the spot size (increase to detect bigger particles) 
+* SEF: threshold – parameter for the threshold of the image. It relates to the intensity of the spots (decrease to detect particles with lower intensity) 
+* SEF: min peak value – parameter of the detected peaks. It relates to the intensity of the spots (decrease to detect particles with lower intensity) 
+* patch size – size of the region of interest with the particle (should be bigger than expected particle size). It can influence the particle localisation accuracy.  
+* Linking: max distance – maximum possible distance (in pixels) between detections to be linked (increase to connect far placed detections) 
 * Linking: frame gap – maximum possible number of frames between detections to be linked (increase if the final trajectory is broken into parts) 
 * Minimum track length – helps to eliminate short tracks created by false detections 
+* resolution - set the value to get trajectories in mircons 
+* frame rate - set the value to get timescale of the trajectories in seconds
 
-Proposed strategy:  
+Proposed workflow:  
 
-1) choose movie sequence and run pre-processing step if necessary; 
-2) choose between dark or light spots; 
-3)  tune the setting to detect all the particles. It is better to have false positive detections rather than miss some particles; 
-4) run linking. It offers to save tiff file with plotted trajectories. Check the trajectories and set the linking parameters if needed.  Use minimum track length parameter to eliminate short tracks; 
-5) when the tracks provided by the tracker is good enough - save csv file with the particle trajectories (button “save data”) 
+1) choose timelapse tiff sequence and run pre-processing step if necessary
+2) choose between dark or light spots
+3) tune detection parameters to find detect all the particles. Test results for a few different frames using "Preview" button 
+4) set resolution and frame rate (optional) 
+5) run linking by pressing "Run tracking" button. It will run linking algorithm and offer to save tiff file with plotted trajectories. Check the trajectories and change the linking parameters if needed.  Use minimum track length parameter to eliminate short tracks 
+6) when the tracks provided by the tracker is good enough - save csv file with the particle trajectories (button “Save data”) 
 
 ##### Advice: 
 
