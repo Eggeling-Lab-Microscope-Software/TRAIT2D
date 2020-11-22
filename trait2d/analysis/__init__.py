@@ -196,14 +196,12 @@ class ListOfTracks:
             if track.get_id() == id:
                 return track
 
-    def get_sublist(self, method, model):
+    def get_sublist(self, model):
         """Return a new ListOfTracks containing only tracks categorized as
-        the specified model using the specified method.
+        the specified model using ADC analysis.
 
         Parameters
         ----------
-        method: str
-            Method used for classificiation can be either 'adc' or 'sd'.
         model
             Class (*not* an instance) of the model the tracks should be categorized as.
             Predefined models can be found at `trait2d.analysis.models`.
@@ -215,17 +213,11 @@ class ListOfTracks:
             Note: The tracks in the new list will still be references to to
             the tracks in the original list.
         """
-        if not method in ['adc', 'sd']:
-            raise ValueError("Method must be one of 'adc' or 'sd'.")
         track_list = []
         for track in self._tracks:
             if track.get_adc_analysis_results() is not None:
-                if method == 'adc':
-                    if track.get_adc_analysis_results()["best_model"] == model.__name__:
-                        track_list.append(track)
-                elif method == 'sd':
-                    if track.get_sd_analysis_results()["best_model"] == model.__name__:
-                        track_list.append(track)
+                if track.get_adc_analysis_results()["best_model"] == model.__name__:
+                    track_list.append(track)
         return ListOfTracks(track_list)
 
     def plot_trajectories(self, cmap="plasma"):
@@ -358,17 +350,6 @@ class ListOfTracks:
                 "for a single track.".format(len(list_failed), len(self._tracks)))
 
         return list_failed
-
-    def sd_analysis(self, **kwargs):
-        """Analyze all tracks using SD analyis.
-
-        Parameters
-        ----------
-        **kwargs
-            Keyword arguments to be used by sd_analysis for each track.
-        """
-        for track in self._tracks:
-            track.sd_analysis(**kwargs)
 
     def adc_summary(self, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
         """Average tracks by model and optionally plot the results.
@@ -686,7 +667,6 @@ class Track:
 
         self._msd_analysis_results = None
         self._adc_analysis_results = None
-        self._sd_analysis_results = None
 
     @classmethod
     def from_dict(cls, dict):
@@ -844,7 +824,6 @@ class Track:
             str(self._id).rjust(15, ' '),
             str(self.is_msd_calculated()).rjust(9, ' '),
             str(self._msd_analysis_results is not None).rjust(6, ' '),
-            str(self._sd_analysis_results is not None).rjust(7, ' '),
             str(self._adc_analysis_results is not None).rjust(6, ' ')
         )
 
@@ -852,9 +831,6 @@ class Track:
                       delete_msd_analysis_results, plot_msd_analysis_results
     from ._adc import adc_analysis, get_adc_analysis_results,\
                       delete_adc_analysis_results, plot_adc_analysis_results
-    from ._sd import sd_analysis, get_sd_analysis_results,\
-                     delete_sd_analysis_results, plot_sd_analysis_results,\
-                     _calculate_sd_at
 
     def plot_trajectory(self, cmap='plasma'):
         """Plot the trajectory.

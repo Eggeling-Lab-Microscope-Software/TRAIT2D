@@ -1,126 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>900</width>
-    <height>950</height>
-   </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>900</width>
-    <height>950</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>900</width>
-    <height>950</height>
-   </size>
-  </property>
-  <property name="windowTitle">
-   <string>TRAIT-2D Single-Track Analysis</string>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>10</y>
-      <width>671</width>
-      <height>911</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="tabMSD">
-     <attribute name="title">
-      <string>MSD Analysis</string>
-     </attribute>
-     <widget class="QWidget" name="gridLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>661</width>
-        <height>881</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="layoutMSD">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-      </layout>
-     </widget>
+    <class>MainWindow</class>
+    <widget class="QMainWindow" name="MainWindow">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>900</width>
+                <height>950</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="minimumSize">
+            <size>
+                <width>900</width>
+                <height>950</height>
+            </size>
+        </property>
+        <property name="maximumSize">
+            <size>
+                <width>900</width>
+                <height>950</height>
+            </size>
+        </property>
+        <property name="windowTitle">
+            <string>TRAIT-2D Single-Track Analysis</string>
+        </property>
+        <widget class="QWidget" name="centralwidget">
+            <widget class="QTabWidget" name="tabWidget">
+                <property name="geometry">
+                    <rect>
+                        <x>220</x>
+                        <y>10</y>
+                        <width>671</width>
+                        <height>911</height>
+                    </rect>
+                </property>
+                <property name="currentIndex">
+                    <number>0</number>
+                </property>
+                <widget class="QWidget" name="tabMSD">
+                    <attribute name="title">
+                        <string>MSD Analysis</string>
+                    </attribute>
+                    <widget class="QWidget" name="gridLayoutWidget">
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>0</y>
+                                <width>661</width>
+                                <height>881</height>
+                            </rect>
+                        </property>
+                        <layout class="QGridLayout" name="layoutMSD">
+                            <property name="spacing">
+                                <number>0</number>
+                            </property>
+                        </layout>
+                    </widget>
+                </widget>
+                <widget class="QWidget" name="tabADC">
+                    <attribute name="title">
+                        <string>ADC Analysis</string>
+                    </attribute>
+                    <widget class="QWidget" name="gridLayoutWidget_2">
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>0</y>
+                                <width>661</width>
+                                <height>881</height>
+                            </rect>
+                        </property>
+                        <layout class="QGridLayout" name="layoutADC">
+                            <property name="spacing">
+                                <number>0</number>
+                            </property>
+                        </layout>
+                    </widget>
+                </widget>
+            </widget>
+            <widget class="QPushButton" name="pushButtonLoadTrack">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>10</y>
+                        <width>201</width>
+                        <height>23</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Load Track</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QStatusBar" name="statusbar"/>
     </widget>
-    <widget class="QWidget" name="tabADC">
-     <attribute name="title">
-      <string>ADC Analysis</string>
-     </attribute>
-     <widget class="QWidget" name="gridLayoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>661</width>
-        <height>881</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="layoutADC">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabSD">
-     <attribute name="title">
-      <string>SD Analysis</string>
-     </attribute>
-     <widget class="QWidget" name="gridLayoutWidget_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>661</width>
-        <height>881</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="layoutSD">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-      </layout>
-     </widget>
-    </widget>
-   </widget>
-   <widget class="QPushButton" name="pushButtonLoadTrack">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>201</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Load Track</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
- </widget>
- <resources/>
- <connections/>
+    <resources/>
+    <connections/>
 </ui>
