@@ -24,8 +24,6 @@ class widgetMSD(QWidget):
 
         self.pushButtonAnalyze.clicked.connect(self.analyze)
         self.checkBoxLogPlot.stateChanged.connect(self.plot.set_log)
-        self.pushButtonFormula_1.clicked.connect(self.show_formula_model_1)
-        self.pushButtonFormula_2.clicked.connect(self.show_formula_model_2)
         self.pushButtonClipboard.clicked.connect(self.results_to_clipboard)
         self.pushButtonSetRange.clicked.connect(self.set_range_from_spinbox)
 
