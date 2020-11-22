@@ -13,7 +13,6 @@ from trait2d.exceptions import *
 
 import gui.tab.msd
 import gui.tab.adc
-import gui.tab.sd
 
 import os
 
