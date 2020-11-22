@@ -13,7 +13,6 @@ from trait2d.exceptions import *
 
 import gui.tab.msd
 import gui.tab.adc
-import gui.tab.sd
 
 import os
 
@@ -31,10 +30,9 @@ class MainWindow(QMainWindow):
         # Add widgets to tabs
         wid_msd = gui.tab.msd.widgetMSD(self)
         wid_adc = gui.tab.adc.widgetADC(self)
-        wid_sd = gui.tab.sd.widgetSD(self)
+
         self.layoutMSD.addWidget(wid_msd, 0, 0)
         self.layoutADC.addWidget(wid_adc, 0, 0)
-        self.layoutSD.addWidget(wid_sd, 0, 0)
 
         self.statusBar().setSizeGripEnabled(False)
 
