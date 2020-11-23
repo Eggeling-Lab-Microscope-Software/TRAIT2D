@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GUI TRAIT tracker
+TRAIT tracker GUI
 
 """
 
@@ -36,7 +36,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 class MainVisual(tk.Frame):
     '''
-    class of GUI for TRAIT tracker
+    GUI for TRAIT tracker class
     '''
 
     def __init__(self, master):
