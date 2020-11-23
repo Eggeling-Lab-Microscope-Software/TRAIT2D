@@ -36,7 +36,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 class MainVisual(tk.Frame):
     '''
-    class of GUI for TRAiT tracker
+    class of GUI for TRAIT tracker
     '''
 
     def __init__(self, master):
@@ -44,7 +44,7 @@ class MainVisual(tk.Frame):
         #define the window
         tk.Frame.__init__(self, master)
         self.master = master
-        master.title("TRAiT tracker")
+        master.title("TRAIT tracker")
         master.configure(background='white')
         
         # get the monitor size
