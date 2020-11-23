@@ -98,11 +98,11 @@ You can find more information and GUI descriptions in the documentation on the [
 Use “Preview” button to evaluate performance of the detector. It shows detections for the current frame. 
 
 Parameters:  
-* SEF: sigma – parameters of the Laplacian-of-Gaussian kernel .It relates to the spot size (increase to detect bigger particles) 
-* SEF: threshold – parameter for the threshold of the image. It relates to the intensity of the spots (decrease to detect particles with lower intensity) 
-* SEF: min peak value – parameter of the detected peaks. It relates to the intensity of the spots (decrease to detect particles with lower intensity) 
+* SEF: sigma – parameters of the Laplacian-of-Gaussian(LoG) kernel. It relates to the spot size (increase to detect larger particles) 
+* SEF: threshold – parameter for the image threshold after LoG. It relates to the intensity of the spots (decrease to detect particles with lower intensity) 
+* SEF: min peak value – parameter of the detected peak size. It relates to the intensity of the spots (decrease to detect particles with lower intensity) 
 * patch size – size of the region of interest with the particle (should be bigger than expected particle size). It can influence the particle localisation accuracy.  
-* Linking: max distance – maximum possible distance (in pixels) between detections to be linked (increase to connect far placed detections) 
+* Linking: max distance – maximum possible distance (in pixels) between detections to be linked (increase to link detections located further away from each other) 
 * Linking: frame gap – maximum possible number of frames between detections to be linked (increase if the final trajectory is broken into parts) 
 * Minimum track length – helps to eliminate short tracks created by false detections 
 * resolution - set the value to get trajectories in mircons 
@@ -112,14 +112,15 @@ Proposed workflow:
 
 1) choose timelapse tiff sequence and run pre-processing step if necessary
 2) choose between dark or light spots
-3) tune detection parameters to find detect all the particles. Test results for a few different frames using "Preview" button 
+3) tune detection parameters to detect all the particles. It is recommended to test the results for a few different frames using "Preview" button 
 4) set resolution and frame rate (optional) 
-5) run linking by pressing "Run tracking" button. It will run linking algorithm and offer to save tiff file with plotted trajectories. Check the trajectories and change the linking parameters if needed.  Use minimum track length parameter to eliminate short tracks 
-6) when the tracks provided by the tracker is good enough - save csv file with the particle trajectories (button “Save data”) 
+5) set linking parameters
+6) run linking by pressing "Run tracking" button. It will run linking algorithm and offer to save tiff file with plotted trajectories. Check the trajectories and change the linking parameters if needed.  Use minimum track length parameter to eliminate short tracks 
+7) when the tracks provided by the tracker is good enough - save csv file with the particle trajectories (button “Save data”) 
 
 ##### Advice: 
 
-* If the final trajectory is broken into parts - it means, that the detection is failing in a sequence of frames. Firstly, detection settings can be tuned to detect particles in the sequence, secondly the frame gap can be increased to connect the detection after the sequence.  
+* If the final trajectory is broken into parts - it means, that the detection is failing in a sequence of frames. Firstly, the detection settings can be tuned to detect particles in the sequence, secondly the frame gap can be increased to connect the detection after the sequence of lost detections.  
 
 ### iScat Movie simulation: command line
 * Launch a terminal (or the `Anaconda Prompt` on Windows)
