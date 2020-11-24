@@ -816,7 +816,6 @@ class Track:
                 "------------------------\n"
                 "MSD calculated:%s\n"
                 "MSD analysis done:%s\n"
-                "SD analysis done:%s\n"
                 "ADC analysis done:%s\n") % (
             self.__class__.__name__,
             id(self),
