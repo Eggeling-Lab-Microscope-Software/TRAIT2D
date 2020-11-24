@@ -13,7 +13,7 @@ def get_msd_analysis_results(self):
     """Returns the MSD analysis results."""
     return self._msd_analysis_results
 
-def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, dt: float = 1.0, initial_guesses = { }, maxfev = 1000, R : float = 0):
+def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, initial_guesses = { }, maxfev = 1000, R : float = 0):
     """ Classical Mean Squared Displacement Analysis for single track
 
     Parameters
@@ -24,8 +24,6 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
         Number of points to user for fitting. Will override fraction_fit_points.
     fit_max_time: float
         Maximum time in fit range. Will override fraction_fit_points and n_fit_points.
-    dt: float
-        Timestep.
     initial_guesses: dict
         Dictionary containing initial guesses for the parameters. Keys can be "model1" and "model2".
         All values default to 1.
