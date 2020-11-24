@@ -49,6 +49,8 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
     # This is the time array, as the fits will be MSD vs T
     T = self._t[0:-3]
 
+    dt = self._t[1] - self._t[0]
+
     # Define the number of points to use for fitting
     if fit_max_time is not None:
         n_points = int(np.argwhere(T < fit_max_time)[-1])
@@ -70,6 +72,8 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
 
     model1.R = R
     model2.R = R
+    model1.dt = dt
+    model2.dt = dt
 
     p0_model1 = [0.0, 0.0]
     for i in range(len(p0_model1)):
@@ -79,7 +83,7 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
     reg1 = optimize.curve_fit(
         model1, T[0:n_points], self._msd[0:n_points], p0 = p0_model1, sigma=self._msd_error[0:n_points], maxfev=maxfev, method='trf', bounds=(0.0, np.inf))
 
-    p0_model2 = [reg1[0][0], 1.0, reg1[0][1]]
+    p0_model2 = [0.0, 0.0, 0.0]
     for i in range(len(p0_model2)):
         if not p0["model2"][i] is None:
             p0_model2[i] = p0["model2"][i]
