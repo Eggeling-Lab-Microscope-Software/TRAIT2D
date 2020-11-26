@@ -34,7 +34,7 @@ class MainVisual(tk.Frame):
         #define a window
         tk.Frame.__init__(self, master)
         self.master = master
-        master.title("TRAiT Simulator")
+        master.title("TRAIT Simulator")
         master.configure(background='gray')
         # get the monitor size
         self.dpi = 100

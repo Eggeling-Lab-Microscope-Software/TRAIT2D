@@ -1,5 +1,5 @@
 """
-TRAiT Tutorial
+TRAIT Tutorial
 ==============
 
 This example demonstrates some of the library's core features, namely simulation and analysis of 2D diffusion tracks. You will learn about:
