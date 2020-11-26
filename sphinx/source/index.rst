@@ -21,7 +21,7 @@ Installation
 
 Installation methods have been tested on Linux and Windows.
 
-Install from Conda Forge (Recommended)
+Install using Conda (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Prerequisites:
@@ -32,7 +32,7 @@ Installation:
 
 * Launch a terminal (or the Anaconda Prompt on Windows)
 * *Optional*: Create a new conda environment (e.g. ``conda create --name trait2d``)
-* Install the conda package from the ``conda-forge`` channel with ``conda instlal -c conda-forge trait2d``
+* Install the conda package from the ``trait2d`` channel with ``conda instlal -c trait2d trait2d``
 
 Install from PyPI
 ~~~~~~~~~~~~~~~~~
