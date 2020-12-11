@@ -67,11 +67,11 @@ class ModelHopModified(ModelBase):
 class ModelLinear(ModelBase):
     """Linear model for MSD analysis."""
     def __call__(self, t, D, delta2):
-        # 4 * D * t + 2 * delta2 + 8 * D * R * dt
-        return 4.0 * D * (t + 2.0 * self.R * self.dt) + 2.0 * delta2
+        # 4 * D * t + 2 * delta2 - 8 * D * R * dt
+        return 4.0 * D * (t - 2.0 * self.R * self.dt) + 2.0 * delta2 
 
 class ModelPower(ModelBase):
     """Generic power law model for MSD analysis."""
     def __call__(self, t, D, delta2, alpha):
-        # 4 * D * t**alpha + 2 * delta2 + 8 * D * R * dt
-        return 4.0 * D * (t**alpha + 2.0 * self.R * self.dt) + 2.0 * delta2
+        # 4 * D * t**alpha + 2 * delta2 - 8 * D * R * dt
+        return 4.0 * D * (t**alpha - 2.0 * self.R * self.dt) + 2.0 * delta2 
