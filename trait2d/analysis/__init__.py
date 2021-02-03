@@ -907,6 +907,16 @@ class Track:
         ax.set_ylabel("y (nm)")
         plt.show()
 
+    def plot_msd(self):
+        import matplotlib.pyplot as plt
+        plt.figure()
+        ax = plt.gca()
+        ax.set_xlabel("t")
+        ax.set_ylabel("MSD")
+        ax.semilogx(self._t[0:-3], self._msd)
+        ax.legend()
+
+
     def get_x(self):
         """Return x coordinates of trajectory."""
         return self._x
