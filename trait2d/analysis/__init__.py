@@ -542,24 +542,31 @@ class ListOfTracks:
                 track_length = track.get_x().size
                 t = track.get_t()
         average_MSD = np.zeros(track_length - 3)
+        average_MSD_err = np.zeros(track_length - 3)
         sampled = np.zeros(track_length - 3)
         for track in self._tracks:
             if track.get_msd() is None:
                 continue
 
             MSD = np.zeros(track_length - 3)
+            MSD_err = np.zeros(track_length - 3)
             if interpolation:
                 interp_MSD = interpolate.interp1d(track.get_t()[0:-3], track.get_msd(), bounds_error = False, fill_value = 0)
+                interp_MSD_err = interpolate.interp1d(track.get_t()[0:-3], track.get_msd(), bounds_error = False, fill_value = 0)
                 MSD = interp_MSD(t[0:-3])
+                MSD_err = interp_MSD_err(t[0:-3])
             else:
                 MSD[0:track.get_msd().size] = track.get_msd()
+                MSD_err[0:track.get_msd().size] = track._msd_error
             mask = np.zeros(track_length - 3)
             np.put(mask, np.where(MSD != 0.0), 1)
 
             average_MSD += MSD
+            average_MSD_err += MSD_err
             sampled += mask
         average_MSD /= sampled
-        return t[0:-3], average_MSD
+        average_MSD_err /= sampled
+        return t[0:-3], average_MSD, average_MSD_err
 
     def plot_msd(self, interpolation = False):
         """Plot the mean squared displacement averaged over all tracks.
@@ -571,7 +578,7 @@ class ListOfTracks:
             Use when working with differently spaced tracks.
         """
 
-        t, msd = self.get_msd(interpolation)
+        t, msd, = self.get_msd(interpolation)
         import matplotlib.pyplot as plt
         plt.figure()
         ax = plt.gca()
@@ -641,6 +648,29 @@ class ListOfTracks:
         ax.set_ylabel("Average Dapp")
         ax.semilogx(t, dapp)
         ax.legend()
+
+    def average(self, interpolation=False):
+        """Get the mean squared displacement averaged over all tracks.
+
+        Parameters
+        ----------
+        interpolation: bool
+            Linearly interpolate all msd values over the time points of the first track.
+            Use when working with differently spaced tracks.
+        use_averaged_msd: bool
+            Initialize the track with a MSD curve which is the average of all MSD curves
+            in the list. This is *not* neccessarily equal to the result of performing
+            `calculate_msd` on the averaged track.
+
+        Returns
+        -------
+        track : Track
+            A single track containing the average 
+        """
+        t, msd, msd_err = self.get_msd()
+        print(t)
+        print(msd)
+        return MSDTrack(msd, msd_err, t)
 
 class Track:
     """Create a track that can hold trajectory and analysis information.
@@ -1053,6 +1083,43 @@ class NormalizedTrack(Track):
         self._xmin = xmin
         self._ymin = ymin
         self._tmin = tmin
+
+class MSDTrack(Track):
+    """A special track class that holds an MSD curve but no values for 
+    x and y. Certain functions will not be available."""
+
+    def __init__(self, msd, msd_err, t, id=None):
+        t = np.append(t, np.zeros(3))
+        Track.__init__(self, t=t, id=id)
+        self._msd = msd
+        self._msd_error = msd_err
+
+    def normalized(normalize_t=True, normalize_xy=True):
+        TypeError("A MSDTrack instance cannot be normalized.")
+
+    def calculate_msd(self):
+        TypeError("It is not possible to calculate the MSD of a MSDTrack instance.")
+
+    def plot_trajectory(self):
+        TypeError("It is not possible to plot the trajectory of a MSDTrack instance.")
+
+    def __repr__(self):
+        return ("<%s instance at %s>\n"
+                "------------------------\n"
+                "Track length:%s\n"
+                "Track ID:%s\n"
+                "------------------------\n"
+                "MSD analysis done:%s\n"
+                "ADC analysis done:%s\n") % (
+            self.__class__.__name__,
+            id(self),
+            str(self._t.size).rjust(11, ' '),
+            str(self._id).rjust(15, ' '),
+            str(self.is_msd_calculated()).rjust(9, ' '),
+            str(self._msd_analysis_results is not None).rjust(6, ' '),
+            str(self._adc_analysis_results is not None).rjust(6, ' ')
+        )
+
 
 def BIC(pred: list, target: list, k: int, n: int):
     """Bayesian Information Criterion
