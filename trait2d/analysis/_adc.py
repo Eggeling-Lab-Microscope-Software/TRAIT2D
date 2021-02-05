@@ -59,6 +59,7 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
 
     self._adc_analysis_results = {}
     self._adc_analysis_results["Dapp"] = np.array(Dapp)
+    self._adc_analysis_results["Dapp_err"] = np.array(Dapp_err)
     self._adc_analysis_results["fit_indices"] = fit_indices
     self._adc_analysis_results["fit_results"] = fit_results
     self._adc_analysis_results["best_model"] = model
