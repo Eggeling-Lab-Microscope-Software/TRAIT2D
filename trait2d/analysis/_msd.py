@@ -145,12 +145,15 @@ def plot_msd_analysis_results(self, scale: str = 'log'):
     rel_likelihood_1 = results["model1"]["rel_likelihood"]
     rel_likelihood_2 = results["model2"]["rel_likelihood"]
     # Plot the results
+    plt.figure()
+    plt.grid(linestyle='dashed', color='grey')
     if scale == 'linear':
-        plt.plot(T, self._msd, label="Data")
+        plt.plot(T, self._msd, color='black', label="Data")
     elif scale == 'log':
-        plt.semilogx(T, self._msd, label="Data")
+        plt.semilogx(T, self._msd, color='black', label="Data")
     else:
         raise ValueError("scale must be 'log' or 'linear'.")
+    plt.fill_between(T, self._msd-self._msd_error, self._msd+self._msd_error, color='black', alpha=0.5)
     plt.plot(T[0:n_points], m1[0:n_points],
                 label=f"Model1, Rel_Likelihood={rel_likelihood_1:.2e}")
     plt.plot(T[0:n_points], m2[0:n_points],
