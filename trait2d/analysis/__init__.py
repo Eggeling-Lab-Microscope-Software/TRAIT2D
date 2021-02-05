@@ -668,8 +668,6 @@ class ListOfTracks:
             A single track containing the average 
         """
         t, msd, msd_err = self.get_msd()
-        print(t)
-        print(msd)
         return MSDTrack(msd, msd_err, t)
 
 class Track:
