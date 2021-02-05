@@ -1099,8 +1099,7 @@ class NormalizedTrack(Track):
         self._tmin = tmin
 
 class MSDTrack(Track):
-    """A special track class that holds an MSD curve but no values for 
-    x and y. Certain functions will not be available."""
+    """A special track class that holds an MSD curve but no trajectory data. Can be used for analysis like an ordinary :class:`trait2d.analysis.Track` object but certain functions might not be available."""
 
     def __init__(self, msd, msd_err, t, id=None):
         t = np.append(t, np.zeros(3))
@@ -1129,7 +1128,6 @@ class MSDTrack(Track):
             id(self),
             str(self._t.size).rjust(11, ' '),
             str(self._id).rjust(15, ' '),
-            str(self.is_msd_calculated()).rjust(9, ' '),
             str(self._msd_analysis_results is not None).rjust(6, ' '),
             str(self._adc_analysis_results is not None).rjust(6, ' ')
         )

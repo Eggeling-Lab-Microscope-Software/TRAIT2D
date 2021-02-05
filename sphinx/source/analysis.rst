@@ -11,6 +11,8 @@ Simple single-track import and analysis can be done using the ``Track`` class.
 .. autoclass:: trait2d.analysis.Track
     :members:
 
+.. autoclass:: trait2d.analysis.MSDTrack
+
 Multiple Tracks
 ~~~~~~~~~~~~~~~
 

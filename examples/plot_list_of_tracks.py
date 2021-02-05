@@ -45,6 +45,15 @@ tracks.adc_summary(plot_dapp=True, plot_pie_chart=True)
 tracks.get_track(0).plot_adc_analysis_results()
 
 # %%
+# :meth:`trait2d.analysis.ListOfTracks.adc_summary`'s way of averaging the parameters as well as `Dapp` for each model after analysing each track can be inaccurate. It may thus be desirable to get an average of the categorised curves first and then run an additional analysis. :meth:`trait2d.analysis.ListOfTracks.average` can help with this.
+# It returns a special :class:`trait2d.analysis.MSDTrack` object which does not store trajectory data but instead the average MSD values. It can be used for analysis like an ordinary :class:`trait2d.analysis.Track` object.
+# Here, we analyse the average of all tracks classified as Confined Diffusion.
+
+confined_tracks = tracks.get_sublist(ModelConfined).average()
+confined_tracks.adc_analysis()
+confined_tracks.plot_adc_analysis_results()
+
+# %%
 # It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to remove all models again. Otherwise they may carry over into other open notebooks.
 
 ModelDB().cleanup()
