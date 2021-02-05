@@ -950,6 +950,10 @@ class Track:
         """Returns the MSD values of the track."""
         return self._msd
 
+    def get_msd_error(self):
+        """Returns the MSD error values of the track."""
+        return self._msd_error
+
     def normalized(self, normalize_t = True, normalize_xy = True):
         """Normalize the track.
 
