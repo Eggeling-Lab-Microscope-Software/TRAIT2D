@@ -87,16 +87,20 @@ def plot_adc_analysis_results(self):
     fit_results = self.get_adc_analysis_results()["fit_results"]
 
     Dapp = self.get_adc_analysis_results()["Dapp"]
+    Dapp_err = self.get_adc_analysis_results()["Dapp_err"]
     idxs = self.get_adc_analysis_results()["fit_indices"]
 
     n_points = idxs[-1]
 
+    plt.figure(figsize=(8, 4))
     plt.grid(linestyle='dashed', color='grey')
     plt.semilogx(T, Dapp, label="Data", color='black')
-    plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="x", color='black')
+    plt.fill_between(T, Dapp-Dapp_err, Dapp+Dapp_err, color='black', alpha=0.5)
+    plt.semilogx(T[idxs], Dapp[idxs], label="Sampled Points", linestyle="", marker="|", markersize=15.0, color='red', zorder=-1)
     for model in fit_results:
         r = fit_results[model]["params"]
         rel_likelihood = fit_results[model]["rel_likelihood"]
+        ks_p_value = fit_results[model]["KStestPValue"]
         m = None
         for c in ModelDB().models:
             if c.__class__.__name__ == model:
@@ -106,7 +110,7 @@ def plot_adc_analysis_results(self):
             raise ValueError("Can't plot results for model {}; make sure the model is loaded in ModelDB()".format(model))
         pred = m(T, *r)
         plt.semilogx(T[0:n_points], pred[0:n_points],
-                    label=f"{model}, rel. likelihood={rel_likelihood:.2e}")
+                    label=f"{model}\nrel. likelihood={rel_likelihood:.2e}\nKS p-value={ks_p_value:.2e}")
     model = self.get_adc_analysis_results()["best_model"]
 
     plt.axvspan(T[0], T[n_points], alpha=0.25,
@@ -115,5 +119,6 @@ def plot_adc_analysis_results(self):
     plt.ylabel("Normalized ADC")
     plt.title("Diffusion Category: {}".format(model))
     plt.xlim(T[0], T[-1])
-    plt.legend()
+    plt.legend(bbox_to_anchor=(1, 1), loc='upper left')
+    plt.subplots_adjust(right=0.7)
     plt.show()

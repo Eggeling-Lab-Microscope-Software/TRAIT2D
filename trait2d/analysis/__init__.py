@@ -578,14 +578,14 @@ class ListOfTracks:
             Use when working with differently spaced tracks.
         """
 
-        t, msd, = self.get_msd(interpolation)
+        t, msd, err= self.get_msd(interpolation)
         import matplotlib.pyplot as plt
         plt.figure()
-        ax = plt.gca()
-        ax.set_xlabel("t")
-        ax.set_ylabel("Average MSD")
-        ax.semilogx(t, msd)
-        ax.legend()
+        plt.grid(linestyle='dashed', color='grey')
+        plt.xlabel("t")
+        plt.ylabel("Average MSD")
+        plt.semilogx(t, msd, color='black')
+        plt.fill_between(t, msd-err, msd+err, color='black', alpha=0.5)
 
     def get_dapp(self, interpolation = False):
         """Get the apparent diffusion coefficient averaged over all tracks.
@@ -908,13 +908,16 @@ class Track:
         plt.show()
 
     def plot_msd(self):
+        t = self._t[0:-3]
+        msd = self._msd
+        err = self._msd_error
         import matplotlib.pyplot as plt
         plt.figure()
-        ax = plt.gca()
-        ax.set_xlabel("t")
-        ax.set_ylabel("MSD")
-        ax.semilogx(self._t[0:-3], self._msd)
-        ax.legend()
+        plt.grid(linestyle='dashed', color='grey')
+        plt.xlabel("t")
+        plt.ylabel("MSD")
+        plt.semilogx(t, msd, color='black')
+        plt.fill_between(t, msd-err, msd+err, color='black', alpha=0.5)
 
 
     def get_x(self):
