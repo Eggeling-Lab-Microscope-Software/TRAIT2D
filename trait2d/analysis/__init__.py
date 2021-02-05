@@ -1073,7 +1073,10 @@ class Track:
                 bic_min = bic
                 category = model_name
 
-            fit_results[model_name] = {"params": r[0], "errors": perr, "bic" : bic}
+            from scipy.stats import kstest
+            test_results = kstest(Dapp[idxs], pred[idxs], N = len(idxs))
+
+            fit_results[model_name] = {"params": r[0], "errors": perr, "bic" : bic, "KSTestStat": test_results[0], "KStestPValue": test_results[1]}
 
         # Calculate the relative likelihood for each model
         for model in ModelDB().models:
