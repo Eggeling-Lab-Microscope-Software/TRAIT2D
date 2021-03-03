@@ -29,7 +29,7 @@
             </size>
         </property>
         <property name="windowTitle">
-            <string>TRAIT-2D Single-Track Analysis</string>
+            <string>TRAIT2D Single-Track Analysis</string>
         </property>
         <widget class="QWidget" name="centralwidget">
             <widget class="QTabWidget" name="tabWidget">

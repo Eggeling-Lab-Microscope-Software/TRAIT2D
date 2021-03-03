@@ -10,7 +10,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     author           = 'Mariia Dmitrieva, Joel Lefebvre, Francesco Reina, John Wigg',
     author_email     = 'mariia.dmitrieva@eng.ox.ac.uk, joel.lefebvre@eng.ox.ac.uk, francesco.reina@uni-jena.de, john.wigg@uni-jena.de',
-    url              = "https://github.com/FReina/TRAIT-2D",
+    url              = "https://github.com/FReina/TRAIT2D",
     packages         = setuptools.find_packages(),
     version          = "GH_VERSION",
     install_requires = ['setuptools', 'wheel', 'numpy', 'scipy', 'scikit-image',
