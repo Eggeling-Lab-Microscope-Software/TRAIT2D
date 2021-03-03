@@ -1,10 +1,10 @@
-# TRAIT-2D
+# TRAIT2D
 
 ![](https://img.shields.io/pypi/v/trait2d) ![](https://img.shields.io/pypi/wheel/trait2d) ![](https://img.shields.io/pypi/pyversions/trati2d) ![](https://img.shields.io/pypi/l/trait2d)
 
 ![](https://img.shields.io/conda/v/trait2d/trait2d)
 
-TRAIT-2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
+TRAIT2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
 
 The documentation is available at [GitHub Pages](FReina.github.io/iSCAT_analysis).
 
@@ -52,10 +52,10 @@ Installation:
 
 * clone the GitHub repository
 
-   * run `git clone https://github.com/FReina/TRAIT-2D`
+   * run `git clone https://github.com/FReina/TRAIT2D`
    * **OR**
 
-      * visit https://github.com/FReina/TRAIT-2D
+      * visit https://github.com/FReina/TRAIT2D
       * click the green *Code* button and then *Download ZIP*
       * extract the downloaded `.zip` file anywhere on your computer
 

@@ -50,7 +50,7 @@ requirements:
     - wheel
 
 about:
-  home: "https://github.com/FReina/TRAIT-2D"
+  home: "https://github.com/FReina/TRAIT2D"
   license: "GNU General Public v3 (GPLv3)"
   license_family: GPL3
   license_file: 

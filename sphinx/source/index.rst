@@ -3,10 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to TRAIT-2D's documentation!
+Welcome to TRAIT2D's documentation!
 ====================================
 
-TRAIT-2D (available as ``trait2d``) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking (SPT) experiments.
+TRAIT2D (available as ``trait2d``) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking (SPT) experiments.
 
 Features
 --------
@@ -32,7 +32,7 @@ Installation:
 
 * Launch a terminal (or the Anaconda Prompt on Windows)
 * *Optional*: Create a new conda environment (e.g. ``conda create --name trait2d``)
-* Install the conda package from the ``trait2d`` channel with ``conda instlal -c trait2d trait2d``
+* Install the conda package from the ``trait2d`` channel with ``conda install -c trait2d trait2d``
 
 Install from PyPI
 ~~~~~~~~~~~~~~~~~
@@ -57,10 +57,10 @@ Installation:
 
 * clone the GitHub repository
 
-   * run ``git clone https://github.com/FReina/TRAIT-2D``
+   * run ``git clone https://github.com/FReina/TRAIT2D``
    * **OR**
 
-      * visit `https://github.com/FReina/TRAIT-2D`
+      * visit `https://github.com/FReina/TRAIT2D`
       * click the green *Code* button and then *Download ZIP*
       * extract the downloaded ``.zip`` file anywhere on your computer
 
