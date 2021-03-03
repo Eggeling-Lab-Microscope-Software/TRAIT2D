@@ -1073,7 +1073,7 @@ class Track:
 
             perr = np.sqrt(np.diag(r[1]))
             pred = model(T, *r[0])
-            bic = BIC(pred[idxs], Dapp[idxs], len(r[0]), 1)
+            bic = BIC(pred[idxs], Dapp[idxs], len(r[0]), len(idxs))
             if bic < bic_min:
                 bic_min = bic
                 category = model_name
