@@ -57,10 +57,10 @@ Installation:
 
 * clone the GitHub repository
 
-   * run ``git clone https://github.com/FReina/TRAIT2D``
+   * run ``git clone https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D``
    * **OR**
 
-      * visit `https://github.com/FReina/TRAIT2D`
+      * visit `https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D`
       * click the green *Code* button and then *Download ZIP*
       * extract the downloaded ``.zip`` file anywhere on your computer
 

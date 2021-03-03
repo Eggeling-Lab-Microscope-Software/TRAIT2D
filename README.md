@@ -6,7 +6,7 @@
 
 TRAIT2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
 
-The documentation is available at [GitHub Pages](FReina.github.io/iSCAT_analysis).
+The documentation is available at [GitHub Pages](Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis).
 
 ## Features
 
@@ -52,10 +52,10 @@ Installation:
 
 * clone the GitHub repository
 
-   * run `git clone https://github.com/FReina/TRAIT2D`
+   * run `git clone https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D`
    * **OR**
 
-      * visit https://github.com/FReina/TRAIT2D
+      * visit https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D
       * click the green *Code* button and then *Download ZIP*
       * extract the downloaded `.zip` file anywhere on your computer
 
@@ -80,13 +80,13 @@ To use the `trait2d` modules, you can import them in your Python scripts or note
 
 The simulator module is available as `trait2d.simulators` and the analysis module as `trait2d.analysis`. 
 
-For more information, check the documentation on the [simulation](https://FReina.github.io/iSCAT_analysis/release/analysis.html) and [analysis](https://FReina.github.io/iSCAT_analysis/release/simulators.html) libraries.
+For more information, check the documentation on the [simulation](https://Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis/release/analysis.html) and [analysis](https://Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis/release/simulators.html) libraries.
 
-Examples are available in the [gallery](https://FReina.github.io/iSCAT_analysis/release/auto_examples/index.html).
+Examples are available in the [gallery](https://Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis/release/auto_examples/index.html).
 
 ## Further GUI Usage
 
-You can find more information and GUI descriptions in the documentation on the [analysis](https://FReina.github.io/iSCAT_analysis/release/analysis_gui.html), [simulator](https://FReina.github.io/iSCAT_analysis/release/simulator_gui.html), and [tracker](https://FReina.github.io/iSCAT_analysis/release/tracker_gui.html) GUIs.
+You can find more information and GUI descriptions in the documentation on the [analysis](https://Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis/release/analysis_gui.html), [simulator](https://Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis/release/simulator_gui.html), and [tracker](https://Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis/release/tracker_gui.html) GUIs.
 
 ### Detection and Tracking
 * Launch a terminal (or the `Anaconda Prompt` on Windows)
