@@ -5,8 +5,6 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/trait2d)](https://pypi.org/project/trait2d)
 [![PyPI - License](https://img.shields.io/pypi/l/trait2d)](https://pypi.org/project/trait2d)
 
-[![Conda](https://img.shields.io/conda/v/trait2d/trait2d)](https://anaconda.org/trait2d/trait2d)
-
 TRAIT2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
 
 The documentation is available at [GitHub Pages](https://eggeling-lab-microscope-software.github.io/TRAIT2D/).
