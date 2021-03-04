@@ -18,9 +18,9 @@ setuptools.setup(
                         'tk', 'imageio', 'PyQt5', 'pyqtgraph'],
     entry_points     = {
                        'console_scripts': [
-                            'trait2d_analysis_gui = gui_analysis:main',
-                            'trait2d_simulator_gui = gui_simulator:main',
-                            'trait2d_tracker_gui = gui_tracker:main'
+                            'trait2d_analysis_gui = trait2d_analysis_gui:main',
+                            'trait2d_simulator_gui = trait2d_simulator_gui:main',
+                            'trait2d_tracker_gui = trait2d_tracker_gui:main'
                         ],
     },
     classifiers      = [
@@ -29,4 +29,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires  = '>=3.7',
+    include_package_data = True
 )

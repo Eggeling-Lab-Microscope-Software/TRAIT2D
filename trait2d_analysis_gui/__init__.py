@@ -11,8 +11,8 @@ from trait2d.analysis import Track, ModelDB
 from trait2d.analysis.models import ModelBrownian, ModelConfined, ModelHop
 from trait2d.exceptions import *
 
-import gui.tab.msd
-import gui.tab.adc
+import trait2d_analysis_gui.tab.msd
+import trait2d_analysis_gui.tab.adc
 
 import os
 
@@ -28,8 +28,8 @@ class MainWindow(QMainWindow):
         uic.loadUi(os.path.join(dirname, 'gui_analysis.ui'), self)
 
         # Add widgets to tabs
-        wid_msd = gui.tab.msd.widgetMSD(self)
-        wid_adc = gui.tab.adc.widgetADC(self)
+        wid_msd = trait2d_analysis_gui.tab.msd.widgetMSD(self)
+        wid_adc = trait2d_analysis_gui.tab.adc.widgetADC(self)
 
         self.layoutMSD.addWidget(wid_msd, 0, 0)
         self.layoutADC.addWidget(wid_adc, 0, 0)
