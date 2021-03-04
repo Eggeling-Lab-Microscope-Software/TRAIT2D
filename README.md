@@ -1,8 +1,11 @@
 # TRAIT2D
 
-![](https://img.shields.io/pypi/v/trait2d) ![](https://img.shields.io/pypi/wheel/trait2d) ![](https://img.shields.io/pypi/pyversions/trati2d) ![](https://img.shields.io/pypi/l/trait2d)
+[![PyPI](https://img.shields.io/pypi/v/trait2d)](https://pypi.org/project/trait2d/)
+[![PyPI - Wheel](https://img.shields.io/pypi/wheel/trait2d)](https://pypi.org/project/trait2d/#files)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/trait2d)](https://pypi.org/project/trait2d)
+[![PyPI - License](https://img.shields.io/pypi/l/trait2d)](https://pypi.org/project/trait2d)
 
-![](https://img.shields.io/conda/v/trait2d/trait2d)
+[![Conda](https://img.shields.io/conda/v/trait2d/trait2d)](https://anaconda.org/trait2d/trait2d)
 
 TRAIT2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
 
