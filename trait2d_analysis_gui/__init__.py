@@ -47,7 +47,8 @@ class MainWindow(QMainWindow):
 
     def show_trackid_dialog(self):
         Dialog = QDialog()
-        uic.loadUi("gui/dialog_trackid.ui", Dialog)
+        dirname = os.path.dirname(__file__)
+        uic.loadUi(os.path.join(dirname, "dialog_trackid.ui"), Dialog)
         Dialog.show()
         resp = Dialog.exec_()
 
@@ -56,7 +57,8 @@ class MainWindow(QMainWindow):
 
     def show_import_dialog(self, column_names):
         Dialog = QDialog()
-        uic.loadUi("gui/dialog_import.ui", Dialog)
+        dirname = os.path.dirname(__file__)
+        uic.loadUi(os.path.join(dirname, "dialog_import.ui"), Dialog)
         Dialog.show()
 
         Dialog.comboBoxColId.addItem('')

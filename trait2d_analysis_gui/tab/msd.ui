@@ -531,7 +531,7 @@
   <customwidget>
    <class>ModelFitWidget</class>
    <extends>QGraphicsView</extends>
-   <header>gui.tab.msd</header>
+   <header>trait2d_analysis_gui.tab.msd</header>
   </customwidget>
  </customwidgets>
  <resources/>

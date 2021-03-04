@@ -8,8 +8,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QWidget, QApplication
 from PyQt5.QtGui import QIntValidator
 
-from gui.plot import ModelFitWidget
-from gui.render_math import MathTextLabel
+from trait2d_analysis_gui.plot import ModelFitWidget
+from trait2d_analysis_gui.render_math import MathTextLabel
 
 import os
 
