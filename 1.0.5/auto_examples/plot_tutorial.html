@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TRAIT Tutorial &mdash; trait2d 1.0.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Bulk processing with ListOfTracks" href="plot_list_of_tracks.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulator_gui.html">Simulator GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../csv_files.html">CSV Files</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Example gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_analyse_imported_data.html">Analyze Imported Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_custom_model.html">Adding Custom Models for ADC Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_list_of_tracks.html">Bulk processing with <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TRAIT Tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simulation">Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simulate-tracks">Simulate tracks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analyse-tracks">Analyse tracks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Example gallery</a> &raquo;</li>
+        
+      <li>TRAIT Tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/1.0.5/sphinx/source/auto_examples/plot_tutorial.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-tutorial-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="trait-tutorial">
+<span id="sphx-glr-auto-examples-plot-tutorial-py"></span><h1>TRAIT Tutorial<a class="headerlink" href="#trait-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This example demonstrates some of the library’s core features, namely simulation and analysis of 2D diffusion tracks. You will learn about:</p>
+<div class="section" id="simulation">
+<h2>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Simulating multiple tracks with different diffusion models</p></li>
+</ul>
+</div>
+<div class="section" id="analysis">
+<h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Apparent Diffusion Coefficient (ADC) analysis of a single track</p></li>
+<li><p>ADC analysis of multiple tracks in bulk</p></li>
+<li><p>Retreiving an analysis summary of multiple tracks</p></li>
+<li><p>Filtering tracks by diffusion category</p></li>
+</ul>
+<div class="section" id="simulate-tracks">
+<h3>Simulate tracks<a class="headerlink" href="#simulate-tracks" title="Permalink to this headline">¶</a></h3>
+<p>First, import the required simulators:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.simulators</span> <span class="kn">import</span> <span class="n">BrownianDiffusion</span>
+<span class="kn">from</span> <span class="nn">trait2d.simulators</span> <span class="kn">import</span> <span class="n">HoppingDiffusion</span>
+</pre></div>
+</div>
+<p>A simulator can be initialised with different parameters. For Brownian diffusion, we choose the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;Tmax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># Maximum simulation time (s)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="c1"># Simulation time resolution (s)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;dL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="c1"># Simulation spatial resolution (m)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span> <span class="c1"># Diffusion coefficient (m^2/s)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="c1"># Simulation domain size (m)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">42</span> <span class="c1"># Seed to initialize the random generator (for reproducibility)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;quantize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># Quantize the position to the simulation spatial resolution grid.</span>
+
+<span class="n">simulator_brownian</span> <span class="o">=</span> <span class="n">BrownianDiffusion</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameters differ between simulators.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;Tmax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># Maximum simulation time (s)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-4</span> <span class="c1"># Simulation time resolution (s)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;dL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-8</span> <span class="c1"># Simulation spatial resolution (m)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;Df&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">8e-13</span> <span class="c1"># Free diffusion coefficient [m^2/s]</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="c1"># Simulation domain size (m)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;HP&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="c1"># Hopping probability [0-1]</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;HL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="c1"># Average compartment diameter/length [m]</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">42</span> <span class="c1"># Seed to initialize the random generator (for reproducibility)</span>
+<span class="n">params</span><span class="p">[</span><span class="s2">&quot;quantize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># Quantize the position to the simulation spatial resolution grid.</span>
+
+<span class="n">simulator_hop</span> <span class="o">=</span> <span class="n">HoppingDiffusion</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After initialisation the simulations can be run. The results will be stored in the simulator object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulator_brownian</span><span class="o">.</span><span class="n">run</span><span class="p">();</span>
+<span class="n">simulator_hop</span><span class="o">.</span><span class="n">run</span><span class="p">();</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+</pre></div>
+</div>
+<p>The simulated trajectoies can be plotted:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulator_brownian</span><span class="o">.</span><span class="n">display_trajectory</span><span class="p">()</span>
+<span class="n">simulator_hop</span><span class="o">.</span><span class="n">display_trajectory</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Diffusion" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_tutorial_001.png" />
+<p>It is also possible to export the simulated tracks as videos using the <code class="docutils literal notranslate"><span class="pre">trait2d.simulators.iscat_movie</span></code> class. Currently, the tracks need first to be saved e.g. as a <code class="docutils literal notranslate"><span class="pre">.csv</span></code> using <code class="docutils literal notranslate"><span class="pre">BrownianDiffusion.save()</span></code> (or any other Diffusion model) and then load them again using <code class="docutils literal notranslate"><span class="pre">iscat_movie.load_tracks()</span></code>. You also need to load a PSF with <code class="docutils literal notranslate"><span class="pre">iscat_movie.load_psf()</span></code>.</p>
+</div>
+<div class="section" id="analyse-tracks">
+<h3>Analyse tracks<a class="headerlink" href="#analyse-tracks" title="Permalink to this headline">¶</a></h3>
+<p>Before we start fitting our data, we need to add some models. <code class="docutils literal notranslate"><span class="pre">trait2d.analysis.models</span></code> contains a few models that we can add to <code class="docutils literal notranslate"><span class="pre">ModelDB</span></code>. All models added this way will be used during analysis.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis</span> <span class="kn">import</span> <span class="n">ModelDB</span>
+<span class="kn">from</span> <span class="nn">trait2d.analysis.models</span> <span class="kn">import</span> <span class="n">ModelBrownian</span><span class="p">,</span> <span class="n">ModelConfined</span><span class="p">,</span> <span class="n">ModelHop</span>
+
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelBrownian</span><span class="p">)</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelConfined</span><span class="p">)</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelHop</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Single tracks are stored in a <code class="docutils literal notranslate"><span class="pre">Track</span></code> object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis</span> <span class="kn">import</span> <span class="n">Track</span>
+</pre></div>
+</div>
+<p>We can create a single track from our last simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">single_track</span> <span class="o">=</span> <span class="n">Track</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">simulator_brownian</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can now do ADC analysis on the track:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">single_track</span><span class="o">.</span><span class="n">adc_analysis</span><span class="p">(</span><span class="n">fit_max_time</span><span class="o">=</span><span class="mf">0.5e-1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Analysis results like the calculated values for <span class="math notranslate nohighlight">\(D_{app}\)</span>, fit parameters and much more are returned in a dictionary. We can also retreive the dictionary of the last analysis at any time with <code class="docutils literal notranslate"><span class="pre">get_adc_analysis_results</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fit_results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;fit_results&quot;</span><span class="p">]</span>
+<span class="n">best_model</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;best_model&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit_results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">best_model</span><span class="p">)</span>
+
+<span class="n">single_track</span><span class="o">.</span><span class="n">plot_adc_analysis_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Diffusion Category: ModelBrownian" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_tutorial_002.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;ModelBrownian&#39;: {&#39;params&#39;: array([5.35420964e-13, 3.40081414e-09]), &#39;errors&#39;: array([7.98016227e-16, 1.19559807e-10]), &#39;bic&#39;: -31505.992351629604, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 1.0}, &#39;ModelConfined&#39;: {&#39;params&#39;: array([5.35544211e-13, 3.39099319e-09, 5.89168357e+01]), &#39;errors&#39;: array([7.99162632e-16, 1.19813407e-10, 1.25435120e-23]), &#39;bic&#39;: -31499.725674131038, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 0.043572077884092675}, &#39;ModelHop&#39;: {&#39;params&#39;: array([5.35420964e-13, 8.01943892e-27, 3.40100240e-09, 3.99364993e-07]), &#39;errors&#39;: array([8.45871388e-16, 2.83972632e-11, 7.94284129e-10, 0.00000000e+00]), &#39;bic&#39;: -31493.576003495153, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 0.002012909548076235}}
+ModelBrownian
+</pre></div>
+</div>
+<p>Multiple tracks are then stored in a <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code> object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis</span> <span class="kn">import</span> <span class="n">ListOfTracks</span>
+</pre></div>
+</div>
+<p>For now, we just simulate some more tracks and create a single <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code> from these tracks. Multiple tracks can also be loaded from a single file using <code class="docutils literal notranslate"><span class="pre">ListOfTracks.from_file()</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="n">tracks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">simulator_brownian</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">simulator_hop</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Track</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">simulator_brownian</span><span class="o">.</span><span class="n">trajectory</span><span class="p">))</span>
+    <span class="n">tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Track</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">simulator_hop</span><span class="o">.</span><span class="n">trajectory</span><span class="p">))</span>
+
+<span class="n">tracks</span> <span class="o">=</span> <span class="n">ListOfTracks</span><span class="p">(</span><span class="n">tracks</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+Free diffusion simulation was completed in 5000 iterations.
+Hopping diffusion simulation was completed in 5000 iterations.
+</pre></div>
+</div>
+<p>In order to set initial parameters or bounds for the fits, we need to modify the models inside <code class="docutils literal notranslate"><span class="pre">ModelDB</span></code>. These will then be applied during all analysis from this point on.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">ModelBrownian</span><span class="p">)</span><span class="o">.</span><span class="n">initial</span> <span class="o">=</span> <span class="n">fit_results</span><span class="p">[</span><span class="s2">&quot;ModelBrownian&quot;</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">ModelConfined</span><span class="p">)</span><span class="o">.</span><span class="n">initial</span> <span class="o">=</span> <span class="n">fit_results</span><span class="p">[</span><span class="s2">&quot;ModelConfined&quot;</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">ModelHop</span><span class="p">)</span><span class="o">.</span><span class="n">initial</span> <span class="o">=</span> <span class="n">fit_results</span><span class="p">[</span><span class="s2">&quot;ModelHop&quot;</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Here, we set all initial parameters to the results of our single fit from before.</p>
+<p>Now that we set our initial guesses, let’s analyse the remaining tracks at once.</p>
+<p>Enabling logarithmic sampling is a good idea since the time axis will be scaled logarithmically by default. We can also set the maximum time on the time for which to fit.</p>
+<p><code class="docutils literal notranslate"><span class="pre">adc_analysis</span></code> will return a list containing the indices of all tracks for which a fit has failed. These can then be retreived with <code class="docutils literal notranslate"><span class="pre">get_track</span></code> and analysed further.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks</span><span class="o">.</span><span class="n">adc_analysis</span><span class="p">(</span><span class="n">fit_max_time</span><span class="o">=</span><span class="mf">50e-3</span><span class="p">,</span> <span class="n">enable_log_sampling</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/__init__.py:346: UserWarning: ADC analysis failed for 5/20 tracks. Consider raising the maximum function evaluations using the maxfev keyword argument. To get a more detailed stacktrace, run the ADC analysis for a single track.
+  warnings.warn(&quot;ADC analysis failed for {}/{} tracks. &quot;
+
+[5, 6, 8, 9, 18]
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">adc_summary</span></code> gives an overview of the analysis results including optional plots, the averaged parameters for each model, the averaged MSD for each model and the averaged $D_{app}$ for each model.</p>
+<p>(We need to set <code class="docutils literal notranslate"><span class="pre">interpolation</span> <span class="pre">=</span> <span class="pre">True</span></code> since some of the time differences in the simulated tracks deviate <em>slightly</em> from the expected value.)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks</span><span class="o">.</span><span class="n">adc_summary</span><span class="p">(</span><span class="n">plot_dapp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_pie_chart</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img alt="plot tutorial" class="sphx-glr-multi-img" src="../_images/sphx_glr_plot_tutorial_003.png" />
+</li>
+<li><img alt="plot tutorial" class="sphx-glr-multi-img" src="../_images/sphx_glr_plot_tutorial_004.png" />
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:20: RuntimeWarning: divide by zero encountered in true_divide
+  return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:20: RuntimeWarning: invalid value encountered in multiply
+  return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:42: RuntimeWarning: divide by zero encountered in true_divide
+  D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:42: RuntimeWarning: invalid value encountered in multiply
+  D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:43: RuntimeWarning: divide by zero encountered in true_divide
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:43: RuntimeWarning: invalid value encountered in multiply
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:30: RuntimeWarning: divide by zero encountered in true_divide
+  return D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:30: RuntimeWarning: invalid value encountered in multiply
+  return D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:31: RuntimeWarning: divide by zero encountered in true_divide
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:31: RuntimeWarning: invalid value encountered in multiply
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+
+{&#39;sectors&#39;: {&#39;ModelBrownian&#39;: 0.1, &#39;ModelHop&#39;: 0.05, &#39;ModelConfined&#39;: 0.6, &#39;not catergorized&#39;: 0.25}, &#39;average_params&#39;: {&#39;ModelBrownian&#39;: array([5.26873356e-13, 5.06837704e-09]), &#39;ModelHop&#39;: array([7.16376227e-13, 3.92265705e-09, 2.38741571e-09, 1.11615433e-08]), &#39;ModelConfined&#39;: array([6.39740392e-13, 6.95523062e-09, 5.59892691e-02])}, &#39;average_msd&#39;: {&#39;ModelBrownian&#39;: array([1.98168925e-16, 3.97525546e-16, 5.97383701e-16, ...,
+       2.06230171e-13, 2.04374238e-13, 2.01113780e-13]), &#39;ModelHop&#39;: array([3.16851643e-16, 6.29346578e-16, 9.39816443e-16, ...,
+       3.52565304e-12, 3.51655574e-12, 3.49330320e-12]), &#39;ModelConfined&#39;: array([2.67030645e-16, 5.30825180e-16, 7.91230383e-16, ...,
+       6.90825162e-13, 6.91950125e-13, 6.91242131e-13])}, &#39;average_dapp&#39;: {&#39;ModelBrownian&#39;: array([7.43133469e-13, 5.96221110e-13, 5.59965330e-13, ...,
+       1.03204550e-13, 1.02255306e-13, 1.00603851e-13]), &#39;ModelHop&#39;: array([1.18795602e-12, 9.43831063e-13, 8.80901700e-13, ...,
+       1.76435594e-12, 1.75945107e-12, 1.74746725e-12]), &#39;ModelConfined&#39;: array([1.00122704e-12, 7.96100333e-13, 7.41642860e-13, ...,
+       3.45712261e-13, 3.46205915e-13, 3.45782466e-13])}}
+</pre></div>
+</div>
+<p>Now that analysis is done we can also retrieve all tracks that fit a certain diffusion category best:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks_brownian</span> <span class="o">=</span> <span class="n">tracks</span><span class="o">.</span><span class="n">get_sublist</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">ModelBrownian</span><span class="p">)</span>
+<span class="n">tracks_brownian</span><span class="o">.</span><span class="n">adc_summary</span><span class="p">(</span><span class="n">plot_dapp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="plot tutorial" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_tutorial_005.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:20: RuntimeWarning: divide by zero encountered in true_divide
+  return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:20: RuntimeWarning: invalid value encountered in multiply
+  return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
+
+{&#39;sectors&#39;: {&#39;ModelBrownian&#39;: 1.0, &#39;not catergorized&#39;: 0.0}, &#39;average_params&#39;: {&#39;ModelBrownian&#39;: array([5.26873356e-13, 5.06837704e-09])}, &#39;average_msd&#39;: {&#39;ModelBrownian&#39;: array([1.98168925e-16, 3.97485575e-16, 5.97302389e-16, ...,
+       2.06225669e-13, 2.04372755e-13, 2.01111823e-13])}, &#39;average_dapp&#39;: {&#39;ModelBrownian&#39;: array([7.43133469e-13, 5.96228363e-13, 5.59970990e-13, ...,
+       1.03202276e-13, 1.02254547e-13, 1.00602860e-13])}}
+</pre></div>
+</div>
+<p>As mentioned before, we can retreive the analysis results for any track, at any time. Single tracks can be received with <code class="docutils literal notranslate"><span class="pre">ListOfTracks.get_track</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks_brownian</span><span class="o">.</span><span class="n">get_track</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">get_adc_analysis_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;Dapp&#39;: array([7.35861012e-13, 5.91930957e-13, 5.52835157e-13, ...,
+       2.01092624e-13, 1.99371356e-13, 1.96076760e-13]), &#39;Dapp_err&#39;: array([1.02046774e-14, 8.36763787e-15, 7.75119156e-15, ...,
+       3.45015063e-15, 5.14406090e-15, 6.10438967e-15]), &#39;fit_indices&#39;: [0, 1, 3, 6, 11, 19, 31, 50, 80, 128, 204, 324], &#39;fit_results&#39;: {&#39;ModelBrownian&#39;: {&#39;params&#39;: array([5.57746145e-13, 4.29043137e-09]), &#39;errors&#39;: array([1.43381564e-14, 3.12179503e-10]), &#39;bic&#39;: -734.8417477603399, &#39;KSTestStat&#39;: 0.4166666666666667, &#39;KStestPValue&#39;: 0.2557751845677543, &#39;rel_likelihood&#39;: 1.0}, &#39;ModelConfined&#39;: {&#39;params&#39;: array([5.57772665e-13, 4.28975657e-09, 8.22116066e+01]), &#39;errors&#39;: array([1.51251622e-14, 3.29319958e-10, 8.34612204e-24]), &#39;bic&#39;: -732.3397343157916, &#39;KSTestStat&#39;: 0.4166666666666667, &#39;KStestPValue&#39;: 0.2557751845677543, &#39;rel_likelihood&#39;: 0.2862165112356662}, &#39;ModelHop&#39;: {&#39;params&#39;: array([6.06485236e-13, 1.09770836e-10, 5.77754633e-10, 3.95784703e-09]), &#39;errors&#39;: array([2.83467026e-14, 1.86817685e-08, 6.40704986e-09, 5.18138607e-10]), &#39;bic&#39;: -720.0964390198864, &#39;KSTestStat&#39;: 0.75, &#39;KStestPValue&#39;: 0.0014969550573265746, &#39;rel_likelihood&#39;: 0.000628198492719433}}, &#39;best_model&#39;: &#39;ModelBrownian&#39;}
+</pre></div>
+</div>
+<p>We can also plot them:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks_brownian</span><span class="o">.</span><span class="n">get_track</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">plot_adc_analysis_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Diffusion Category: ModelBrownian" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_tutorial_006.png" />
+<p>It is a good idea to use <cite>ModelDB().cleanup()</cite> at the end of your notebooks to remove all models again. Otherwise they may carry over into other open notebooks.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  22.217 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-tutorial-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/43d70eb4b9ed18f8f34451c0af07d6f1/plot_tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_tutorial.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/706f65884faeaa9dfb13933db5a13d6a/plot_tutorial.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_tutorial.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="plot_list_of_tracks.html" class="btn btn-neutral float-left" title="Bulk processing with ListOfTracks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
