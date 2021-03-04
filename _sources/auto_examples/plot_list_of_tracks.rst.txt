@@ -62,7 +62,7 @@ The representation of the ``ListOfTracks`` instance holds some information about
  .. code-block:: none
 
 
-    <ListOfTracks instance at 139842869697552>
+    <ListOfTracks instance at 139922059144544>
     Number of tracks: 3
 
 
@@ -156,7 +156,7 @@ For analysis, :class:`trait2d.analysis.ListOfTracks` uses the same semantics as 
     /home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:31: RuntimeWarning: invalid value encountered in multiply
       delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
-    {'sectors': {'ModelHop': 0.3333333333333333, 'ModelConfined': 0.6666666666666666, 'not catergorized': 0.0}, 'average_params': {'ModelHop': array([3.16448921e-13, 2.61472878e-11, 3.19743651e-09, 1.50322400e-05]), 'ModelConfined': array([1.46958595e-12, 1.63115214e-08, 1.48793917e-01])}, 'average_msd': {'ModelHop': array([1.41923249e-15, 2.10575023e-15, 2.84986365e-15, 3.67764700e-15,
+    {'sectors': {'ModelHop': 0.3333333333333333, 'ModelConfined': 0.6666666666666666, 'not catergorized': 0.0}, 'average_params': {'ModelHop': array([3.14919062e-13, 3.16558393e-11, 9.07415669e-10, 1.36150813e-05]), 'ModelConfined': array([1.46958595e-12, 1.63115213e-08, 1.48793916e-01])}, 'average_msd': {'ModelHop': array([1.41923249e-15, 2.10575023e-15, 2.84986365e-15, 3.67764700e-15,
            4.44897710e-15, 5.16904646e-15, 5.88412628e-15, 6.51869619e-15,
            6.99328914e-15, 7.57347461e-15, 8.10632510e-15, 8.71117510e-15,
            9.31852358e-15, 9.92606980e-15, 1.07718412e-14, 1.16563902e-14,
@@ -1214,7 +1214,7 @@ It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to r
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.756 seconds)
+   **Total running time of the script:** ( 0 minutes  1.209 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_list_of_tracks.py:
