@@ -6,7 +6,7 @@
 
 TRAIT2D (available as `trait2d`) is a cross-platform Python software package with compilable graphical user interfaces (GUIs) to support Single Particle Tracking experiments.  The software can be divided, in three main sections:  the tracker, the simulator and the data analyzer.
 
-The documentation is available at [GitHub Pages](Eggeling-Lab-Microscope-Software.github.io/iSCAT_analysis).
+The documentation is available at [GitHub Pages](https://eggeling-lab-microscope-software.github.io/TRAIT2D/).
 
 ## Features
 
