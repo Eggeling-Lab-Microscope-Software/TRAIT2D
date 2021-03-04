@@ -1,0 +1,927 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analysis Library &mdash; trait2d 1.0.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Simulation Library" href="simulators.html" />
+    <link rel="prev" title="Welcome to TRAIT2D’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#single-track">Single Track</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-tracks">Multiple Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modeldb">ModelDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#models">Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Analysis Library</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/1.0.4/sphinx/source/analysis.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="analysis-library">
+<span id="analysis"></span><h1>Analysis Library<a class="headerlink" href="#analysis-library" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="single-track">
+<h2>Single Track<a class="headerlink" href="#single-track" title="Permalink to this headline">¶</a></h2>
+<p>Simple single-track import and analysis can be done using the <code class="docutils literal notranslate"><span class="pre">Track</span></code> class.</p>
+<dl class="py class">
+<dt id="trait2d.analysis.Track">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.</code><code class="sig-name descname">Track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">t</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a track that can hold trajectory and analysis information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – x coordinates of trajectory.</p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – y coordinates of trajectory.</p></li>
+<li><p><strong>t</strong> (<em>array_like</em>) – time coordinates of trajectory.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="trait2d.analysis.Track.adc_analysis">
+<code class="sig-name descname">adc_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">R</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.16666666666666666</span></em>, <em class="sig-param"><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">enable_log_sampling</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log_sampling_dist</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">weighting</span><span class="o">=</span><span class="default_value">'error'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.adc_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revised analysis using the apparent diffusion coefficient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>R</strong> (<em>float</em>) – Point scanning across the field of view.</p></li>
+<li><p><strong>fraction_fit_points</strong> (<em>float</em>) – Fraction of points to use for fitting. Defaults to 25 %.</p></li>
+<li><p><strong>fit_max_time</strong> (<em>float</em>) – Maximum time in fit range. Will override fraction_fit_points.</p></li>
+<li><p><strong>maxfev</strong> (<em>int</em>) – Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.</p></li>
+<li><p><strong>enable_log_sampling</strong> (<em>bool</em>) – Only sample logarithmically spaced time points for analysis.</p></li>
+<li><p><strong>log_sampling_dist</strong> (<em>float</em>) – Exponent of logarithmic sampling (base 10).</p></li>
+<li><p><strong>weighting</strong> (<em>str</em>) – Weighting of the datapoints used in the fit residual calculation. Can be <cite>error</cite> (weight by inverse standard
+deviation), <cite>inverse_variance</cite> (weight by inverse variance), <cite>variance</cite> (weight by variance)
+or <cite>disabled</cite> (no weighting). Default is <cite>error</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>adc_analysis_results</strong> – Dictionary containing all analysis results.
+Can also be retreived using <cite>Track.get_adc_analysis_results()</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.calculate_msd">
+<code class="sig-name descname">calculate_msd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.calculate_msd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the mean squared displacement of the track. Result is stored in the Track object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.delete_adc_analysis_results">
+<code class="sig-name descname">delete_adc_analysis_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.delete_adc_analysis_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the ADC analysis results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.delete_msd_analysis_results">
+<code class="sig-name descname">delete_msd_analysis_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.delete_msd_analysis_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the MSD analysis results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.from_dataframe">
+<em class="property">classmethod </em><code class="sig-name descname">from_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">col_name_x</span><span class="o">=</span><span class="default_value">'x'</span></em>, <em class="sig-param"><span class="n">col_name_y</span><span class="o">=</span><span class="default_value">'y'</span></em>, <em class="sig-param"><span class="n">col_name_t</span><span class="o">=</span><span class="default_value">'t'</span></em>, <em class="sig-param"><span class="n">col_name_id</span><span class="o">=</span><span class="default_value">'id'</span></em>, <em class="sig-param"><span class="n">unit_length</span><span class="o">=</span><span class="default_value">'metres'</span></em>, <em class="sig-param"><span class="n">unit_time</span><span class="o">=</span><span class="default_value">'seconds'</span></em>, <em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.from_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a single track from a DataFrame. Currently only supports ‘.csv’ tracks.
+The DataFrame must contain the fields ‘x’, ‘y’, ‘t’ as well as ‘id’. Different column names can also be
+specified using the appropriate arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing the data.</p></li>
+<li><p><strong>col_name_x</strong> (<em>str</em>) – Column title of x positions.</p></li>
+<li><p><strong>col_name_y</strong> (<em>str</em>) – Column title of y positions.</p></li>
+<li><p><strong>col_name_t</strong> (<em>str</em>) – Column title of time.</p></li>
+<li><p><strong>col_name_id</strong> (<em>str</em>) – Column title of track IDs.</p></li>
+<li><p><strong>unit_length</strong> (<em>str</em>) – Length unit of track data. Either ‘metres’, ‘millimetres’, ‘micrometres’ or ‘nanometres’.</p></li>
+<li><p><strong>unit_time</strong> (<em>str</em>) – Time unit of track data. Either ‘seconds’, ‘milliseconds’, ‘microseconds’ or ‘nanoseconds’.</p></li>
+<li><p><strong>id</strong> (<em>int</em>) – Track ID in case the file contains more than one track.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="exceptions.html#trait2d.exceptions.LoadTrackIdNotFoundError" title="trait2d.exceptions.LoadTrackIdNotFoundError"><strong>LoadTrackIdNotFoundError</strong></a> – When no track with the given id is found</p></li>
+<li><p><strong>LodTrackIdMissingError</strong> – When the file contains multiple tracks but no id is specified.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.from_dict">
+<em class="property">classmethod </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a track from a dictionary.
+:param dict: Dictionary of the track. Has to contain the fields “x”, “y” and “t”.
+:type dict: dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.from_file">
+<em class="property">classmethod </em><code class="sig-name descname">from_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">col_name_x</span><span class="o">=</span><span class="default_value">'x'</span></em>, <em class="sig-param"><span class="n">col_name_y</span><span class="o">=</span><span class="default_value">'y'</span></em>, <em class="sig-param"><span class="n">col_name_t</span><span class="o">=</span><span class="default_value">'t'</span></em>, <em class="sig-param"><span class="n">col_name_id</span><span class="o">=</span><span class="default_value">'id'</span></em>, <em class="sig-param"><span class="n">unit_length</span><span class="o">=</span><span class="default_value">'metres'</span></em>, <em class="sig-param"><span class="n">unit_time</span><span class="o">=</span><span class="default_value">'seconds'</span></em>, <em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a single track from a file. Currently only supports ‘.csv’ tracks.
+The DataFrame must contain the fields ‘x’, ‘y’, ‘t’ as well as ‘id’. Different column names can also be
+specified using the appropriate arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – Name of the file.</p></li>
+<li><p><strong>format</strong> (<em>str</em>) – Either ‘csv’ or ‘json’ or ‘pcl’. Only csv is implemented at the moment.</p></li>
+<li><p><strong>col_name_x</strong> (<em>str</em>) – Column title of x positions.</p></li>
+<li><p><strong>col_name_y</strong> (<em>str</em>) – Column title of y positions.</p></li>
+<li><p><strong>col_name_t</strong> (<em>str</em>) – Column title of time.</p></li>
+<li><p><strong>col_name_id</strong> (<em>str</em>) – Column title of track IDs.</p></li>
+<li><p><strong>unit_length</strong> (<em>str</em>) – Length unit of track data. Either ‘metres’, ‘millimetres’, ‘micrometres’ or ‘nanometres’.</p></li>
+<li><p><strong>unit_time</strong> (<em>str</em>) – Time unit of track data. Either ‘seconds’, ‘milliseconds’, ‘microseconds’ or ‘nanoseconds’.</p></li>
+<li><p><strong>id</strong> (<em>int</em>) – Track ID in case the file contains more than one track.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="exceptions.html#trait2d.exceptions.LoadTrackIdNotFoundError" title="trait2d.exceptions.LoadTrackIdNotFoundError"><strong>LoadTrackIdNotFoundError</strong></a> – When no track with the given id is found</p></li>
+<li><p><strong>LodTrackIdMissingError</strong> – When the file contains multiple tracks but no id is specified.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_adc_analysis_results">
+<code class="sig-name descname">get_adc_analysis_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_adc_analysis_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ADC analysis results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return ID of the track.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_msd">
+<code class="sig-name descname">get_msd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_msd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the MSD values of the track.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_msd_analysis_results">
+<code class="sig-name descname">get_msd_analysis_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_msd_analysis_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the MSD analysis results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_msd_error">
+<code class="sig-name descname">get_msd_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_msd_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the MSD error values of the track.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_size">
+<code class="sig-name descname">get_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of points of the trajectory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_t">
+<code class="sig-name descname">get_t</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return time coordinates of trajectory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_trajectory">
+<code class="sig-name descname">get_trajectory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the trajectory as a dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_x">
+<code class="sig-name descname">get_x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return x coordinates of trajectory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.get_y">
+<code class="sig-name descname">get_y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.get_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return y coordinates of trajectory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.is_msd_calculated">
+<code class="sig-name descname">is_msd_calculated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.is_msd_calculated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the MSD of this track has already been calculated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.msd_analysis">
+<code class="sig-name descname">msd_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">n_fit_points</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">initial_guesses</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">R</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.msd_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classical Mean Squared Displacement Analysis for single track</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fraction_fit_points</strong> (<em>float</em>) – Fraction of points to use for fitting if n_fit_points is not specified.</p></li>
+<li><p><strong>n_fit_points</strong> (<em>int</em>) – Number of points to user for fitting. Will override fraction_fit_points.</p></li>
+<li><p><strong>fit_max_time</strong> (<em>float</em>) – Maximum time in fit range. Will override fraction_fit_points and n_fit_points.</p></li>
+<li><p><strong>initial_guesses</strong> (<em>dict</em>) – Dictionary containing initial guesses for the parameters. Keys can be “model1” and “model2”.
+All values default to 1.</p></li>
+<li><p><strong>maxfev</strong> (<em>int</em>) – Maximum function evaluations by scipy.optimize.curve_fit. The fit will fail if this number is exceeded.</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – Point scanning across the field of view.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>msd_analysis_results</strong> – Dictionary containing all MSD analysis results. Can also be retreived using <cite>Track.get_msd_analysis_results()</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.normalized">
+<code class="sig-name descname">normalized</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">normalize_t</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">normalize_xy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.normalized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the track.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>normalize_t</strong> (<em>bool</em>) – Normalize the time component of the track by setting the first time in the
+track to zero.</p></li>
+<li><p><strong>normalize_xy</strong> (<em>bool</em>) – Normalize the x and y coordinates of the track by setting the initial
+position in the track to zero.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Instance of NormalizedTrack containing the normalized track data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.plot_adc_analysis_results">
+<code class="sig-name descname">plot_adc_analysis_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.plot_adc_analysis_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the ADC analysis results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Track has not been analyzed using ADC analysis yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.plot_msd_analysis_results">
+<code class="sig-name descname">plot_msd_analysis_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'log'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.plot_msd_analysis_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the MSD analysis results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scale</strong> (<em>str</em>) – How to scale the plot over time. Possible values: ‘log’, ‘linear’.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Track has not been analyzed using MSD analysis yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.Track.plot_trajectory">
+<code class="sig-name descname">plot_trajectory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'plasma'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.plot_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the trajectory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cmap</strong> (<em>str</em>) – Name of the colormap to use (see <a class="reference external" href="https://matplotlib.org/tutorials/colors/colormaps.html">https://matplotlib.org/tutorials/colors/colormaps.html</a>
+for a list of possible values)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.analysis.MSDTrack">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.</code><code class="sig-name descname">MSDTrack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msd</span></em>, <em class="sig-param"><span class="n">msd_err</span></em>, <em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.MSDTrack" title="Permalink to this definition">¶</a></dt>
+<dd><p>A special track class that holds an MSD curve but no trajectory data. Can be used for analysis like an ordinary <a class="reference internal" href="#trait2d.analysis.Track" title="trait2d.analysis.Track"><code class="xref py py-class docutils literal notranslate"><span class="pre">trait2d.analysis.Track</span></code></a> object but certain functions might not be available.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="multiple-tracks">
+<h2>Multiple Tracks<a class="headerlink" href="#multiple-tracks" title="Permalink to this headline">¶</a></h2>
+<p>If multiple tracks have to be imported and analysed in bulk, the <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code> class can be used.</p>
+<dl class="py class">
+<dt id="trait2d.analysis.ListOfTracks">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.</code><code class="sig-name descname">ListOfTracks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an object that can hold multiple tracks and analyze them in bulk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tracks</strong> (<em>list</em>) – A Python list containing the tracks as <cite>Track</cite> objects.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.adc_analysis">
+<code class="sig-name descname">adc_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.adc_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze all tracks using ADC analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Keyword arguments to be used by adc_analysis for each track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List containing the indices of the tracks for which the analysis failed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list_failed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.adc_summary">
+<code class="sig-name descname">adc_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">avg_only_params</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">plot_msd</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">plot_dapp</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">plot_pie_chart</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.adc_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average tracks by model and optionally plot the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>avg_only_params</strong> (<em>bool</em>) – Only average the model parameters but not D_app and MSD</p></li>
+<li><p><strong>interpolation</strong> (<em>bool</em>) – User linear interpolation of averaging. Has to be used when
+not all tracks have the same uniform time step size.</p></li>
+<li><p><strong>plot_msd</strong> (<em>bool</em>) – Plot the averaged MSD for each model.</p></li>
+<li><p><strong>plot_dapp</strong> (<em>bool</em>) – Plot the averaged D_app for each model.</p></li>
+<li><p><strong>plot_pie_chart</strong> (<em>bool</em>) – Plot a pie chart showing the relative fractions of each model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>results</strong> – Relative shares and averaged values of each model.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.average">
+<code class="sig-name descname">average</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the mean squared displacement averaged over all tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interpolation</strong> (<em>bool</em>) – Linearly interpolate all msd values over the time points of the first track.
+Use when working with differently spaced tracks.</p></li>
+<li><p><strong>use_averaged_msd</strong> (<em>bool</em>) – Initialize the track with a MSD curve which is the average of all MSD curves
+in the list. This is <em>not</em> neccessarily equal to the result of performing
+<cite>calculate_msd</cite> on the averaged track.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>track</strong> – A single track containing the average</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#trait2d.analysis.Track" title="trait2d.analysis.Track">Track</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.from_file">
+<em class="property">classmethod </em><code class="sig-name descname">from_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">col_name_x</span><span class="o">=</span><span class="default_value">'x'</span></em>, <em class="sig-param"><span class="n">col_name_y</span><span class="o">=</span><span class="default_value">'y'</span></em>, <em class="sig-param"><span class="n">col_name_t</span><span class="o">=</span><span class="default_value">'t'</span></em>, <em class="sig-param"><span class="n">col_name_id</span><span class="o">=</span><span class="default_value">'id'</span></em>, <em class="sig-param"><span class="n">unit_length</span><span class="o">=</span><span class="default_value">'metres'</span></em>, <em class="sig-param"><span class="n">unit_time</span><span class="o">=</span><span class="default_value">'seconds'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a ListOfTracks from a file containing multiple tracks. Currently only supports ‘.csv’ files.
+The file must contain the fields ‘x’, ‘y’, ‘t’ as well as ‘id’. Different column names can also be
+specified using the appropriate arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – Name of the file.</p></li>
+<li><p><strong>format</strong> (<em>str</em>) – Either ‘csv’ or ‘json’ or ‘pcl’. Only csv is implemented at the moment.</p></li>
+<li><p><strong>col_name_x</strong> (<em>str</em>) – Column title of x positions.</p></li>
+<li><p><strong>col_name_y</strong> (<em>str</em>) – Column title of y positions.</p></li>
+<li><p><strong>col_name_t</strong> (<em>str</em>) – Column title of time.</p></li>
+<li><p><strong>col_name_id</strong> (<em>str</em>) – Column title of track IDs.</p></li>
+<li><p><strong>unit_length</strong> (<em>str</em>) – Length unit of track data. Either ‘metres’, ‘millimetres’, ‘micrometres’ or ‘nanometres’.</p></li>
+<li><p><strong>unit_time</strong> (<em>str</em>) – Time unit of track data. Either ‘seconds’, ‘milliseconds’, ‘microseconds’ or ‘nanoseconds’.</p></li>
+<li><p><strong>id</strong> (<em>int</em>) – Track ID in case the file contains more than one track.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="exceptions.html#trait2d.exceptions.LoadTrackIdNotFoundError" title="trait2d.exceptions.LoadTrackIdNotFoundError"><strong>LoadTrackIdNotFoundError</strong></a> – When no track with the given id is found</p></li>
+<li><p><strong>LodTrackIdMissingError</strong> – When the file contains multiple tracks but no id is specified.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.get_dapp">
+<code class="sig-name descname">get_dapp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.get_dapp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the apparent diffusion coefficient averaged over all tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interpolation</strong> (<em>bool</em>) – Linearly interpolate all D_app values over the time points of the first track.
+Use when working with differently spaced tracks.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>t</strong> (<em>ndarray</em>) – 1-dimensional array containing time points at which msd was sampled</p></li>
+<li><p><strong>average_dapp</strong> (<em>ndarray</em>) – 1-dimensional array containing averaged D_app values</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.get_msd">
+<code class="sig-name descname">get_msd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.get_msd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the mean squared displacement averaged over all tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interpolation</strong> (<em>bool</em>) – Linearly interpolate all msd values over the time points of the first track.
+Use when working with differently spaced tracks.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>t</strong> (<em>ndarray</em>) – 1-dimensional array containing time points at which msd was sampled</p></li>
+<li><p><strong>msd</strong> (<em>ndarray</em>) – 1-dimensional array containing averaged msd values</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.get_sublist">
+<code class="sig-name descname">get_sublist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.get_sublist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new ListOfTracks containing only tracks categorized as
+the specified model using ADC analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> – Class (<em>not</em> an instance) of the model the tracks should be categorized as.
+Predefined models can be found at <cite>trait2d.analysis.models</cite>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>track_list</strong> – ListOfTracks containing the tracks that meet the criteria.
+Note: The tracks in the new list will still be references to to
+the tracks in the original list.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#trait2d.analysis.ListOfTracks" title="trait2d.analysis.ListOfTracks">ListOfTracks</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.get_track">
+<code class="sig-name descname">get_track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">idx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.get_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a single track at the specified index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>idx</strong> (<em>int</em>) – Index of track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>track</strong> – Track at index idx.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#trait2d.analysis.Track" title="trait2d.analysis.Track">Track</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.get_track_by_id">
+<code class="sig-name descname">get_track_by_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.get_track_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a single track with the specified ID.
+If there are multiple tracks with the same ID,
+only the first track is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>int</em>) – ID of the track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>track</strong> – Track with the specified ID.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#trait2d.analysis.Track" title="trait2d.analysis.Track">Track</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.get_tracks">
+<code class="sig-name descname">get_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.get_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Python list that contains the tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>tracks</strong> – List of tracks. Each element will be a <cite>Track</cite> object.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.msd_analysis">
+<code class="sig-name descname">msd_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.msd_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze all tracks using MSD analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Keyword arguments to be used by msd_analysis for each track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List containing the indices of the tracks for which the analysis failed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list_failed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.normalize">
+<code class="sig-name descname">normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize all tracks. All Track instances of the ListOfTracks will be
+replaced by NormalizedTrack instances containing individual information about
+the normalization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>arguments to be used by Track.normalized</strong><strong>(</strong><strong>) </strong><strong>for each track.</strong> (<em>Keyword</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.plot_dapp">
+<code class="sig-name descname">plot_dapp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.plot_dapp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the apparent diffusion coefficient averaged over all tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interpolation</strong> (<em>bool</em>) – Linearly interpolate all D_app values over the time points of the first track.
+Use when working with differently spaced tracks.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.plot_msd">
+<code class="sig-name descname">plot_msd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.plot_msd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the mean squared displacement averaged over all tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interpolation</strong> (<em>bool</em>) – Linearly interpolate all msd values over the time points of the first track.
+Use when working with differently spaced tracks.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ListOfTracks.plot_trajectories">
+<code class="sig-name descname">plot_trajectories</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'plasma'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.plot_trajectories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot all trajectories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cmap</strong> (<em>str</em>) – Name of the colormap to use (see <a class="reference external" href="https://matplotlib.org/tutorials/colors/colormaps.html">https://matplotlib.org/tutorials/colors/colormaps.html</a>
+for a list of possible values)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="modeldb">
+<h2>ModelDB<a class="headerlink" href="#modeldb" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ModelDB</span></code> allows managing which models are used for ADC analysis. You can define your own models or use predefined models (see the <a class="reference internal" href="#models"><span class="std std-ref">Models</span></a> section).</p>
+<dl class="py class">
+<dt id="trait2d.analysis.ModelDB">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.</code><code class="sig-name descname">ModelDB</code><a class="headerlink" href="#trait2d.analysis.ModelDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton class holding all models that should be used in analysis.</p>
+<dl class="py method">
+<dt id="trait2d.analysis.ModelDB.add_model">
+<code class="sig-name descname">add_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ModelDB.add_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new model class to the ModelDB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> – <p>Model class (<em>not</em> an instance) to add. There are predefined models available in
+trait2d.analysis.models. Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis.models</span> <span class="kn">import</span> <span class="n">ModelConfined</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelConfined</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ModelDB.cleanup">
+<code class="sig-name descname">cleanup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ModelDB.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all models from ModelDB. It is good practice to call this
+at the end of your scripts since other scripts might share the same
+instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ModelDB.get_model">
+<code class="sig-name descname">get_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ModelDB.get_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the model instance from ModelDB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> – <p>Model class (<em>not</em> and instance) to remove. Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis.models</span> <span class="kn">import</span> <span class="n">ModelConfined</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">ModelConfined</span><span class="p">)</span><span class="o">.</span><span class="n">initial</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0e-12</span><span class="p">,</span> <span class="mf">1.0e-9</span><span class="p">,</span> <span class="mf">0.5e-3</span><span class="p">]</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.analysis.ModelDB.remove_model">
+<code class="sig-name descname">remove_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ModelDB.remove_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a model from ModelDB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> – <p>Model class (<em>not</em> an instance) to remove. Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis.models</span> <span class="kn">import</span> <span class="n">ModelConfined</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">remove_model</span><span class="p">(</span><span class="n">ModelConfined</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<p>There are some predefined models available for analysis. Some of these are only used for MSD analysis internally and should not be used for ADC analysis. For more information on adding or removing models to the analysis, see the <a class="reference internal" href="#modeldb"><span class="std std-ref">ModelDB</span></a> section.</p>
+<span class="target" id="module-trait2d.analysis.models"></span><dl class="py class">
+<dt id="trait2d.analysis.models.ModelBrownian">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelBrownian</code><a class="headerlink" href="#trait2d.analysis.models.ModelBrownian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model for free, unrestricted diffusion.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.analysis.models.ModelConfined">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelConfined</code><a class="headerlink" href="#trait2d.analysis.models.ModelConfined" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model for confined diffusion.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.analysis.models.ModelHop">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelHop</code><a class="headerlink" href="#trait2d.analysis.models.ModelHop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model for hop diffusion.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.analysis.models.ModelHopModified">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelHopModified</code><a class="headerlink" href="#trait2d.analysis.models.ModelHopModified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modified model for hop diffusion.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.analysis.models.ModelImmobile">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelImmobile</code><a class="headerlink" href="#trait2d.analysis.models.ModelImmobile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model for immobile diffusion.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.analysis.models.ModelLinear">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelLinear</code><a class="headerlink" href="#trait2d.analysis.models.ModelLinear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear model for MSD analysis.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.analysis.models.ModelPower">
+<em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelPower</code><a class="headerlink" href="#trait2d.analysis.models.ModelPower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic power law model for MSD analysis.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="simulators.html" class="btn btn-neutral float-right" title="Simulation Library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to TRAIT2D’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

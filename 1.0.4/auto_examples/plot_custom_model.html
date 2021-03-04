@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Adding Custom Models for ADC Analysis &mdash; trait2d 1.0.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bulk processing with ListOfTracks" href="plot_list_of_tracks.html" />
+    <link rel="prev" title="Analyze Imported Data" href="plot_analyse_imported_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulator_gui.html">Simulator GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../csv_files.html">CSV Files</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Example gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_analyse_imported_data.html">Analyze Imported Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Adding Custom Models for ADC Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_list_of_tracks.html">Bulk processing with <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_tutorial.html">TRAIT Tutorial</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Example gallery</a> &raquo;</li>
+        
+      <li>Adding Custom Models for ADC Analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/1.0.4/sphinx/source/auto_examples/plot_custom_model.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-custom-model-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="adding-custom-models-for-adc-analysis">
+<span id="sphx-glr-auto-examples-plot-custom-model-py"></span><h1>Adding Custom Models for ADC Analysis<a class="headerlink" href="#adding-custom-models-for-adc-analysis" title="Permalink to this headline">¶</a></h1>
+<p>This example will guide you throw defining and using a custom model for ADC analysis.</p>
+<p>In order to add a new model, we can inherit from <code class="xref py py-class docutils literal notranslate"><span class="pre">trait2d.analysis.models.ModelBase</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis.models</span> <span class="kn">import</span> <span class="n">ModelBase</span>
+</pre></div>
+</div>
+<p>Here, we define a simple model for Brownian diffusion (which is the same as the one already provided with the library).
+You need to provide default values for the model parameter bounds and initial values as well as the model formula inside the <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method.
+You can also access <code class="docutils literal notranslate"><span class="pre">R</span></code> (point scanning across the field of view) and <code class="docutils literal notranslate"><span class="pre">dt</span></code> (time interval between track localisations) which are defined in the base class.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">ModelBrownian</span><span class="p">(</span><span class="n">ModelBase</span><span class="p">):</span>
+    <span class="n">lower</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span>
+    <span class="n">initial</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5e-12</span><span class="p">,</span> <span class="mf">2.0e-9</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">D</span><span class="o">+</span><span class="n">delta</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="o">/</span><span class="n">t</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>After we’ve defined the model, we can simply add it to the <a class="reference internal" href="../analysis.html#trait2d.analysis.ModelDB" title="trait2d.analysis.ModelDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">trait2d.analysis.ModelDB</span></code></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis</span> <span class="kn">import</span> <span class="n">ModelDB</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelBrownian</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can now run ADC analysis with the model.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis</span> <span class="kn">import</span> <span class="n">Track</span>
+<span class="n">track</span> <span class="o">=</span> <span class="n">Track</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;track1.csv&quot;</span><span class="p">,</span> <span class="n">unit_length</span><span class="o">=</span><span class="s1">&#39;micrometres&#39;</span><span class="p">)</span>
+<span class="n">track</span><span class="o">.</span><span class="n">adc_analysis</span><span class="p">(</span><span class="n">fraction_fit_points</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">)</span>
+<span class="n">track</span><span class="o">.</span><span class="n">plot_adc_analysis_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Diffusion Category: ModelBrownian" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_custom_model_001.png" />
+<p>It is a good idea to use <cite>ModelDB().cleanup()</cite> at the end of your notebooks to remove all models again. Otherwise they may carry over into other open notebooks.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.223 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-custom-model-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/a5d11f3c18c8ea574c77d2dcbb8c37d5/plot_custom_model.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_custom_model.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/ceb5576281875218f95acece4a8b7d14/plot_custom_model.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_custom_model.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_list_of_tracks.html" class="btn btn-neutral float-right" title="Bulk processing with ListOfTracks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_analyse_imported_data.html" class="btn btn-neutral float-left" title="Analyze Imported Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
