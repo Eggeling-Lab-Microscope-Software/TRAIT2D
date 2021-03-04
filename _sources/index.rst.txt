@@ -31,7 +31,7 @@ Prerequisites:
 Installation:
 
 * Launch a terminal (or the Anaconda Prompt on Windows)
-* *Optional*: Create a new conda environment (e.g. ``conda create --name trait2d``)
+* *Optional*: Create a new conda environment (e.g. ``conda create --name trait2d python=3.7``)
 * Install the conda package from the ``trait2d`` channel with ``conda install -c trait2d trait2d``
 
 Install from PyPI
