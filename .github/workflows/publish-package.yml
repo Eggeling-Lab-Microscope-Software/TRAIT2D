@@ -1,4 +1,4 @@
-name: Publish Python 🐍 distributions 📦 to PyPI and Conda
+name: Publish Python 🐍 distributions 📦 to PyPI
 
 on:
   release:
@@ -25,7 +25,6 @@ jobs:
 
       - name: Set version in meta.yaml
         run: |
-          sed -i 's/GH_VERSION/${{ steps.vars.outputs.tag_version }}/g' ./conda/meta.yaml
           sed -i 's/GH_VERSION/${{ steps.vars.outputs.tag_version }}/g' ./setup.py
 
 
@@ -46,9 +45,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.pypi_password }}
-
-      - name: Publish package to conda
-        uses: john-wigg/conda-package-publish-action@v1.2
-        with:
-          subDir: 'conda'
-          AnacondaToken: ${{ secrets.ANACONDA_TOKEN }}

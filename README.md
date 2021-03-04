@@ -22,19 +22,7 @@ The documentation is available at [GitHub Pages](https://eggeling-lab-microscope
 
 Installation methods have been tested on Linux and Windows.
 
-### Install using Conda (Recommended)
-
-Prerequisites:
-
-* An installed Conda distribution (e.g. [Anaconda](https://www.anaconda.com/>) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html))
-
-Installation:
-
-* Launch a terminal (or the Anaconda Prompt on Windows)
-* *Optional*: Create a new conda environment (e.g. `conda create --name trait2d`)
-* Install the conda package from the `trait2d` channel with `conda install -c trait2d trait2d`
-
-### Install from PyPI
+### Install from PyPI (Recommended)
 
 Prerequisites:
 
