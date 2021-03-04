@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CSV Files &mdash; trait2d 1.0.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example gallery" href="auto_examples/index.html" />
+    <link rel="prev" title="Tracker GUI" href="tracker_gui.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CSV Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-structure">Data Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#units">Units</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>CSV Files</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/1.0.7/sphinx/source/csv_files.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="csv-files">
+<span id="id1"></span><h1>CSV Files<a class="headerlink" href="#csv-files" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">.csv</span></code> is currently the only supported file format for data input using <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_file" title="trait2d.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_file()</span></code></a> or <a class="reference internal" href="analysis.html#trait2d.analysis.ListOfTracks.from_file" title="trait2d.analysis.ListOfTracks.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks.from_file()</span></code></a>. Other file formats will have to be converted to a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> first which can then be imported using <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dataframe" title="trait2d.analysis.Track.from_dataframe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dataframe()</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><em>Rudimentary</em> import form native Python dictionaries is supported through <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dict" title="trait2d.analysis.Track.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dict()</span></code></a>. It is the least flexible though, and thus <em>not</em> recommended.</p>
+</div>
+<p>Below, the expected strucure of the <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files is described. The same structure also applies to <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> objects used for data import.</p>
+<div class="section" id="data-structure">
+<h2>Data Structure<a class="headerlink" href="#data-structure" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file has to contain the following columns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: x-component of the particle localisations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: y-component of the particle localisations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span></code>: time component of the particle localisations</p></li>
+</ul>
+<p>In case there is more than one track stored inside the <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file, the following column has to be present as well:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: unique ID of the track for <em>each</em> row</p></li>
+</ul>
+<p>The default column names can also be changed using the <code class="docutils literal notranslate"><span class="pre">col_name_*</span></code> keyword arguments. See <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_file" title="trait2d.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_file()</span></code></a> and <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dataframe" title="trait2d.analysis.Track.from_dataframe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dataframe()</span></code></a> for detailed information.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dict" title="trait2d.analysis.Track.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dict()</span></code></a> does <em>not</em> allow custom column names.</p>
+</div>
+</div>
+<div class="section" id="units">
+<h2>Units<a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
+<p>SI units are assumed, that is, metres for <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> and seconds for <code class="docutils literal notranslate"><span class="pre">t</span></code>. However, units can also be specified using the <code class="docutils literal notranslate"><span class="pre">unit_*</span></code> keyword arguments. See <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_file" title="trait2d.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_file()</span></code></a> and <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dataframe" title="trait2d.analysis.Track.from_dataframe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dataframe()</span></code></a> for detailed information.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dict" title="trait2d.analysis.Track.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dict()</span></code></a> does <em>not</em> allow custom units.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="auto_examples/index.html" class="btn btn-neutral float-right" title="Example gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tracker_gui.html" class="btn btn-neutral float-left" title="Tracker GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
