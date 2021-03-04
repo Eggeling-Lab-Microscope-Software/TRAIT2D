@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Simulator GUI &mdash; trait2d 1.0.8 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tracker GUI" href="tracker_gui.html" />
+    <link rel="prev" title="Analysis GUI" href="analysis_gui.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.8
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulator GUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#starting-the-gui">Starting the GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#description-of-the-gui">Description of the GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Simulator GUI</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/1.0.8/sphinx/source/simulator_gui.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="simulator-gui">
+<span id="id1"></span><h1>Simulator GUI<a class="headerlink" href="#simulator-gui" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="starting-the-gui">
+<h2>Starting the GUI<a class="headerlink" href="#starting-the-gui" title="Permalink to this headline">¶</a></h2>
+<p>The GUI can be started from command line by entering <code class="docutils literal notranslate"><span class="pre">trait2d_simulator_gui</span></code>. The GUI and its components are described below.</p>
+</div>
+<div class="section" id="description-of-the-gui">
+<h2>Description of the GUI<a class="headerlink" href="#description-of-the-gui" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/simulator_gui.png" src="_images/simulator_gui.png" />
+<ol class="arabic simple">
+<li><ol class="loweralpha simple">
+<li><p><strong>Select the free diffusion model</strong></p></li>
+<li><p><strong>Select the hopping difffusion model</strong></p></li>
+</ol>
+</li>
+<li><p><strong>Parameter: maximal total length (</strong> <code class="docutils literal notranslate"><span class="pre">Tmax</span></code> <strong>) in seconds</strong>: This is the maximum simulation duration. The simulation might be short if the particle diffuses out of the simulation volume.</p></li>
+<li><p><strong>Parameter: time step (</strong> <code class="docutils literal notranslate"><span class="pre">dt</span></code> <strong>) in seconds</strong>: This is the temporal discretization of the simulation domain.</p></li>
+<li><p><strong>Parameter: sandbox length (</strong> <code class="docutils literal notranslate"><span class="pre">L</span></code> <strong>) in m</strong>: This is the physical size of the simulation domain.</p></li>
+<li><p><strong>Parameter: compartment map pixel size (</strong> <code class="docutils literal notranslate"><span class="pre">dL</span></code> <strong>) in m</strong>: This is the physical discretization of the simulation domain.</p></li>
+<li><p><strong>Parameter: free diffusion coefficient (</strong> <code class="docutils literal notranslate"><span class="pre">Df</span></code> <strong>) in m²/s</strong></p></li>
+<li><p><strong>Parameter: average compartment diameter / length (</strong> <code class="docutils literal notranslate"><span class="pre">HP</span></code> <a href="#id2"><span class="problematic" id="id3">**</span></a>) in m. This parameter is used by the hopping diffusion model.</p></li>
+<li><p><strong>Parameter: Hopping probability (</strong> <code class="docutils literal notranslate"><span class="pre">HL</span></code> <strong>), between 0 and 1</strong>: Describes the probability of hopping diffusion, e.g. the probability of changing hopping diffusion cells.</p></li>
+<li><p><strong>Parameter: Random generator seeds (</strong> <code class="docutils literal notranslate"><span class="pre">seed</span></code> <strong>, integer)</strong>: This ia an optional integer used to initialize the random number generator. This is mostly used for reproducibility (initializing a simulation with a given seed will give the same simulation results every time). Keep empty to use a random seed.</p></li>
+<li><p><strong>Run the diffusion simulation</strong> using the diffusion model selected in 1a/1b, and the diffusion parameters described by 2-9. Generate must be used every time the diffusion parameters are changed.</p></li>
+<li><p><strong>Visualize the simulated diffusion track.</strong> Must generate (10) beforehand.</p></li>
+<li><p><strong>Save the simulated track to a file.</strong> Uses the selected file format (13).</p></li>
+<li><p><strong>Exported track file format.</strong> Available formats are <code class="docutils literal notranslate"><span class="pre">.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">.json</span></code>, and <code class="docutils literal notranslate"><span class="pre">.pcl</span></code>.</p></li>
+<li><p><strong>Load a track file (simulated track, detected track, …)</strong>. If a track was simulated using a diffusion model, it can be used directly to generate the movie (if load trajectory is not used).</p></li>
+<li><p><strong>Parameter: resolution (</strong> <code class="docutils literal notranslate"><span class="pre">resolution</span></code> <strong>) in m/pix</strong>: This is the movie physical resolution in m per pixel. If the track’s particle positions are expressed at a finer resolution, they will be rounded to the closest pixel position given by this parameter.</p></li>
+<li><p><strong>Parameter: signal-to-noise-ration (SNR)</strong>: Gives the ratio between the signal and the simulated noise. Higher SNR will result in  higher particle contrast compared to the background.</p></li>
+<li><p><strong>Parameter: background intensity</strong>: Average background intensity of the simulated movie.</p></li>
+<li><p><strong>Parameter: Gaussian noise variance</strong>: Represents the background noise.</p></li>
+<li><p><strong>Parameter: Poisson noise variance</strong>: If <code class="docutils literal notranslate"><span class="pre">True</span></code>, Poisson noise will be added to the simulated movie.</p></li>
+<li><p><strong>Temporal resolution (frame/sec)</strong>: This is the temporal resolution of the simulated movie. The track positions for all time frames in between the discrete times of the simulated movie are integrated.</p></li>
+<li><p><strong>Ratio</strong>: If set to square, the simulated movie will have the same height and width. Otherwise the movie dimension will be given by the particle’s track positions.</p></li>
+<li><p><strong>Load PSF</strong>: Optional. Used to load a point spread function stack. The Z-axis must be the first dimension of the stack. The middle frame along dimension 0 is used for the convolution.</p></li>
+<li><p><strong>Generate and show the simulated movie</strong> given the loaded track and the simulation parameters.</p></li>
+<li><p><strong>Save the simulated movie as an image stack.</strong></p></li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tracker_gui.html" class="btn btn-neutral float-right" title="Tracker GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="analysis_gui.html" class="btn btn-neutral float-left" title="Analysis GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
