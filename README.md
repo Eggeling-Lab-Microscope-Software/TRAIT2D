@@ -111,7 +111,7 @@ Proposed workflow:
 
 * If the final trajectory is broken into parts - it means, that the detection is failing in a sequence of frames. Firstly, the detection settings can be tuned to detect particles in the sequence, secondly the frame gap can be increased to connect the detection after the sequence of lost detections.  
 
-### iScat Movie simulation: command line
+### Movie simulation: command line
 * Launch a terminal (or the `Anaconda Prompt` on Windows)
 * Activate the environment with: `conda activate iscat`
 * Go to the source directory
