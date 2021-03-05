@@ -130,5 +130,5 @@ Proposed workflow:
 
  **Simulated track and iscat movie example. (Left) Raw image, (Right) convolved with a synthetic PSF.**
  <p align="center">
-  <img width="608" height="304" src="examples/simulated_hopping_diffusion_with_and_without_psf.gif">
+  <img width="608" height="304" src="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/raw/master/examples/simulated_hopping_diffusion_with_and_without_psf.gif">
 </p>
