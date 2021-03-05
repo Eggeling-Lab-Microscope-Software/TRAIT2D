@@ -5,14 +5,14 @@
 
 Computation times
 =================
-**00:21.918** total execution time for **auto_examples** files:
+**00:21.223** total execution time for **auto_examples** files:
 
 +-------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_examples_plot_tutorial.py` (``plot_tutorial.py``)                           | 00:18.734 | 0.0 MB |
+| :ref:`sphx_glr_auto_examples_plot_tutorial.py` (``plot_tutorial.py``)                           | 00:18.831 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_examples_plot_analyse_imported_data.py` (``plot_analyse_imported_data.py``) | 00:01.603 | 0.0 MB |
+| :ref:`sphx_glr_auto_examples_plot_list_of_tracks.py` (``plot_list_of_tracks.py``)               | 00:01.192 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_examples_plot_list_of_tracks.py` (``plot_list_of_tracks.py``)               | 00:01.309 | 0.0 MB |
+| :ref:`sphx_glr_auto_examples_plot_analyse_imported_data.py` (``plot_analyse_imported_data.py``) | 00:00.955 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_examples_plot_custom_model.py` (``plot_custom_model.py``)                   | 00:00.272 | 0.0 MB |
+| :ref:`sphx_glr_auto_examples_plot_custom_model.py` (``plot_custom_model.py``)                   | 00:00.244 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------+-----------+--------+
