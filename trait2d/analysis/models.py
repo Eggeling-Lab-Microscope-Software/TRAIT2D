@@ -10,7 +10,9 @@ class ModelBase:
         self.dt = 0.0
 
 class ModelBrownian(ModelBase):
-    """Model for free, unrestricted diffusion.
+    r"""Model for free, unrestricted diffusion.
+
+    .. math:: D_\mathrm{app} = D + \frac{\delta^2}{2 t (1 - 2 R (dt / t))}
     """
     lower = [0.0, 0.0]
     upper = np.inf
@@ -20,7 +22,9 @@ class ModelBrownian(ModelBase):
         return D + delta**2 / (2*t*(1-2*self.R*self.dt/t))
 
 class ModelConfined(ModelBase):
-    """Model for confined diffusion.
+    r"""Model for confined diffusion.
+
+    .. math:: D_\mathrm{app} = D_\mu \cdot \frac{\tau}{t} \left( 1 - \exp \left( - \frac{\tau}{t} \right) \right) + \frac{\delta}{2 t (1 - 2 R (dt / t))}
     """
     lower = [0.0, 0.0, 0.0]
     upper = np.inf
@@ -31,7 +35,9 @@ class ModelConfined(ModelBase):
             delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
 class ModelHop(ModelBase):
-    """Model for hop diffusion.
+    r"""Model for hop diffusion.
+
+    .. math:: D_\mathrm{app} = D_M + D_\mu \cdot \frac{\tau}{t} \left( 1 - \exp \left( - \frac{\tau}{t} \right) \right) + \frac{\delta}{2 t (1 - 2 R (dt / t))}
     """
     lower = [0.0, 0.0, 0.0, 0.0]
     upper = np.inf
@@ -43,7 +49,9 @@ class ModelHop(ModelBase):
             delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
 
 class ModelImmobile(ModelBase):
-    """Model for immobile diffusion.
+    r"""Model for immobile diffusion.
+
+    .. math:: D_\mathrm{app} =  \frac{\delta}{2 t (1 - 2 R (dt / t))}
     """
     upper = [np.inf]
     lower = [0.0]
@@ -53,7 +61,9 @@ class ModelImmobile(ModelBase):
         return delta**2 / (2*t*(1-2*self.R*self.dt/t))
 
 class ModelHopModified(ModelBase):
-    """Modified model for hop diffusion.
+    r"""Modified model for hop diffusion.
+
+    .. math::  D_\mathrm{app} = \alpha \cdot D_\mathrm{M} + (1 - \alpha) \cdot D_\mu \left(1 - \exp \left(- \frac{t}{\tau}\right)\right)
     """
     lower = [0.0, 0.0, 0.0, 0.0]
     upper = np.inf

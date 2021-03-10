@@ -35,6 +35,7 @@ version = "GH_VERSION"
 
 extensions = [ 'sphinx.ext.autodoc',
                'sphinx.ext.napoleon',
+               'sphinx.ext.mathjax',
                'sphinx_gallery.gen_gallery',
                'sphinx.ext.autosectionlabel'
 ]
