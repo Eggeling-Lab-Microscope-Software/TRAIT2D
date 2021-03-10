@@ -3,6 +3,13 @@
 Analysis Library
 ================
 
+Analysis Methods
+~~~~~~~~~~~~~~~~
+
+The analysis library supports MSD analysis as well as ADC analysis. ADC analysis generalises MSD analysis by introducing a time dependant *apparent diffusion coefficient* :math:`D_\mathrm{app}(t)` and takes into account the localisation imprecision as well as the microsope's illumination mode.
+
+MSD analysis includes a linear model as well as a generic power law model. ADC analysis includes predefined models for *brownian*, *confined*, *hop*, and *immobile diffusion* as well as the possibility to add custom models.
+
 Single Track
 ~~~~~~~~~~~~
 
@@ -32,7 +39,11 @@ ModelDB
 Models
 ~~~~~~
 
-There are some predefined models available for analysis. Some of these are only used for MSD analysis internally and should not be used for ADC analysis. For more information on adding or removing models to the analysis, see the :ref:`ModelDB` section. 
+There are some predefined models available for analysis. Some of these are only used for MSD analysis internally and should not be used for ADC analysis. For more information on adding or removing models to the analysis, see the :ref:`ModelDB` section.
+
+In the model formulas, $$\delta$$ refers to the time-invariable localisation imprecision and $$dt$$ is the dicretisation time step of the track.
+
+Be aware that $$R$$ is *not* a fit parameter but a constant value which describes the point scanning across the field of view depending on the microscope's illumination mode. It can be set in the analysis GUI or supplied as a keyword parameter to the :meth:`trait2d.analysis.Track.adc_analysis` method.
 
 .. automodule:: trait2d.analysis.models
     :members:
