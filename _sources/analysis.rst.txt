@@ -41,9 +41,9 @@ Models
 
 There are some predefined models available for analysis. Some of these are only used for MSD analysis internally and should not be used for ADC analysis. For more information on adding or removing models to the analysis, see the :ref:`ModelDB` section.
 
-In the model formulas, $$\delta$$ refers to the time-invariable localisation imprecision and $$dt$$ is the dicretisation time step of the track.
+In the model formulas, :math:`\delta` refers to the time-invariable localisation imprecision and :math:`dt` is the dicretisation time step of the track.
 
-Be aware that $$R$$ is *not* a fit parameter but a constant value which describes the point scanning across the field of view depending on the microscope's illumination mode. It can be set in the analysis GUI or supplied as a keyword parameter to the :meth:`trait2d.analysis.Track.adc_analysis` method.
+Be aware that :math:`R` is *not* a fit parameter but a constant value which describes the point scanning across the field of view depending on the microscope's illumination mode. It can be set in the analysis GUI or supplied as a keyword parameter to the :meth:`trait2d.analysis.Track.adc_analysis` method.
 
 .. automodule:: trait2d.analysis.models
     :members:
