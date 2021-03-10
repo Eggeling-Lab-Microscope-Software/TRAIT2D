@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analysis Library &mdash; trait2d 1.0.11-1-g4c8de33 documentation</title>
+  <title>Analysis Library &mdash; trait2d 1.0.11-2-ge173a1e documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.0.11-1-g4c8de33
+                1.0.11-2-ge173a1e
               </div>
             
           
@@ -835,41 +835,24 @@ instance.</p>
 <dt id="trait2d.analysis.models.ModelBrownian">
 <em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelBrownian</code><a class="headerlink" href="#trait2d.analysis.models.ModelBrownian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Model for free, unrestricted diffusion.</p>
-<blockquote>
-<div><div class="math notranslate nohighlight">
-\[D_\mathrm{app} = D +\]</div>
-</div></blockquote>
-<p>rac{delta^2}{2 * t * (1 - 2 R (dt / t))}</p>
+<div class="math notranslate nohighlight">
+\[D_\mathrm{app} = D + \frac{\delta^2}{2 t (1 - 2 R (dt / t))}\]</div>
 </dd></dl>
 
 <dl class="py class">
 <dt id="trait2d.analysis.models.ModelConfined">
 <em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelConfined</code><a class="headerlink" href="#trait2d.analysis.models.ModelConfined" title="Permalink to this definition">¶</a></dt>
 <dd><p>Model for confined diffusion.</p>
-<blockquote>
-<div><div class="math notranslate nohighlight">
-\[D_\mathrm{app} = D_\mu *\]</div>
-</div></blockquote>
-<p>rac{    au}{t} left( 1 - exp left( -
-rac{   au}{t}
-ight)
-ight) +
-rac{delta}{2 t (1 - 2 R (dt / t))}</p>
+<div class="math notranslate nohighlight">
+\[D_\mathrm{app} = D_\mu \cdot \frac{\tau}{t} \left( 1 - \exp \left( - \frac{\tau}{t} \right) \right) + \frac{\delta}{2 t (1 - 2 R (dt / t))}\]</div>
 </dd></dl>
 
 <dl class="py class">
 <dt id="trait2d.analysis.models.ModelHop">
 <em class="property">class </em><code class="sig-prename descclassname">trait2d.analysis.models.</code><code class="sig-name descname">ModelHop</code><a class="headerlink" href="#trait2d.analysis.models.ModelHop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Model for hop diffusion.</p>
-<blockquote>
-<div><div class="math notranslate nohighlight">
-\[D_\mathrm{app} = D_M + D_\mu *\]</div>
-</div></blockquote>
-<p>rac{      au}{t} left( 1 - exp left( -
-rac{   au}{t}
-ight)
-ight) +
-rac{delta}{2 t (1 - 2 R (dt / t))}</p>
+<div class="math notranslate nohighlight">
+\[D_\mathrm{app} = D_M + D_\mu \cdot \frac{\tau}{t} \left( 1 - \exp \left( - \frac{\tau}{t} \right) \right) + \frac{\delta}{2 t (1 - 2 R (dt / t))}\]</div>
 </dd></dl>
 
 <dl class="py class">
