@@ -12,7 +12,7 @@ setuptools.setup(
     author_email     = 'mariia.dmitrieva@eng.ox.ac.uk, joel.lefebvre@eng.ox.ac.uk, francesco.reina@uni-jena.de, john.wigg@uni-jena.de',
     url              = "https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D",
     packages         = setuptools.find_packages(),
-    version          = "1.0.11",
+    version          = "GH_VERSION",
     install_requires = ['setuptools', 'wheel', 'numpy', 'scipy', 'scikit-image',
                         'matplotlib', 'opencv-python', 'tqdm', 'pandas',
                         'tk', 'imageio', 'PyQt5', 'pyqtgraph'],
