@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>CSV Files &mdash; trait2d 1.0.11-2-g38d87ff documentation</title>
+  <title>CSV Files &mdash; trait2d 1.0.11-3-gcda6d19 documentation</title>
   
 
   
@@ -65,7 +66,7 @@
             
             
               <div class="version">
-                1.0.11-2-g38d87ff
+                1.0.11-3-gcda6d19
               </div>
             
           
@@ -90,19 +91,19 @@
               
             
             
-              <p class="caption"><span class="caption-text">Libraries</span></p>
+              <p><span class="caption-text">Libraries</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<p><span class="caption-text">Graphical Applications</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
 </ul>
-<p class="caption"><span class="caption-text">File Formats</span></p>
+<p><span class="caption-text">File Formats</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CSV Files</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#data-structure">Data Structure</a></li>
@@ -110,7 +111,7 @@
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<p><span class="caption-text">Tutorials and Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
 </ul>
@@ -180,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="csv-files">
+  <section id="csv-files">
 <span id="id1"></span><h1>CSV Files<a class="headerlink" href="#csv-files" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">.csv</span></code> is currently the only supported file format for data input using <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_file" title="trait2d.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_file()</span></code></a> or <a class="reference internal" href="analysis.html#trait2d.analysis.ListOfTracks.from_file" title="trait2d.analysis.ListOfTracks.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks.from_file()</span></code></a>. Other file formats will have to be converted to a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> first which can then be imported using <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dataframe" title="trait2d.analysis.Track.from_dataframe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dataframe()</span></code></a>.</p>
 <div class="admonition note">
@@ -188,7 +189,7 @@
 <p><em>Rudimentary</em> import form native Python dictionaries is supported through <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dict" title="trait2d.analysis.Track.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dict()</span></code></a>. It is the least flexible though, and thus <em>not</em> recommended.</p>
 </div>
 <p>Below, the expected strucure of the <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files is described. The same structure also applies to <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> objects used for data import.</p>
-<div class="section" id="data-structure">
+<section id="data-structure">
 <h2>Data Structure<a class="headerlink" href="#data-structure" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file has to contain the following columns:</p>
 <ul class="simple">
@@ -205,16 +206,16 @@
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dict" title="trait2d.analysis.Track.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dict()</span></code></a> does <em>not</em> allow custom column names.</p>
 </div>
-</div>
-<div class="section" id="units">
+</section>
+<section id="units">
 <h2>Units<a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
 <p>SI units are assumed, that is, metres for <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> and seconds for <code class="docutils literal notranslate"><span class="pre">t</span></code>. However, units can also be specified using the <code class="docutils literal notranslate"><span class="pre">unit_*</span></code> keyword arguments. See <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_file" title="trait2d.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_file()</span></code></a> and <a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dataframe" title="trait2d.analysis.Track.from_dataframe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dataframe()</span></code></a> for detailed information.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="analysis.html#trait2d.analysis.Track.from_dict" title="trait2d.analysis.Track.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_dict()</span></code></a> does <em>not</em> allow custom units.</p>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

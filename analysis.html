@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analysis Library &mdash; trait2d 1.0.11-2-g38d87ff documentation</title>
+  <title>Analysis Library &mdash; trait2d 1.0.11-3-gcda6d19 documentation</title>
   
 
   
@@ -65,7 +66,7 @@
             
             
               <div class="version">
-                1.0.11-2-g38d87ff
+                1.0.11-3-gcda6d19
               </div>
             
           
@@ -90,7 +91,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Libraries</span></p>
+              <p><span class="caption-text">Libraries</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis Library</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#analysis-methods">Analysis Methods</a></li>
@@ -103,17 +104,17 @@
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<p><span class="caption-text">Graphical Applications</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
 </ul>
-<p class="caption"><span class="caption-text">File Formats</span></p>
+<p><span class="caption-text">File Formats</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<p><span class="caption-text">Tutorials and Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
 </ul>
@@ -183,14 +184,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="analysis-library">
+  <section id="analysis-library">
 <span id="analysis"></span><h1>Analysis Library<a class="headerlink" href="#analysis-library" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="analysis-methods">
+<section id="analysis-methods">
 <h2>Analysis Methods<a class="headerlink" href="#analysis-methods" title="Permalink to this headline">¶</a></h2>
 <p>The analysis library supports MSD analysis as well as ADC analysis. ADC analysis generalises MSD analysis by introducing a time dependant <em>apparent diffusion coefficient</em> <span class="math notranslate nohighlight">\(D_\mathrm{app}(t)\)</span> and takes into account the localisation imprecision as well as the microsope’s illumination mode.</p>
 <p>MSD analysis includes a linear model as well as a generic power law model. ADC analysis includes predefined models for <em>brownian</em>, <em>confined</em>, <em>hop</em>, and <em>immobile diffusion</em> as well as the possibility to add custom models.</p>
-</div>
-<div class="section" id="single-track">
+</section>
+<section id="single-track">
 <h2>Single Track<a class="headerlink" href="#single-track" title="Permalink to this headline">¶</a></h2>
 <p>Simple single-track import and analysis can be done using the <code class="docutils literal notranslate"><span class="pre">Track</span></code> class.</p>
 <dl class="py class">
@@ -475,8 +476,8 @@ for a list of possible values)</p>
 <dd><p>A special track class that holds an MSD curve but no trajectory data. Can be used for analysis like an ordinary <a class="reference internal" href="#trait2d.analysis.Track" title="trait2d.analysis.Track"><code class="xref py py-class docutils literal notranslate"><span class="pre">trait2d.analysis.Track</span></code></a> object but certain functions might not be available.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="multiple-tracks">
+</section>
+<section id="multiple-tracks">
 <h2>Multiple Tracks<a class="headerlink" href="#multiple-tracks" title="Permalink to this headline">¶</a></h2>
 <p>If multiple tracks have to be imported and analysed in bulk, the <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code> class can be used.</p>
 <dl class="py class">
@@ -758,8 +759,8 @@ for a list of possible values)</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="modeldb">
+</section>
+<section id="modeldb">
 <h2>ModelDB<a class="headerlink" href="#modeldb" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">ModelDB</span></code> allows managing which models are used for ADC analysis. You can define your own models or use predefined models (see the <a class="reference internal" href="#models"><span class="std std-ref">Models</span></a> section).</p>
 <dl class="py class">
@@ -825,8 +826,8 @@ instance.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="models">
+</section>
+<section id="models">
 <h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
 <p>There are some predefined models available for analysis. Some of these are only used for MSD analysis internally and should not be used for ADC analysis. For more information on adding or removing models to the analysis, see the <a class="reference internal" href="#modeldb"><span class="std std-ref">ModelDB</span></a> section.</p>
 <p>In the model formulas, <span class="math notranslate nohighlight">\(\delta\)</span> refers to the time-invariable localisation imprecision and <span class="math notranslate nohighlight">\(dt\)</span> is the dicretisation time step of the track.</p>
@@ -883,8 +884,8 @@ instance.</p>
 <dd><p>Generic power law model for MSD analysis.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
