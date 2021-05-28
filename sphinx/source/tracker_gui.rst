@@ -3,7 +3,7 @@
 Tracker GUI
 =============
 
-The tracker allows to detect and track particles for further trajectory analysis. It accepts TIFF stack as an input frame sequence. The tracker GUI provides options to set parameters, preview detection results, track the particles and save the trajectories to csv files.
+The tracker allows to detect and track particles for further trajectory analysis. It accepts 8 bit TIFF stack as an input frame sequence. The tracker GUI provides options to set parameters, preview detection results, track the particles and save the trajectories to csv files.
 
 Starting the GUI
 ----------------
