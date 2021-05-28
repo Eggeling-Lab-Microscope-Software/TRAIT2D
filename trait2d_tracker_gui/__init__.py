@@ -551,21 +551,21 @@ class MainVisual(tk.Frame):
                         
                         if start_x<0:
                             start_x=0
-                            x_0=int(detect_particle.expected_size/2-point[0])
+                            end_x=detect_particle.expected_size
                             
                         if start_y<0:
                             start_y=0
-                            y_0=int(detect_particle.expected_size/2-point[1]) 
+                            end_y=detect_particle.expected_size
                             
                         if end_x>frame_img.shape[0]:
                             end_x=frame_img.shape[0]
-                            x_1=int(frame_img.shape[0]-point[0]+detect_particle.expected_size/2)
+                            start_x=frame_img.shape[0]-detect_particle.expected_size
             
                         if end_y>frame_img.shape[1]:
                             end_y=frame_img.shape[1]
-                            y_1=int(frame_img.shape[1]-point[1]+detect_particle.expected_size/2)
+                            start_y=frame_img.shape[1]-detect_particle.expected_size
                         
-                        
+
                         data[x_0:x_1,y_0:y_1]=frame_img[start_x:end_x, start_y:end_y]
                         
                         # subpixel localisatopm
