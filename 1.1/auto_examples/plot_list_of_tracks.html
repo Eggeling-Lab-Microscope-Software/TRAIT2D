@@ -1,0 +1,1340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Bulk processing with ListOfTracks &mdash; trait2d 1.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TRAIT Tutorial" href="plot_tutorial.html" />
+    <link rel="prev" title="Adding Custom Models for ADC Analysis" href="plot_custom_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Libraries</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+</ul>
+<p><span class="caption-text">Graphical Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulator_gui.html">Simulator GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../csv_files.html">CSV Files</a></li>
+</ul>
+<p><span class="caption-text">Tutorials and Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Example gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_analyse_imported_data.html">Analyze Imported Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_custom_model.html">Adding Custom Models for ADC Analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bulk processing with <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_tutorial.html">TRAIT Tutorial</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Example gallery</a> &raquo;</li>
+        
+      <li>Bulk processing with <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/1.1/sphinx/source/auto_examples/plot_list_of_tracks.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-list-of-tracks-py"><span class="std std-ref">here</span></a>     to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="bulk-processing-with-listoftracks">
+<span id="sphx-glr-auto-examples-plot-list-of-tracks-py"></span><h1>Bulk processing with <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code><a class="headerlink" href="#bulk-processing-with-listoftracks" title="Permalink to this headline">¶</a></h1>
+<p>This example will guide you through the process of importing and analyzing multiple tracks from a single <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file in bulk.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code> class can load and store multiple tracks in bulk.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis</span> <span class="kn">import</span> <span class="n">ListOfTracks</span>
+</pre></div>
+</div>
+<p>We can now import data from a <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file. In order to separate tracks, the file has to contain the column <code class="docutils literal notranslate"><span class="pre">id</span></code> which assigns a unique integer track identifier to each row. You can have a look at <a class="reference internal" href="../csv_files.html#csv-files"><span class="std std-ref">CSV Files</span></a> for a complete documentation. Alternative column names can also be supplied using the <code class="docutils literal notranslate"><span class="pre">col_name_*</span></code> keyword arguments. (See <a class="reference internal" href="../analysis.html#trait2d.analysis.ListOfTracks.from_file" title="trait2d.analysis.ListOfTracks.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks.from_file()</span></code></a> and <a class="reference internal" href="../analysis.html#trait2d.analysis.Track.from_file" title="trait2d.analysis.Track.from_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.Track.from_file()</span></code></a> for this.)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks</span> <span class="o">=</span> <span class="n">ListOfTracks</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;three_tracks.csv&quot;</span><span class="p">,</span> <span class="n">unit_length</span><span class="o">=</span><span class="s1">&#39;micrometres&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The tracks are now imported and can be used for analysis.
+The representation of the <code class="docutils literal notranslate"><span class="pre">ListOfTracks</span></code> instance holds some information about it.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;ListOfTracks instance at 139918731893776&gt;
+Number of tracks: 3
+</pre></div>
+</div>
+<p>To get an overview, we can use <a class="reference internal" href="../analysis.html#trait2d.analysis.ListOfTracks.plot_trajectories" title="trait2d.analysis.ListOfTracks.plot_trajectories"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks.plot_trajectories()</span></code></a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks</span><span class="o">.</span><span class="n">plot_trajectories</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Plot of 3 trajectories" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_list_of_tracks_001.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trait2d.analysis.models</span> <span class="kn">import</span> <span class="n">ModelBrownian</span><span class="p">,</span> <span class="n">ModelConfined</span><span class="p">,</span> <span class="n">ModelHop</span>
+<span class="kn">from</span> <span class="nn">trait2d.analysis</span> <span class="kn">import</span> <span class="n">ModelDB</span>
+
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelBrownian</span><span class="p">)</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelConfined</span><span class="p">)</span>
+<span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">ModelHop</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For analysis, <a class="reference internal" href="../analysis.html#trait2d.analysis.ListOfTracks" title="trait2d.analysis.ListOfTracks"><code class="xref py py-class docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks</span></code></a> uses the same semantics as <code class="xref py py-class docutils literal notranslate"><span class="pre">Track</span></code> for analysis. You can get a summary of the analysis results using <a class="reference internal" href="../analysis.html#trait2d.analysis.ListOfTracks.adc_summary" title="trait2d.analysis.ListOfTracks.adc_summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks.adc_summary()</span></code></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks</span><span class="o">.</span><span class="n">adc_analysis</span><span class="p">(</span><span class="n">fraction_fit_points</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">)</span>
+<span class="n">tracks</span><span class="o">.</span><span class="n">adc_summary</span><span class="p">(</span><span class="n">plot_dapp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_pie_chart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img alt="plot list of tracks" class="sphx-glr-multi-img" src="../_images/sphx_glr_plot_list_of_tracks_002.png" />
+</li>
+<li><img alt="plot list of tracks" class="sphx-glr-multi-img" src="../_images/sphx_glr_plot_list_of_tracks_003.png" />
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:48: RuntimeWarning: divide by zero encountered in true_divide
+  D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:48: RuntimeWarning: invalid value encountered in multiply
+  D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:49: RuntimeWarning: divide by zero encountered in true_divide
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:49: RuntimeWarning: invalid value encountered in multiply
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:34: RuntimeWarning: divide by zero encountered in true_divide
+  return D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:34: RuntimeWarning: invalid value encountered in multiply
+  return D_micro * (tau/t) * (1 - np.exp(-t/tau)) + \
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:35: RuntimeWarning: divide by zero encountered in true_divide
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/models.py:35: RuntimeWarning: invalid value encountered in multiply
+  delta ** 2 / (2 * t * (1 - 2 * self.R * self.dt / t))
+
+{&#39;sectors&#39;: {&#39;ModelHop&#39;: 0.3333333333333333, &#39;ModelConfined&#39;: 0.6666666666666666, &#39;not catergorized&#39;: 0.0}, &#39;average_params&#39;: {&#39;ModelHop&#39;: array([3.14919062e-13, 3.16558393e-11, 9.07415669e-10, 1.36150813e-05]), &#39;ModelConfined&#39;: array([1.46958595e-12, 1.63115213e-08, 1.48793916e-01])}, &#39;average_msd&#39;: {&#39;ModelHop&#39;: array([1.41923249e-15, 2.10575023e-15, 2.84986365e-15, 3.67764700e-15,
+       4.44897710e-15, 5.16904646e-15, 5.88412628e-15, 6.51869619e-15,
+       6.99328914e-15, 7.57347461e-15, 8.10632510e-15, 8.71117510e-15,
+       9.31852358e-15, 9.92606980e-15, 1.07718412e-14, 1.16563902e-14,
+       1.25708575e-14, 1.34530046e-14, 1.43961898e-14, 1.51459428e-14,
+       1.59059770e-14, 1.64998467e-14, 1.70556254e-14, 1.76265726e-14,
+       1.80806252e-14, 1.85798477e-14, 1.90412137e-14, 1.96397894e-14,
+       2.03036772e-14, 2.10723020e-14, 2.18229901e-14, 2.26262596e-14,
+       2.34015053e-14, 2.40310706e-14, 2.48042557e-14, 2.53860460e-14,
+       2.59630299e-14, 2.65919068e-14, 2.71197611e-14, 2.76794522e-14,
+       2.82047151e-14, 2.88172377e-14, 2.95195918e-14, 3.02903699e-14,
+       3.10786093e-14, 3.19011666e-14, 3.27000902e-14, 3.33311137e-14,
+       3.40769905e-14, 3.48107719e-14, 3.55241270e-14, 3.61686671e-14,
+       3.68680425e-14, 3.75762041e-14, 3.83578582e-14, 3.91448707e-14,
+       3.99905705e-14, 4.08725012e-14, 4.17578996e-14, 4.25788710e-14,
+       4.35097145e-14, 4.42993110e-14, 4.51107293e-14, 4.58814073e-14,
+       4.66686125e-14, 4.74299324e-14, 4.81635764e-14, 4.88499288e-14,
+       4.94440494e-14, 5.00757877e-14, 5.07353868e-14, 5.14363737e-14,
+       5.20319199e-14, 5.27016480e-14, 5.32082857e-14, 5.36512611e-14,
+       5.41232733e-14, 5.45664126e-14, 5.48893099e-14, 5.52929244e-14,
+       5.56853567e-14, 5.59857089e-14, 5.63334701e-14, 5.66625025e-14,
+       5.69741844e-14, 5.74282102e-14, 5.78507783e-14, 5.82938595e-14,
+       5.88480654e-14, 5.94014245e-14, 5.99412512e-14, 6.04742214e-14,
+       6.10354535e-14, 6.15064019e-14, 6.19869472e-14, 6.24191645e-14,
+       6.27233361e-14, 6.31479649e-14, 6.35992818e-14, 6.41257387e-14,
+       6.47428989e-14, 6.53919515e-14, 6.59965302e-14, 6.66490095e-14,
+       6.73017999e-14, 6.79126686e-14, 6.84603572e-14, 6.90383955e-14,
+       6.95748945e-14, 6.99401476e-14, 7.03223399e-14, 7.06726907e-14,
+       7.10301172e-14, 7.15224953e-14, 7.20553873e-14, 7.25295149e-14,
+       7.30706617e-14, 7.36830016e-14, 7.43244959e-14, 7.48451351e-14,
+       7.53891856e-14, 7.58638490e-14, 7.62479903e-14, 7.66213502e-14,
+       7.69509489e-14, 7.74052622e-14, 7.79075678e-14, 7.83400953e-14,
+       7.88822417e-14, 7.94819864e-14, 8.00933804e-14, 8.07719573e-14,
+       8.13465042e-14, 8.18185687e-14, 8.22384664e-14, 8.26987319e-14,
+       8.30216881e-14, 8.33151859e-14, 8.35452225e-14, 8.37161744e-14,
+       8.41138799e-14, 8.44922775e-14, 8.49523556e-14, 8.54357020e-14,
+       8.58304447e-14, 8.63418600e-14, 8.67720482e-14, 8.71938847e-14,
+       8.75736483e-14, 8.79506081e-14, 8.82669307e-14, 8.85690355e-14,
+       8.88076422e-14, 8.90073553e-14, 8.93004335e-14, 8.96830588e-14,
+       9.01155840e-14, 9.05822750e-14, 9.10299382e-14, 9.14857210e-14,
+       9.19071820e-14, 9.23673644e-14, 9.28298939e-14, 9.32692079e-14,
+       9.34891052e-14, 9.38768408e-14, 9.41112202e-14, 9.43842317e-14,
+       9.46491563e-14, 9.49376707e-14, 9.52326351e-14, 9.55253742e-14,
+       9.57830213e-14, 9.59553812e-14, 9.62397550e-14, 9.64087909e-14,
+       9.66276734e-14, 9.67531111e-14, 9.68604509e-14, 9.69068317e-14,
+       9.69793015e-14, 9.68736353e-14, 9.67920181e-14, 9.67674379e-14,
+       9.67652596e-14, 9.67904706e-14, 9.68099846e-14, 9.68340395e-14,
+       9.69504845e-14, 9.71585403e-14, 9.73390230e-14, 9.74293966e-14,
+       9.75759676e-14, 9.76598063e-14, 9.77778111e-14, 9.78480157e-14,
+       9.78263554e-14, 9.78634726e-14, 9.77978097e-14, 9.78178760e-14,
+       9.78222163e-14, 9.78786899e-14, 9.80143982e-14, 9.80951071e-14,
+       9.82052265e-14, 9.83592417e-14, 9.85469136e-14, 9.87097502e-14,
+       9.88456153e-14, 9.88529476e-14, 9.89045649e-14, 9.89427199e-14,
+       9.88876368e-14, 9.87744899e-14, 9.86953477e-14, 9.87729389e-14,
+       9.87286038e-14, 9.88133102e-14, 9.88723141e-14, 9.89347327e-14,
+       9.90990325e-14, 9.91126919e-14, 9.91662367e-14, 9.91130569e-14,
+       9.89995595e-14, 9.87913930e-14, 9.86251128e-14, 9.84012222e-14,
+       9.83337711e-14, 9.81857119e-14, 9.81480204e-14, 9.81312258e-14,
+       9.81879462e-14, 9.81989915e-14, 9.82290507e-14, 9.82276897e-14,
+       9.81660648e-14, 9.79824963e-14, 9.77926504e-14, 9.74649639e-14,
+       9.71422153e-14, 9.68364064e-14, 9.67290524e-14, 9.65811428e-14,
+       9.66147848e-14, 9.66242877e-14, 9.67515899e-14, 9.67666336e-14,
+       9.68144414e-14, 9.69203852e-14, 9.69035074e-14, 9.68272012e-14,
+       9.66357274e-14, 9.65080226e-14, 9.64634920e-14, 9.64502236e-14,
+       9.64230380e-14, 9.65009046e-14, 9.66038231e-14, 9.67246049e-14,
+       9.68805151e-14, 9.68947138e-14, 9.70301074e-14, 9.71875116e-14,
+       9.74063262e-14, 9.74512995e-14, 9.75729534e-14, 9.77274634e-14,
+       9.77617780e-14, 9.79049686e-14, 9.80422622e-14, 9.82566436e-14,
+       9.84851769e-14, 9.87856154e-14, 9.91439822e-14, 9.94448623e-14,
+       9.98201734e-14, 1.00195103e-13, 1.00632955e-13, 1.00950356e-13,
+       1.01322457e-13, 1.01557272e-13, 1.01722961e-13, 1.01877302e-13,
+       1.02139338e-13, 1.02404639e-13, 1.02692506e-13, 1.02975182e-13,
+       1.03274204e-13, 1.03508281e-13, 1.03853673e-13, 1.04135284e-13,
+       1.04406058e-13, 1.04512099e-13, 1.04812942e-13, 1.05094722e-13,
+       1.05346689e-13, 1.05524132e-13, 1.05791268e-13, 1.05992141e-13,
+       1.06376077e-13, 1.06537636e-13, 1.06861588e-13, 1.06992617e-13,
+       1.07174286e-13, 1.07468790e-13, 1.07787212e-13, 1.08049537e-13,
+       1.08259237e-13, 1.08406464e-13, 1.08550680e-13, 1.08688146e-13,
+       1.08794083e-13, 1.08886503e-13, 1.09159021e-13, 1.09344352e-13,
+       1.09592295e-13, 1.09852625e-13, 1.10041981e-13, 1.10314764e-13,
+       1.10591740e-13, 1.10744132e-13, 1.10975192e-13, 1.11088969e-13,
+       1.11206236e-13, 1.11134835e-13, 1.10986017e-13, 1.10882350e-13,
+       1.10986090e-13, 1.11122149e-13, 1.11285474e-13, 1.11507639e-13,
+       1.11720750e-13, 1.11960916e-13, 1.12208996e-13, 1.12302682e-13,
+       1.12432596e-13, 1.12570787e-13, 1.12450385e-13, 1.12490480e-13,
+       1.12437204e-13, 1.12378004e-13, 1.12380246e-13, 1.12426205e-13,
+       1.12492230e-13, 1.12587860e-13, 1.12766482e-13, 1.12944172e-13,
+       1.13203452e-13, 1.13351556e-13, 1.13492976e-13, 1.13708409e-13,
+       1.13922584e-13, 1.13978042e-13, 1.14010013e-13, 1.14104584e-13,
+       1.14170121e-13, 1.14378706e-13, 1.14601451e-13, 1.14787159e-13,
+       1.15083871e-13, 1.15337865e-13, 1.15679677e-13, 1.15869803e-13,
+       1.16088630e-13, 1.16277434e-13, 1.16422953e-13, 1.16572833e-13,
+       1.16613479e-13, 1.16726101e-13, 1.16861915e-13, 1.17105225e-13,
+       1.17237477e-13, 1.17457511e-13, 1.17535734e-13, 1.17921548e-13,
+       1.18224505e-13, 1.18495214e-13, 1.18682040e-13, 1.18834669e-13,
+       1.18916897e-13, 1.19122236e-13, 1.19198014e-13, 1.19275631e-13,
+       1.19418384e-13, 1.19479479e-13, 1.19470519e-13, 1.19527573e-13,
+       1.19603129e-13, 1.19812493e-13, 1.20118470e-13, 1.20405780e-13,
+       1.20598956e-13, 1.20597494e-13, 1.20625305e-13, 1.20577678e-13,
+       1.20568455e-13, 1.20486079e-13, 1.20440381e-13, 1.20472443e-13,
+       1.20578772e-13, 1.20665962e-13, 1.20953782e-13, 1.21215533e-13,
+       1.21629000e-13, 1.22012948e-13, 1.22524609e-13, 1.23050419e-13,
+       1.23529112e-13, 1.24046232e-13, 1.24397925e-13, 1.24774793e-13,
+       1.25086436e-13, 1.25506425e-13, 1.25855576e-13, 1.26145070e-13,
+       1.26558758e-13, 1.27048697e-13, 1.27585238e-13, 1.28124562e-13,
+       1.28780347e-13, 1.29285967e-13, 1.29799606e-13, 1.30338121e-13,
+       1.30640567e-13, 1.30945389e-13, 1.31116587e-13, 1.31330402e-13,
+       1.31505161e-13, 1.31762104e-13, 1.31942004e-13, 1.32287082e-13,
+       1.32747434e-13, 1.33160442e-13, 1.33641446e-13, 1.34127001e-13,
+       1.34405331e-13, 1.34796797e-13, 1.35079831e-13, 1.35302618e-13,
+       1.35815598e-13, 1.36176224e-13, 1.36533991e-13, 1.36941500e-13,
+       1.37280059e-13, 1.37755922e-13, 1.38264772e-13, 1.38843034e-13,
+       1.39351225e-13, 1.39959421e-13, 1.40514693e-13, 1.41014361e-13,
+       1.41483933e-13, 1.41882745e-13, 1.42324275e-13, 1.42726811e-13,
+       1.43153183e-13, 1.43578445e-13, 1.43887589e-13, 1.44307211e-13,
+       1.44747775e-13, 1.45191836e-13, 1.45551070e-13, 1.45925856e-13,
+       1.46168808e-13, 1.46432427e-13, 1.46516250e-13, 1.46589428e-13,
+       1.46597244e-13, 1.46698423e-13, 1.46754451e-13, 1.46822281e-13,
+       1.46924452e-13, 1.47089418e-13, 1.47345364e-13, 1.47518516e-13,
+       1.47810007e-13, 1.47996473e-13, 1.48088390e-13, 1.48137002e-13,
+       1.48088911e-13, 1.47876066e-13, 1.47914065e-13, 1.47810135e-13,
+       1.47734636e-13, 1.47731585e-13, 1.47610128e-13, 1.47541712e-13,
+       1.47494478e-13, 1.47577308e-13, 1.47743293e-13, 1.48035018e-13,
+       1.48195484e-13, 1.48446304e-13, 1.48711777e-13, 1.49048819e-13,
+       1.49333889e-13, 1.49561430e-13, 1.49832426e-13, 1.50182811e-13,
+       1.50471705e-13, 1.50848975e-13, 1.51240757e-13, 1.51520837e-13,
+       1.52103131e-13, 1.52555123e-13, 1.53030400e-13, 1.53401592e-13,
+       1.53701148e-13, 1.53910131e-13, 1.53953550e-13, 1.54030728e-13,
+       1.53998419e-13, 1.53992096e-13, 1.53899084e-13, 1.53721435e-13,
+       1.53744772e-13, 1.53804223e-13, 1.53781801e-13, 1.53745084e-13,
+       1.53924910e-13, 1.54106287e-13, 1.54450143e-13, 1.54536566e-13,
+       1.54658159e-13, 1.54804721e-13, 1.54891864e-13, 1.55017826e-13,
+       1.55041007e-13, 1.55077137e-13, 1.55229911e-13, 1.55337825e-13,
+       1.55650935e-13, 1.55912594e-13, 1.56262678e-13, 1.56536406e-13,
+       1.56765077e-13, 1.57043356e-13, 1.57386026e-13, 1.57528381e-13,
+       1.57620668e-13, 1.57651805e-13, 1.57741748e-13, 1.57861850e-13,
+       1.58051358e-13, 1.58295060e-13, 1.58702088e-13, 1.59040284e-13,
+       1.59416713e-13, 1.59794728e-13, 1.60119147e-13, 1.60388184e-13,
+       1.60782579e-13, 1.61137082e-13, 1.61281048e-13, 1.61500918e-13,
+       1.61728371e-13, 1.61957466e-13, 1.62247128e-13, 1.62690418e-13,
+       1.62917069e-13, 1.63289828e-13, 1.63540095e-13, 1.63828594e-13,
+       1.64266818e-13, 1.64510459e-13, 1.64688046e-13, 1.64839101e-13,
+       1.64917192e-13, 1.64815543e-13, 1.64906278e-13, 1.64822041e-13,
+       1.64881096e-13, 1.65032587e-13, 1.65173869e-13, 1.65532703e-13,
+       1.65878811e-13, 1.66134366e-13, 1.66332379e-13, 1.66684381e-13,
+       1.66747764e-13, 1.66934346e-13, 1.67087095e-13, 1.67053441e-13,
+       1.66989969e-13, 1.67026453e-13, 1.67076245e-13, 1.67027354e-13,
+       1.66983064e-13, 1.66992350e-13, 1.67151394e-13, 1.67332878e-13,
+       1.67498159e-13, 1.67602783e-13, 1.67570206e-13, 1.67738019e-13,
+       1.67455585e-13, 1.67280815e-13, 1.67073687e-13, 1.66674614e-13,
+       1.66328804e-13, 1.66013723e-13, 1.65678582e-13, 1.65330016e-13,
+       1.65038304e-13, 1.64734265e-13, 1.64423886e-13, 1.64165824e-13,
+       1.64072164e-13, 1.64031470e-13, 1.63827825e-13, 1.63581436e-13,
+       1.63324375e-13, 1.63033042e-13, 1.62629758e-13, 1.62223464e-13,
+       1.61783395e-13, 1.61522389e-13, 1.61165815e-13, 1.60740664e-13,
+       1.60385428e-13, 1.60021865e-13, 1.59673559e-13, 1.59318042e-13,
+       1.59093270e-13, 1.58595621e-13, 1.58151248e-13, 1.57640815e-13,
+       1.56973741e-13, 1.56391023e-13, 1.55652989e-13, 1.54948997e-13,
+       1.54584499e-13, 1.54013886e-13, 1.53600420e-13, 1.53143793e-13,
+       1.52739221e-13, 1.52179885e-13, 1.51699769e-13, 1.51098179e-13,
+       1.50427682e-13, 1.49943189e-13, 1.49174358e-13, 1.48496499e-13,
+       1.47712254e-13, 1.47203955e-13, 1.46701580e-13, 1.46059479e-13,
+       1.45464069e-13, 1.44892397e-13, 1.44121732e-13, 1.43377964e-13,
+       1.42581169e-13, 1.41555146e-13, 1.40760941e-13, 1.39938539e-13,
+       1.39058180e-13, 1.38032616e-13, 1.37134200e-13, 1.36401160e-13,
+       1.35676877e-13, 1.35014106e-13, 1.34503965e-13, 1.33996855e-13,
+       1.33370557e-13, 1.32655695e-13, 1.31975919e-13, 1.31186935e-13,
+       1.30361147e-13, 1.29660961e-13, 1.28934463e-13, 1.28279157e-13,
+       1.27429559e-13, 1.26799701e-13, 1.26227814e-13, 1.25771600e-13,
+       1.25533007e-13, 1.25539137e-13, 1.25356108e-13, 1.25082243e-13,
+       1.24916775e-13, 1.24352115e-13, 1.24066204e-13, 1.23542672e-13,
+       1.22809583e-13, 1.22095572e-13, 1.21543286e-13, 1.20761514e-13,
+       1.20024798e-13, 1.19329243e-13, 1.18667349e-13, 1.17938437e-13,
+       1.17294952e-13, 1.16656288e-13, 1.15910919e-13, 1.15001059e-13,
+       1.13947458e-13, 1.13090183e-13, 1.12182406e-13, 1.11393601e-13,
+       1.10611020e-13, 1.09666181e-13, 1.08707319e-13, 1.08314119e-13,
+       1.07742938e-13, 1.07371962e-13, 1.06565999e-13, 1.05773674e-13,
+       1.05155131e-13, 1.04539525e-13, 1.03754120e-13, 1.03172800e-13,
+       1.02634566e-13, 1.01775026e-13, 1.01301011e-13, 1.00687675e-13,
+       1.00252301e-13, 9.98752803e-14, 9.95501659e-14, 9.94258211e-14,
+       9.92969184e-14, 9.92302384e-14, 9.91000523e-14, 9.88936572e-14,
+       9.85101248e-14, 9.82254726e-14, 9.80634058e-14, 9.77151270e-14,
+       9.74778243e-14, 9.71758639e-14, 9.68452634e-14, 9.67137733e-14,
+       9.65992720e-14, 9.63375514e-14, 9.62807500e-14, 9.62241388e-14,
+       9.62501117e-14, 9.63890402e-14, 9.62666419e-14, 9.64573709e-14,
+       9.65458326e-14, 9.63310322e-14, 9.61709008e-14, 9.59313452e-14,
+       9.57763824e-14, 9.55274628e-14, 9.56175612e-14, 9.55995979e-14,
+       9.56490227e-14, 9.58466100e-14, 9.60010329e-14, 9.60978209e-14,
+       9.62628350e-14, 9.63877696e-14, 9.61907753e-14, 9.59932786e-14,
+       9.58440399e-14, 9.57719789e-14, 9.57117675e-14, 9.56650517e-14,
+       9.56950124e-14, 9.60285824e-14, 9.63623572e-14, 9.67951279e-14,
+       9.71998676e-14, 9.75512025e-14, 9.79111390e-14, 9.82978620e-14,
+       9.85404185e-14, 9.87851194e-14, 9.90316706e-14, 9.92794598e-14,
+       9.93308180e-14, 9.96452054e-14, 1.00149185e-13, 1.00837864e-13,
+       1.01318253e-13, 1.02015595e-13, 1.02817419e-13, 1.03418983e-13,
+       1.04264156e-13, 1.04770318e-13, 1.05107810e-13, 1.05383887e-13,
+       1.05632141e-13, 1.05860120e-13, 1.06333767e-13, 1.07130596e-13,
+       1.07844121e-13, 1.08699239e-13, 1.09563772e-13, 1.10435887e-13,
+       1.11262015e-13, 1.11957448e-13, 1.12730796e-13, 1.13370882e-13,
+       1.14111412e-13, 1.14848472e-13, 1.15333343e-13, 1.16128599e-13,
+       1.16972280e-13, 1.18043849e-13, 1.19161674e-13, 1.20268748e-13,
+       1.21230389e-13, 1.22309808e-13, 1.23414659e-13, 1.24529188e-13,
+       1.25468435e-13, 1.26247417e-13, 1.27026550e-13, 1.27623524e-13,
+       1.27903971e-13, 1.27997144e-13, 1.27918213e-13, 1.28418702e-13,
+       1.28935817e-13, 1.29250368e-13, 1.29737775e-13, 1.30180493e-13,
+       1.30568014e-13, 1.31041267e-13, 1.31447436e-13, 1.31914325e-13,
+       1.32286258e-13, 1.32722683e-13, 1.33132081e-13, 1.33461910e-13,
+       1.34030712e-13, 1.34586201e-13, 1.35358664e-13, 1.35985632e-13,
+       1.36732828e-13, 1.37339349e-13, 1.38169273e-13, 1.39060210e-13,
+       1.39726437e-13, 1.40336031e-13, 1.40953761e-13, 1.41527396e-13,
+       1.42177595e-13, 1.42531552e-13, 1.43102923e-13, 1.43656329e-13,
+       1.44587285e-13, 1.45738483e-13, 1.46652363e-13, 1.47487593e-13,
+       1.48472665e-13, 1.49584659e-13, 1.50533304e-13, 1.51780212e-13,
+       1.52608404e-13, 1.53509616e-13, 1.54308469e-13, 1.55072478e-13,
+       1.55971727e-13, 1.56858779e-13, 1.57537797e-13, 1.58457359e-13,
+       1.59429306e-13, 1.60470106e-13, 1.61549687e-13, 1.62557771e-13,
+       1.63587383e-13, 1.64793349e-13, 1.65763580e-13, 1.66070908e-13,
+       1.66697697e-13, 1.66703023e-13, 1.66549443e-13, 1.66818431e-13,
+       1.67223440e-13, 1.67290722e-13, 1.67404346e-13, 1.67322198e-13,
+       1.67212493e-13, 1.67010907e-13, 1.66897735e-13, 1.67159946e-13,
+       1.66647748e-13, 1.66151769e-13, 1.65632540e-13, 1.64530475e-13,
+       1.62768817e-13, 1.61357013e-13, 1.60116441e-13, 1.58754764e-13,
+       1.57477481e-13, 1.56406540e-13, 1.55521920e-13, 1.54141521e-13,
+       1.53212548e-13, 1.51972112e-13, 1.50491705e-13, 1.49194251e-13,
+       1.47964772e-13, 1.46606347e-13, 1.45209217e-13, 1.44482565e-13,
+       1.43712885e-13, 1.43321462e-13, 1.42475300e-13, 1.41939635e-13,
+       1.40964930e-13, 1.40237874e-13, 1.39426935e-13, 1.38321051e-13,
+       1.36822280e-13, 1.35671661e-13, 1.33781744e-13, 1.31871568e-13,
+       1.30105116e-13, 1.27581722e-13, 1.25668203e-13, 1.23809588e-13,
+       1.21984544e-13, 1.19877891e-13, 1.18036269e-13, 1.14973639e-13,
+       1.12255732e-13, 1.09680069e-13, 1.06627675e-13, 1.03523847e-13,
+       1.01024849e-13, 9.87431431e-14, 9.68395809e-14, 9.44778936e-14,
+       9.27101645e-14, 9.10437886e-14, 8.96646678e-14, 8.85153863e-14,
+       8.67173883e-14, 8.54071143e-14, 8.41934471e-14, 8.32398636e-14,
+       8.20799439e-14, 8.02890434e-14, 7.84489689e-14, 7.71925333e-14,
+       7.60282289e-14, 7.51417345e-14, 7.38467139e-14, 7.31609243e-14,
+       7.23530412e-14, 7.15403130e-14, 7.09438940e-14, 7.04939792e-14,
+       7.00029615e-14, 6.93790093e-14, 6.88538424e-14, 6.80186670e-14,
+       6.76305494e-14, 6.73841252e-14, 6.75239863e-14, 6.77294982e-14,
+       6.77923940e-14, 6.78212809e-14, 6.73247281e-14, 6.67933375e-14,
+       6.61405006e-14, 6.56214597e-14, 6.54747629e-14, 6.62722105e-14,
+       6.70675121e-14, 6.70113104e-14, 6.71903782e-14, 6.64123750e-14,
+       6.45513938e-14, 6.32687160e-14, 6.24764070e-14, 6.13782799e-14,
+       6.09039829e-14, 6.00712570e-14, 5.96215153e-14, 5.94964583e-14,
+       5.88286908e-14, 5.79193750e-14, 5.87945536e-14, 5.76607905e-14,
+       5.69664072e-14, 5.65528658e-14, 5.67056717e-14, 5.69417951e-14,
+       5.66728307e-14, 5.67620976e-14, 5.79207755e-14, 5.85201437e-14,
+       5.75371941e-14, 5.82258213e-14, 5.85719013e-14, 6.08003689e-14,
+       6.26224624e-14, 6.62190433e-14, 6.79657275e-14, 7.10978107e-14,
+       7.14950627e-14]), &#39;ModelConfined&#39;: array([2.45583999e-15, 5.56783841e-15, 8.71288718e-15, 1.17847267e-14,
+       1.47459180e-14, 1.75305783e-14, 2.02689958e-14, 2.29237615e-14,
+       2.55985340e-14, 2.82152843e-14, 3.08416696e-14, 3.33585772e-14,
+       3.59833841e-14, 3.86571637e-14, 4.14258500e-14, 4.42346988e-14,
+       4.69518805e-14, 4.96101150e-14, 5.23477465e-14, 5.49795297e-14,
+       5.76287307e-14, 6.02831114e-14, 6.27542861e-14, 6.52305979e-14,
+       6.77527748e-14, 7.03496212e-14, 7.30945468e-14, 7.60257856e-14,
+       7.91088290e-14, 8.22918115e-14, 8.54756462e-14, 8.86663833e-14,
+       9.19908107e-14, 9.52859836e-14, 9.84750520e-14, 1.01552201e-13,
+       1.04497663e-13, 1.07270053e-13, 1.10069299e-13, 1.12931816e-13,
+       1.15855762e-13, 1.18695426e-13, 1.21550952e-13, 1.24502197e-13,
+       1.27366598e-13, 1.30107471e-13, 1.32781408e-13, 1.35443812e-13,
+       1.38016584e-13, 1.40378077e-13, 1.42639458e-13, 1.44873193e-13,
+       1.47191175e-13, 1.49570703e-13, 1.51953284e-13, 1.54439630e-13,
+       1.56971132e-13, 1.59369854e-13, 1.61849253e-13, 1.64350771e-13,
+       1.66774911e-13, 1.69064652e-13, 1.71378217e-13, 1.73600070e-13,
+       1.75675267e-13, 1.77734858e-13, 1.79689414e-13, 1.81517514e-13,
+       1.83320666e-13, 1.85103882e-13, 1.86822745e-13, 1.88607174e-13,
+       1.90335805e-13, 1.92047106e-13, 1.93661733e-13, 1.95397483e-13,
+       1.97043603e-13, 1.98654843e-13, 2.00309843e-13, 2.02122473e-13,
+       2.03967361e-13, 2.05842071e-13, 2.07808541e-13, 2.09815243e-13,
+       2.11732129e-13, 2.13771741e-13, 2.15809815e-13, 2.17819932e-13,
+       2.19749970e-13, 2.21672992e-13, 2.23538763e-13, 2.25473191e-13,
+       2.27489602e-13, 2.29455845e-13, 2.31369293e-13, 2.33329890e-13,
+       2.35350019e-13, 2.37472194e-13, 2.39686148e-13, 2.41902805e-13,
+       2.44222404e-13, 2.46457506e-13, 2.48709274e-13, 2.50957483e-13,
+       2.53211269e-13, 2.55450583e-13, 2.57583351e-13, 2.59837523e-13,
+       2.62029337e-13, 2.64184045e-13, 2.66481815e-13, 2.68930157e-13,
+       2.71390546e-13, 2.73889586e-13, 2.76437413e-13, 2.79023642e-13,
+       2.81593599e-13, 2.84111155e-13, 2.86629139e-13, 2.88958513e-13,
+       2.91284215e-13, 2.93656030e-13, 2.95971064e-13, 2.98564609e-13,
+       3.01228883e-13, 3.03792779e-13, 3.06356476e-13, 3.08872062e-13,
+       3.11355444e-13, 3.13716621e-13, 3.15988284e-13, 3.18322216e-13,
+       3.20698690e-13, 3.23084399e-13, 3.25361487e-13, 3.27490476e-13,
+       3.29523684e-13, 3.31593017e-13, 3.33688809e-13, 3.35620465e-13,
+       3.37585973e-13, 3.39457091e-13, 3.41306474e-13, 3.43063741e-13,
+       3.44944908e-13, 3.46711544e-13, 3.48532997e-13, 3.50330357e-13,
+       3.52106906e-13, 3.53672244e-13, 3.55287527e-13, 3.56820347e-13,
+       3.58409588e-13, 3.59996786e-13, 3.61512870e-13, 3.63095841e-13,
+       3.64709299e-13, 3.66327736e-13, 3.67958815e-13, 3.69616972e-13,
+       3.71347003e-13, 3.72938742e-13, 3.74320204e-13, 3.75561488e-13,
+       3.76656058e-13, 3.77600048e-13, 3.78600697e-13, 3.79726981e-13,
+       3.80800503e-13, 3.81918047e-13, 3.82990832e-13, 3.84062323e-13,
+       3.84946191e-13, 3.85835416e-13, 3.86740255e-13, 3.87729299e-13,
+       3.88788433e-13, 3.89664752e-13, 3.90404683e-13, 3.91067376e-13,
+       3.91709531e-13, 3.92188571e-13, 3.92736207e-13, 3.93318652e-13,
+       3.93996881e-13, 3.94849153e-13, 3.95651336e-13, 3.96474784e-13,
+       3.97158951e-13, 3.97691283e-13, 3.98184454e-13, 3.98511338e-13,
+       3.98923228e-13, 3.99411535e-13, 3.99935455e-13, 4.00435782e-13,
+       4.01053118e-13, 4.01689653e-13, 4.02468127e-13, 4.03407315e-13,
+       4.04408222e-13, 4.05330905e-13, 4.06326732e-13, 4.07455543e-13,
+       4.08681142e-13, 4.10103567e-13, 4.11365956e-13, 4.12638500e-13,
+       4.13938362e-13, 4.15291935e-13, 4.16723675e-13, 4.18361550e-13,
+       4.19840298e-13, 4.21306425e-13, 4.22658841e-13, 4.23996766e-13,
+       4.25112185e-13, 4.26130530e-13, 4.26906574e-13, 4.27589829e-13,
+       4.28360261e-13, 4.29191768e-13, 4.29941501e-13, 4.30805880e-13,
+       4.31617123e-13, 4.32538966e-13, 4.33425834e-13, 4.34316376e-13,
+       4.35268155e-13, 4.36372093e-13, 4.37478316e-13, 4.38584487e-13,
+       4.39469692e-13, 4.40278946e-13, 4.40989024e-13, 4.41526216e-13,
+       4.41961209e-13, 4.42490051e-13, 4.43095765e-13, 4.43708846e-13,
+       4.44207564e-13, 4.44673227e-13, 4.45031235e-13, 4.45304276e-13,
+       4.45516900e-13, 4.45762281e-13, 4.46012593e-13, 4.46441339e-13,
+       4.46920932e-13, 4.47464191e-13, 4.47990419e-13, 4.48601926e-13,
+       4.49189342e-13, 4.49887654e-13, 4.50717080e-13, 4.51717003e-13,
+       4.52755442e-13, 4.53620823e-13, 4.54462253e-13, 4.55271998e-13,
+       4.56061068e-13, 4.56726920e-13, 4.57376234e-13, 4.58080541e-13,
+       4.58773987e-13, 4.59482054e-13, 4.60139874e-13, 4.60757831e-13,
+       4.61492930e-13, 4.62199389e-13, 4.63094010e-13, 4.63980691e-13,
+       4.64566888e-13, 4.64977340e-13, 4.65422672e-13, 4.65799563e-13,
+       4.66265018e-13, 4.66750068e-13, 4.67315596e-13, 4.67932333e-13,
+       4.68634161e-13, 4.69365563e-13, 4.70108224e-13, 4.70865056e-13,
+       4.71645570e-13, 4.72345378e-13, 4.73138120e-13, 4.73927196e-13,
+       4.74861643e-13, 4.75806974e-13, 4.76812920e-13, 4.77766865e-13,
+       4.78732733e-13, 4.79742026e-13, 4.80894942e-13, 4.82160054e-13,
+       4.83559002e-13, 4.84908520e-13, 4.86293252e-13, 4.87557850e-13,
+       4.88795302e-13, 4.89945039e-13, 4.91099544e-13, 4.92245040e-13,
+       4.93297766e-13, 4.94221952e-13, 4.95087269e-13, 4.96067116e-13,
+       4.97143065e-13, 4.98269034e-13, 4.99580650e-13, 5.00991320e-13,
+       5.02411467e-13, 5.03863290e-13, 5.05424900e-13, 5.06947504e-13,
+       5.08344707e-13, 5.09779150e-13, 5.11329636e-13, 5.12771323e-13,
+       5.14037927e-13, 5.15358966e-13, 5.16909694e-13, 5.18709090e-13,
+       5.20446382e-13, 5.22229362e-13, 5.24094139e-13, 5.25946636e-13,
+       5.27872614e-13, 5.29897302e-13, 5.32003768e-13, 5.34102236e-13,
+       5.36196711e-13, 5.38253114e-13, 5.40211147e-13, 5.42190523e-13,
+       5.44215080e-13, 5.46238946e-13, 5.48374505e-13, 5.50589686e-13,
+       5.52899534e-13, 5.55254010e-13, 5.57662362e-13, 5.60018912e-13,
+       5.62289467e-13, 5.64557775e-13, 5.66846185e-13, 5.69161442e-13,
+       5.71668795e-13, 5.74159325e-13, 5.76681649e-13, 5.79105418e-13,
+       5.81374501e-13, 5.83771386e-13, 5.86274191e-13, 5.88922468e-13,
+       5.91694713e-13, 5.94308150e-13, 5.96652034e-13, 5.98859091e-13,
+       6.01181399e-13, 6.03429223e-13, 6.05644627e-13, 6.07821636e-13,
+       6.09862448e-13, 6.11985373e-13, 6.14291586e-13, 6.16512104e-13,
+       6.18723615e-13, 6.21053680e-13, 6.23271287e-13, 6.25404922e-13,
+       6.27558749e-13, 6.29796859e-13, 6.32193376e-13, 6.34608707e-13,
+       6.37064859e-13, 6.39572165e-13, 6.42125495e-13, 6.44615817e-13,
+       6.47080131e-13, 6.49635917e-13, 6.52256725e-13, 6.54722026e-13,
+       6.57095384e-13, 6.59429071e-13, 6.61813523e-13, 6.64348039e-13,
+       6.66903758e-13, 6.69517557e-13, 6.72124786e-13, 6.74552937e-13,
+       6.76902702e-13, 6.79311019e-13, 6.81787343e-13, 6.84321633e-13,
+       6.86994317e-13, 6.89627010e-13, 6.92250483e-13, 6.95052455e-13,
+       6.98143859e-13, 7.01352340e-13, 7.04616298e-13, 7.07799618e-13,
+       7.10948399e-13, 7.14168221e-13, 7.17292530e-13, 7.20524425e-13,
+       7.23706611e-13, 7.26723862e-13, 7.29694393e-13, 7.32488790e-13,
+       7.35220552e-13, 7.38251849e-13, 7.41385124e-13, 7.44348440e-13,
+       7.47208775e-13, 7.49954735e-13, 7.52657632e-13, 7.55220170e-13,
+       7.57943088e-13, 7.60688358e-13, 7.63513050e-13, 7.66372205e-13,
+       7.69372333e-13, 7.72386311e-13, 7.75220753e-13, 7.78189296e-13,
+       7.81344969e-13, 7.84407894e-13, 7.87336215e-13, 7.89982782e-13,
+       7.92594859e-13, 7.95332521e-13, 7.98106544e-13, 8.00789433e-13,
+       8.03703972e-13, 8.06688539e-13, 8.09622030e-13, 8.12430642e-13,
+       8.15113593e-13, 8.17768933e-13, 8.20447975e-13, 8.23080467e-13,
+       8.25596652e-13, 8.28081961e-13, 8.30778553e-13, 8.33558088e-13,
+       8.36420679e-13, 8.39159567e-13, 8.41872352e-13, 8.44604933e-13,
+       8.47430193e-13, 8.50477314e-13, 8.53481836e-13, 8.56357187e-13,
+       8.59282136e-13, 8.62168751e-13, 8.64876659e-13, 8.67497683e-13,
+       8.70147098e-13, 8.72873857e-13, 8.75577736e-13, 8.77984604e-13,
+       8.80308255e-13, 8.82435377e-13, 8.84490491e-13, 8.86603813e-13,
+       8.88741778e-13, 8.90836977e-13, 8.92927587e-13, 8.95213995e-13,
+       8.97492153e-13, 8.99831136e-13, 9.02045505e-13, 9.04193946e-13,
+       9.06459591e-13, 9.08691922e-13, 9.10884954e-13, 9.13270397e-13,
+       9.15936920e-13, 9.18655700e-13, 9.21345050e-13, 9.24239041e-13,
+       9.27046081e-13, 9.29934992e-13, 9.32861028e-13, 9.35691581e-13,
+       9.38577018e-13, 9.41698521e-13, 9.44522698e-13, 9.47389787e-13,
+       9.50350566e-13, 9.53228828e-13, 9.56117203e-13, 9.59001815e-13,
+       9.61816975e-13, 9.64512499e-13, 9.67179479e-13, 9.69701038e-13,
+       9.72283135e-13, 9.74986081e-13, 9.77566407e-13, 9.80257313e-13,
+       9.82984276e-13, 9.85818197e-13, 9.88415465e-13, 9.90929211e-13,
+       9.93341629e-13, 9.96095810e-13, 9.98540500e-13, 1.00104183e-12,
+       1.00353687e-12, 1.00606572e-12, 1.00860208e-12, 1.01115794e-12,
+       1.01360509e-12, 1.01619694e-12, 1.01878829e-12, 1.02119749e-12,
+       1.02370827e-12, 1.02629901e-12, 1.02898987e-12, 1.03178709e-12,
+       1.03471213e-12, 1.03767887e-12, 1.04044981e-12, 1.04311790e-12,
+       1.04579120e-12, 1.04850477e-12, 1.05105781e-12, 1.05360775e-12,
+       1.05629286e-12, 1.05935504e-12, 1.06235611e-12, 1.06522523e-12,
+       1.06793956e-12, 1.07033454e-12, 1.07271403e-12, 1.07505700e-12,
+       1.07727661e-12, 1.07952286e-12, 1.08155789e-12, 1.08346208e-12,
+       1.08511018e-12, 1.08682794e-12, 1.08855350e-12, 1.09051901e-12,
+       1.09244989e-12, 1.09389677e-12, 1.09527852e-12, 1.09650519e-12,
+       1.09787642e-12, 1.09878772e-12, 1.09948765e-12, 1.10010413e-12,
+       1.10070124e-12, 1.10097755e-12, 1.10108946e-12, 1.10136305e-12,
+       1.10214643e-12, 1.10302407e-12, 1.10390146e-12, 1.10481817e-12,
+       1.10587666e-12, 1.10679369e-12, 1.10762297e-12, 1.10826583e-12,
+       1.10882254e-12, 1.10921841e-12, 1.10987277e-12, 1.11039740e-12,
+       1.11102733e-12, 1.11201253e-12, 1.11310114e-12, 1.11413758e-12,
+       1.11526383e-12, 1.11644755e-12, 1.11770884e-12, 1.11884870e-12,
+       1.12047400e-12, 1.12204247e-12, 1.12349849e-12, 1.12477752e-12,
+       1.12623653e-12, 1.12753978e-12, 1.12904604e-12, 1.13079534e-12,
+       1.13264973e-12, 1.13429092e-12, 1.13601669e-12, 1.13768446e-12,
+       1.13933689e-12, 1.14142625e-12, 1.14362651e-12, 1.14592153e-12,
+       1.14841370e-12, 1.15064358e-12, 1.15317352e-12, 1.15598155e-12,
+       1.15910882e-12, 1.16238359e-12, 1.16561017e-12, 1.16899519e-12,
+       1.17272156e-12, 1.17656302e-12, 1.18063443e-12, 1.18498685e-12,
+       1.18895327e-12, 1.19236569e-12, 1.19579902e-12, 1.19935882e-12,
+       1.20319235e-12, 1.20678208e-12, 1.21054795e-12, 1.21418852e-12,
+       1.21799078e-12, 1.22150155e-12, 1.22490254e-12, 1.22802588e-12,
+       1.23118771e-12, 1.23424071e-12, 1.23743877e-12, 1.24087267e-12,
+       1.24459675e-12, 1.24829922e-12, 1.25180042e-12, 1.25513104e-12,
+       1.25826203e-12, 1.26155130e-12, 1.26473391e-12, 1.26795284e-12,
+       1.27109290e-12, 1.27441790e-12, 1.27779879e-12, 1.28140131e-12,
+       1.28501058e-12, 1.28858820e-12, 1.29203390e-12, 1.29482696e-12,
+       1.29755664e-12, 1.30015894e-12, 1.30290606e-12, 1.30555151e-12,
+       1.30836294e-12, 1.31145466e-12, 1.31441595e-12, 1.31697557e-12,
+       1.31940887e-12, 1.32182264e-12, 1.32445552e-12, 1.32730357e-12,
+       1.33012781e-12, 1.33265554e-12, 1.33448431e-12, 1.33633149e-12,
+       1.33838830e-12, 1.34045913e-12, 1.34232837e-12, 1.34383576e-12,
+       1.34479052e-12, 1.34551978e-12, 1.34616365e-12, 1.34658574e-12,
+       1.34697839e-12, 1.34735105e-12, 1.34734992e-12, 1.34729965e-12,
+       1.34725535e-12, 1.34693090e-12, 1.34680015e-12, 1.34626483e-12,
+       1.34568181e-12, 1.34522906e-12, 1.34487962e-12, 1.34423657e-12,
+       1.34401505e-12, 1.34396236e-12, 1.34412204e-12, 1.34389986e-12,
+       1.34322789e-12, 1.34225282e-12, 1.34180114e-12, 1.34181977e-12,
+       1.34171664e-12, 1.34193041e-12, 1.34188014e-12, 1.34202722e-12,
+       1.34237104e-12, 1.34262011e-12, 1.34280223e-12, 1.34293709e-12,
+       1.34313695e-12, 1.34324114e-12, 1.34387924e-12, 1.34415245e-12,
+       1.34496429e-12, 1.34614466e-12, 1.34703972e-12, 1.34764318e-12,
+       1.34861948e-12, 1.34924881e-12, 1.34951771e-12, 1.35058762e-12,
+       1.35225276e-12, 1.35392018e-12, 1.35574033e-12, 1.35709671e-12,
+       1.35879131e-12, 1.35994584e-12, 1.36122641e-12, 1.36276488e-12,
+       1.36386937e-12, 1.36474854e-12, 1.36549482e-12, 1.36602908e-12,
+       1.36633873e-12, 1.36667233e-12, 1.36753920e-12, 1.36854424e-12,
+       1.36928166e-12, 1.36993905e-12, 1.37018616e-12, 1.37056692e-12,
+       1.37100427e-12, 1.37130486e-12, 1.37187290e-12, 1.37261355e-12,
+       1.37351938e-12, 1.37401611e-12, 1.37489627e-12, 1.37617107e-12,
+       1.37802063e-12, 1.37992255e-12, 1.38223963e-12, 1.38457452e-12,
+       1.38604668e-12, 1.38733646e-12, 1.38869039e-12, 1.38955623e-12,
+       1.39054740e-12, 1.39126188e-12, 1.39129173e-12, 1.39140528e-12,
+       1.39098851e-12, 1.38993769e-12, 1.38861905e-12, 1.38658815e-12,
+       1.38476763e-12, 1.38282833e-12, 1.38049205e-12, 1.37756453e-12,
+       1.37469285e-12, 1.37141798e-12, 1.36837816e-12, 1.36497510e-12,
+       1.36160779e-12, 1.35764243e-12, 1.35359953e-12, 1.34965720e-12,
+       1.34519491e-12, 1.34033592e-12, 1.33515168e-12, 1.33017049e-12,
+       1.32543248e-12, 1.32159086e-12, 1.31850763e-12, 1.31474481e-12,
+       1.31153268e-12, 1.30901354e-12, 1.30702033e-12, 1.30455729e-12,
+       1.30252660e-12, 1.30003602e-12, 1.29736612e-12, 1.29553188e-12,
+       1.29387179e-12, 1.29168433e-12, 1.29017201e-12, 1.28907585e-12,
+       1.28791869e-12, 1.28775079e-12, 1.28786521e-12, 1.28870748e-12,
+       1.28901605e-12, 1.28990475e-12, 1.29102252e-12, 1.29153647e-12,
+       1.29196930e-12, 1.29279920e-12, 1.29370792e-12, 1.29443722e-12,
+       1.29520014e-12, 1.29556619e-12, 1.29549788e-12, 1.29489603e-12,
+       1.29442560e-12, 1.29416476e-12, 1.29366666e-12, 1.29332990e-12,
+       1.29345131e-12, 1.29453970e-12, 1.29555572e-12, 1.29633787e-12,
+       1.29789083e-12, 1.29906107e-12, 1.30019491e-12, 1.30033777e-12,
+       1.30061383e-12, 1.30088991e-12, 1.30154249e-12, 1.30163463e-12,
+       1.30171906e-12, 1.30216798e-12, 1.30288969e-12, 1.30452901e-12,
+       1.30593679e-12, 1.30692443e-12, 1.30823759e-12, 1.30918354e-12,
+       1.30990829e-12, 1.31027457e-12, 1.30997722e-12, 1.30972975e-12,
+       1.30928083e-12, 1.30950588e-12, 1.30985271e-12, 1.30983380e-12,
+       1.30935535e-12, 1.30914153e-12, 1.30874101e-12, 1.30861626e-12,
+       1.30886493e-12, 1.30861429e-12, 1.30770932e-12, 1.30718325e-12,
+       1.30626850e-12, 1.30525767e-12, 1.30325543e-12, 1.30063249e-12,
+       1.29844191e-12, 1.29636608e-12, 1.29365411e-12, 1.29127639e-12,
+       1.28888523e-12, 1.28537989e-12, 1.28230032e-12, 1.28030638e-12,
+       1.27838459e-12, 1.27669625e-12, 1.27514354e-12, 1.27362358e-12,
+       1.27100124e-12, 1.26807277e-12, 1.26551262e-12, 1.26346993e-12,
+       1.26106187e-12, 1.25881157e-12, 1.25761583e-12, 1.25625653e-12,
+       1.25532045e-12, 1.25580952e-12, 1.25506660e-12, 1.25369131e-12,
+       1.25163648e-12, 1.24813599e-12, 1.24388770e-12, 1.23871803e-12,
+       1.23350099e-12, 1.22817881e-12, 1.22284343e-12, 1.21644780e-12,
+       1.21036144e-12, 1.20339971e-12, 1.19783993e-12, 1.19331442e-12,
+       1.18885606e-12, 1.18439224e-12, 1.18035482e-12, 1.17627679e-12,
+       1.17278806e-12, 1.17007672e-12, 1.16814529e-12, 1.16626704e-12,
+       1.16499746e-12, 1.16477108e-12, 1.16480011e-12, 1.16610919e-12,
+       1.16699489e-12, 1.16694340e-12, 1.16495652e-12, 1.16213551e-12,
+       1.15839554e-12, 1.15567261e-12, 1.15245286e-12, 1.14917479e-12,
+       1.14690842e-12, 1.14442544e-12, 1.14185288e-12, 1.13893492e-12,
+       1.13615047e-12, 1.13355237e-12, 1.13190227e-12, 1.13149373e-12,
+       1.13003459e-12, 1.12897832e-12, 1.12721411e-12, 1.12512815e-12,
+       1.12479241e-12, 1.12468457e-12, 1.12443300e-12, 1.12365851e-12,
+       1.12097623e-12, 1.11854380e-12, 1.11543630e-12, 1.11185920e-12,
+       1.10818521e-12, 1.10621442e-12, 1.10431134e-12, 1.10142247e-12,
+       1.09848305e-12, 1.09605302e-12, 1.09614700e-12, 1.09672938e-12,
+       1.09555958e-12, 1.09411185e-12, 1.09192247e-12, 1.08844072e-12,
+       1.08734489e-12, 1.08811159e-12, 1.08963228e-12, 1.09154586e-12,
+       1.09307833e-12, 1.09683460e-12, 1.09950963e-12, 1.10272757e-12,
+       1.10806732e-12, 1.11226065e-12, 1.11839407e-12, 1.12245081e-12,
+       1.12553033e-12, 1.12957559e-12, 1.13252240e-12, 1.13460204e-12,
+       1.13622902e-12, 1.13926934e-12, 1.14367628e-12, 1.14643027e-12,
+       1.14740937e-12, 1.14862173e-12, 1.15131259e-12, 1.15548887e-12,
+       1.16182601e-12, 1.17025264e-12, 1.17738772e-12, 1.18666241e-12,
+       1.19540163e-12, 1.20574518e-12, 1.21627873e-12, 1.22794012e-12,
+       1.24029566e-12, 1.25024277e-12, 1.26185093e-12, 1.27256429e-12,
+       1.28164268e-12, 1.29086392e-12, 1.29901185e-12, 1.30823244e-12,
+       1.31725681e-12, 1.31841135e-12, 1.31921182e-12, 1.31895699e-12,
+       1.31679636e-12, 1.31846318e-12, 1.32621075e-12, 1.33630396e-12,
+       1.34051900e-12, 1.34455146e-12, 1.35046647e-12, 1.36584208e-12,
+       1.38186176e-12, 1.39141607e-12, 1.40242254e-12, 1.41596034e-12,
+       1.44305669e-12, 1.47466724e-12, 1.50119311e-12, 1.52181921e-12,
+       1.54794756e-12, 1.57615022e-12, 1.59338778e-12, 1.61114705e-12,
+       1.63709994e-12, 1.67400423e-12, 1.70870868e-12, 1.73990635e-12,
+       1.76261760e-12])}, &#39;average_dapp&#39;: {&#39;ModelHop&#39;: array([1.06442437e-12, 6.31725068e-13, 5.34349434e-13, 5.01497318e-13,
+       4.76676118e-13, 4.56092335e-13, 4.41309471e-13, 4.25132360e-13,
+       4.03458989e-13, 3.91731446e-13, 3.79983989e-13, 3.73336076e-13,
+       3.67836457e-13, 3.63148895e-13, 3.67221858e-13, 3.72012453e-13,
+       3.77125725e-13, 3.80745414e-13, 3.85612226e-13, 3.85066342e-13,
+       3.84822024e-13, 3.80765693e-13, 3.76227030e-13, 3.72392379e-13,
+       3.66499160e-13, 3.61945085e-13, 3.57022757e-13, 3.54935953e-13,
+       3.54133905e-13, 3.55151157e-13, 3.55809620e-13, 3.57256730e-13,
+       3.58186305e-13, 3.56897088e-13, 3.57753688e-13, 3.55879150e-13,
+       3.54041317e-13, 3.52989913e-13, 3.50686565e-13, 3.48900658e-13,
+       3.46779284e-13, 3.45806852e-13, 3.45932717e-13, 3.46836297e-13,
+       3.47894881e-13, 3.49282846e-13, 3.50358110e-13, 3.49627067e-13,
+       3.50106066e-13, 3.50444012e-13, 3.50567043e-13, 3.50019360e-13,
+       3.50013061e-13, 3.50088858e-13, 3.50834068e-13, 3.51600635e-13,
+       3.52857975e-13, 3.54385849e-13, 3.55891189e-13, 3.56806181e-13,
+       3.58596548e-13, 3.59183602e-13, 3.59926032e-13, 3.60325189e-13,
+       3.60839787e-13, 3.61141617e-13, 3.61226823e-13, 3.60960065e-13,
+       3.60029486e-13, 3.59395606e-13, 3.58976793e-13, 3.58858421e-13,
+       3.58017798e-13, 3.57703493e-13, 3.56305485e-13, 3.54523752e-13,
+       3.52977870e-13, 3.51285918e-13, 3.48872732e-13, 3.47026722e-13,
+       3.45157169e-13, 3.42769647e-13, 3.40726634e-13, 3.38620533e-13,
+       3.36461719e-13, 3.35184106e-13, 3.33754490e-13, 3.32474484e-13,
+       3.31849993e-13, 3.31234709e-13, 3.30558371e-13, 3.29859390e-13,
+       3.29327986e-13, 3.28325989e-13, 3.27395848e-13, 3.26232567e-13,
+       3.24431049e-13, 3.23283097e-13, 3.22293658e-13, 3.21701030e-13,
+       3.21570690e-13, 3.21599762e-13, 3.21411673e-13, 3.21458245e-13,
+       3.21505414e-13, 3.21353321e-13, 3.20907924e-13, 3.20611744e-13,
+       3.20129883e-13, 3.18876053e-13, 3.17721415e-13, 3.16444884e-13,
+       3.15222414e-13, 3.14615082e-13, 3.14195003e-13, 3.13528162e-13,
+       3.13159979e-13, 3.13100573e-13, 3.13165011e-13, 3.12723406e-13,
+       3.12386128e-13, 3.11769243e-13, 3.10793439e-13, 3.09789826e-13,
+       3.08626800e-13, 3.07978497e-13, 3.07529873e-13, 3.06814995e-13,
+       3.06537209e-13, 3.06485809e-13, 3.06479772e-13, 3.06728952e-13,
+       3.06582302e-13, 3.06054496e-13, 3.05340841e-13, 3.04786481e-13,
+       3.03737883e-13, 3.02597528e-13, 3.01244793e-13, 2.99699908e-13,
+       2.98982986e-13, 2.98208038e-13, 2.97730218e-13, 2.97340030e-13,
+       2.96649002e-13, 2.96367940e-13, 2.95813801e-13, 2.95238887e-13,
+       2.94530207e-13, 2.93821631e-13, 2.92921230e-13, 2.91985831e-13,
+       2.90854723e-13, 2.89611785e-13, 2.88686746e-13, 2.88061217e-13,
+       2.87602928e-13, 2.87258800e-13, 2.86859049e-13, 2.86489732e-13,
+       2.86018201e-13, 2.85672261e-13, 2.85337789e-13, 2.84936480e-13,
+       2.83873801e-13, 2.83330505e-13, 2.82333661e-13, 2.81463912e-13,
+       2.80580503e-13, 2.79777026e-13, 2.79001861e-13, 2.78229245e-13,
+       2.77363961e-13, 2.76263094e-13, 2.75495482e-13, 2.74408323e-13,
+       2.73474547e-13, 2.72288305e-13, 2.71064695e-13, 2.69685060e-13,
+       2.68392901e-13, 2.66624684e-13, 2.64941655e-13, 2.63432227e-13,
+       2.61999800e-13, 2.60656564e-13, 2.59312459e-13, 2.57994777e-13,
+       2.56935913e-13, 2.56129720e-13, 2.55259676e-13, 2.54163643e-13,
+       2.53224829e-13, 2.52133751e-13, 2.51141638e-13, 2.50037519e-13,
+       2.48711073e-13, 2.47546727e-13, 2.46135427e-13, 2.44952945e-13,
+       2.43743064e-13, 2.42674438e-13, 2.41811838e-13, 2.40822685e-13,
+       2.39915048e-13, 2.39122954e-13, 2.38419952e-13, 2.37663925e-13,
+       2.36850516e-13, 2.35738349e-13, 2.34741847e-13, 2.33722960e-13,
+       2.32494444e-13, 2.31141552e-13, 2.29880468e-13, 2.28994449e-13,
+       2.27835239e-13, 2.26983101e-13, 2.26079987e-13, 2.25192867e-13,
+       2.24544636e-13, 2.23562463e-13, 2.22678675e-13, 2.21564211e-13,
+       2.20325429e-13, 2.18887872e-13, 2.17555396e-13, 2.16108101e-13,
+       2.15015534e-13, 2.13756992e-13, 2.12748599e-13, 2.11794013e-13,
+       2.11005615e-13, 2.10126230e-13, 2.09294852e-13, 2.08403868e-13,
+       2.07393095e-13, 2.06134284e-13, 2.04872871e-13, 2.03334417e-13,
+       2.01819007e-13, 2.00351186e-13, 1.99304366e-13, 1.98182919e-13,
+       1.97441658e-13, 1.96657302e-13, 1.96118088e-13, 1.95356595e-13,
+       1.94667107e-13, 1.94099570e-13, 1.93291571e-13, 1.92371923e-13,
+       1.91231650e-13, 1.90226063e-13, 1.89391673e-13, 1.88624948e-13,
+       1.87837087e-13, 1.87259194e-13, 1.86734194e-13, 1.86247635e-13,
+       1.85832190e-13, 1.85149135e-13, 1.84701981e-13, 1.84299959e-13,
+       1.84016989e-13, 1.83408970e-13, 1.82949288e-13, 1.82554415e-13,
+       1.81938793e-13, 1.81529608e-13, 1.81112553e-13, 1.80840448e-13,
+       1.80596290e-13, 1.80485290e-13, 1.80480550e-13, 1.80371576e-13,
+       1.80397904e-13, 1.80423355e-13, 1.80561522e-13, 1.80483354e-13,
+       1.80503189e-13, 1.80279181e-13, 1.79934483e-13, 1.79572212e-13,
+       1.79401647e-13, 1.79237992e-13, 1.79114836e-13, 1.78983515e-13,
+       1.78881416e-13, 1.78667920e-13, 1.78647373e-13, 1.78517629e-13,
+       1.78370258e-13, 1.77943414e-13, 1.77850014e-13, 1.77725009e-13,
+       1.77550599e-13, 1.77252182e-13, 1.77105917e-13, 1.76850069e-13,
+       1.76900350e-13, 1.76581716e-13, 1.76533460e-13, 1.76167865e-13,
+       1.75887779e-13, 1.75794094e-13, 1.75740019e-13, 1.75595130e-13,
+       1.75365934e-13, 1.75037348e-13, 1.74706030e-13, 1.74366010e-13,
+       1.73977744e-13, 1.73570408e-13, 1.73451834e-13, 1.73195912e-13,
+       1.73040466e-13, 1.72905496e-13, 1.72660013e-13, 1.72546555e-13,
+       1.72440343e-13, 1.72141138e-13, 1.71965690e-13, 1.71610148e-13,
+       1.71262171e-13, 1.70626666e-13, 1.69876557e-13, 1.69199924e-13,
+       1.68842937e-13, 1.68537133e-13, 1.68274406e-13, 1.68101968e-13,
+       1.67916958e-13, 1.67773600e-13, 1.67642922e-13, 1.67283041e-13,
+       1.66979102e-13, 1.66689221e-13, 1.66019269e-13, 1.65589520e-13,
+       1.65025250e-13, 1.64455616e-13, 1.63978958e-13, 1.63568679e-13,
+       1.63189889e-13, 1.62856114e-13, 1.62643964e-13, 1.62431696e-13,
+       1.62337647e-13, 1.62085161e-13, 1.61824585e-13, 1.61670724e-13,
+       1.61515951e-13, 1.61137666e-13, 1.60728402e-13, 1.60409443e-13,
+       1.60051572e-13, 1.59895674e-13, 1.59760388e-13, 1.59574364e-13,
+       1.59543259e-13, 1.59453269e-13, 1.59484849e-13, 1.59307704e-13,
+       1.59170882e-13, 1.58993757e-13, 1.58758572e-13, 1.58530598e-13,
+       1.58155713e-13, 1.57880209e-13, 1.57637475e-13, 1.57540661e-13,
+       1.57295363e-13, 1.57168837e-13, 1.56853737e-13, 1.56949709e-13,
+       1.56935184e-13, 1.56878042e-13, 1.56710441e-13, 1.56498686e-13,
+       1.56195575e-13, 1.56055330e-13, 1.55746534e-13, 1.55441743e-13,
+       1.55223203e-13, 1.54899929e-13, 1.54487741e-13, 1.54162820e-13,
+       1.53863374e-13, 1.53737159e-13, 1.53735243e-13, 1.53709506e-13,
+       1.53564036e-13, 1.53172092e-13, 1.52819221e-13, 1.52372803e-13,
+       1.51977044e-13, 1.51491298e-13, 1.51053990e-13, 1.50716151e-13,
+       1.50472677e-13, 1.50206592e-13, 1.50190955e-13, 1.50143104e-13,
+       1.50282949e-13, 1.50385720e-13, 1.50645011e-13, 1.50920383e-13,
+       1.51136760e-13, 1.51398981e-13, 1.51458513e-13, 1.51548331e-13,
+       1.51558686e-13, 1.51699950e-13, 1.51755116e-13, 1.51738256e-13,
+       1.51870510e-13, 1.52093412e-13, 1.52370905e-13, 1.52650392e-13,
+       1.53066974e-13, 1.53303518e-13, 1.53548430e-13, 1.53821543e-13,
+       1.53815425e-13, 1.53812125e-13, 1.53652250e-13, 1.53542949e-13,
+       1.53388602e-13, 1.53330610e-13, 1.53183441e-13, 1.53228280e-13,
+       1.53406126e-13, 1.53528564e-13, 1.53728657e-13, 1.53933054e-13,
+       1.53899233e-13, 1.53994818e-13, 1.53966373e-13, 1.53869543e-13,
+       1.54102418e-13, 1.54161763e-13, 1.54217610e-13, 1.54329264e-13,
+       1.54362885e-13, 1.54550398e-13, 1.54773999e-13, 1.55074126e-13,
+       1.55294827e-13, 1.55625746e-13, 1.55896479e-13, 1.56104459e-13,
+       1.56278276e-13, 1.56373342e-13, 1.56514966e-13, 1.56613180e-13,
+       1.56737062e-13, 1.56859190e-13, 1.56854203e-13, 1.56969410e-13,
+       1.57106847e-13, 1.57247475e-13, 1.57295825e-13, 1.57360736e-13,
+       1.57283509e-13, 1.57228805e-13, 1.56981696e-13, 1.56724263e-13,
+       1.56398197e-13, 1.56172913e-13, 1.55900621e-13, 1.55641994e-13,
+       1.55420788e-13, 1.55266803e-13, 1.55209302e-13, 1.55065013e-13,
+       1.55045462e-13, 1.54916057e-13, 1.54688430e-13, 1.54416611e-13,
+       1.54045330e-13, 1.53504567e-13, 1.53225896e-13, 1.52801656e-13,
+       1.52408496e-13, 1.52091542e-13, 1.51654241e-13, 1.51273116e-13,
+       1.50915223e-13, 1.50691601e-13, 1.50553627e-13, 1.50544086e-13,
+       1.50401370e-13, 1.50350747e-13, 1.50315138e-13, 1.50351868e-13,
+       1.50336130e-13, 1.50262656e-13, 1.50233048e-13, 1.50283000e-13,
+       1.50271344e-13, 1.50347815e-13, 1.50438419e-13, 1.50417774e-13,
+       1.50696629e-13, 1.50845540e-13, 1.51016842e-13, 1.51084956e-13,
+       1.51082387e-13, 1.50990972e-13, 1.50737810e-13, 1.50518626e-13,
+       1.50193516e-13, 1.49894967e-13, 1.49513359e-13, 1.49051165e-13,
+       1.48785263e-13, 1.48555270e-13, 1.48247237e-13, 1.47926637e-13,
+       1.47815214e-13, 1.47705706e-13, 1.47752050e-13, 1.47552418e-13,
+       1.47387064e-13, 1.47246089e-13, 1.47049238e-13, 1.46889918e-13,
+       1.46633991e-13, 1.46391256e-13, 1.46259338e-13, 1.46085729e-13,
+       1.46105383e-13, 1.46076759e-13, 1.46130933e-13, 1.46113633e-13,
+       1.46054420e-13, 1.46041559e-13, 1.46088514e-13, 1.45949705e-13,
+       1.45765106e-13, 1.45524743e-13, 1.45339449e-13, 1.45182572e-13,
+       1.45089986e-13, 1.45047398e-13, 1.45154349e-13, 1.45198068e-13,
+       1.45276470e-13, 1.45356029e-13, 1.45386635e-13, 1.45366934e-13,
+       1.45460717e-13, 1.45518135e-13, 1.45385560e-13, 1.45321762e-13,
+       1.45265004e-13, 1.45209922e-13, 1.45209243e-13, 1.45345817e-13,
+       1.45288706e-13, 1.45361864e-13, 1.45325914e-13, 1.45324005e-13,
+       1.45454679e-13, 1.45412899e-13, 1.45312981e-13, 1.45190048e-13,
+       1.45003393e-13, 1.44659634e-13, 1.44485641e-13, 1.44159220e-13,
+       1.43959048e-13, 1.43840140e-13, 1.43712763e-13, 1.43774786e-13,
+       1.43825559e-13, 1.43797778e-13, 1.43720373e-13, 1.43776061e-13,
+       1.43583034e-13, 1.43496572e-13, 1.43381374e-13, 1.43106889e-13,
+       1.42807841e-13, 1.42595150e-13, 1.42394527e-13, 1.42110624e-13,
+       1.41831595e-13, 1.41598940e-13, 1.41493844e-13, 1.41408066e-13,
+       1.41308908e-13, 1.41158997e-13, 1.40894232e-13, 1.40798561e-13,
+       1.40325909e-13, 1.39944909e-13, 1.39538158e-13, 1.38972718e-13,
+       1.38453500e-13, 1.37961542e-13, 1.37454575e-13, 1.36938169e-13,
+       1.36470483e-13, 1.35994165e-13, 1.35514192e-13, 1.35078845e-13,
+       1.34779981e-13, 1.34525536e-13, 1.34138503e-13, 1.33717795e-13,
+       1.33289751e-13, 1.32835178e-13, 1.32291018e-13, 1.31746181e-13,
+       1.31175726e-13, 1.30752069e-13, 1.30252545e-13, 1.29699299e-13,
+       1.29204158e-13, 1.28703913e-13, 1.28217526e-13, 1.27726918e-13,
+       1.27342532e-13, 1.26741306e-13, 1.26184506e-13, 1.25576858e-13,
+       1.24846560e-13, 1.24185566e-13, 1.23403533e-13, 1.22650921e-13,
+       1.22168993e-13, 1.21525949e-13, 1.21008734e-13, 1.20459198e-13,
+       1.19952267e-13, 1.19325576e-13, 1.18762867e-13, 1.18106966e-13,
+       1.17399336e-13, 1.16838849e-13, 1.16058888e-13, 1.15352019e-13,
+       1.14564830e-13, 1.13993770e-13, 1.13429057e-13, 1.12758219e-13,
+       1.12125439e-13, 1.11512876e-13, 1.10749282e-13, 1.10008668e-13,
+       1.09229701e-13, 1.08277776e-13, 1.07505810e-13, 1.06714697e-13,
+       1.05881863e-13, 1.04941168e-13, 1.04099848e-13, 1.03386428e-13,
+       1.02681794e-13, 1.02025773e-13, 1.01486895e-13, 1.00951925e-13,
+       1.00328905e-13, 9.96412334e-14, 9.89819396e-14, 9.82428372e-14,
+       9.74784248e-14, 9.68100754e-14, 9.61241026e-14, 9.54931686e-14,
+       9.47196923e-14, 9.41116043e-14, 9.35482811e-14, 9.30722252e-14,
+       9.27583794e-14, 9.26260234e-14, 9.23546963e-14, 9.20173441e-14,
+       9.17606087e-14, 9.12118201e-14, 9.08688016e-14, 9.03530022e-14,
+       8.96856739e-14, 8.90342039e-14, 8.85023928e-14, 8.78052692e-14,
+       8.71428834e-14, 8.65122590e-14, 8.59078302e-14, 8.52567017e-14,
+       8.46691182e-14, 8.40867043e-14, 8.34291646e-14, 8.26552893e-14,
+       8.17804723e-14, 8.10488650e-14, 8.02832103e-14, 7.96047647e-14,
+       7.89326975e-14, 7.81469224e-14, 7.73534051e-14, 7.69640825e-14,
+       7.64495773e-14, 7.60783858e-14, 7.54004711e-14, 7.47341079e-14,
+       7.41922370e-14, 7.36539633e-14, 7.29977389e-14, 7.24867448e-14,
+       7.20074131e-14, 7.13043151e-14, 7.08729088e-14, 7.03453713e-14,
+       6.99434656e-14, 6.95833351e-14, 6.92603195e-14, 6.90776895e-14,
+       6.88924040e-14, 6.87507425e-14, 6.85655344e-14, 6.83281833e-14,
+       6.79692673e-14, 6.76794712e-14, 6.74748205e-14, 6.71427808e-14,
+       6.68878026e-14, 6.65892169e-14, 6.62718500e-14, 6.60914169e-14,
+       6.59230701e-14, 6.56548511e-14, 6.55268262e-14, 6.53992787e-14,
+       6.53281301e-14, 6.53337371e-14, 6.51624381e-14, 6.52032701e-14,
+       6.51749545e-14, 6.49422689e-14, 6.47470158e-14, 6.44988874e-14,
+       6.43082245e-14, 6.40550712e-14, 6.40296169e-14, 6.39319647e-14,
+       6.38795788e-14, 6.39261516e-14, 6.39438496e-14, 6.39231624e-14,
+       6.39478532e-14, 6.39458887e-14, 6.37306374e-14, 6.35156233e-14,
+       6.33330660e-14, 6.32019218e-14, 6.30789329e-14, 6.29651503e-14,
+       6.29020678e-14, 6.30384567e-14, 6.31746223e-14, 6.33752474e-14,
+       6.35570189e-14, 6.37034409e-14, 6.38550907e-14, 6.40237920e-14,
+       6.40982774e-14, 6.41739623e-14, 6.42506513e-14, 6.43279437e-14,
+       6.42779236e-14, 6.43980216e-14, 6.46401795e-14, 6.50007719e-14,
+       6.52263434e-14, 6.55908242e-14, 6.60214594e-14, 6.63225628e-14,
+       6.67789211e-14, 6.70172609e-14, 6.71472378e-14, 6.72376990e-14,
+       6.73102003e-14, 6.73696138e-14, 6.75850212e-14, 6.80050333e-14,
+       6.83711672e-14, 6.88260273e-14, 6.92856907e-14, 6.97489814e-14,
+       7.01820950e-14, 7.05317815e-14, 7.09296117e-14, 7.12426993e-14,
+       7.16180408e-14, 7.19902667e-14, 7.22036787e-14, 7.26106290e-14,
+       7.30468025e-14, 7.36240225e-14, 7.42286172e-14, 7.48250196e-14,
+       7.53295706e-14, 7.59059630e-14, 7.64966893e-14, 7.70919448e-14,
+       7.75773504e-14, 7.79625875e-14, 7.83469677e-14, 7.86181871e-14,
+       7.86939938e-14, 7.86545332e-14, 7.85095414e-14, 7.87200868e-14,
+       7.89402962e-14, 7.90360992e-14, 7.92372404e-14, 7.94106304e-14,
+       7.95499680e-14, 7.97411363e-14, 7.98910671e-14, 8.00774937e-14,
+       8.02058960e-14, 8.03730419e-14, 8.05234363e-14, 8.06253986e-14,
+       8.08713067e-14, 8.11085983e-14, 8.14759215e-14, 8.17548893e-14,
+       8.21053812e-14, 8.23706614e-14, 8.27691329e-14, 8.32031570e-14,
+       8.35018548e-14, 8.37660351e-14, 8.40344364e-14, 8.42759404e-14,
+       8.45624076e-14, 8.46722093e-14, 8.49107534e-14, 8.51380849e-14,
+       8.55883694e-14, 8.61678060e-14, 8.66057260e-14, 8.69962210e-14,
+       8.74740761e-14, 8.80254959e-14, 8.84796068e-14, 8.91077564e-14,
+       8.94888998e-14, 8.99119187e-14, 9.02740650e-14, 9.06150046e-14,
+       9.10340822e-14, 9.14450713e-14, 9.17339655e-14, 9.21620934e-14,
+       9.26196587e-14, 9.31161155e-14, 9.36338988e-14, 9.41090915e-14,
+       9.45956341e-14, 9.51829126e-14, 9.56328349e-14, 9.56997166e-14,
+       9.59503242e-14, 9.58430567e-14, 9.56447799e-14, 9.56893487e-14,
+       9.58117493e-14, 9.57405887e-14, 9.56960817e-14, 9.55398921e-14,
+       9.53683421e-14, 9.51448385e-14, 9.49721557e-14, 9.50132318e-14,
+       9.46145428e-14, 9.42259558e-14, 9.38250795e-14, 9.30953274e-14,
+       9.19944333e-14, 9.10935338e-14, 9.02912263e-14, 8.94225104e-14,
+       8.86032336e-14, 8.79017644e-14, 8.73064668e-14, 8.64344979e-14,
+       8.58173348e-14, 8.50272916e-14, 8.41049021e-14, 8.32867049e-14,
+       8.25082369e-14, 8.16596807e-14, 8.07914783e-14, 8.02978316e-14,
+       7.97813942e-14, 7.94758571e-14, 7.89191101e-14, 7.85353939e-14,
+       7.79098728e-14, 7.74224554e-14, 7.68898536e-14, 7.61959519e-14,
+       7.52873883e-14, 7.45721846e-14, 7.34526412e-14, 7.23244433e-14,
+       7.12774558e-14, 6.98185274e-14, 6.86961751e-14, 6.76062550e-14,
+       6.65370240e-14, 6.53166861e-14, 6.42432525e-14, 6.25083215e-14,
+       6.09643727e-14, 5.95009414e-14, 5.77823385e-14, 5.60396143e-14,
+       5.46277122e-14, 5.33362314e-14, 5.22515724e-14, 5.09223285e-14,
+       4.99157382e-14, 4.89658239e-14, 4.81722785e-14, 4.75037851e-14,
+       4.64889501e-14, 4.57374764e-14, 4.50392905e-14, 4.44815801e-14,
+       4.38149167e-14, 4.28132119e-14, 4.17874479e-14, 4.10744235e-14,
+       4.04118864e-14, 3.98982661e-14, 3.91690491e-14, 3.87641775e-14,
+       3.82955405e-14, 3.78253329e-14, 3.74703666e-14, 3.71934467e-14,
+       3.68954470e-14, 3.65280849e-14, 3.62134514e-14, 3.57366026e-14,
+       3.54953898e-14, 3.53289716e-14, 3.53652163e-14, 3.54357333e-14,
+       3.54315648e-14, 3.54096489e-14, 3.51137316e-14, 3.48002800e-14,
+       3.44242716e-14, 3.41186099e-14, 3.40069752e-14, 3.43854430e-14,
+       3.47620139e-14, 3.46969160e-14, 3.47536439e-14, 3.43157294e-14,
+       3.33197146e-14, 3.26239512e-14, 3.21822151e-14, 3.15840205e-14,
+       3.13077362e-14, 3.08479581e-14, 3.05855926e-14, 3.04901563e-14,
+       3.01170772e-14, 2.96212283e-14, 3.00380894e-14, 2.94287805e-14,
+       2.90447352e-14, 2.88045157e-14, 2.88529537e-14, 2.89436437e-14,
+       2.87776730e-14, 2.87937593e-14, 2.93517443e-14, 2.96254524e-14,
+       2.90983787e-14, 2.94168851e-14, 2.95618613e-14, 3.06556482e-14,
+       3.15425432e-14, 3.33205518e-14, 3.41650775e-14, 3.57036210e-14,
+       3.58670883e-14]), &#39;ModelConfined&#39;: array([1.84187999e-12, 1.67035152e-12, 1.63366635e-12, 1.60700818e-12,
+       1.57991979e-12, 1.54681573e-12, 1.52017469e-12, 1.49502792e-12,
+       1.47683850e-12, 1.45941126e-12, 1.44570326e-12, 1.42965331e-12,
+       1.42039674e-12, 1.41428648e-12, 1.41224489e-12, 1.41174571e-12,
+       1.40855642e-12, 1.40405986e-12, 1.40217178e-12, 1.39778465e-12,
+       1.39424349e-12, 1.39114873e-12, 1.38428572e-12, 1.37811122e-12,
+       1.37336706e-12, 1.37044717e-12, 1.37052275e-12, 1.37395998e-12,
+       1.37980516e-12, 1.38694064e-12, 1.39362467e-12, 1.39999553e-12,
+       1.40802261e-12, 1.41513837e-12, 1.42031325e-12, 1.42362898e-12,
+       1.42496814e-12, 1.42393875e-12, 1.42330990e-12, 1.42351028e-12,
+       1.42445609e-12, 1.42434511e-12, 1.42442522e-12, 1.42559768e-12,
+       1.42574550e-12, 1.42453435e-12, 1.42265794e-12, 1.42073929e-12,
+       1.41797860e-12, 1.41320212e-12, 1.40762623e-12, 1.40199864e-12,
+       1.39738458e-12, 1.39351587e-12, 1.38981662e-12, 1.38718231e-12,
+       1.38503940e-12, 1.38181954e-12, 1.37939704e-12, 1.37724110e-12,
+       1.37451850e-12, 1.37079448e-12, 1.36737939e-12, 1.36335133e-12,
+       1.35831392e-12, 1.35331110e-12, 1.34767061e-12, 1.34126242e-12,
+       1.33485922e-12, 1.32849676e-12, 1.32185905e-12, 1.31586401e-12,
+       1.30965003e-12, 1.30348715e-12, 1.29684196e-12, 1.29117280e-12,
+       1.28506697e-12, 1.27889384e-12, 1.27315578e-12, 1.26855108e-12,
+       1.26426050e-12, 1.26025757e-12, 1.25690650e-12, 1.25387595e-12,
+       1.25038659e-12, 1.24769499e-12, 1.24505662e-12, 1.24231900e-12,
+       1.23919156e-12, 1.23609475e-12, 1.23275053e-12, 1.22985377e-12,
+       1.22746188e-12, 1.22485326e-12, 1.22202091e-12, 1.21949420e-12,
+       1.21732768e-12, 1.21572796e-12, 1.21462575e-12, 1.21355922e-12,
+       1.21302518e-12, 1.21208610e-12, 1.21124646e-12, 1.21040586e-12,
+       1.20960797e-12, 1.20875670e-12, 1.20742196e-12, 1.20667580e-12,
+       1.20565646e-12, 1.20448653e-12, 1.20398410e-12, 1.20416488e-12,
+       1.20439592e-12, 1.20479290e-12, 1.20539570e-12, 1.20615407e-12,
+       1.20682971e-12, 1.20727120e-12, 1.20770705e-12, 1.20734755e-12,
+       1.20697879e-12, 1.20680560e-12, 1.20640379e-12, 1.20713454e-12,
+       1.20813723e-12, 1.20872458e-12, 1.20930188e-12, 1.20968171e-12,
+       1.20993048e-12, 1.20970419e-12, 1.20913884e-12, 1.20881854e-12,
+       1.20866340e-12, 1.20854513e-12, 1.20802532e-12, 1.20696736e-12,
+       1.20557445e-12, 1.20433299e-12, 1.20320484e-12, 1.20150525e-12,
+       1.19995014e-12, 1.19808385e-12, 1.19616755e-12, 1.19395734e-12,
+       1.19220590e-12, 1.19008539e-12, 1.18818067e-12, 1.18622017e-12,
+       1.18421605e-12, 1.18153311e-12, 1.17905153e-12, 1.17633081e-12,
+       1.17383053e-12, 1.17135614e-12, 1.16868385e-12, 1.16626073e-12,
+       1.16396585e-12, 1.16171586e-12, 1.15953408e-12, 1.15746442e-12,
+       1.15564420e-12, 1.15341879e-12, 1.15057440e-12, 1.14733652e-12,
+       1.14369248e-12, 1.13963797e-12, 1.13580209e-12, 1.13238662e-12,
+       1.12885525e-12, 1.12549523e-12, 1.12204345e-12, 1.11862813e-12,
+       1.11470905e-12, 1.11085053e-12, 1.10708088e-12, 1.10359383e-12,
+       1.10034462e-12, 1.09661750e-12, 1.09255042e-12, 1.08831366e-12,
+       1.08406697e-12, 1.07941809e-12, 1.07500787e-12, 1.07074043e-12,
+       1.06677856e-12, 1.06332806e-12, 1.05978037e-12, 1.05632713e-12,
+       1.05254139e-12, 1.04839530e-12, 1.04419000e-12, 1.03959480e-12,
+       1.03526789e-12, 1.03118297e-12, 1.02723148e-12, 1.02326009e-12,
+       1.01962657e-12, 1.01607838e-12, 1.01292314e-12, 1.01020196e-12,
+       1.00766168e-12, 1.00495266e-12, 1.00245082e-12, 1.00030002e-12,
+       9.98406699e-13, 9.97010292e-13, 9.95240215e-13, 9.93511636e-13,
+       9.91865085e-13, 9.90362325e-13, 9.89059355e-13, 9.88255630e-13,
+       9.87085339e-13, 9.85896470e-13, 9.84453821e-13, 9.82990956e-13,
+       9.81028120e-13, 9.78860329e-13, 9.76158325e-13, 9.73269716e-13,
+       9.70604821e-13, 9.68101733e-13, 9.65437502e-13, 9.63053382e-13,
+       9.60572233e-13, 9.58358122e-13, 9.56086399e-13, 9.53842699e-13,
+       9.51752526e-13, 9.50011813e-13, 9.48291148e-13, 9.46585223e-13,
+       9.44419108e-13, 9.42109014e-13, 9.39607295e-13, 9.36760005e-13,
+       9.33720864e-13, 9.30904735e-13, 9.28273250e-13, 9.25679095e-13,
+       9.22868901e-13, 9.20013572e-13, 9.16959962e-13, 9.13757065e-13,
+       9.10456881e-13, 9.07250234e-13, 9.04079581e-13, 9.01294762e-13,
+       8.98634582e-13, 8.96123213e-13, 8.93597911e-13, 8.91262104e-13,
+       8.88897116e-13, 8.86769358e-13, 8.84915733e-13, 8.83410044e-13,
+       8.81991120e-13, 8.80247393e-13, 8.78470850e-13, 8.76646979e-13,
+       8.74797445e-13, 8.72726599e-13, 8.70640039e-13, 8.68673592e-13,
+       8.66701487e-13, 8.64771746e-13, 8.62762263e-13, 8.60693333e-13,
+       8.58857811e-13, 8.56982797e-13, 8.55469231e-13, 8.53952193e-13,
+       8.51895272e-13, 8.49532291e-13, 8.47250009e-13, 8.44860150e-13,
+       8.42647622e-13, 8.40486317e-13, 8.38484920e-13, 8.36589392e-13,
+       8.34858957e-13, 8.33193307e-13, 8.31559359e-13, 8.29961909e-13,
+       8.28417277e-13, 8.26742201e-13, 8.25240908e-13, 8.23743678e-13,
+       8.22508620e-13, 8.21300875e-13, 8.20205711e-13, 8.19028911e-13,
+       8.17880524e-13, 8.16813893e-13, 8.15998204e-13, 8.15377768e-13,
+       8.14987083e-13, 8.14515992e-13, 8.14107006e-13, 8.13500306e-13,
+       8.12852497e-13, 8.12063601e-13, 8.11287793e-13, 8.10502261e-13,
+       8.09569638e-13, 8.08432855e-13, 8.07207503e-13, 8.06176244e-13,
+       8.05307340e-13, 8.04524812e-13, 8.04046111e-13, 8.03729390e-13,
+       8.03429851e-13, 8.03182715e-13, 8.03111600e-13, 8.02979151e-13,
+       8.02649537e-13, 8.02380613e-13, 8.02295454e-13, 8.02040651e-13,
+       8.01514440e-13, 8.01076113e-13, 8.00996427e-13, 8.01301375e-13,
+       8.01508802e-13, 8.01785100e-13, 8.02184907e-13, 8.02563534e-13,
+       8.03051643e-13, 8.03686505e-13, 8.04441181e-13, 8.05179250e-13,
+       8.05906880e-13, 8.06573098e-13, 8.07088367e-13, 8.07632358e-13,
+       8.08240218e-13, 8.08843454e-13, 8.09608029e-13, 8.10485308e-13,
+       8.11496380e-13, 8.12566844e-13, 8.13709672e-13, 8.14770483e-13,
+       8.15700387e-13, 8.16621662e-13, 8.17566613e-13, 8.18544739e-13,
+       8.19792727e-13, 8.21009521e-13, 8.22264709e-13, 8.23372632e-13,
+       8.24254963e-13, 8.25312986e-13, 8.26514367e-13, 8.27913498e-13,
+       8.29478570e-13, 8.30812885e-13, 8.31763988e-13, 8.32519589e-13,
+       8.33430775e-13, 8.34233948e-13, 8.34987997e-13, 8.35685109e-13,
+       8.36191657e-13, 8.36807711e-13, 8.37670344e-13, 8.38411746e-13,
+       8.39136910e-13, 8.40018504e-13, 8.40743642e-13, 8.41351913e-13,
+       8.41984010e-13, 8.42725503e-13, 8.43674435e-13, 8.44643354e-13,
+       8.45661317e-13, 8.46741613e-13, 8.47876974e-13, 8.48923377e-13,
+       8.49930120e-13, 8.51051419e-13, 8.52251818e-13, 8.53243300e-13,
+       8.54110118e-13, 8.54921008e-13, 8.55793349e-13, 8.56854736e-13,
+       8.57937939e-13, 8.59090108e-13, 8.60227969e-13, 8.61131409e-13,
+       8.61930435e-13, 8.62799770e-13, 8.63750856e-13, 8.64770387e-13,
+       8.65959223e-13, 8.67091798e-13, 8.68207127e-13, 8.69540185e-13,
+       8.71227778e-13, 8.73052705e-13, 8.74937456e-13, 8.76712986e-13,
+       8.78437066e-13, 8.80240206e-13, 8.81917045e-13, 8.83717610e-13,
+       8.85448545e-13, 8.86969726e-13, 8.88426615e-13, 8.89662498e-13,
+       8.90816500e-13, 8.92326973e-13, 8.93953124e-13, 8.95367009e-13,
+       8.96650530e-13, 8.97790984e-13, 8.98874560e-13, 8.99785747e-13,
+       9.00883227e-13, 9.02002006e-13, 9.03209443e-13, 9.04451855e-13,
+       9.05854395e-13, 9.07266615e-13, 9.08461820e-13, 9.09808219e-13,
+       9.11366604e-13, 9.12809807e-13, 9.14090033e-13, 9.15037971e-13,
+       9.15941671e-13, 9.16985996e-13, 9.18067343e-13, 9.19039135e-13,
+       9.20271723e-13, 9.21578681e-13, 9.22821463e-13, 9.23916575e-13,
+       9.24864137e-13, 9.25776151e-13, 9.26710816e-13, 9.27588806e-13,
+       9.28332068e-13, 9.29037353e-13, 9.29975992e-13, 9.31003077e-13,
+       9.32118142e-13, 9.33090697e-13, 9.34029977e-13, 9.34987011e-13,
+       9.36042187e-13, 9.37337231e-13, 9.38579731e-13, 9.39675041e-13,
+       9.40819857e-13, 9.41917790e-13, 9.42816125e-13, 9.43616044e-13,
+       9.44443305e-13, 9.45350748e-13, 9.46229542e-13, 9.46784260e-13,
+       9.47247046e-13, 9.47496826e-13, 9.47668383e-13, 9.47901440e-13,
+       9.48159791e-13, 9.48371516e-13, 9.48577465e-13, 9.48990101e-13,
+       9.49392263e-13, 9.49856934e-13, 9.50188383e-13, 9.50449137e-13,
+       9.50831739e-13, 9.51177867e-13, 9.51481498e-13, 9.51984430e-13,
+       9.52777656e-13, 9.53621834e-13, 9.54432027e-13, 9.55450422e-13,
+       9.56374911e-13, 9.57379882e-13, 9.58418864e-13, 9.59355688e-13,
+       9.60344835e-13, 9.61570988e-13, 9.62489163e-13, 9.63447241e-13,
+       9.64496515e-13, 9.65457962e-13, 9.66425745e-13, 9.67385825e-13,
+       9.68272122e-13, 9.69034661e-13, 9.69765520e-13, 9.70347936e-13,
+       9.70988484e-13, 9.71746924e-13, 9.72380379e-13, 9.73121092e-13,
+       9.73894593e-13, 9.74770794e-13, 9.75409998e-13, 9.75964423e-13,
+       9.76417066e-13, 9.77203214e-13, 9.77683257e-13, 9.78216777e-13,
+       9.78742068e-13, 9.79298239e-13, 9.79859536e-13, 9.80437566e-13,
+       9.80908151e-13, 9.81516686e-13, 9.82122385e-13, 9.82550506e-13,
+       9.83074522e-13, 9.83673168e-13, 9.84365311e-13, 9.85156360e-13,
+       9.86066199e-13, 9.87012244e-13, 9.87768806e-13, 9.88425048e-13,
+       9.89083737e-13, 9.89777946e-13, 9.90318289e-13, 9.90853679e-13,
+       9.91513946e-13, 9.92525024e-13, 9.93475165e-13, 9.94298600e-13,
+       9.94974742e-13, 9.95351403e-13, 9.95712282e-13, 9.96037987e-13,
+       9.96248410e-13, 9.96482644e-13, 9.96521396e-13, 9.96439680e-13,
+       9.96123179e-13, 9.95871662e-13, 9.95628199e-13, 9.95604695e-13,
+       9.95549714e-13, 9.95054669e-13, 9.94502285e-13, 9.93811346e-13,
+       9.93253698e-13, 9.92282713e-13, 9.91124685e-13, 9.89895737e-13,
+       9.88653806e-13, 9.87128710e-13, 9.85461927e-13, 9.83945544e-13,
+       9.82889202e-13, 9.81920536e-13, 9.80955090e-13, 9.80027943e-13,
+       9.79229631e-13, 9.78309096e-13, 9.77314381e-13, 9.76158984e-13,
+       9.74931892e-13, 9.73567947e-13, 9.72435254e-13, 9.71193059e-13,
+       9.70047147e-13, 9.69214876e-13, 9.68475472e-13, 9.67693320e-13,
+       9.66991761e-13, 9.66342366e-13, 9.65762250e-13, 9.65079386e-13,
+       9.64816880e-13, 9.64506422e-13, 9.64100531e-13, 9.63544418e-13,
+       9.63144124e-13, 9.62612220e-13, 9.62255151e-13, 9.62106078e-13,
+       9.62046769e-13, 9.61806882e-13, 9.61639410e-13, 9.61423485e-13,
+       9.61195351e-13, 9.61335976e-13, 9.61569376e-13, 9.61881528e-13,
+       9.62357846e-13, 9.62613147e-13, 9.63118200e-13, 9.63853436e-13,
+       9.64851955e-13, 9.65969744e-13, 9.67043836e-13, 9.68245605e-13,
+       9.69725659e-13, 9.71295832e-13, 9.73050354e-13, 9.75030320e-13,
+       9.76686691e-13, 9.77883288e-13, 9.79093080e-13, 9.80402305e-13,
+       9.81930642e-13, 9.83255365e-13, 9.84719049e-13, 9.86076223e-13,
+       9.87560094e-13, 9.88803196e-13, 9.89953564e-13, 9.90876182e-13,
+       9.91826837e-13, 9.92686894e-13, 9.93660680e-13, 9.94820416e-13,
+       9.96208711e-13, 9.97575298e-13, 9.98776928e-13, 9.99838856e-13,
+       1.00073862e-12, 1.00176122e-12, 1.00269601e-12, 1.00365660e-12,
+       1.00455182e-12, 1.00559013e-12, 1.00666922e-12, 1.00791923e-12,
+       1.00917062e-12, 1.01039325e-12, 1.01150880e-12, 1.01211070e-12,
+       1.01266127e-12, 1.01311086e-12, 1.01367173e-12, 1.01415187e-12,
+       1.01475926e-12, 1.01558182e-12, 1.01630100e-12, 1.01670785e-12,
+       1.01701608e-12, 1.01730835e-12, 1.01776807e-12, 1.01839148e-12,
+       1.01899475e-12, 1.01936936e-12, 1.01920900e-12, 1.01906316e-12,
+       1.01907739e-12, 1.01910222e-12, 1.01897396e-12, 1.01857182e-12,
+       1.01775267e-12, 1.01676558e-12, 1.01571704e-12, 1.01450457e-12,
+       1.01327361e-12, 1.01203134e-12, 1.01051244e-12, 1.00896130e-12,
+       1.00741925e-12, 1.00567265e-12, 1.00407566e-12, 1.00218225e-12,
+       1.00025902e-12, 9.98438197e-13, 9.96699326e-13, 9.94748327e-13,
+       9.93114572e-13, 9.91610201e-13, 9.90266730e-13, 9.88646292e-13,
+       9.86700215e-13, 9.84537522e-13, 9.82764504e-13, 9.81340644e-13,
+       9.79832018e-13, 9.78558881e-13, 9.77097192e-13, 9.75783245e-13,
+       9.74615952e-13, 9.73383356e-13, 9.72105863e-13, 9.70797894e-13,
+       9.69540631e-13, 9.68218026e-13, 9.67283522e-13, 9.66089443e-13,
+       9.65285374e-13, 9.64747727e-13, 9.64007437e-13, 9.63060874e-13,
+       9.62383076e-13, 9.61459960e-13, 9.60283004e-13, 9.59678558e-13,
+       9.59498176e-13, 9.59319918e-13, 9.59250233e-13, 9.58853070e-13,
+       9.58695660e-13, 9.58158174e-13, 9.57710892e-13, 9.57446054e-13,
+       9.56877484e-13, 9.56152642e-13, 9.55336861e-13, 9.54375234e-13,
+       9.53259577e-13, 9.52163723e-13, 9.51441927e-13, 9.50818137e-13,
+       9.50010400e-13, 9.49149459e-13, 9.48007029e-13, 9.46960099e-13,
+       9.45955108e-13, 9.44858655e-13, 9.43949241e-13, 9.43160937e-13,
+       9.42488136e-13, 9.41536849e-13, 9.40850551e-13, 9.40435814e-13,
+       9.40414443e-13, 9.40428820e-13, 9.40725701e-13, 9.41033885e-13,
+       9.40755668e-13, 9.40354579e-13, 9.39998007e-13, 9.39312457e-13,
+       9.38713368e-13, 9.37929356e-13, 9.36686533e-13, 9.35503327e-13,
+       9.33967219e-13, 9.32010076e-13, 9.29878826e-13, 9.27276965e-13,
+       9.24822551e-13, 9.22295459e-13, 9.19510689e-13, 9.16340044e-13,
+       9.13214913e-13, 9.09830595e-13, 9.06610969e-13, 9.03159528e-13,
+       8.99740828e-13, 8.95936489e-13, 8.92091079e-13, 8.88321985e-13,
+       8.84221020e-13, 8.79870410e-13, 8.75317973e-13, 8.70910401e-13,
+       8.66673375e-13, 8.63032777e-13, 8.59896281e-13, 8.56325319e-13,
+       8.53121868e-13, 8.50376920e-13, 8.47980317e-13, 8.45285499e-13,
+       8.42877436e-13, 8.40178382e-13, 8.37370556e-13, 8.35108647e-13,
+       8.32964675e-13, 8.30487138e-13, 8.28449491e-13, 8.26683958e-13,
+       8.24883878e-13, 8.23721188e-13, 8.22741827e-13, 8.22229358e-13,
+       8.21378112e-13, 8.20898226e-13, 8.20565162e-13, 8.19849645e-13,
+       8.19084511e-13, 8.18572734e-13, 8.18112093e-13, 8.17539295e-13,
+       8.16989156e-13, 8.16190378e-13, 8.15120312e-13, 8.13717657e-13,
+       8.12401004e-13, 8.11219032e-13, 8.09891484e-13, 8.08668135e-13,
+       8.07733957e-13, 8.07405219e-13, 8.07032216e-13, 8.06514641e-13,
+       8.06477320e-13, 8.06202565e-13, 8.05905935e-13, 8.04996559e-13,
+       8.04171781e-13, 8.03349061e-13, 8.02760581e-13, 8.01828316e-13,
+       8.00893600e-13, 8.00185156e-13, 7.99645880e-13, 7.99670421e-13,
+       7.99553136e-13, 7.99179225e-13, 7.99005043e-13, 7.98607284e-13,
+       7.98075722e-13, 7.97327326e-13, 7.96177403e-13, 7.95060552e-13,
+       7.93824272e-13, 7.92999118e-13, 7.92249621e-13, 7.91280992e-13,
+       7.90037421e-13, 7.88956326e-13, 7.87765456e-13, 7.86743243e-13,
+       7.85947716e-13, 7.84854633e-13, 7.83372195e-13, 7.82120017e-13,
+       7.80638546e-13, 7.79103263e-13, 7.76980583e-13, 7.74493343e-13,
+       7.72269178e-13, 7.70118460e-13, 7.67595396e-13, 7.65276404e-13,
+       7.62954949e-13, 7.59980224e-13, 7.57263967e-13, 7.55194481e-13,
+       7.53172383e-13, 7.51292419e-13, 7.49496593e-13, 7.47724214e-13,
+       7.45309562e-13, 7.42721262e-13, 7.40354494e-13, 7.38295635e-13,
+       7.36028326e-13, 7.33858281e-13, 7.32307357e-13, 7.30664909e-13,
+       7.29272143e-13, 7.28709587e-13, 7.27434275e-13, 7.25795819e-13,
+       7.23768201e-13, 7.20910276e-13, 7.17627519e-13, 7.13821376e-13,
+       7.09996731e-13, 7.06120433e-13, 7.02245460e-13, 6.97771205e-13,
+       6.93484398e-13, 6.88706437e-13, 6.84740812e-13, 6.81374809e-13,
+       6.78054789e-13, 6.74739218e-13, 6.71673836e-13, 6.68592342e-13,
+       6.65852418e-13, 6.63559574e-13, 6.61713724e-13, 6.59902138e-13,
+       6.58438654e-13, 6.57567416e-13, 6.56842168e-13, 6.56839573e-13,
+       6.56598774e-13, 6.55831808e-13, 6.53980084e-13, 6.51664771e-13,
+       6.48839922e-13, 6.46590419e-13, 6.44068292e-13, 6.41519234e-13,
+       6.39540011e-13, 6.37444544e-13, 6.35303904e-13, 6.32976057e-13,
+       6.30727500e-13, 6.28587264e-13, 6.26976886e-13, 6.26057022e-13,
+       6.24558541e-13, 6.23285787e-13, 6.21625429e-13, 6.19791489e-13,
+       6.18924658e-13, 6.18184999e-13, 6.17368044e-13, 6.16266094e-13,
+       6.14121383e-13, 6.12118094e-13, 6.09750165e-13, 6.07130977e-13,
+       6.04464662e-13, 6.02732158e-13, 6.01040277e-13, 5.98816130e-13,
+       5.96569362e-13, 5.94603808e-13, 5.94010298e-13, 5.93682450e-13,
+       5.92407849e-13, 5.90985873e-13, 5.89166798e-13, 5.86655080e-13,
+       5.85433360e-13, 5.85215984e-13, 5.85404159e-13, 5.85802787e-13,
+       5.85996244e-13, 5.87380184e-13, 5.88182755e-13, 5.89273729e-13,
+       5.91495008e-13, 5.93100240e-13, 5.95735480e-13, 5.97260098e-13,
+       5.98262047e-13, 5.99774649e-13, 6.00701414e-13, 6.01166747e-13,
+       6.01391508e-13, 6.02363065e-13, 6.04054374e-13, 6.04869998e-13,
+       6.04748439e-13, 6.04749943e-13, 6.05529062e-13, 6.07086970e-13,
+       6.09775722e-13, 6.13554339e-13, 6.16648598e-13, 6.20855813e-13,
+       6.24774369e-13, 6.29522368e-13, 6.34359558e-13, 6.39774290e-13,
+       6.45539029e-13, 6.50039568e-13, 6.55393491e-13, 6.60272028e-13,
+       6.64293029e-13, 6.68379663e-13, 6.71902679e-13, 6.75972669e-13,
+       6.79932970e-13, 6.79827099e-13, 6.79539054e-13, 6.78708569e-13,
+       6.76900115e-13, 6.77060858e-13, 6.80340674e-13, 6.84815833e-13,
+       6.86272524e-13, 6.87632863e-13, 6.89952218e-13, 6.97095311e-13,
+       7.04552221e-13, 7.08700886e-13, 7.13579990e-13, 7.19735853e-13,
+       7.32764060e-13, 7.48055751e-13, 7.60739753e-13, 7.70411344e-13,
+       7.82846034e-13, 7.96303583e-13, 8.04199752e-13, 8.12343050e-13,
+       8.24597016e-13, 8.42336915e-13, 8.58935328e-13, 8.73739378e-13,
+       8.84256321e-13])}}
+</pre></div>
+</div>
+<p>Single tracks can also be retrieved and viewed easily. It is also possible to run individual analysis on these tracks.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tracks</span><span class="o">.</span><span class="n">get_track</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">plot_adc_analysis_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Diffusion Category: ModelHop" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_list_of_tracks_004.png" />
+<p><a class="reference internal" href="../analysis.html#trait2d.analysis.ListOfTracks.adc_summary" title="trait2d.analysis.ListOfTracks.adc_summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks.adc_summary()</span></code></a>’s way of averaging the parameters as well as <cite>Dapp</cite> for each model after analysing each track can be inaccurate. It may thus be desirable to get an average of the categorised curves first and then run an additional analysis. <a class="reference internal" href="../analysis.html#trait2d.analysis.ListOfTracks.average" title="trait2d.analysis.ListOfTracks.average"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trait2d.analysis.ListOfTracks.average()</span></code></a> can help with this.
+It returns a special <a class="reference internal" href="../analysis.html#trait2d.analysis.MSDTrack" title="trait2d.analysis.MSDTrack"><code class="xref py py-class docutils literal notranslate"><span class="pre">trait2d.analysis.MSDTrack</span></code></a> object which does not store trajectory data but instead the average MSD values. It can be used for analysis like an ordinary <a class="reference internal" href="../analysis.html#trait2d.analysis.Track" title="trait2d.analysis.Track"><code class="xref py py-class docutils literal notranslate"><span class="pre">trait2d.analysis.Track</span></code></a> object.
+Here, we analyse the average of all tracks classified as Confined Diffusion.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">confined_tracks</span> <span class="o">=</span> <span class="n">tracks</span><span class="o">.</span><span class="n">get_sublist</span><span class="p">(</span><span class="n">ModelConfined</span><span class="p">)</span><span class="o">.</span><span class="n">average</span><span class="p">()</span>
+<span class="n">confined_tracks</span><span class="o">.</span><span class="n">adc_analysis</span><span class="p">()</span>
+<span class="n">confined_tracks</span><span class="o">.</span><span class="n">plot_adc_analysis_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Diffusion Category: ModelConfined" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_list_of_tracks_005.png" />
+<p>It is a good idea to use <cite>ModelDB().cleanup()</cite> at the end of your notebooks to remove all models again. Otherwise they may carry over into other open notebooks.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.376 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-list-of-tracks-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/599af82911ccb66a012eb191debe7726/plot_list_of_tracks.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_list_of_tracks.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/b49fec439c00837dd1efc6ea2a5cb782/plot_list_of_tracks.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_list_of_tracks.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_tutorial.html" class="btn btn-neutral float-right" title="TRAIT Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_custom_model.html" class="btn btn-neutral float-left" title="Adding Custom Models for ADC Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
