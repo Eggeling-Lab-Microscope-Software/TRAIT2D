@@ -116,7 +116,7 @@ def plot_adc_analysis_results(self):
     plt.axvspan(T[0], T[n_points], alpha=0.25,
                 color='gray', label="Fit region")
     plt.xlabel("Time in s")
-    plt.ylabel("Normalized ADC")
+    plt.ylabel("Apparent Diffusion Coefficient")
     plt.title("Diffusion Category: {}".format(model))
     plt.xlim(T[0], T[-1])
     plt.legend(bbox_to_anchor=(1, 1), loc='upper left')

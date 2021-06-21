@@ -489,7 +489,7 @@ class ListOfTracks:
             max_val = 0.0
             ax = plt.gca()
             ax.set_xlabel("t")
-            ax.set_ylabel("Average D_app")
+            ax.set_ylabel("Average ADC")
             for model in counter:
                 new_min = np.min(average_D_app[model])
                 new_max = np.max(average_D_app[model])
