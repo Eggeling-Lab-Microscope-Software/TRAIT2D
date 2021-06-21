@@ -17,33 +17,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      - name: Get vars
-        id: vars
-        run: |
-          echo ::set-output name=tag_version::$(git describe --tags)
-
-      - name: Set version in setup.py
-        run: |
-          sed -i 's/GH_VERSION/${{ steps.vars.outputs.tag_version }}/g' ./.github/workflows/setup.py
-
-      - name: Copy setup.py to repository root
-        run: |
-          cp ./.github/workflows/setup.py ./setup.py
-
-      - name: Add setup.py changes
-        run: |
-          git add ./setup.py
-
-      - name: Commit changes
-        run: |
-          git commit -m "Auto-updating version number in setup.py"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
       
       - name: Set up Python 3.7
         uses: actions/setup-python@v1
