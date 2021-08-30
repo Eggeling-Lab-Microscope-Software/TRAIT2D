@@ -351,11 +351,13 @@ class ListOfTracks:
 
         return list_failed
 
-    def adc_summary(self, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
-        """Average tracks by model and optionally plot the results.
+    def adc_summary(self, ensemble_average = False, avg_only_params = False, interpolation = False, plot_msd = False, plot_dapp = False, plot_pie_chart = False):
+        """Average tracks by model and optionally of the whole ensemble and optionally plot the results.
 
         Parameters
         ----------
+        ensemble_average: bool
+            averages the MSD and D_app, but not the parameters, for all the tracks and adds it to the re
         avg_only_params: bool
             Only average the model parameters but not D_app and MSD
         interpolation: bool
@@ -471,6 +473,35 @@ class ListOfTracks:
         for model in counter:
             sector[model] = counter[model] / len(self._tracks)
         sector["not catergorized"] = (len(self._tracks) - counter_sum) / len(self._tracks)
+        
+        ###ENSEMBLE AVERAGE - Added by FR###
+        
+        ens_D_app = np.zeros(track_length - 3)
+        ens_MSD = np.zeros(track_length - 3)
+        
+        if ensemble_average:
+            for track in self._tracks:
+                if track.get_adc_analysis_results() is None:
+                    continue
+                
+                D_app = np.zeros(track_length - 3)
+                MSD = np.zeros(track_length - 3)
+                if interpolation:
+                    interp_MSD = interpolate.interp1d(track.get_t()[0:-3], track.get_msd(), bounds_error = False, fill_value = 0)
+                    interp_D_app = interpolate.interp1d(track.get_t()[0:-3], track.get_adc_analysis_results()["Dapp"], bounds_error = False, fill_value = 0)
+                    MSD = interp_MSD(t[0:-3])
+                    D_app = interp_D_app(t[0:-3])
+                else:
+                    D_app[0:track.get_adc_analysis_results()["Dapp"].size] = track.get_adc_analysis_results()["Dapp"]
+                    MSD[0:track.get_msd().size] = track.get_msd()
+                
+                ens_D_app += D_app
+                ens_MSD += MSD
+                
+            average_MSD['ensemble'] = ens_MSD/len(self._tracks)
+            average_D_app['ensemble'] = ens_D_app/len(self._tracks)
+            
+        ###END OF ADDITION###
 
         if plot_msd and not avg_only_params:
             import matplotlib.pyplot as plt
@@ -478,16 +509,27 @@ class ListOfTracks:
             ax = plt.gca()
             ax.set_xlabel("t")
             ax.set_ylabel("Average MSD")
-            for model in counter:
+            for model in average_MSD.keys():
                 ax.semilogx(t[0:-3], average_MSD[model], label=model)
             ax.legend()
-
+            
         if plot_dapp and not avg_only_params:
+            import matplotlib.pyplot as plt
+            plt.figure()
+            ax = plt.gca()
+            ax.set_xlabel("t")
+            ax.set_ylabel("Average ADC")
+            for model in average_D_app.keys():
+                ax.semilogx(t[0:-3], average_D_app[model], label=model)
+            ax.legend()
+
+        if plot_dapp and avg_only_params:
             import matplotlib.pyplot as plt
             plt.figure()
             min_val = 9999999.9
             max_val = 0.0
             ax = plt.gca()
+            ax.set_title("curves generated from the average parameters from the ADC analysis ")
             ax.set_xlabel("t")
             ax.set_ylabel("Average ADC")
             for model in counter:
@@ -500,8 +542,10 @@ class ListOfTracks:
                 for c in ModelDB().models:
                     if c.__class__.__name__ == model:
                         m = c
-                pred = m(t, *r)
-                plt.semilogx(t[0:-3], pred[0:-3], linestyle='dashed', color=l.get_color())
+                        pred = m(t, *r)
+                        plt.semilogx(t[0:-3], pred[0:-3], linestyle='dashed', color=l.get_color())
+                    else:
+                        continue
             ax.set_ylim(0.95*min_val, 1.05*max_val)
             ax.legend()
 
@@ -510,10 +554,11 @@ class ListOfTracks:
             plt.figure()
             ax = plt.gca()
             ax.pie(sector.values(),
-                   labels=sector.keys())
-
+                   labels=sector.keys())     
+  
         return {"sectors": sector,
-                "average_params": average_params, 
+                "average_params": average_params,
+                "t":t,
                 "average_msd": average_MSD,
                 "average_dapp": average_D_app}
 
@@ -916,7 +961,6 @@ class Track:
         plt.ylabel("MSD")
         plt.semilogx(t, msd, color='black')
         plt.fill_between(t, msd-err, msd+err, color='black', alpha=0.5)
-
 
     def get_x(self):
         """Return x coordinates of trajectory."""
