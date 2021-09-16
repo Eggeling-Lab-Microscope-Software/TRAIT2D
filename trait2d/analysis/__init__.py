@@ -253,9 +253,9 @@ class ListOfTracks:
             tmin = t.min()
             tdif = tmax - tmin
             for i in range(1, t.size):
-                segs.append([(x[i-1], y[i-1]),
-                             (x[i], y[i])])
-                colors.append(cmap((t[i] - tmin) / tdif))
+                segs.append([(float(x[i-1]), float(y[i-1])),
+                             (float(x[i]), float(y[i]))])
+                colors.append(cmap(float(t[i] - tmin) / tdif))
             lc = LineCollection(segs, colors=colors)
             ax.add_collection(lc)
             xmin = min(xmin, x.min())
@@ -928,10 +928,10 @@ class Track:
         tdif = tmax - tmin
 
         for i in range(1, self._t.size):
-            segs.append([(self._x[i-1], self._y[i-1]),
-                         (self._x[i], self._y[i])])
+            segs.append([(float(self._x[i-1]), float(self._y[i-1])),
+                         (float(self._x[i]), float(self._y[i]))])
             colors.append(
-                cmap((self._t[i] - tmin) / tdif))
+                cmap(float(self._t[i] - tmin) / tdif))
         lc = LineCollection(segs, colors=colors)
         ax.axhline(self._y[0], linewidth=0.5, color='black', zorder=-1)
         ax.axvline(self._x[0], linewidth=0.5, color='black', zorder=-1)
