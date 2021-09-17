@@ -498,8 +498,8 @@ class ListOfTracks:
                 ens_D_app += D_app
                 ens_MSD += MSD
                 
-            average_MSD['ensemble'] = ens_MSD/len(self._tracks)
-            average_D_app['ensemble'] = ens_D_app/len(self._tracks)
+            average_MSD['Ensemble'] = ens_MSD/len(self._tracks)
+            average_D_app['Ensemble'] = ens_D_app/len(self._tracks)
             
         ###END OF ADDITION###
 
@@ -512,6 +512,7 @@ class ListOfTracks:
             for model in average_MSD.keys():
                 ax.semilogx(t[0:-3], average_MSD[model], label=model)
             ax.legend()
+            plt.show()
             
         if plot_dapp and not avg_only_params:
             import matplotlib.pyplot as plt
@@ -522,6 +523,7 @@ class ListOfTracks:
             for model in average_D_app.keys():
                 ax.semilogx(t[0:-3], average_D_app[model], label=model)
             ax.legend()
+            plt.show()
 
         if plot_dapp and avg_only_params:
             import matplotlib.pyplot as plt
@@ -548,13 +550,15 @@ class ListOfTracks:
                         continue
             ax.set_ylim(0.95*min_val, 1.05*max_val)
             ax.legend()
+            plt.show()
 
         if plot_pie_chart:
             import matplotlib.pyplot as plt
             plt.figure()
             ax = plt.gca()
             ax.pie(sector.values(),
-                   labels=sector.keys())     
+            labels=sector.keys())    
+            plt.show() 
   
         return {"sectors": sector,
                 "average_params": average_params,
