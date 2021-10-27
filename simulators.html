@@ -1,14 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Simulation Library &mdash; trait2d 1.0.11-7-g27e61ba documentation</title>
+  <title>Simulation Library &mdash; trait2d 1.1-4-g43a9e40 documentation</title>
   
 
   
@@ -66,7 +65,7 @@
             
             
               <div class="version">
-                1.0.11-7-g27e61ba
+                1.1-4-g43a9e40
               </div>
             
           
@@ -91,23 +90,23 @@
               
             
             
-              <p><span class="caption-text">Libraries</span></p>
+              <p class="caption"><span class="caption-text">Libraries</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 </ul>
-<p><span class="caption-text">Graphical Applications</span></p>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
 </ul>
-<p><span class="caption-text">File Formats</span></p>
+<p class="caption"><span class="caption-text">File Formats</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
 </ul>
-<p><span class="caption-text">Tutorials and Examples</span></p>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
 </ul>
@@ -177,28 +176,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-trait2d.simulators">
+  <div class="section" id="module-trait2d.simulators">
 <span id="simulation-library"></span><span id="simulators"></span><h1>Simulation Library<a class="headerlink" href="#module-trait2d.simulators" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="trait2d.simulators.BrownianDiffusion">
-<em class="property">class </em><code class="sig-prename descclassname">trait2d.simulators.</code><code class="sig-name descname">BrownianDiffusion</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.BrownianDiffusion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">BrownianDiffusion</code><span class="sig-paren">(</span><em><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.BrownianDiffusion" title="Permalink to this definition">¶</a></dt>
 <dd><p>BrownianDiffusion Initialization</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>Tmax</strong> (<em>float</em>) – Maximum simulation time (s)</p></li>
-<li><p><strong>dt</strong> (<em>float</em>) – Simulation time resolution (s)</p></li>
-<li><p><strong>L</strong> (<em>float</em>) – Simulation domain size (m)</p></li>
-<li><p><strong>dL</strong> (<em>float</em>) – Simulation spatial resolution (m)</p></li>
-<li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient (m^2/s)</p></li>
-<li><p><strong>seed</strong> (<em>int</em>) – Seed to initialize the random generator (for reproducibility)</p></li>
-<li><p><strong>quantize</strong> (<em>bool</em>) – Quantize the position to the simulation spatial resolution grid.</p></li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Tmax</strong> (<em>float</em>) – Maximum simulation time (s)</li>
+<li><strong>dt</strong> (<em>float</em>) – Simulation time resolution (s)</li>
+<li><strong>L</strong> (<em>float</em>) – Simulation domain size (m)</li>
+<li><strong>dL</strong> (<em>float</em>) – Simulation spatial resolution (m)</li>
+<li><strong>d</strong> (<em>float</em>) – Diffusion coefficient (m^2/s)</li>
+<li><strong>seed</strong> (<em>int</em>) – Seed to initialize the random generator (for reproducibility)</li>
+<li><strong>quantize</strong> (<em>bool</em>) – Quantize the position to the simulation spatial resolution grid.</li>
 </ul>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="py method">
 <dt id="trait2d.simulators.BrownianDiffusion.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.BrownianDiffusion.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.BrownianDiffusion.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a random walk simulation (Brownian diffusion)</p>
 </dd></dl>
 
@@ -206,41 +209,44 @@
 
 <dl class="py class">
 <dt id="trait2d.simulators.Diffusion">
-<em class="property">class </em><code class="sig-prename descclassname">trait2d.simulators.</code><code class="sig-name descname">Diffusion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Tmax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">L</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dL</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">d</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quantize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">Diffusion</code><span class="sig-paren">(</span><em><span class="n">Tmax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em><span class="n">dt</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em><span class="n">L</span><span class="o">=</span><span class="default_value">1</span></em>, <em><span class="n">dL</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em><span class="n">d</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em><span class="n">seed</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em><span class="n">quantize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract diffusion simulator</p>
 <p>The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables</p>
 <dl class="py method">
 <dt id="trait2d.simulators.Diffusion.display_trajectory">
-<code class="sig-name descname">display_trajectory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_resolution</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">limit_fov</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.8</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'Diffusion'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.display_trajectory" title="Permalink to this definition">¶</a></dt>
+<code class="descname">display_trajectory</code><span class="sig-paren">(</span><em><span class="n">time_resolution</span><span class="o">=</span><span class="default_value">None</span></em>, <em><span class="n">limit_fov</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.8</span></em>, <em><span class="n">title</span><span class="o">=</span><span class="default_value">'Diffusion'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.display_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display the simulated trajectory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>time_resolution</strong> (<em>param</em>) – [s]</p>
-</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>time_resolution</strong> (<em>param</em>) – [s]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="py method">
 <dt id="trait2d.simulators.Diffusion.load_parameters">
-<code class="sig-name descname">load_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.load_parameters" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_parameters</code><span class="sig-paren">(</span><em><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.load_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the simulation parameters</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="trait2d.simulators.Diffusion.print_parameters">
-<code class="sig-name descname">print_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.print_parameters" title="Permalink to this definition">¶</a></dt>
+<code class="descname">print_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.print_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the simulation parameters, accessible from self._gather_parameters()</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="trait2d.simulators.Diffusion.save_parameters">
-<code class="sig-name descname">save_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">mkdir</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.save_parameters" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_parameters</code><span class="sig-paren">(</span><em><span class="n">filename</span></em>, <em><span class="n">mkdir</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.save_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the simulation parameters, accessible through _gather_parameter</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="trait2d.simulators.Diffusion.save_trajectory">
-<code class="sig-name descname">save_trajectory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.save_trajectory" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_trajectory</code><span class="sig-paren">(</span><em><span class="n">filename</span></em>, <em><span class="n">format</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.save_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the simulated trajectory as either a json, cvs or pcl file with fiels t, x, and y</p>
 </dd></dl>
 
@@ -248,7 +254,7 @@
 
 <dl class="py class">
 <dt id="trait2d.simulators.HoppingDiffusion">
-<em class="property">class </em><code class="sig-prename descclassname">trait2d.simulators.</code><code class="sig-name descname">HoppingDiffusion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Tmax</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">5e-05</span></em>, <em class="sig-param"><span class="n">L</span><span class="o">=</span><span class="default_value">1e-05</span></em>, <em class="sig-param"><span class="n">dL</span><span class="o">=</span><span class="default_value">2e-08</span></em>, <em class="sig-param"><span class="n">Df</span><span class="o">=</span><span class="default_value">8e-13</span></em>, <em class="sig-param"><span class="n">HL</span><span class="o">=</span><span class="default_value">4e-08</span></em>, <em class="sig-param"><span class="n">HP</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quantize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.HoppingDiffusion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">HoppingDiffusion</code><span class="sig-paren">(</span><em><span class="n">Tmax</span><span class="o">=</span><span class="default_value">100</span></em>, <em><span class="n">dt</span><span class="o">=</span><span class="default_value">5e-05</span></em>, <em><span class="n">L</span><span class="o">=</span><span class="default_value">1e-05</span></em>, <em><span class="n">dL</span><span class="o">=</span><span class="default_value">2e-08</span></em>, <em><span class="n">Df</span><span class="o">=</span><span class="default_value">8e-13</span></em>, <em><span class="n">HL</span><span class="o">=</span><span class="default_value">4e-08</span></em>, <em><span class="n">HP</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em><span class="n">seed</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em><span class="n">quantize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.HoppingDiffusion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulates a hopping diffusion trajectory of a single molecule for a
 hopping diffusion model (i.e. free diffusion inside of compartments but
 changing from one compartment to the next only with a certain probability)</p>
@@ -265,24 +271,28 @@ changing from one compartment to the next only with a certain probability)</p>
 <div class="line">Am Fassberg 11, 3077 Goettingen, Germany</div>
 </div>
 <p>Converted to Python by Joel Lefebvre</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>Tmax</strong> (<em>float</em>) – Maximal total length [s]</p></li>
-<li><p><strong>dt</strong> (<em>float</em>) – Time step [s]</p></li>
-<li><p><strong>L</strong> (<em>float</em>) – Sandbox length [m]</p></li>
-<li><p><strong>dL</strong> (<em>float</em>) – Compartment map pixel size [m]</p></li>
-<li><p><strong>Df</strong> (<em>float</em>) – Free diffusion coefficient [m^2/s]</p></li>
-<li><p><strong>HL</strong> (<em>float</em>) – Average compartment diameter/length [m]</p></li>
-<li><p><strong>HP</strong> (<em>float</em>) – Hopping probability [0-1]</p></li>
-<li><p><strong>seed</strong> (<em>float</em>) – Random generator seed (nonnegative integer)</p></li>
-<li><p><strong>quantize</strong> (<em>bool</em>) – Quantize the position to the simulation spatial resolution grid.</p></li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Tmax</strong> (<em>float</em>) – Maximal total length [s]</li>
+<li><strong>dt</strong> (<em>float</em>) – Time step [s]</li>
+<li><strong>L</strong> (<em>float</em>) – Sandbox length [m]</li>
+<li><strong>dL</strong> (<em>float</em>) – Compartment map pixel size [m]</li>
+<li><strong>Df</strong> (<em>float</em>) – Free diffusion coefficient [m^2/s]</li>
+<li><strong>HL</strong> (<em>float</em>) – Average compartment diameter/length [m]</li>
+<li><strong>HP</strong> (<em>float</em>) – Hopping probability [0-1]</li>
+<li><strong>seed</strong> (<em>float</em>) – Random generator seed (nonnegative integer)</li>
+<li><strong>quantize</strong> (<em>bool</em>) – Quantize the position to the simulation spatial resolution grid.</li>
 </ul>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
-</section>
+</div>
 
 
            </div>

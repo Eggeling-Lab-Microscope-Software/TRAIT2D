@@ -1,14 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tracker GUI &mdash; trait2d 1.0.11-7-g27e61ba documentation</title>
+  <title>Tracker GUI &mdash; trait2d 1.1-4-g43a9e40 documentation</title>
   
 
   
@@ -66,7 +65,7 @@
             
             
               <div class="version">
-                1.0.11-7-g27e61ba
+                1.1-4-g43a9e40
               </div>
             
           
@@ -91,13 +90,13 @@
               
             
             
-              <p><span class="caption-text">Libraries</span></p>
+              <p class="caption"><span class="caption-text">Libraries</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 </ul>
-<p><span class="caption-text">Graphical Applications</span></p>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
@@ -107,11 +106,11 @@
 </ul>
 </li>
 </ul>
-<p><span class="caption-text">File Formats</span></p>
+<p class="caption"><span class="caption-text">File Formats</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
 </ul>
-<p><span class="caption-text">Tutorials and Examples</span></p>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
 </ul>
@@ -181,46 +180,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="tracker-gui">
+  <div class="section" id="tracker-gui">
 <span id="id1"></span><h1>Tracker GUI<a class="headerlink" href="#tracker-gui" title="Permalink to this headline">¶</a></h1>
 <p>The tracker allows to detect and track particles for further trajectory analysis. It accepts 8 bit TIFF stack as an input frame sequence. The tracker GUI provides options to set parameters, preview detection results, track the particles and save the trajectories to csv files.</p>
-<section id="starting-the-gui">
+<div class="section" id="starting-the-gui">
 <h2>Starting the GUI<a class="headerlink" href="#starting-the-gui" title="Permalink to this headline">¶</a></h2>
 <p>The GUI can be started from command line by entering <code class="docutils literal notranslate"><span class="pre">trait2d_tracker_gui</span></code>. The GUI and its components are described below.</p>
-</section>
-<section id="description-of-the-gui">
+</div>
+<div class="section" id="description-of-the-gui">
 <h2>Description of the GUI<a class="headerlink" href="#description-of-the-gui" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/tracker_gui.png" src="_images/tracker_gui.png" />
 <ol class="arabic simple">
-<li><p><strong>Select movie file</strong>: Select and load an image sequence.</p></li>
-<li><p><strong>Run pre-processing step</strong>: Run pre-processing for the entire image sequence (description of the pre-processing steps is provided in the paper and documentation)</p></li>
-<li><p><strong>SEF: sigma</strong>: Set parameter for the Laplacian-of-Gaussian in the Sport Enhancing Filter (SEF)</p></li>
-<li><p><strong>SEF: threshold</strong>: Set threshold parameter in the SEF.</p></li>
-<li><p><strong>SEF: min peak value</strong>: Set minimum acceptable peak value to be detected.</p></li>
-<li><p><strong>Patch size</strong>: Set patch size for sub-pixel localisation task.</p></li>
-<li><p><strong>Linking: max distance</strong>: Set maximum acceptable distance for linking.</p></li>
-<li><p><strong>Linking: frame gap</strong>: Set maximum number of skipped frames for linking.</p></li>
-<li><p><strong>Minimum track length</strong>: Set minimum track length; trajectories with length less than the number are filtered out.</p></li>
-<li><p><strong>Resolution</strong>: Effective pixel size of the image sequence (in µm/pix).</p></li>
-<li><p><strong>Frame rate</strong>: Time interval between localisations (sec).</p></li>
-<li><p><strong>Select detection mode</strong></p>
-<ol class="loweralpha simple">
-<li><p>Dark spot</p></li>
-<li><p>Light spot</p></li>
+<li><strong>Select movie file</strong>: Select and load an image sequence.</li>
+<li><strong>Run pre-processing step</strong>: Run pre-processing for the entire image sequence (description of the pre-processing steps is provided in the paper and documentation)</li>
+<li><strong>SEF: sigma</strong>: Set parameter for the Laplacian-of-Gaussian in the Sport Enhancing Filter (SEF)</li>
+<li><strong>SEF: threshold</strong>: Set threshold parameter in the SEF.</li>
+<li><strong>SEF: min peak value</strong>: Set minimum acceptable peak value to be detected.</li>
+<li><strong>Patch size</strong>: Set patch size for sub-pixel localisation task.</li>
+<li><strong>Linking: max distance</strong>: Set maximum acceptable distance for linking.</li>
+<li><strong>Linking: frame gap</strong>: Set maximum number of skipped frames for linking.</li>
+<li><strong>Minimum track length</strong>: Set minimum track length; trajectories with length less than the number are filtered out.</li>
+<li><strong>Resolution</strong>: Effective pixel size of the image sequence (in µm/pix).</li>
+<li><strong>Frame rate</strong>: Time interval between localisations (sec).</li>
+<li><strong>Select detection mode</strong><ol class="loweralpha">
+<li>Dark spot</li>
+<li>Light spot</li>
 </ol>
 </li>
-<li><p><strong>Preview</strong>: Preview detection results for the current frame.</p></li>
-<li><p><strong>Run tracking algorithm</strong>: Run tracking algorithm and save an image sequence with highlighted trajectories. Close the “save as” window without providing any name if you don’t want to save the file.</p></li>
-<li><p><strong>Save data</strong>: Save all trajectories into a <cite>.csv</cite> file.</p></li>
-<li><p><strong>Preview and navigate through the image sequence</strong></p>
-<ol class="loweralpha simple">
-<li><p>Preview window</p></li>
-<li><p>Slider</p></li>
+<li><strong>Preview</strong>: Preview detection results for the current frame.</li>
+<li><strong>Run tracking algorithm</strong>: Run tracking algorithm and save an image sequence with highlighted trajectories. Close the “save as” window without providing any name if you don’t want to save the file.</li>
+<li><strong>Save data</strong>: Save all trajectories into a <cite>.csv</cite> file.</li>
+<li><strong>Preview and navigate through the image sequence</strong><ol class="loweralpha">
+<li>Preview window</li>
+<li>Slider</li>
 </ol>
 </li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
