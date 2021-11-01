@@ -167,7 +167,10 @@ class MainVisual(tk.Frame):
         lbl6 = tk.Label(master=root, text=" Random generator seed [seed, integer]",
                         width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=11, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.seed))
+        if (self.seed == None):
+            v = tk.StringVar(root, value='')
+        else:
+            v = tk.StringVar(root, value=str(self.seed))
         self.param_seed = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_seed.grid(row=11, column=3, columnspan=6)
 
