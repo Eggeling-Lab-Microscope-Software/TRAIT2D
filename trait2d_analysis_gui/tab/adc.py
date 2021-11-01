@@ -81,7 +81,7 @@ class widgetADC(QWidget):
             mb.exec()
             return
 
-        T = self.parent.track.get_t()[0:-3]
+        T = self.parent.track.get_t()[1:-2]
         fit_max_time = self.plot.get_range()
         if fit_max_time <= 0.0:
             fit_max_time = None
