@@ -21,7 +21,9 @@ import numpy as np
 import cv2
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import font, ttk
 import csv
+import webbrowser
 
 # for plotting
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -215,6 +217,13 @@ class MainVisual(tk.Frame):
         self.scale_movie.set(self.frame_pos)        
         self.scale_movie.grid(row=21, column=1, columnspan=3, pady=5, padx=5) 
         
+        # Link to GUI documentation.
+        label_font = font.nametofont(ttk.Style().lookup("TLabel", "font"))
+        link_font = font.Font(**label_font.configure())
+        link_font.configure(underline=1, weight='bold')
+        lblDocs = tk.Label(master=root, text="Documentation", font=link_font, fg='blue', bg='white')
+        lblDocs.grid(row=22, column=1, columnspan=1, pady=5)
+        lblDocs.bind("<Button-1>", lambda e: webbrowser.open_new("https://eggeling-lab-microscope-software.github.io/TRAIT2D/tracker_gui.html#description-of-the-gui"))
 
 
     def show_frame(self , centers=[]):

@@ -769,6 +769,22 @@
     <string>Max. fit iterations</string>
    </property>
   </widget>
+  <widget class="QLabel" name="labelDocumentation">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>860</y>
+     <width>371</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;b&gt;&lt;a href=&quot;https://eggeling-lab-microscope-software.github.io/TRAIT2D/analysis_gui.html#adc-analysis-tab&quot;&gt;Documentation&lt;/a&gt;&lt;/b&gt;</string>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>

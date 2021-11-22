@@ -15,6 +15,8 @@ import numpy as np
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
+from tkinter import font
+import webbrowser
 
 # for plotting
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -165,7 +167,10 @@ class MainVisual(tk.Frame):
         lbl6 = tk.Label(master=root, text=" Random generator seed [seed, integer]",
                         width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl6.grid(row=11, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.seed))
+        if (self.seed == None):
+            v = tk.StringVar(root, value='')
+        else:
+            v = tk.StringVar(root, value=str(self.seed))
         self.param_seed = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_seed.grid(row=11, column=3, columnspan=6)
 
@@ -295,6 +300,14 @@ class MainVisual(tk.Frame):
         self.button2 = tk.Button(text="    SAVE   ", command=self.save_images,
                                  width=int(self.button_size/4), bg='gray')
         self.button2.grid(row=33, column=3, columnspan=6, pady=10, padx=30)
+
+        # Link to GUI documentation.
+        label_font = font.nametofont(ttk.Style().lookup("TLabel", "font"))
+        link_font = font.Font(**label_font.configure())
+        link_font.configure(underline=1, weight='bold')
+        lblDocs = tk.Label(master=root, text="Documentation", font=link_font, fg='blue', bg='gray')
+        lblDocs.grid(row=34, column=1, columnspan=1, pady=5)
+        lblDocs.bind("<Button-1>", lambda e: webbrowser.open_new("https://eggeling-lab-microscope-software.github.io/TRAIT2D/simulator_gui.html#description-of-the-gui"))
 
     def generate_trajectory(self):
         '''
