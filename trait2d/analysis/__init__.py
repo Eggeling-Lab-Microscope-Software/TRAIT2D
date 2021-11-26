@@ -357,7 +357,7 @@ class ListOfTracks:
         Parameters
         ----------
         ensemble_average: bool
-            averages the MSD and D_app, but not the parameters, for all the tracks and adds it to the re
+            averages the MSD and D_app, but not the parameters, for all the tracks and adds it to the results
         avg_only_params: bool
             Only average the model parameters but not D_app and MSD
         interpolation: bool
@@ -476,16 +476,19 @@ class ListOfTracks:
         
         ###ENSEMBLE AVERAGE - Added by FR###
         
-        ens_D_app = np.zeros(track_length - 3)
-        ens_MSD = np.zeros(track_length - 3)
         
         if ensemble_average:
+            ens_D_app = np.zeros(track_length - 3)
+            ens_MSD = np.zeros(track_length - 3)
+            sampled_total = np.zeros(track_length - 3)
+            
             for track in self._tracks:
                 if track.get_adc_analysis_results() is None:
                     continue
                 
                 D_app = np.zeros(track_length - 3)
                 MSD = np.zeros(track_length - 3)
+
                 if interpolation:
                     interp_MSD = interpolate.interp1d(track.get_t()[0:-3], track.get_msd(), bounds_error = False, fill_value = 0)
                     interp_D_app = interpolate.interp1d(track.get_t()[0:-3], track.get_adc_analysis_results()["Dapp"], bounds_error = False, fill_value = 0)
@@ -494,12 +497,17 @@ class ListOfTracks:
                 else:
                     D_app[0:track.get_adc_analysis_results()["Dapp"].size] = track.get_adc_analysis_results()["Dapp"]
                     MSD[0:track.get_msd().size] = track.get_msd()
+                    
+                mask_total = np.zeros(track_length - 3)
+                np.put(mask_total, np.where(MSD != 0.0), 1)
                 
+                sampled_total += mask_total
                 ens_D_app += D_app
                 ens_MSD += MSD
-                
-            average_MSD['Ensemble'] = ens_MSD/len(self._tracks)
-            average_D_app['Ensemble'] = ens_D_app/len(self._tracks)
+            
+            #Final averaging operation#
+            average_MSD['Ensemble'] = ens_MSD/sampled_total
+            average_D_app['Ensemble'] = ens_D_app/sampled_total
             
         ###END OF ADDITION###
 
