@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analysis Library &mdash; trait2d 1.1-13-g0f5b71f documentation</title>
+  <title>Analysis Library &mdash; trait2d 1.1-19-g55dd1b9 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.1-13-g0f5b71f
+                1.1-19-g55dd1b9
               </div>
             
           
@@ -543,13 +543,14 @@ for a list of possible values)</td>
 
 <dl class="py method">
 <dt id="trait2d.analysis.ListOfTracks.adc_summary">
-<code class="descname">adc_summary</code><span class="sig-paren">(</span><em><span class="n">avg_only_params</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">interpolation</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">plot_msd</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">plot_dapp</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">plot_pie_chart</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.adc_summary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Average tracks by model and optionally plot the results.</p>
+<code class="descname">adc_summary</code><span class="sig-paren">(</span><em><span class="n">ensemble_average</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">avg_only_params</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">interpolation</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">plot_msd</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">plot_dapp</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">plot_pie_chart</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.ListOfTracks.adc_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average tracks by model and optionally of the whole ensemble and optionally plot the results.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ensemble_average</strong> (<em>bool</em>) – averages the MSD and D_app, but not the parameters, for all the tracks and adds it to the results</li>
 <li><strong>avg_only_params</strong> (<em>bool</em>) – Only average the model parameters but not D_app and MSD</li>
 <li><strong>interpolation</strong> (<em>bool</em>) – User linear interpolation of averaging. Has to be used when
 not all tracks have the same uniform time step size.</li>
