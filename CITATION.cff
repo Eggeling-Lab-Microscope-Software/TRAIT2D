@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Reina"
+  given-names: "Francesco"
+  orcid: "https://orcid.org/0000-0001-6752-9089"
+- family-names: "Wigg"
+  given-names: "John Maxwell Andreas"
+- family-names: "Dmitrieva"
+  given-names: "Mariia"
+- family-names: "Vogler"
+  given-names: "Bela"
+- family-names: "Lefebvre"
+  given-names: "Joёl"
+- family-names: "Rittscher"
+  given-names: "Jens"
+- family-names: "Eggeling"
+  given-names: "Christian"
+title: "TRAIT2D: a Software for Quantitative Analysis of Single Particle Diffusion Data"
+doi: 10.5281/zenodo.4725268
+date-released: 2021-06-21
+url: "https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D"
