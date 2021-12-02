@@ -49,12 +49,12 @@ def main():
     args = parse_arguments()
 
     # Create the simulator
-    s = simulators.iscat_movie(args.tracks,
-                               resolution=args.resolution,
-                               dt=args.time_resolution,
-                               snr=args.snr,
-                               background=args.background_intensity,
-                               noise_poisson=args.poisson_noise)
+    s = simulators.movie_simulator(args.tracks,
+                                   resolution=args.resolution,
+                                   dt=args.time_resolution,
+                                   snr=args.snr,
+                                   background=args.background_intensity,
+                                   noise_poisson=args.poisson_noise)
     if args.gaussian_noise:
         s.noise_gaussian = args.gaussian_noise_variance
     if args.square:

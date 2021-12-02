@@ -95,7 +95,7 @@ class Diffusion(object):
         pprint.pprint(self.parameters)
 
     def save_trajectory(self, filename, format=None):
-        """Save the simulated trajectory as either a json, cvs or pcl file with fiels t, x, and y
+        """Save the simulated trajectory as either a json, cvs or pcl file with fields t, x, and y
         """
         supported_formats = ["json", "csv", "pcl"]
         if format is None:
@@ -185,8 +185,8 @@ class BrownianDiffusion(Diffusion):
         pbar = tqdm.tqdm(desc="Brownian Diffusion Simulation", total=int(self.Tmax / self.dt))
         while iteration * self.dt < self.Tmax and diffuse:
             # Update position and compartment
-            x0 = x + np.sqrt(self.d * self.dt) * np.random.randn()
-            y0 = y + np.sqrt(self.d * self.dt) * np.random.randn()
+            x0 = x + np.sqrt(2 * self.d * self.dt) * np.random.randn()
+            y0 = y + np.sqrt(2 * self.d * self.dt) * np.random.randn()
 
             # Outside of area, stop it here
             if not(0 <= x0 <= self.L) or not(0 <= y0 <= self.L):
@@ -409,8 +409,44 @@ class HoppingDiffusion(Diffusion):
         plt.imshow(self.hopping_map)
         plt.title("Hopping Map")
 
-# iScat Acquisition simulation
-class iscat_movie(object):
+# Moving Acquisition simulation
+class movie_simulator(object):
+    """Generate a syntetic iscat movie from a set of tracks.
+    **Syntax**:
+
+    .. code-block:: python
+
+        movie_simulator = iscat_movie(tracks)
+        movie_simulator.run()
+
+    **Author(s)**:
+    | Joël Lefebvre (lefebvre.joel@uqam.ca)
+    | Department of Computer Sciences
+    | Université du Québec a Montréal (UQAM)
+    | 201, Av. du Président-Kennedy, Montréal (Qc), Canada (H3C 3P8)
+
+    Parameters
+    ----------
+    tracks : dict or CSV filename
+        A dictionary or a CSV filename containing the set of tracks to simulate. The dictionary must include the keys
+        `x`, `y`, `t` and `id`
+    resolution : float
+        Spatial resolution [m/px]
+    dt : float
+        Temporal resolution  [frame/sec]
+    snr : float
+        Signal to noise ratio
+    background : float
+        Background intensity between 0 and 1
+    noise_gaussian : float
+        Gaussian noise variance
+    noise_poisson : bool
+        If True, Poisson noise will be added.
+    ratio : str
+        Aspect ratio of the simulated movie. Available ("square"). If none is given,
+        the aspect ratio will be inferred from the tracks position.
+    """
+
     # Notes
     # TODO: Add PSF & Object shape inputs (instead of only psf)
     # TODO: Add z-phase jitter for the PSF instead of using a fixed plane
@@ -419,7 +455,8 @@ class iscat_movie(object):
     # TODO: link tqdm with logging
     # TODO: Create a python wrapper for the ImageJ plugin 'DeconvolutionLab2' to generate PSF in the script?
     # TODO: Background noise with different statistics (similar to transcient particles)
-    def __init__(self, tracks=None, resolution=1.0, dt=1, snr=25, background=0.3, noise_gaussian=0.15, noise_poisson=True, ratio="square"):
+    def __init__(self, tracks=None, resolution=1.0, dt=1, snr=25, background=0.3,
+                 noise_gaussian=0.15, noise_poisson=True, ratio="square"):
         # Prepare the simulator
         self.resolution = resolution
         self.snr = snr  # Signal to noise ratio
@@ -428,6 +465,7 @@ class iscat_movie(object):
         self.noise_poisson = noise_poisson  # Poisson noise variance
         self.dt = dt  # Temporal resolution
         self.ratio = ratio
+        self.initialized = False
 
         if isinstance(tracks, dict):
             self.tracks = tracks
@@ -435,6 +473,7 @@ class iscat_movie(object):
             self.load_tracks(tracks)
 
     def initialize(self):
+        """Initialize the simulator"""
         assert hasattr(self, 'tracks'), "You must load a tracks file or set a tracks dict first"
         self.n_spots = len(self.tracks["x"])
 
@@ -462,6 +501,8 @@ class iscat_movie(object):
         y = np.linspace(self.ymin, self.ymax, int((self.ymax - self.ymin) / self.resolution))
         self.nx = len(x) + 1
         self.ny = len(y) + 1
+
+        self.initialized = True
         
         print(" - - - - - - - - ")
         print(self.tmax)
@@ -472,15 +513,23 @@ class iscat_movie(object):
 
         print(f"Movie shape will be: ({self.nx}, {self.ny}) with ({self.n_frames}) frames")
 
-    def run(self):
-        self.initialize()
+    def get_estimated_size(self):
+        """Return the estimated movie size in MB"""
+        return self.nx * self.ny * self.n_frames * 8 / 1000**2 # Using double precision float (float64)
+
+    def run(self, reinitialize=False):
+        """Run the movie simulation
+        Parameters
+        ----------
+        reinitialize: bool
+            If `True`, the simulator will be reinitialized.
+        """
+        if reinitialize or not(self.initialized):
+            self.initialize()
 
         # Create the movie array
         print("Creating an empty movie")
-                
-
-        
-        movie = np.ones((self.n_frames, self.nx, self.ny)) * self.background
+        movie = np.ones((self.n_frames, self.nx, self.ny), dtype=np.float64) * self.background
 
         # Add Gaussian noise to the background
         if self.noise_gaussian is not None:
@@ -519,11 +568,21 @@ class iscat_movie(object):
             movie[movie < 0] = 0
 
         self.movie = movie
+        print("Movie generation is done.")
 
     def save(self, filename):
+        """Save the simulated movie.
+        Parameters
+        ----------
+        filename : str
+            Output volume filename. Must be a volume format supported by `imageio.volwrite`
+
+        Note
+        ----
+        The volume will be converted to single precision float (`numpy.float32`)
+        """
         assert hasattr(self, "movie"), "You must first run the simulation"
         io.volwrite(filename, self.movie.astype(np.float32))
-
 
     def load_tracks(self, filename, field_x="x", field_y="y", field_t="t", field_id="id", file_format=None): # TODO: Load other tracks format
         """Load the tracks from a csv file.
@@ -581,6 +640,18 @@ class iscat_movie(object):
         self.tracks = tracks
 
     def load_psf(self, filename):
+        """Load a Point-Spread Function (PSF) from a file
+        Parameters
+        ----------
+        filename: str
+            Input volume filename. Must be a volume format supported by `imageio.volwrite`
+        Note
+        ----
+        Only the middle slice along the first dimension will be used
+
+        .. code-block:: python
+            psf = psf[int(psf.shape[0]/2), ...]
+        """
         psf = io.volread(filename).squeeze()
         psf_2d = psf[int(psf.shape[0] / 2), ...].squeeze()
         psf_2d = psf_2d / psf_2d.sum()
