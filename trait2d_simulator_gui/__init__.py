@@ -9,7 +9,7 @@ GUI iSCAT simulator
 import matplotlib
 matplotlib.use('TkAgg') # This is a bug fix in order to use the GUI on Mac
 
-from trait2d.simulators import HoppingDiffusion, iscat_movie, BrownianDiffusion
+from trait2d.simulators import HoppingDiffusion, movie_simulator, BrownianDiffusion
 import matplotlib.pyplot as plt
 import numpy as np
 import tkinter as tk
@@ -78,10 +78,10 @@ class MainVisual(tk.Frame):
                                    Df=self.Df, HL=self.HL, HP=self.HP, seed=self.seed)
         
         # image generator
-        self.IG = iscat_movie(tracks=None, resolution=self.resolution, dt=self.dt_image,
-                              snr=self.snr, background=self.background,
-                              noise_gaussian=self.noise_gaussian,
-                              noise_poisson=self.noise_poisson, ratio=self.ratio)
+        self.IG = movie_simulator(tracks=None, resolution=self.resolution, dt=self.dt_image,
+                                  snr=self.snr, background=self.background,
+                                  noise_gaussian=self.noise_gaussian,
+                                  noise_poisson=self.noise_poisson, ratio=self.ratio)
         
      # # # # # # menu to choose files and set tracker parameters # # # # # #
 

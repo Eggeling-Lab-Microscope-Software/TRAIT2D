@@ -409,8 +409,8 @@ class HoppingDiffusion(Diffusion):
         plt.imshow(self.hopping_map)
         plt.title("Hopping Map")
 
-# iScat Acquisition simulation
-class iscat_movie(object):
+# Moving Acquisition simulation
+class movie_simulator(object):
     """Generate a syntetic iscat movie from a set of tracks.
     **Syntax**:
 
