@@ -19,6 +19,10 @@ The documentation is available at [GitHub Pages](https://eggeling-lab-microscope
 * customisable libraries for more advanced users
 * open source under the GNU General Public License
 
+## Contributing
+
+Guidelines for contributing to the project can be found [here](CONTRIBUTING.md).
+
 ## Installation
 
 Installation methods have been tested on Linux and Windows.
