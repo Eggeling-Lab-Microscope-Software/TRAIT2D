@@ -192,14 +192,28 @@ class MainVisual(tk.Frame):
         #preview button
         self.button2 = tk.Button(text="    Preview    ", command=self.preview, width=int(self.button_size/3), bg='gray') #, height=30)
         self.button2.grid(row=14, column=1, columnspan=1,pady=5, padx=5)
+        
+        
+         # save parameters
+        self.button2 = tk.Button(text=" Save parameters  ", command=self.save_parameters, width=int(self.button_size/3), bg='gray') #, height=30)
+        self.button2.grid(row=15, column=1, columnspan=1,pady=5, padx=5)
+
+         # load parameters
+        self.button2 = tk.Button(text=" Load parameters ", command=self.load_parameters, width=int(self.button_size/3), bg='gray') #, height=30)
+        self.button2.grid(row=16, column=1, columnspan=1,pady=5, padx=5)
+
 
         # button to run the tracker and save image sequence with plotted trakectories (for visualisation)
         self.button2 = tk.Button(text="    Run tracking    ", command=self.tracking, width=int(self.button_size/3), bg='gray')
         self.button2.grid(row=14, column=2, columnspan=1, pady=5, padx=5)
+        
+        # test run
+        self.button2 = tk.Button(text="  Test run  ", command=self.run_test, width=int(self.button_size/3), bg='gray')
+        self.button2.grid(row=15, column=2, columnspan=1, pady=5, padx=5)
 
         # button to save csv file
         self.button2 = tk.Button(text="    Save data    ", command=self.save_data, width=int(self.button_size/3), bg='gray')
-        self.button2.grid(row=15, column=2, columnspan=1, pady=5, padx=5)
+        self.button2.grid(row=16, column=2, columnspan=1, pady=5, padx=5)
 
 
         # show dark screen until movie is selected
@@ -301,6 +315,105 @@ class MainVisual(tk.Frame):
 
         # show the frame in the monitor
         self.show_frame()
+        
+    def save_parameters(self):
+        '''
+        save parameters to a file
+        '''
+        
+        self.read_parameters()
+        
+        parameters_data=[["SEF:sigma", self.sigma],["SEF:threshold", self.threshold],["SEF:min peak value", self.min_peak],
+                         ["Patch size", self.maximum_diameter],["Linking:max distance", self.max_dist],["Linking:frame gap", self.frame_gap],
+                         ["Min track length", self.min_track_length],["Resolution", self.img_resolution],["frame rate", self.frame_rate]]
+        
+        # select file location and name
+        save_file = tk.filedialog.asksaveasfilename( title="Provide filename to save parameters")
+        if not(save_file.endswith(".csv")):
+                save_file += ".csv"
+
+        with open(save_file, 'w') as csvFile:
+            writer = csv.writer(csvFile)
+            writer.writerows(parameters_data)
+
+        csvFile.close()
+        
+        
+        
+    def load_parameters(self):
+        '''
+        load parameters from a file
+        '''
+        open_file = tk.filedialog.askopenfilename( title="Open file with parameters ")
+   
+        with open(open_file, newline='') as f:    
+            
+            reader = csv.reader(f)
+            
+            param_val_list=[]
+            try:
+                for row in reader:
+                    param_val_list.append(float(row[1]))
+            except csv.Error as e:
+                sys.exit('file {}, line {}: {}'.format(open_file, reader.line_num, e))
+         
+            
+            
+        # update and diplayed values
+        
+        self.sigma=param_val_list[0]
+        v = tk.StringVar(root, value=str(self.sigma))
+        self.param2_sigma = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param2_sigma.grid(row=4, column=2)
+
+        self.threshold=param_val_list[1]
+        v = tk.StringVar(root, value=str(self.threshold))
+        self.param3_threshold = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param3_threshold.grid(row=5, column=2)
+
+        self.min_peak=param_val_list[2]
+        v = tk.StringVar(root, value=str(self.min_peak))
+        self.param4_peak = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param4_peak.grid(row=6, column=2)
+
+        self.maximum_diameter=int(param_val_list[3])
+        v = tk.StringVar(root, value=str(self.maximum_diameter))
+        self.param1_diameter = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param1_diameter.grid(row=7, column=2)
+
+        self.max_dist=param_val_list[4]
+        v = tk.StringVar(root, value=str(self.max_dist))
+        self.param5_distance = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param5_distance.grid(row=8, column=2)
+
+        self.frame_gap=param_val_list[5]
+        v = tk.StringVar(root, value=str(self.frame_gap))
+        self.param6_framegap = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param6_framegap.grid(row=9, column=2)
+
+        self.min_track_length=param_val_list[6]
+        v = tk.StringVar(root, value=str(self.min_track_length))
+        self.param7_framegap = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param7_framegap.grid(row=10, column=2)
+        
+        self.img_resolution=param_val_list[7]        
+        v = tk.StringVar(root, value=str(self.img_resolution))
+        self.res_parameter = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.res_parameter.grid(row=11, column=2)
+        
+        self.frame_rate=param_val_list[8]            
+        v = tk.StringVar(root, value=str(self.frame_rate))
+        self.frame_parameter = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.frame_parameter.grid(row=12, column=2)  
+
+
+    def run_test(self):
+        '''
+        run tracking for a selected frame range
+        '''
+        
+               
+        
 
     def preview(self):
         '''
