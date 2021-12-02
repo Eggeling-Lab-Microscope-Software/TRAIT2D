@@ -472,15 +472,17 @@ class iscat_movie(object):
 
         print(f"Movie shape will be: ({self.nx}, {self.ny}) with ({self.n_frames}) frames")
 
-    def run(self):
-        self.initialize()
+    def get_estimated_size(self):
+        """Return the estimated movie size in MB"""
+        return self.nx * self.ny * self.n_frames * 8 / 1000**2 # Using double precision float (float64)
+
+    def run(self, reinitialize=False):
+        if reinitialize:
+            self.initialize()
 
         # Create the movie array
         print("Creating an empty movie")
-                
-
-        
-        movie = np.ones((self.n_frames, self.nx, self.ny)) * self.background
+        movie = np.ones((self.n_frames, self.nx, self.ny), dtype=np.float64) * self.background
 
         # Add Gaussian noise to the background
         if self.noise_gaussian is not None:
@@ -519,6 +521,7 @@ class iscat_movie(object):
             movie[movie < 0] = 0
 
         self.movie = movie
+        print("Movie generation is done.")
 
     def save(self, filename):
         assert hasattr(self, "movie"), "You must first run the simulation"

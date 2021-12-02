@@ -16,6 +16,7 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 from tkinter import font
+from tkinter import messagebox
 import webbrowser
 
 # for plotting
@@ -64,7 +65,7 @@ class MainVisual(tk.Frame):
         self.trajectory = {}  # data of the tracks prepared for the csv file
         
         # image generation
-        self.resolution = 1e-8
+        self.resolution = 1e-7
         self.dt_image = 5e-3
         self.snr = 25
         self.background = 0.3
@@ -463,12 +464,21 @@ class MainVisual(tk.Frame):
         self.IG.noise_gaussian=self.noise_gaussian
         self.IG.noise_poisson=self.noise_poisson
         self.IG.ratio=self.ratio
-        
+
+        # Compute an estimated file size
+        self.IG.initialize()
+        size_mb = self.IG.get_estimated_size()
+        continue_simulation = messagebox.askyesno("Continue simulation?",f"Estimated memory size is {size_mb:.2f}MB. Do you wish to continue?")
+        if not(continue_simulation):
+            msg = "Aborting the movie simulation"
+            print(msg)
+            messagebox.showwarning("Warning", msg)
+            return
+
         # run the generator
         self.IG.run()
         
         # plot the average image
-        
         img = np.average(self.IG.movie, axis=0)
         
         # DrawingArea
@@ -489,8 +499,7 @@ class MainVisual(tk.Frame):
                 # DrawingArea
         canvas = FigureCanvasTkAgg(fig, master=novi)
         canvas.draw()
-        canvas.get_tk_widget().grid(row=0, column=0)      
-        
+        canvas.get_tk_widget().grid(row=0, column=0)
         print("image is generated")
 
     def save_images(self):
