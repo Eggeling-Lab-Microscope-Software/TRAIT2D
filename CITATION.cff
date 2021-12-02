@@ -8,14 +8,14 @@ authors:
   given-names: "John Maxwell Andreas"
 - family-names: "Dmitrieva"
   given-names: "Mariia"
+- family-names: "Vogler"
+  given-names: "Bela"
 - family-names: "Lefebvre"
   given-names: "Joёl"
 - family-names: "Rittscher"
   given-names: "Jens"
 - family-names: "Eggeling"
   given-names: "Christian"
-- family-names: "Vogler"
-  given-names: "Bela"
 title: "TRAIT2D: a Software for Quantitative Analysis of Single Particle Diffusion Data"
 doi: 10.5281/zenodo.4725268
 date-released: 2021-06-21
