@@ -349,6 +349,12 @@ class MainVisual(tk.Frame):
 
         # read the file
         self.movie=skimage.io.imread(self.movie_file)
+        
+        #convert to 16bit to 8 bit
+        if self.movie.dtype=='uint16':      
+            self.movie=(self.movie - np.min(self.movie))/(np.max(self.movie)- np.min(self.movie))
+            self.movie=skimage.util.img_as_ubyte(self.movie)
+            
         self.movie_length=self.movie.shape[0]
         try:
             self.lbl1.destroy()
