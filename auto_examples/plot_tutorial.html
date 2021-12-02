@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TRAIT Tutorial &mdash; trait2d 1.1-25-gef64f08 documentation</title>
+  <title>TRAIT Tutorial &mdash; trait2d 1.1-30-gf6c5f00 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.1-25-gef64f08
+                1.1-30-gf6c5f00
               </div>
             
           
@@ -299,7 +299,7 @@ Hopping diffusion simulation was completed in 5000 iterations.
 </div>
 <img alt="Diffusion Category: ModelBrownian" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_tutorial_002.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;ModelBrownian&#39;: {&#39;params&#39;: array([5.35420964e-13, 3.40081414e-09]), &#39;errors&#39;: array([7.98016227e-16, 1.19559807e-10]), &#39;bic&#39;: -31505.992351629604, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 1.0}, &#39;ModelConfined&#39;: {&#39;params&#39;: array([5.35541379e-13, 3.39176797e-09, 6.03027196e+01]), &#39;errors&#39;: array([7.99154675e-16, 1.19804264e-10, 2.08051190e-23]), &#39;bic&#39;: -31499.74124296049, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 0.043912584612108084}, &#39;ModelHop&#39;: {&#39;params&#39;: array([5.35420964e-13, 7.95436798e-27, 3.40099070e-09, 4.00609754e-07]), &#39;errors&#39;: array([8.45871388e-16, 2.83090282e-11, 7.94284986e-10, 0.00000000e+00]), &#39;bic&#39;: -31493.575701890502, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 0.002012606019523046}}
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;ModelBrownian&#39;: {&#39;params&#39;: array([1.07084193e-12, 4.80953517e-09]), &#39;errors&#39;: array([1.59603245e-15, 2.11644113e-10]), &#39;bic&#39;: -30815.618811150267, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 1.0}, &#39;ModelConfined&#39;: {&#39;params&#39;: array([1.07096719e-12, 4.80279897e-09, 1.15938574e+02]), &#39;errors&#39;: array([1.59798738e-15, 2.11995909e-10, 2.24700735e-23]), &#39;bic&#39;: -30809.38708837297, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 0.04434029646465309}, &#39;ModelHop&#39;: {&#39;params&#39;: array([1.07083900e-12, 2.28983326e-25, 4.81525068e-09, 1.22761905e-07]), &#39;errors&#39;: array([1.69174292e-15, 1.84762101e-10, 1.40540672e-09, 3.56674210e-25]), &#39;bic&#39;: -30803.293478701424, &#39;KSTestStat&#39;: 0.4899598393574297, &#39;KStestPValue&#39;: 1.360060612689e-54, &#39;rel_likelihood&#39;: 0.0021066290315499988}}
 ModelBrownian
 </pre></div>
 </div>
@@ -356,10 +356,10 @@ Hopping diffusion simulation was completed in 5000 iterations.
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/__init__.py:346: UserWarning: ADC analysis failed for 4/20 tracks. Consider raising the maximum function evaluations using the maxfev keyword argument. To get a more detailed stacktrace, run the ADC analysis for a single track.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/__init__.py:346: UserWarning: ADC analysis failed for 5/20 tracks. Consider raising the maximum function evaluations using the maxfev keyword argument. To get a more detailed stacktrace, run the ADC analysis for a single track.
   warnings.warn(&quot;ADC analysis failed for {}/{} tracks. &quot;
 
-[5, 8, 9, 18]
+[5, 11, 15, 18, 19]
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">adc_summary</span></code> gives an overview of the analysis results including optional plots, the averaged parameters for each model, the averaged MSD for each model and the averaged $D_{app}$ for each model.</p>
@@ -374,14 +374,14 @@ Hopping diffusion simulation was completed in 5000 iterations.
 </li>
 </ul>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;sectors&#39;: {&#39;ModelBrownian&#39;: 0.35, &#39;ModelHop&#39;: 0.05, &#39;ModelConfined&#39;: 0.4, &#39;not catergorized&#39;: 0.2}, &#39;average_params&#39;: {&#39;ModelBrownian&#39;: array([4.75078273e-13, 6.17045316e-09]), &#39;ModelHop&#39;: array([7.16375964e-13, 3.91597548e-09, 2.38685412e-09, 1.11810708e-08]), &#39;ModelConfined&#39;: array([7.09319895e-13, 7.60211965e-09, 4.64833658e-02])}, &#39;t&#39;: array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
-       4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), &#39;average_msd&#39;: {&#39;ModelBrownian&#39;: array([1.99233836e-16, 3.98432588e-16, 5.97898475e-16, ...,
-       4.07355191e-13, 4.07982485e-13, 4.07563069e-13]), &#39;ModelHop&#39;: array([3.16851643e-16, 6.29346578e-16, 9.39816443e-16, ...,
-       3.52565304e-12, 3.51655574e-12, 3.49330320e-12]), &#39;ModelConfined&#39;: array([3.00925658e-16, 5.97693000e-16, 8.89323572e-16, ...,
-       7.33314730e-13, 7.33946790e-13, 7.32532623e-13])}, &#39;average_dapp&#39;: {&#39;ModelBrownian&#39;: array([7.47126886e-13, 5.97581614e-13, 5.60448145e-13, ...,
-       2.03854310e-13, 2.04127360e-13, 2.03876702e-13]), &#39;ModelHop&#39;: array([1.18795602e-12, 9.43831063e-13, 8.80901700e-13, ...,
-       1.76435594e-12, 1.75945107e-12, 1.74746725e-12]), &#39;ModelConfined&#39;: array([1.12826440e-12, 8.96366819e-13, 8.33578000e-13, ...,
-       3.66975474e-13, 3.67218256e-13, 3.66437350e-13])}}
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;sectors&#39;: {&#39;ModelBrownian&#39;: 0.3, &#39;ModelHop&#39;: 0.15, &#39;ModelConfined&#39;: 0.3, &#39;not catergorized&#39;: 0.25}, &#39;average_params&#39;: {&#39;ModelBrownian&#39;: array([9.59466456e-13, 8.59211594e-09]), &#39;ModelHop&#39;: array([7.73697952e-13, 4.44561122e-09, 3.03542042e-09, 1.05640483e-08]), &#39;ModelConfined&#39;: array([8.13270049e-13, 8.15308856e-09, 3.80360143e-02])}, &#39;t&#39;: array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
+       4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), &#39;average_msd&#39;: {&#39;ModelBrownian&#39;: array([3.98000808e-16, 7.98008460e-16, 1.19949621e-15, ...,
+       5.71535265e-13, 5.68991078e-13, 5.66452609e-13]), &#39;ModelHop&#39;: array([3.42432536e-16, 6.77574501e-16, 1.01087098e-15, ...,
+       3.54477807e-12, 3.52828705e-12, 3.51251321e-12]), &#39;ModelConfined&#39;: array([3.43729211e-16, 6.83436412e-16, 1.01758971e-15, ...,
+       9.16450775e-13, 9.20764454e-13, 9.19227746e-13])}, &#39;average_dapp&#39;: {&#39;ModelBrownian&#39;: array([1.49250303e-12, 1.19687774e-12, 1.12436372e-12, ...,
+       2.86015570e-13, 2.84685375e-13, 2.83358573e-13]), &#39;ModelHop&#39;: array([1.28396458e-12, 1.01619318e-12, 9.47522387e-13, ...,
+       1.77392677e-12, 1.76532067e-12, 1.75707676e-12]), &#39;ModelConfined&#39;: array([1.28882724e-12, 1.02498475e-12, 9.53820029e-13, ...,
+       4.58622945e-13, 4.60689419e-13, 4.59828507e-13])}}
 </pre></div>
 </div>
 <p>Now that analysis is done we can also retrieve all tracks that fit a certain diffusion category best:</p>
@@ -391,10 +391,10 @@ Hopping diffusion simulation was completed in 5000 iterations.
 </div>
 <img alt="plot tutorial" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_tutorial_005.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;sectors&#39;: {&#39;ModelBrownian&#39;: 1.0, &#39;not catergorized&#39;: 0.0}, &#39;average_params&#39;: {&#39;ModelBrownian&#39;: array([4.75078273e-13, 6.17045316e-09])}, &#39;t&#39;: array([0.000e+00, 1.000e-04, 2.000e-04, ..., 4.998e-01, 4.999e-01,
-       5.000e-01]), &#39;average_msd&#39;: {&#39;ModelBrownian&#39;: array([1.99233836e-16, 3.98392695e-16, 5.97818209e-16, ...,
-       4.07354356e-13, 4.07982988e-13, 4.07562817e-13])}, &#39;average_dapp&#39;: {&#39;ModelBrownian&#39;: array([7.47126886e-13, 5.97589042e-13, 5.60454571e-13, ...,
-       2.03853851e-13, 2.04127579e-13, 2.03876551e-13])}}
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;sectors&#39;: {&#39;ModelBrownian&#39;: 1.0, &#39;not catergorized&#39;: 0.0}, &#39;average_params&#39;: {&#39;ModelBrownian&#39;: array([9.59466456e-13, 8.59211594e-09])}, &#39;t&#39;: array([0.000e+00, 1.000e-04, 2.000e-04, ..., 4.998e-01, 4.999e-01,
+       5.000e-01]), &#39;average_msd&#39;: {&#39;ModelBrownian&#39;: array([3.98000808e-16, 7.97928163e-16, 1.19933472e-15, ...,
+       5.71529753e-13, 5.68989045e-13, 5.66451086e-13])}, &#39;average_dapp&#39;: {&#39;ModelBrownian&#39;: array([1.49250303e-12, 1.19689224e-12, 1.12437630e-12, ...,
+       2.86012754e-13, 2.84684312e-13, 2.83357777e-13])}}
 </pre></div>
 </div>
 <p>As mentioned before, we can retreive the analysis results for any track, at any time. Single tracks can be received with <code class="docutils literal notranslate"><span class="pre">ListOfTracks.get_track</span></code>.</p>
@@ -402,9 +402,9 @@ Hopping diffusion simulation was completed in 5000 iterations.
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;Dapp&#39;: array([7.35861012e-13, 5.91930957e-13, 5.52835157e-13, ...,
-       2.01092624e-13, 1.99371356e-13, 1.96076760e-13]), &#39;Dapp_err&#39;: array([1.02046774e-14, 8.36763787e-15, 7.75119156e-15, ...,
-       3.45015063e-15, 5.14406090e-15, 6.10438967e-15]), &#39;fit_indices&#39;: [0, 1, 3, 6, 11, 19, 31, 50, 80, 128, 204, 324], &#39;fit_results&#39;: {&#39;ModelBrownian&#39;: {&#39;params&#39;: array([5.57746145e-13, 4.29043137e-09]), &#39;errors&#39;: array([1.43381564e-14, 3.12179503e-10]), &#39;bic&#39;: -734.8417477603399, &#39;KSTestStat&#39;: 0.4166666666666667, &#39;KStestPValue&#39;: 0.2557751845677543, &#39;rel_likelihood&#39;: 1.0}, &#39;ModelConfined&#39;: {&#39;params&#39;: array([5.59813449e-13, 4.01929647e-09, 9.88204613e+03]), &#39;errors&#39;: array([1.51851435e-14, 3.38436029e-10, 5.01513832e-23]), &#39;bic&#39;: -731.9874021567224, &#39;KSTestStat&#39;: 0.5, &#39;KStestPValue&#39;: 0.09954677170991616, &#39;rel_likelihood&#39;: 0.23998645330186782}, &#39;ModelHop&#39;: {&#39;params&#39;: array([6.06485416e-13, 1.10023327e-10, 5.77398690e-10, 3.97021219e-09]), &#39;errors&#39;: array([2.83465148e-14, 1.86234846e-08, 6.40729148e-09, 5.16097786e-10]), &#39;bic&#39;: -720.0971746873506, &#39;KSTestStat&#39;: 0.75, &#39;KStestPValue&#39;: 0.0014969550573265746, &#39;rel_likelihood&#39;: 0.0006284296078188858}}, &#39;best_model&#39;: &#39;ModelBrownian&#39;}
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;Dapp&#39;: array([1.47172202e-12, 1.18386191e-12, 1.10567031e-12, ...,
+       4.02185247e-13, 3.98742713e-13, 3.92153520e-13]), &#39;Dapp_err&#39;: array([2.04093548e-14, 1.67352757e-14, 1.55023831e-14, ...,
+       6.90030126e-15, 1.02881218e-14, 1.22087793e-14]), &#39;fit_indices&#39;: [0, 1, 3, 6, 11, 19, 31, 50, 80, 128, 204, 324], &#39;fit_results&#39;: {&#39;ModelBrownian&#39;: {&#39;params&#39;: array([1.11549229e-12, 6.06766928e-09]), &#39;errors&#39;: array([2.86763128e-14, 5.42274823e-10]), &#39;bic&#39;: -718.2062930853527, &#39;KSTestStat&#39;: 0.4166666666666667, &#39;KStestPValue&#39;: 0.2557751845677543, &#39;rel_likelihood&#39;: 1.0}, &#39;ModelConfined&#39;: {&#39;params&#39;: array([1.13371557e-12, 4.11667377e-09, 1.07705067e+03]), &#39;errors&#39;: array([3.28883519e-14, 7.26820305e-10, 1.70752354e-22]), &#39;bic&#39;: -712.2246413215295, &#39;KSTestStat&#39;: 0.5833333333333334, &#39;KStestPValue&#39;: 0.031436056203858066, &#39;rel_likelihood&#39;: 0.05024592238455001}, &#39;ModelHop&#39;: {&#39;params&#39;: array([1.21229182e-12, 1.44110021e-10, 1.27047692e-09, 2.43791867e-09]), &#39;errors&#39;: array([5.64207943e-14, 6.02023570e-08, 1.17395405e-08, 3.55867609e-09]), &#39;bic&#39;: -703.576161682748, &#39;KSTestStat&#39;: 0.75, &#39;KStestPValue&#39;: 0.0014969550573265746, &#39;rel_likelihood&#39;: 0.0006654375915555967}}, &#39;best_model&#39;: &#39;ModelBrownian&#39;}
 </pre></div>
 </div>
 <p>We can also plot them:</p>
@@ -416,7 +416,7 @@ Hopping diffusion simulation was completed in 5000 iterations.
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ModelDB</span><span class="p">()</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  24.846 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  16.145 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example container" id="sphx-glr-download-auto-examples-plot-tutorial-py">
 <div class="sphx-glr-download sphx-glr-download-python container">
 <a class="reference download internal" download="" href="../_downloads/43d70eb4b9ed18f8f34451c0af07d6f1/plot_tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_tutorial.py</span></code></a></div>
