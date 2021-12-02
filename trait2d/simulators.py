@@ -185,8 +185,8 @@ class BrownianDiffusion(Diffusion):
         pbar = tqdm.tqdm(desc="Brownian Diffusion Simulation", total=int(self.Tmax / self.dt))
         while iteration * self.dt < self.Tmax and diffuse:
             # Update position and compartment
-            x0 = x + np.sqrt(self.d * self.dt) * np.random.randn()
-            y0 = y + np.sqrt(self.d * self.dt) * np.random.randn()
+            x0 = x + np.sqrt(2 * self.d * self.dt) * np.random.randn()
+            y0 = y + np.sqrt(2 * self.d * self.dt) * np.random.randn()
 
             # Outside of area, stop it here
             if not(0 <= x0 <= self.L) or not(0 <= y0 <= self.L):
