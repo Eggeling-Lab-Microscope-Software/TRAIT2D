@@ -70,6 +70,9 @@ class MainVisual(tk.Frame):
         
         self.img_resolution=1 # nm/pix
         self.frame_rate=1 # sec/frame
+        
+        self.start_frame=0
+        self.end_frame=0
 
         
         
@@ -203,12 +206,13 @@ class MainVisual(tk.Frame):
         self.button2.grid(row=16, column=1, columnspan=1,pady=5, padx=5)
 
 
-        # button to run the tracker and save image sequence with plotted trakectories (for visualisation)
-        self.button2 = tk.Button(text="    Run tracking    ", command=self.tracking, width=int(self.button_size/3), bg='gray')
-        self.button2.grid(row=14, column=2, columnspan=1, pady=5, padx=5)
         
         # test run
         self.button2 = tk.Button(text="  Test run  ", command=self.run_test, width=int(self.button_size/3), bg='gray')
+        self.button2.grid(row=14, column=2, columnspan=1, pady=5, padx=5)
+
+        # button to run the tracker and save image sequence with plotted trakectories (for visualisation)
+        self.button2 = tk.Button(text="    Run tracking    ", command=self.complete_tracking, width=int(self.button_size/3), bg='gray')
         self.button2.grid(row=15, column=2, columnspan=1, pady=5, padx=5)
 
         # button to save csv file
@@ -410,9 +414,80 @@ class MainVisual(tk.Frame):
     def run_test(self):
         '''
         run tracking for a selected frame range
+        '''  
+            
+        def action_cancel():
+            
+            try:
+                self.new_window.destroy()
+            except:
+                pass
+            
+        
+        def action_apply():
+            
+            
+            
+            try:
+                
+                # refine range
+                self.start_frame=int(self.txt_position_1.get())
+                    
+                self.end_frame=int(self.txt_position_2.get())  
+
+            except:
+                print("Could not identidy the frame number!")
+                
+            try: 
+
+                # run tracking
+                self.tracking()
+                action_cancel()
+            except:
+                pass
+            
+        # frame to ask for start and end frame of test tracking
+        self.new_window = tk.Toplevel(root, bg='white')
+        self.new_window.title(" Test run ")
+        self.new_window.geometry("+50+50")
+
+        text = tk.Label(master=self.new_window, text="Provide start and end frames for tracking test", bg='white')
+        text.grid(row=0, column=0, columnspan=2, pady=5, padx=5, sticky=tk.W)
+
+        lbpose = tk.Label(master=self.new_window, text=" start frame: ", bg='white')
+        lbpose.grid(row=1, column=0, pady=5, padx=5, sticky=tk.W)  
+        
+        self.txt_position_1 = tk.Entry(self.new_window, width=int(self.button_size/4))
+        self.txt_position_1.grid(row=1, column=1, pady=5, padx=5)                
+        
+
+        lbpose = tk.Label(master=self.new_window, text=" end frame: ", bg='white')
+        lbpose.grid(row=2, column=0, pady=5, padx=5, sticky=tk.W)  
+        
+        self.txt_position_2 = tk.Entry(self.new_window, width=int(self.button_size/4))
+        self.txt_position_2.grid(row=2, column=1, pady=5, padx=5)                
+        
+        self.buttonOK= tk.Button(master=self.new_window,text=" run ", command=action_apply)
+        self.buttonOK.grid(row=3, column=0, pady=5, padx=5)   
+        
+        self.button_cancel= tk.Button(master=self.new_window,text=" cancel ", command=action_cancel)
+        self.button_cancel.grid(row=3, column=1, pady=5, padx=5)     
+                
+
+               
+      
+    def complete_tracking(self):
+        '''
+        run tracking for the entire image sequence
         '''
         
-               
+        # define range
+        self.start_frame=0
+        self.end_frame=self.movie_processed.shape[0] 
+        
+        # run tracking
+        self.tracking()
+
         
 
     def preview(self):
@@ -509,7 +584,7 @@ class MainVisual(tk.Frame):
             track_data_framed={}
             track_data_framed.update({'frames':[]})
 
-            for n_frame in range(0, self.movie_processed.shape[0]):
+            for n_frame in range(self.start_frame, np.min((self.end_frame+1, self.movie_processed.shape[0]))):
 
 
                 frame_dict={}
@@ -538,15 +613,20 @@ class MainVisual(tk.Frame):
 
             track_data_framed=track_to_frame(tracks)
 
-            final_img_set = np.zeros((self.movie_processed.shape[0], self.movie_processed.shape[1], self.movie_processed.shape[2], 3))
+            movie_length=self.end_frame-self.start_frame+1
+            final_img_set = np.zeros((movie_length, self.movie_processed.shape[1], self.movie_processed.shape[2], 3))
+            
+            frame_pos=0
+            
+            for frameN in range(self.start_frame, np.min((self.end_frame+1, self.movie_processed.shape[0]))):
 
-            for frameN in range(0, self.movie_processed.shape[0]):
+                plot_info=track_data_framed['frames'][frame_pos]['tracks']
 
-                plot_info=track_data_framed['frames'][frameN]['tracks']
                 frame_img=self.movie_processed[frameN,:,:]
+
                 # Make a colour image frame
                 orig_frame = np.zeros((self.movie_processed.shape[1], self.movie_processed.shape[2], 3))
-
+                
                 orig_frame [:,:,0] = frame_img/np.max(frame_img)*256
                 orig_frame [:,:,1] = frame_img/np.max(frame_img)*256
                 orig_frame [:,:,2] = frame_img/np.max(frame_img)*256
@@ -568,21 +648,27 @@ class MainVisual(tk.Frame):
                             cv2.line(orig_frame, (int(x1), int(y1)), (int(x2), int(y2)),
                                      self.color_list[clr], 2)
 
-                # Display the resulting tracking frame
                 cv2.imshow('Tracking', orig_frame)
 
                 ################### to save #################
-                final_img_set[frameN,:,:,:]=orig_frame
+
+                final_img_set[frame_pos,:,:,:]=orig_frame
+
+                frame_pos+=1
+                
 
 
-                    # save results
+            # save results
 
             final_img_set=final_img_set/np.max(final_img_set)*255
             final_img_set=final_img_set.astype('uint8')
-            # skimage.io.imsave(save_file, final_img_set)
+            
             if not(save_file.endswith(".tif") or save_file.endswith(".tiff")):
                 save_file += ".tif"
+            print("saving to ", save_file)  
+            
             imageio.volwrite(save_file, final_img_set)
+            
             cv2.destroyAllWindows()
 
 
@@ -602,9 +688,9 @@ class MainVisual(tk.Frame):
 
         tracker = Tracker(self.max_dist, self.frame_gap,  0)
 
-
-        # frame to frame detection and linking loop
-        for frameN in range(0, self.movie_processed.shape[0]):
+        print(self.movie_processed.shape[0])
+        # frame to frame detection and linking loop 
+        for frameN in range(self.start_frame, np.min((self.end_frame+1, self.movie_processed.shape[0]))):
             print('frame', frameN)
             
             #detection
