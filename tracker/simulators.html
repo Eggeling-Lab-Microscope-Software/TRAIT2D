@@ -1,0 +1,353 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Simulation Library &mdash; trait2d 1.1-22-ga9fe684 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Exceptions" href="exceptions.html" />
+    <link rel="prev" title="Analysis Library" href="analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1-22-ga9fe684
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Simulation Library</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/tracker/sphinx/source/simulators.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-trait2d.simulators">
+<span id="simulation-library"></span><span id="simulators"></span><h1>Simulation Library<a class="headerlink" href="#module-trait2d.simulators" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="trait2d.simulators.BrownianDiffusion">
+<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">BrownianDiffusion</code><span class="sig-paren">(</span><em><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.BrownianDiffusion" title="Permalink to this definition">¶</a></dt>
+<dd><p>BrownianDiffusion Initialization</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Tmax</strong> (<em>float</em>) – Maximum simulation time (s)</li>
+<li><strong>dt</strong> (<em>float</em>) – Simulation time resolution (s)</li>
+<li><strong>L</strong> (<em>float</em>) – Simulation domain size (m)</li>
+<li><strong>dL</strong> (<em>float</em>) – Simulation spatial resolution (m)</li>
+<li><strong>d</strong> (<em>float</em>) – Diffusion coefficient (m^2/s)</li>
+<li><strong>seed</strong> (<em>int</em>) – Seed to initialize the random generator (for reproducibility)</li>
+<li><strong>quantize</strong> (<em>bool</em>) – Quantize the position to the simulation spatial resolution grid.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="trait2d.simulators.BrownianDiffusion.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.BrownianDiffusion.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a random walk simulation (Brownian diffusion)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.simulators.Diffusion">
+<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">Diffusion</code><span class="sig-paren">(</span><em><span class="n">Tmax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em><span class="n">dt</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em><span class="n">L</span><span class="o">=</span><span class="default_value">1</span></em>, <em><span class="n">dL</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em><span class="n">d</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em><span class="n">seed</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em><span class="n">quantize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract diffusion simulator</p>
+<p>The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables</p>
+<dl class="py method">
+<dt id="trait2d.simulators.Diffusion.display_trajectory">
+<code class="descname">display_trajectory</code><span class="sig-paren">(</span><em><span class="n">time_resolution</span><span class="o">=</span><span class="default_value">None</span></em>, <em><span class="n">limit_fov</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.8</span></em>, <em><span class="n">title</span><span class="o">=</span><span class="default_value">'Diffusion'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.display_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the simulated trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>time_resolution</strong> (<em>param</em>) – [s]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.simulators.Diffusion.load_parameters">
+<code class="descname">load_parameters</code><span class="sig-paren">(</span><em><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.load_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the simulation parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.simulators.Diffusion.print_parameters">
+<code class="descname">print_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.print_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the simulation parameters, accessible from self._gather_parameters()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.simulators.Diffusion.save_parameters">
+<code class="descname">save_parameters</code><span class="sig-paren">(</span><em><span class="n">filename</span></em>, <em><span class="n">mkdir</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.save_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the simulation parameters, accessible through _gather_parameter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.simulators.Diffusion.save_trajectory">
+<code class="descname">save_trajectory</code><span class="sig-paren">(</span><em><span class="n">filename</span></em>, <em><span class="n">format</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.save_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the simulated trajectory as either a json, cvs or pcl file with fiels t, x, and y</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="trait2d.simulators.HoppingDiffusion">
+<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">HoppingDiffusion</code><span class="sig-paren">(</span><em><span class="n">Tmax</span><span class="o">=</span><span class="default_value">100</span></em>, <em><span class="n">dt</span><span class="o">=</span><span class="default_value">5e-05</span></em>, <em><span class="n">L</span><span class="o">=</span><span class="default_value">1e-05</span></em>, <em><span class="n">dL</span><span class="o">=</span><span class="default_value">2e-08</span></em>, <em><span class="n">Df</span><span class="o">=</span><span class="default_value">8e-13</span></em>, <em><span class="n">HL</span><span class="o">=</span><span class="default_value">4e-08</span></em>, <em><span class="n">HP</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em><span class="n">seed</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em><span class="n">quantize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.HoppingDiffusion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulates a hopping diffusion trajectory of a single molecule for a
+hopping diffusion model (i.e. free diffusion inside of compartments but
+changing from one compartment to the next only with a certain probability)</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simulator</span> <span class="o">=</span> <span class="n">hopping_trajectories</span><span class="p">(</span><span class="n">Tmax</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">Df</span><span class="p">,</span> <span class="n">HL</span><span class="p">,</span> <span class="n">HP</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Authors</strong>:</p>
+<div class="line-block">
+<div class="line">Jan Keller-Findeisen (<a class="reference external" href="mailto:jkeller1&#37;&#52;&#48;gwdg&#46;de">jkeller1<span>&#64;</span>gwdg<span>&#46;</span>de</a>)</div>
+<div class="line">Department of NanoBiophotonics</div>
+<div class="line">Max Planck Institute of Biophysical Chemistry</div>
+<div class="line">Am Fassberg 11, 3077 Goettingen, Germany</div>
+</div>
+<p>Converted to Python by Joel Lefebvre</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Tmax</strong> (<em>float</em>) – Maximal total length [s]</li>
+<li><strong>dt</strong> (<em>float</em>) – Time step [s]</li>
+<li><strong>L</strong> (<em>float</em>) – Sandbox length [m]</li>
+<li><strong>dL</strong> (<em>float</em>) – Compartment map pixel size [m]</li>
+<li><strong>Df</strong> (<em>float</em>) – Free diffusion coefficient [m^2/s]</li>
+<li><strong>HL</strong> (<em>float</em>) – Average compartment diameter/length [m]</li>
+<li><strong>HP</strong> (<em>float</em>) – Hopping probability [0-1]</li>
+<li><strong>seed</strong> (<em>float</em>) – Random generator seed (nonnegative integer)</li>
+<li><strong>quantize</strong> (<em>bool</em>) – Quantize the position to the simulation spatial resolution grid.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="exceptions.html" class="btn btn-neutral float-right" title="Exceptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="analysis.html" class="btn btn-neutral float-left" title="Analysis Library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
