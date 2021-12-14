@@ -749,6 +749,7 @@ class Track:
 
         self._msd = None
         self._msd_error = None
+        self._msd_SEM = None
 
         self._msd_analysis_results = None
         self._adc_analysis_results = None
@@ -1009,6 +1010,10 @@ class Track:
     def get_msd_error(self):
         """Returns the MSD error values of the track."""
         return self._msd_error
+    
+    def get_msd_SEM(self):
+        """Returns the MSD SEM of the track."""
+        return self._msd_SEM
 
     def normalized(self, normalize_t = True, normalize_xy = True):
         """Normalize the track.
@@ -1051,21 +1056,31 @@ class Track:
     def calculate_msd(self):
         
         """Calculates the track's mean squared displacement (msd) and stores it in 'track' object. Also deletes temporary values and colelcts them.
+           Furthermore, calculates the standard deviation per point of the MSD array (msd_error) and the standard error of the mean (SEM) [legacy version].
         """
         
         import gc
-        
+                
         N = len(self._x)
         col_Array  = np.zeros(N-3)
+        Err_col_Array = np.zeros(N-3)
 
         data_tmp = np.column_stack((self._x, self._y))
     
         for i in tqdm.tqdm(range(1,N-2)):
-            col_Array[i-1] = (np.mean(np.sum(np.abs((data_tmp[1+i:N,:] - data_tmp[1:N - i,:]) ** 2), axis=1)))
+            calc_tmp = np.sum(np.abs((data_tmp[1+i:N,:] - data_tmp[1:N - i,:]) ** 2), axis=1)
+            col_Array[i-1] = np.mean(calc_tmp)
+            Err_col_Array[i-1] = np.std(calc_tmp)
+            
+            del calc_tmp
 
-        self._msd = col_Array
+        d = np.arange(self._x.shape[0] - 1, 2, -1)
+
+        self._msd = col_Array                       #store MSD
+        self._msd_error = Err_col_Array             #store stdev of MSD
+        self._msd_SEM = Err_col_Array/(np.sqrt(d))  #calculate and store SEM of MSD
         
-        del col_Array, data_tmp, N
+        del col_Array, Err_col_Array, data_tmp, N, d
         
         gc.collect()
 
