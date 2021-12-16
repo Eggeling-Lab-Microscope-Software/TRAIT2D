@@ -1,0 +1,9 @@
+SEF:sigma,3.0
+SEF:threshold,3.0
+SEF:min peak value,0.01
+Patch size,10
+Linking:max distance,10.0
+Linking:frame gap,15.0
+Min track length,10.0
+Resolution,0.0318
+frame rate,0.01
