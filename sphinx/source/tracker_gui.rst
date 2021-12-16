@@ -15,6 +15,7 @@ Description of the GUI
 
 .. image:: images/tracker_gui.png
 
+
 1. **Select movie file**: Select and load an image sequence.
 2. **Run pre-processing step**: Run pre-processing for the entire image sequence (description of the pre-processing steps is provided in the paper and documentation)
 3. **SEF: sigma**: Set parameter for the Laplacian-of-Gaussian in the Sport Enhancing Filter (SEF)
@@ -33,9 +34,12 @@ Description of the GUI
     b. Light spot
 
 13. **Preview**: Preview detection results for the current frame.
-14. **Run tracking algorithm**: Run tracking algorithm and save an image sequence with highlighted trajectories. Close the "save as" window without providing any name if you don't want to save the file.
-15. **Save data**: Save all trajectories into a `.csv` file.
-16. **Preview and navigate through the image sequence**
+14. **Test run**: Run linking for a select range of frames.
+15. **Save parameters**: Save set parameters in csv file.
+16. **Run tracking algorithm**: Run tracking algorithm and save an image sequence with highlighted trajectories. Close the "save as" window without providing any name if you don't want to save the file.
+17. **Load parameters**: Load parameters from a csv file.
+18. **Save data**: Save all trajectories into a `.csv` file.
+19. **Preview and navigate through the image sequence**
 
     a. Preview window
 
