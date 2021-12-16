@@ -613,7 +613,7 @@ class MainVisual(tk.Frame):
 
             track_data_framed=track_to_frame(tracks)
 
-            movie_length=self.end_frame-self.start_frame+1
+            movie_length=np.min((self.end_frame-self.start_frame+1, self.movie_processed.shape[0]))
             final_img_set = np.zeros((movie_length, self.movie_processed.shape[1], self.movie_processed.shape[2], 3))
             
             frame_pos=0
