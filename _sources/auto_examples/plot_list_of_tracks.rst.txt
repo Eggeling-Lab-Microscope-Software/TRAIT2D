@@ -62,7 +62,7 @@ The representation of the ``ListOfTracks`` instance holds some information about
  .. code-block:: none
 
 
-    <ListOfTracks instance at 140334223364496>
+    <ListOfTracks instance at 139788986077584>
     Number of tracks: 3
 
 
@@ -1322,7 +1322,7 @@ It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to r
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.187 seconds)
+   **Total running time of the script:** ( 0 minutes  1.154 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_list_of_tracks.py:
