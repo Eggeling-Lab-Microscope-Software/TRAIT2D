@@ -12,6 +12,12 @@ TRAIT2D (available as `trait2d`) is a cross-platform Python software package wit
 
 The documentation is available at [GitHub Pages](https://eggeling-lab-microscope-software.github.io/TRAIT2D/).
 
+Further information on the tool, together with more extensive theoretical foundations, is available on the related [F1000Research Article](https://f1000research.com/articles/10-838).
+
+## Citing Information 
+
+Reina F, Wigg JMA, Dmitrieva M et al. TRAIT2D: a Software for Quantitative Analysis of Single Particle Diffusion Data \[version 1; peer review: 1 approved, 1 approved with reservations\]. F1000Research 2021, 10:838 \(https://doi.org/10.12688/f1000research.54788.1\)
+
 ## Features
 
 * SPT simulation, tracking and analysis
