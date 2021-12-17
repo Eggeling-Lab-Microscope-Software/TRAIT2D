@@ -238,7 +238,7 @@ Analysis results like the calculated values for :math:`D_{app}`, fit parameters 
 
  .. code-block:: none
 
-    {'ModelBrownian': {'params': array([1.07084193e-12, 4.80953517e-09]), 'errors': array([1.59603245e-15, 2.11644113e-10]), 'bic': -30815.618811150267, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.07098883e-12, 4.80181028e-09, 9.88625484e+01]), 'errors': array([1.59804730e-15, 2.12016831e-10, 2.53197194e-23]), 'bic': -30809.386307949746, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 0.0443229977414216}, 'ModelHop': {'params': array([1.07083900e-12, 2.28983335e-25, 4.81525068e-09, 1.22761905e-07]), 'errors': array([1.69174292e-15, 1.84762101e-10, 1.40540672e-09, 4.07808768e-25]), 'bic': -30803.293478700667, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 0.0021066290307529562}}
+    {'ModelBrownian': {'params': array([1.07084193e-12, 4.80953517e-09]), 'errors': array([1.59603245e-15, 2.11644113e-10]), 'bic': -30815.618811150267, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.07098883e-12, 4.80194904e-09, 9.88584102e+01]), 'errors': array([1.59804731e-15, 2.12014431e-10, 7.88054465e-24]), 'bic': -30809.388840549294, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 0.044379159494757216}, 'ModelHop': {'params': array([1.07083900e-12, 2.28983335e-25, 4.81525068e-09, 1.22761905e-07]), 'errors': array([1.69174292e-15, 1.84762101e-10, 1.40540672e-09, 4.07808768e-25]), 'bic': -30803.293478700667, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 0.0021066290307529562}}
     ModelBrownian
 
 
@@ -393,14 +393,14 @@ Enabling logarithmic sampling is a good idea since the time axis will be scaled 
  .. code-block:: none
 
 
-    {'sectors': {'ModelBrownian': 0.4, 'ModelHop': 0.15, 'ModelConfined': 0.2, 'not catergorized': 0.25}, 'average_params': {'ModelBrownian': array([9.37529631e-13, 8.91526922e-09]), 'ModelHop': array([7.73710327e-13, 3.64206361e-09, 3.06569235e-09, 1.31688047e-08]), 'ModelConfined': array([7.21523804e-13, 8.08796360e-09, 3.60363681e-02])}, 't': array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
-           4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), 'average_msd': {'ModelBrownian': array([3.98993344e-16, 7.98661745e-16, 1.19890881e-15, ...,
-           7.16782059e-13, 7.17794784e-13, 7.17252705e-13]), 'ModelHop': array([3.42432536e-16, 6.77574501e-16, 1.01087098e-15, ...,
-           3.54477807e-12, 3.52828705e-12, 3.51251321e-12]), 'ModelConfined': array([3.14608341e-16, 6.24843818e-16, 9.27811272e-16, ...,
-           7.98414943e-13, 7.99043729e-13, 7.94015121e-13])}, 'average_dapp': {'ModelBrownian': array([1.49622504e-12, 1.19785773e-12, 1.12381326e-12, ...,
-           3.58701976e-13, 3.59136874e-13, 3.58793833e-13]), 'ModelHop': array([1.28396458e-12, 1.01619318e-12, 9.47522387e-13, ...,
-           1.77392677e-12, 1.76532067e-12, 1.75707676e-12]), 'ModelConfined': array([1.17954532e-12, 9.37078274e-13, 8.69649103e-13, ...,
-           3.99553821e-13, 3.99788444e-13, 3.97192954e-13])}}
+    {'sectors': {'ModelBrownian': 0.15, 'ModelHop': 0.15, 'ModelConfined': 0.45, 'not catergorized': 0.25}, 'average_params': {'ModelBrownian': array([9.36663428e-13, 7.54037932e-09]), 'ModelHop': array([7.73710327e-13, 3.64206361e-09, 3.06569235e-09, 1.31688047e-08]), 'ModelConfined': array([9.09198271e-13, 8.13932216e-09, 4.82608904e-02])}, 't': array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
+           4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), 'average_msd': {'ModelBrownian': array([3.67828789e-16, 7.36058851e-16, 1.10582505e-15, ...,
+           9.47681562e-13, 9.47176891e-13, 9.41923660e-13]), 'ModelHop': array([3.42432536e-16, 6.77574501e-16, 1.01087098e-15, ...,
+           3.54477807e-12, 3.52828705e-12, 3.51251321e-12]), 'ModelConfined': array([3.71877083e-16, 7.42276964e-16, 1.10944893e-15, ...,
+           6.76096840e-13, 6.77444724e-13, 6.76479016e-13])}, 'average_dapp': {'ModelBrownian': array([1.37928026e-12, 1.10393686e-12, 1.03654380e-12, ...,
+           4.74251886e-13, 4.73904449e-13, 4.71181763e-13]), 'ModelHop': array([1.28396458e-12, 1.01619318e-12, 9.47522387e-13, ...,
+           1.77392677e-12, 1.76532067e-12, 1.75707676e-12]), 'ModelConfined': array([1.39446009e-12, 1.11326271e-12, 1.03994124e-12, ...,
+           3.38341715e-13, 3.38948380e-13, 3.38397466e-13])}}
 
 
 
@@ -428,10 +428,10 @@ Now that analysis is done we can also retrieve all tracks that fit a certain dif
  .. code-block:: none
 
 
-    {'sectors': {'ModelBrownian': 1.0, 'not catergorized': 0.0}, 'average_params': {'ModelBrownian': array([9.37529631e-13, 8.91526922e-09])}, 't': array([0.000e+00, 1.000e-04, 2.000e-04, ..., 4.998e-01, 4.999e-01,
-           5.000e-01]), 'average_msd': {'ModelBrownian': array([3.98993344e-16, 7.98581696e-16, 1.19874799e-15, ...,
-           7.16780740e-13, 7.17795596e-13, 7.17252379e-13])}, 'average_dapp': {'ModelBrownian': array([1.49622504e-12, 1.19787254e-12, 1.12382624e-12, ...,
-           3.58701244e-13, 3.59137223e-13, 3.58793627e-13])}}
+    {'sectors': {'ModelBrownian': 1.0, 'not catergorized': 0.0}, 'average_params': {'ModelBrownian': array([9.36663428e-13, 7.54037932e-09])}, 't': array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
+           4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), 'average_msd': {'ModelBrownian': array([3.67828789e-16, 7.36058851e-16, 1.10582505e-15, ...,
+           9.47681562e-13, 9.47176891e-13, 9.41923660e-13])}, 'average_dapp': {'ModelBrownian': array([1.37928026e-12, 1.10393686e-12, 1.03654380e-12, ...,
+           4.74251886e-13, 4.73904449e-13, 4.71181763e-13])}}
 
 
 
@@ -456,7 +456,7 @@ As mentioned before, we can retreive the analysis results for any track, at any 
 
     {'Dapp': array([1.47172202e-12, 1.18386191e-12, 1.10567031e-12, ...,
            4.02185247e-13, 3.98742713e-13, 3.92153520e-13]), 'Dapp_err': array([2.04093548e-14, 1.67352757e-14, 1.55023831e-14, ...,
-           6.90030126e-15, 1.02881218e-14, 1.22087793e-14]), 'fit_indices': [0, 1, 3, 6, 11, 19, 31, 50, 80, 128, 204, 324], 'fit_results': {'ModelBrownian': {'params': array([1.11549229e-12, 6.06766928e-09]), 'errors': array([2.86763128e-14, 5.42274823e-10]), 'bic': -718.2062930853527, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.11549569e-12, 6.06777899e-09, 1.28214275e+03]), 'errors': array([3.02289520e-14, 5.71629381e-10, 8.89301425e-23]), 'bic': -715.7204488901913, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 0.28853984328928833}, 'ModelHop': {'params': array([1.21229182e-12, 1.44110020e-10, 1.27047692e-09, 2.43791867e-09]), 'errors': array([5.64207943e-14, 6.02023571e-08, 1.17395405e-08, 3.55867610e-09]), 'bic': -703.5761616826592, 'KSTestStat': 0.75, 'KStestPValue': 0.0014969550573265746, 'rel_likelihood': 0.0006654375915260548}}, 'best_model': 'ModelBrownian'}
+           6.90030126e-15, 1.02881218e-14, 1.22087793e-14]), 'fit_indices': [0, 1, 3, 6, 11, 19, 31, 50, 80, 128, 204, 324], 'fit_results': {'ModelBrownian': {'params': array([1.11549229e-12, 6.06766928e-09]), 'errors': array([2.86763128e-14, 5.42274823e-10]), 'bic': -718.2062930853527, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.11553826e-12, 6.06685967e-09, 9.48482172e+01]), 'errors': array([3.02472818e-14, 5.71995845e-10, 9.89327892e-23]), 'bic': -715.7065743483263, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 0.28654509128900624}, 'ModelHop': {'params': array([1.21229182e-12, 1.44110020e-10, 1.27047692e-09, 2.43791867e-09]), 'errors': array([5.64207943e-14, 6.02023571e-08, 1.17395405e-08, 3.55867610e-09]), 'bic': -703.576161682656, 'KSTestStat': 0.75, 'KStestPValue': 0.0014969550573265746, 'rel_likelihood': 0.0006654375915249957}}, 'best_model': 'ModelBrownian'}
 
 
 
@@ -495,7 +495,7 @@ It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to r
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  25.948 seconds)
+   **Total running time of the script:** ( 0 minutes  19.544 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_tutorial.py:
