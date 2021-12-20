@@ -412,6 +412,7 @@ class HoppingDiffusion(Diffusion):
 # Moving Acquisition simulation
 class movie_simulator(object):
     """Generate a syntetic iscat movie from a set of tracks.
+
     **Syntax**:
 
     .. code-block:: python
@@ -419,7 +420,8 @@ class movie_simulator(object):
         movie_simulator = iscat_movie(tracks)
         movie_simulator.run()
 
-    **Author(s)**:
+    **Authors**:
+
     | Joël Lefebvre (lefebvre.joel@uqam.ca)
     | Department of Computer Sciences
     | Université du Québec a Montréal (UQAM)
@@ -434,8 +436,8 @@ class movie_simulator(object):
         Spatial resolution [m/px]
     dt : float
         Temporal resolution  [frame/sec]
-    snr : float
-        Signal to noise ratio
+    contrast : float
+        Contrast between the simulated particle and the background (Contrast = particle intensity - background intensity)
     background : float
         Background intensity between 0 and 1
     noise_gaussian : float
@@ -455,11 +457,11 @@ class movie_simulator(object):
     # TODO: link tqdm with logging
     # TODO: Create a python wrapper for the ImageJ plugin 'DeconvolutionLab2' to generate PSF in the script?
     # TODO: Background noise with different statistics (similar to transcient particles)
-    def __init__(self, tracks=None, resolution=1.0, dt=1, snr=25, background=0.3,
+    def __init__(self, tracks=None, resolution=1.0, dt=1, contrast=5, background=0.3,
                  noise_gaussian=0.15, noise_poisson=True, ratio="square"):
         # Prepare the simulator
         self.resolution = resolution
-        self.snr = snr  # Signal to noise ratio
+        self.contrast = contrast  # Contrast between the simulated particle and the background
         self.background = background  # Background intensity
         self.noise_gaussian = noise_gaussian  # Gaussian noise variance
         self.noise_poisson = noise_poisson  # Poisson noise variance
@@ -519,6 +521,7 @@ class movie_simulator(object):
 
     def run(self, reinitialize=False):
         """Run the movie simulation
+
         Parameters
         ----------
         reinitialize: bool
@@ -544,10 +547,10 @@ class movie_simulator(object):
             if isinstance(mx, list):
                 for x, y, t in zip(mx, my, mt):
                     if (0 <= mx < self.nx) and (0 <= my < self.ny):
-                        movie[t, x, y] = movie[t, x, y] + (1 + self.snr) * self.background
+                        movie[t, x, y] += self.contrast
             else:
                 if (0 <= mx < self.nx) and (0 <= my < self.ny):
-                    movie[mt, mx, my] = movie[mt, mx, my] + (1 + self.snr) * self.background
+                    movie[mt, mx, my] += self.contrast
 
         # Convolve by PSF if provided
         if hasattr(self, "psf_2d"):
@@ -572,6 +575,7 @@ class movie_simulator(object):
 
     def save(self, filename):
         """Save the simulated movie.
+
         Parameters
         ----------
         filename : str
@@ -641,10 +645,12 @@ class movie_simulator(object):
 
     def load_psf(self, filename):
         """Load a Point-Spread Function (PSF) from a file
+
         Parameters
         ----------
         filename: str
             Input volume filename. Must be a volume format supported by `imageio.volwrite`
+
         Note
         ----
         Only the middle slice along the first dimension will be used
