@@ -67,7 +67,7 @@ class MainVisual(tk.Frame):
         # image generation
         self.resolution = 1e-7
         self.dt_image = 5e-3
-        self.snr = 25
+        self.contrast = 5
         self.background = 0.3
         self.noise_gaussian = 0.15
         self.noise_poisson = True
@@ -79,7 +79,7 @@ class MainVisual(tk.Frame):
         
         # image generator
         self.IG = movie_simulator(tracks=None, resolution=self.resolution, dt=self.dt_image,
-                                  snr=self.snr, background=self.background,
+                                  contrast=self.contrast, background=self.background,
                                   noise_gaussian=self.noise_gaussian,
                                   noise_poisson=self.noise_poisson, ratio=self.ratio)
         
@@ -242,12 +242,12 @@ class MainVisual(tk.Frame):
         self.param_resolution = tk.Entry(root, width=int(self.button_size/4), text=v)
         self.param_resolution.grid(row=25, column=3, columnspan=6)
 
-        lbl4 = tk.Label(master=root, text=" Signal to noise ratio [snr, ratio]",
+        lbl4 = tk.Label(master=root, text="Contrast [contrast, float>0]",
                         width=self.button_size, bg='gray', compound=tk.LEFT)
         lbl4.grid(row=26, column=1, columnspan=2)
-        v = tk.StringVar(root, value=str(self.snr))
-        self.param_snr = tk.Entry(root, width=int(self.button_size/4), text=v)
-        self.param_snr.grid(row=26, column=3, columnspan=6)
+        v = tk.StringVar(root, value=str(self.contrast))
+        self.param_contrast = tk.Entry(root, width=int(self.button_size/4), text=v)
+        self.param_contrast.grid(row=26, column=3, columnspan=6)
 
         lbl5 = tk.Label(master=root, text=" Background intensity [background, [0,1]]",
                         width=self.button_size, bg='gray', compound=tk.LEFT)
@@ -414,8 +414,8 @@ class MainVisual(tk.Frame):
         if self.param_dt_image.get()!='':
             self.dt_image=float(self.param_dt_image.get())
 
-        if self.param_snr.get()!='':
-            self.snr=float(self.param_snr.get())
+        if self.param_contrast.get()!='':
+            self.contrast=float(self.param_contrast.get())
 
         if self.param_background.get()!='':
             self.background=float(self.param_background.get())
@@ -459,7 +459,7 @@ class MainVisual(tk.Frame):
         self.IG.tracks=self.trajectory
         self.IG.resolution=self.resolution
         self.IG.dt=self.dt_image
-        self.IG.snr=self.snr
+        self.IG.contrast=self.contrast
         self.IG.background=self.background
         self.IG.noise_gaussian=self.noise_gaussian
         self.IG.noise_poisson=self.noise_poisson
