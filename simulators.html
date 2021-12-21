@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Simulation Library &mdash; trait2d 1.1-46-gdf612a2 documentation</title>
+  <title>Simulation Library &mdash; trait2d 1.1-50-g048edc3 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.1-46-gdf612a2
+                1.1-50-g048edc3
               </div>
             
           
@@ -213,8 +213,14 @@
 <dd><p>Abstract diffusion simulator</p>
 <p>The methods to modify after inherition are: self.run, and te self.params_list, and assign the input variables</p>
 <dl class="py method">
-<dt id="trait2d.simulators.Diffusion.display_trajectory">
-<code class="descname">display_trajectory</code><span class="sig-paren">(</span><em><span class="n">time_resolution</span><span class="o">=</span><span class="default_value">None</span></em>, <em><span class="n">limit_fov</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.8</span></em>, <em><span class="n">title</span><span class="o">=</span><span class="default_value">'Diffusion'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.display_trajectory" title="Permalink to this definition">¶</a></dt>
+<dt id="trait2d.simulators.Diffusion.load_parameters">
+<code class="descname">load_parameters</code><span class="sig-paren">(</span><em><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.load_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the simulation parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="trait2d.simulators.Diffusion.plot_trajectory">
+<code class="descname">plot_trajectory</code><span class="sig-paren">(</span><em><span class="n">time_resolution</span><span class="o">=</span><span class="default_value">None</span></em>, <em><span class="n">limit_fov</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.8</span></em>, <em><span class="n">title</span><span class="o">=</span><span class="default_value">'Diffusion'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.plot_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display the simulated trajectory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -224,12 +230,6 @@
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="py method">
-<dt id="trait2d.simulators.Diffusion.load_parameters">
-<code class="descname">load_parameters</code><span class="sig-paren">(</span><em><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.Diffusion.load_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the simulation parameters</p>
 </dd></dl>
 
 <dl class="py method">

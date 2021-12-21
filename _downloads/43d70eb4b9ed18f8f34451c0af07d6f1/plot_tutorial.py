@@ -67,8 +67,8 @@ simulator_hop.run();
 # %%
 # The simulated trajectoies can be plotted:
 
-simulator_brownian.display_trajectory()
-simulator_hop.display_trajectory()
+simulator_brownian.plot_trajectory()
+simulator_hop.plot_trajectory()
 
 # %%
 # It is also possible to export the simulated tracks as videos using the ``trait2d.simulators.iscat_movie`` class. Currently, the tracks need first to be saved e.g. as a ``.csv`` using ``BrownianDiffusion.save()`` (or any other Diffusion model) and then load them again using ``iscat_movie.load_tracks()``. You also need to load a PSF with ``iscat_movie.load_psf()``.

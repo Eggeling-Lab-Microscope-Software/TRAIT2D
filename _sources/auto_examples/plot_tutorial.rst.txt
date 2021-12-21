@@ -127,8 +127,8 @@ The simulated trajectoies can be plotted:
 .. code-block:: default
 
 
-    simulator_brownian.display_trajectory()
-    simulator_hop.display_trajectory()
+    simulator_brownian.plot_trajectory()
+    simulator_hop.plot_trajectory()
 
 
 
@@ -238,7 +238,7 @@ Analysis results like the calculated values for :math:`D_{app}`, fit parameters 
 
  .. code-block:: none
 
-    {'ModelBrownian': {'params': array([1.07084193e-12, 4.80953517e-09]), 'errors': array([1.59603245e-15, 2.11644113e-10]), 'bic': -30815.618811150267, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.07098883e-12, 4.80194904e-09, 9.88584102e+01]), 'errors': array([1.59804731e-15, 2.12014431e-10, 7.88054465e-24]), 'bic': -30809.388840549294, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 0.044379159494757216}, 'ModelHop': {'params': array([1.07083900e-12, 2.28983335e-25, 4.81525068e-09, 1.22761905e-07]), 'errors': array([1.69174292e-15, 1.84762101e-10, 1.40540672e-09, 4.07808768e-25]), 'bic': -30803.293478700667, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 0.0021066290307529562}}
+    {'ModelBrownian': {'params': array([1.07105773e-12, 4.80247510e-09]), 'errors': array([1.56731649e-15, 2.13640549e-10]), 'bic': -30815.35406965663, 'KSTestStat': 0.4899598393574297, 'KStestPValue': 1.360060612689e-54, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.07141480e-12, 4.78333310e-09, 4.13300557e+01]), 'errors': array([1.56980439e-15, 2.14245475e-10, 6.23570010e-23]), 'bic': -30809.082252635333, 'KSTestStat': 0.4879518072289157, 'KStestPValue': 3.9575097043734827e-54, 'rel_likelihood': 0.04346025178646191}, 'ModelHop': {'params': array([1.07216411e-12, 5.41041970e-15, 2.48834294e-09, 8.62057810e-08]), 'errors': array([1.67695715e-15, 2.67932474e-10, 1.76694922e-09, 1.68158893e-17]), 'bic': -30759.82902986644, 'KSTestStat': 0.5, 'KStestPValue': 6.022118832188125e-57, 'rel_likelihood': 8.767803455395955e-13}}
     ModelBrownian
 
 
@@ -350,10 +350,10 @@ Enabling logarithmic sampling is a good idea since the time axis will be scaled 
 
  .. code-block:: none
 
-    /home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/__init__.py:346: UserWarning: ADC analysis failed for 5/20 tracks. Consider raising the maximum function evaluations using the maxfev keyword argument. To get a more detailed stacktrace, run the ADC analysis for a single track.
+    /home/runner/work/TRAIT2D/TRAIT2D/trait2d/analysis/__init__.py:346: UserWarning: ADC analysis failed for 9/20 tracks. Consider raising the maximum function evaluations using the maxfev keyword argument. To get a more detailed stacktrace, run the ADC analysis for a single track.
       warnings.warn("ADC analysis failed for {}/{} tracks. "
 
-    [5, 11, 15, 18, 19]
+    [1, 3, 5, 8, 9, 11, 13, 17, 18]
 
 
 
@@ -393,14 +393,12 @@ Enabling logarithmic sampling is a good idea since the time axis will be scaled 
  .. code-block:: none
 
 
-    {'sectors': {'ModelBrownian': 0.15, 'ModelHop': 0.15, 'ModelConfined': 0.45, 'not catergorized': 0.25}, 'average_params': {'ModelBrownian': array([9.36663428e-13, 7.54037932e-09]), 'ModelHop': array([7.73710327e-13, 3.64206361e-09, 3.06569235e-09, 1.31688047e-08]), 'ModelConfined': array([9.09198271e-13, 8.13932216e-09, 4.82608904e-02])}, 't': array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
-           4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), 'average_msd': {'ModelBrownian': array([3.67828789e-16, 7.36058851e-16, 1.10582505e-15, ...,
-           9.47681562e-13, 9.47176891e-13, 9.41923660e-13]), 'ModelHop': array([3.42432536e-16, 6.77574501e-16, 1.01087098e-15, ...,
-           3.54477807e-12, 3.52828705e-12, 3.51251321e-12]), 'ModelConfined': array([3.71877083e-16, 7.42276964e-16, 1.10944893e-15, ...,
-           6.76096840e-13, 6.77444724e-13, 6.76479016e-13])}, 'average_dapp': {'ModelBrownian': array([1.37928026e-12, 1.10393686e-12, 1.03654380e-12, ...,
-           4.74251886e-13, 4.73904449e-13, 4.71181763e-13]), 'ModelHop': array([1.28396458e-12, 1.01619318e-12, 9.47522387e-13, ...,
-           1.77392677e-12, 1.76532067e-12, 1.75707676e-12]), 'ModelConfined': array([1.39446009e-12, 1.11326271e-12, 1.03994124e-12, ...,
-           3.38341715e-13, 3.38948380e-13, 3.38397466e-13])}}
+    {'sectors': {'ModelBrownian': 0.1, 'ModelConfined': 0.45, 'not catergorized': 0.45}, 'average_params': {'ModelBrownian': array([1.05499885e-12, 7.14578703e-09]), 'ModelConfined': array([9.14812471e-13, 8.03570298e-09, 5.90506256e-02])}, 't': array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
+           4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), 'average_msd': {'ModelBrownian': array([3.96373023e-16, 7.95066916e-16, 1.19492629e-15, ...,
+           4.08705493e-13, 3.99126512e-13, 3.91128294e-13]), 'ModelConfined': array([3.71496012e-16, 7.42098838e-16, 1.11054343e-15, ...,
+           9.45356022e-13, 9.48180224e-13, 9.46056761e-13])}, 'average_dapp': {'ModelBrownian': array([1.48639884e-12, 1.19246594e-12, 1.12007961e-12, ...,
+           2.04530048e-13, 1.99696420e-13, 1.95655477e-13]), 'ModelConfined': array([1.39303137e-12, 1.11299559e-12, 1.04096712e-12, ...,
+           4.73088110e-13, 4.74406453e-13, 4.73249281e-13])}}
 
 
 
@@ -428,10 +426,10 @@ Now that analysis is done we can also retrieve all tracks that fit a certain dif
  .. code-block:: none
 
 
-    {'sectors': {'ModelBrownian': 1.0, 'not catergorized': 0.0}, 'average_params': {'ModelBrownian': array([9.36663428e-13, 7.54037932e-09])}, 't': array([0.00000000e+00, 1.00020004e-04, 2.00040008e-04, ...,
-           4.99799960e-01, 4.99899980e-01, 5.00000000e-01]), 'average_msd': {'ModelBrownian': array([3.67828789e-16, 7.36058851e-16, 1.10582505e-15, ...,
-           9.47681562e-13, 9.47176891e-13, 9.41923660e-13])}, 'average_dapp': {'ModelBrownian': array([1.37928026e-12, 1.10393686e-12, 1.03654380e-12, ...,
-           4.74251886e-13, 4.73904449e-13, 4.71181763e-13])}}
+    {'sectors': {'ModelBrownian': 1.0, 'not catergorized': 0.0}, 'average_params': {'ModelBrownian': array([1.05499885e-12, 7.14578703e-09])}, 't': array([0.000e+00, 1.000e-04, 2.000e-04, ..., 4.998e-01, 4.999e-01,
+           5.000e-01]), 'average_msd': {'ModelBrownian': array([3.96373023e-16, 7.94986945e-16, 1.19476372e-15, ...,
+           4.08696882e-13, 3.99118848e-13, 3.91123496e-13])}, 'average_dapp': {'ModelBrownian': array([1.48639884e-12, 1.19248042e-12, 1.12009099e-12, ...,
+           2.04525696e-13, 1.99692552e-13, 1.95653053e-13])}}
 
 
 
@@ -454,9 +452,9 @@ As mentioned before, we can retreive the analysis results for any track, at any 
  .. code-block:: none
 
 
-    {'Dapp': array([1.47172202e-12, 1.18386191e-12, 1.10567031e-12, ...,
-           4.02185247e-13, 3.98742713e-13, 3.92153520e-13]), 'Dapp_err': array([2.04093548e-14, 1.67352757e-14, 1.55023831e-14, ...,
-           6.90030126e-15, 1.02881218e-14, 1.22087793e-14]), 'fit_indices': [0, 1, 3, 6, 11, 19, 31, 50, 80, 128, 204, 324], 'fit_results': {'ModelBrownian': {'params': array([1.11549229e-12, 6.06766928e-09]), 'errors': array([2.86763128e-14, 5.42274823e-10]), 'bic': -718.2062930853527, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.11553826e-12, 6.06685967e-09, 9.48482172e+01]), 'errors': array([3.02472818e-14, 5.71995845e-10, 9.89327892e-23]), 'bic': -715.7065743483263, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 0.28654509128900624}, 'ModelHop': {'params': array([1.21229182e-12, 1.44110020e-10, 1.27047692e-09, 2.43791867e-09]), 'errors': array([5.64207943e-14, 6.02023571e-08, 1.17395405e-08, 3.55867610e-09]), 'bic': -703.576161682656, 'KSTestStat': 0.75, 'KStestPValue': 0.0014969550573265746, 'rel_likelihood': 0.0006654375915249957}}, 'best_model': 'ModelBrownian'}
+    {'Dapp': array([1.47182910e-12, 1.18374989e-12, 1.10582574e-12, ...,
+           3.97828079e-13, 3.88907108e-13, 3.81322523e-13]), 'Dapp_err': array([1.44328380e-12, 1.18333621e-12, 1.09601934e-12, ...,
+           1.42360068e-14, 1.33248871e-14, 1.78553304e-14]), 'fit_indices': [0, 1, 3, 6, 11, 19, 31, 50, 80, 128, 204, 324], 'fit_results': {'ModelBrownian': {'params': array([1.11722710e-12, 6.03321517e-09]), 'errors': array([2.89658357e-14, 5.53003120e-10]), 'bic': -718.1883068721818, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 1.0}, 'ModelConfined': {'params': array([1.11726108e-12, 6.03262058e-09, 1.31530131e+02]), 'errors': array([3.05472025e-14, 5.83204073e-10, 9.70423732e-24]), 'bic': -715.6927430696574, 'KSTestStat': 0.4166666666666667, 'KStestPValue': 0.2557751845677543, 'rel_likelihood': 0.287140998106225}, 'ModelHop': {'params': array([1.21294933e-12, 1.02327593e-10, 1.23518385e-09, 1.69490920e-09]), 'errors': array([5.62095903e-14, 8.69874120e-08, 1.18488152e-08, 5.25173414e-09]), 'bic': -703.4557108812537, 'KSTestStat': 0.75, 'KStestPValue': 0.0014969550573265746, 'rel_likelihood': 0.0006322042754052308}}, 'best_model': 'ModelBrownian'}
 
 
 
@@ -495,7 +493,7 @@ It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to r
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  26.063 seconds)
+   **Total running time of the script:** ( 0 minutes  17.952 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_tutorial.py:
