@@ -749,6 +749,7 @@ class Track:
 
         self._msd = None
         self._msd_error = None
+        self._msd_SEM = None
 
         self._msd_analysis_results = None
         self._adc_analysis_results = None
@@ -1009,6 +1010,10 @@ class Track:
     def get_msd_error(self):
         """Returns the MSD error values of the track."""
         return self._msd_error
+    
+    def get_msd_SEM(self):
+        """Returns the MSD SEM of the track."""
+        return self._msd_SEM
 
     def normalized(self, normalize_t = True, normalize_xy = True):
         """Normalize the track.
@@ -1049,26 +1054,28 @@ class Track:
         return NormalizedTrack(x, y, t, xmin, ymin, tmin, id=self._id)
 
     def calculate_msd(self):
-        """Calculates the mean squared displacement of the track. Result is stored in the Track object.
-        """
-
-        def circular_matrix(ar):
-            a = np.concatenate(( ar, ar[:-1] ))
-            L = len(ar)
-            n = a.strides[0]
-            return np.lib.stride_tricks.as_strided(a[L-1:], (L,L), (-n,n))
-
-        xc = circular_matrix(self._x)
-        yc = circular_matrix(self._y)
-
-        sdm = (self._x - xc)**2 + (self._y - yc)**2
-        sdm = np.triu(sdm, 1)[:-3]
-
-        # MSD is the mean of each upper triangular row (except the last)
-        d = np.arange(sdm.shape[1] - 1, 2, -1)
         
-        self._msd = np.sum(sdm, axis=1) / d
-        self._msd_error = np.sqrt(np.sum(np.triu((sdm - self._msd[:, None])**2, 1), axis=1) / d**2) # stddev weighted by inverse square of msd length
+        """Calculates the track's mean squared displacement (msd) and stores it in 'track' object. Also deletes temporary values and colelcts them.
+           Furthermore, calculates the standard deviation per point of the MSD array (msd_error) and the standard error of the mean (SEM) [legacy version].
+        """
+                
+        N = len(self._x)
+        col_Array  = np.zeros(N-3)
+        Err_col_Array = np.zeros(N-3)
+
+        data_tmp = np.column_stack((self._x, self._y))
+    
+        for i in tqdm.tqdm(range(1,N-2)):
+            calc_tmp = np.sum(np.abs((data_tmp[1+i:N,:] - data_tmp[1:N - i,:]) ** 2), axis=1)
+            col_Array[i-1] = np.mean(calc_tmp)
+            Err_col_Array[i-1] = np.std(calc_tmp)
+            
+        d = np.arange(self._x.shape[0] - 1, 2, -1)
+
+        self._msd = col_Array                       #store MSD
+        self._msd_error = Err_col_Array             #store stdev of MSD
+        self._msd_SEM = Err_col_Array/(np.sqrt(d))  #calculate and store SEM of MSD
+        
 
     def _categorize(self, Dapp, J, Dapp_err = None, R: float = 1/6, fraction_fit_points: float = 0.25, fit_max_time: float=None, maxfev=1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
         if fraction_fit_points > 0.25:

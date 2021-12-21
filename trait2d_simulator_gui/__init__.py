@@ -364,7 +364,7 @@ class MainVisual(tk.Frame):
             title = "Diffusion"
         
         fig = plt.figure(figsize=self.fig_size)
-        self.TG.display_trajectory(time_resolution=0.5e-3, limit_fov=False, alpha=0.8,
+        self.TG.plot_trajectory(time_resolution=0.5e-3, limit_fov=False, alpha=0.8,
                                    title=title)
         plt.xlabel("x")
         plt.ylabel("y")            

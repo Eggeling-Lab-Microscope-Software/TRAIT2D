@@ -48,7 +48,7 @@ class Diffusion(object):
         self.trajectory["t"] = []
         self.trajectory["id"] = []
 
-    def display_trajectory(self, time_resolution=None, limit_fov=False, alpha=0.8, title="Diffusion"):
+    def plot_trajectory(self, time_resolution=None, limit_fov=False, alpha=0.8, title="Diffusion"):
         """Display the simulated trajectory.
 
         Parameters
@@ -71,7 +71,6 @@ class Diffusion(object):
             plt.ylim((0, self.parameters["L"]))
 
         plt.title(title)
-        #plt.show()
 
     def _gather_parameters(self):
         self.parameters = dict()
