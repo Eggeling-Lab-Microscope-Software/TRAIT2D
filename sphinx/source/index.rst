@@ -81,6 +81,12 @@ Installation:
    :caption: Tutorials and Examples
    
    auto_examples/index
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: Project Maintenance
+
+   maintenance
 
 Indices and tables
 ------------------
