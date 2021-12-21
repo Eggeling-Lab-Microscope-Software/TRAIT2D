@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Simulation Library &mdash; trait2d 1.1-43-g8322688 documentation</title>
+  <title>Simulation Library &mdash; trait2d 1.1-46-gdf612a2 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.1-43-g8322688
+                1.1-46-gdf612a2
               </div>
             
           
@@ -294,18 +294,20 @@ changing from one compartment to the next only with a certain probability)</p>
 
 <dl class="py class">
 <dt id="trait2d.simulators.movie_simulator">
-<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">movie_simulator</code><span class="sig-paren">(</span><em><span class="n">tracks</span><span class="o">=</span><span class="default_value">None</span></em>, <em><span class="n">resolution</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em><span class="n">dt</span><span class="o">=</span><span class="default_value">1</span></em>, <em><span class="n">snr</span><span class="o">=</span><span class="default_value">25</span></em>, <em><span class="n">background</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em><span class="n">noise_gaussian</span><span class="o">=</span><span class="default_value">0.15</span></em>, <em><span class="n">noise_poisson</span><span class="o">=</span><span class="default_value">True</span></em>, <em><span class="n">ratio</span><span class="o">=</span><span class="default_value">'square'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.movie_simulator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a syntetic iscat movie from a set of tracks.
-<strong>Syntax</strong>:</p>
+<em class="property">class </em><code class="descclassname">trait2d.simulators.</code><code class="descname">movie_simulator</code><span class="sig-paren">(</span><em><span class="n">tracks</span><span class="o">=</span><span class="default_value">None</span></em>, <em><span class="n">resolution</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em><span class="n">dt</span><span class="o">=</span><span class="default_value">1</span></em>, <em><span class="n">contrast</span><span class="o">=</span><span class="default_value">5</span></em>, <em><span class="n">background</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em><span class="n">noise_gaussian</span><span class="o">=</span><span class="default_value">0.15</span></em>, <em><span class="n">noise_poisson</span><span class="o">=</span><span class="default_value">True</span></em>, <em><span class="n">ratio</span><span class="o">=</span><span class="default_value">'square'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.movie_simulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a syntetic iscat movie from a set of tracks.</p>
+<p><strong>Syntax</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">movie_simulator</span> <span class="o">=</span> <span class="n">iscat_movie</span><span class="p">(</span><span class="n">tracks</span><span class="p">)</span>
 <span class="n">movie_simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Author(s)</strong>:
-| Joël Lefebvre (<a class="reference external" href="mailto:lefebvre&#46;joel&#37;&#52;&#48;uqam&#46;ca">lefebvre<span>&#46;</span>joel<span>&#64;</span>uqam<span>&#46;</span>ca</a>)
-| Department of Computer Sciences
-| Université du Québec a Montréal (UQAM)
-| 201, Av. du Président-Kennedy, Montréal (Qc), Canada (H3C 3P8)</p>
+<p><strong>Authors</strong>:</p>
+<div class="line-block">
+<div class="line">Joël Lefebvre (<a class="reference external" href="mailto:lefebvre&#46;joel&#37;&#52;&#48;uqam&#46;ca">lefebvre<span>&#46;</span>joel<span>&#64;</span>uqam<span>&#46;</span>ca</a>)</div>
+<div class="line">Department of Computer Sciences</div>
+<div class="line">Université du Québec a Montréal (UQAM)</div>
+<div class="line">201, Av. du Président-Kennedy, Montréal (Qc), Canada (H3C 3P8)</div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -315,7 +317,7 @@ changing from one compartment to the next only with a certain probability)</p>
 <cite>x</cite>, <cite>y</cite>, <cite>t</cite> and <cite>id</cite></li>
 <li><strong>resolution</strong> (<em>float</em>) – Spatial resolution [m/px]</li>
 <li><strong>dt</strong> (<em>float</em>) – Temporal resolution  [frame/sec]</li>
-<li><strong>snr</strong> (<em>float</em>) – Signal to noise ratio</li>
+<li><strong>contrast</strong> (<em>float</em>) – Contrast between the simulated particle and the background (Contrast = particle intensity - background intensity)</li>
 <li><strong>background</strong> (<em>float</em>) – Background intensity between 0 and 1</li>
 <li><strong>noise_gaussian</strong> (<em>float</em>) – Gaussian noise variance</li>
 <li><strong>noise_poisson</strong> (<em>bool</em>) – If True, Poisson noise will be added.</li>
@@ -341,9 +343,15 @@ the aspect ratio will be inferred from the tracks position.</li>
 <dl class="py method">
 <dt id="trait2d.simulators.movie_simulator.load_psf">
 <code class="descname">load_psf</code><span class="sig-paren">(</span><em><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.movie_simulator.load_psf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load a Point-Spread Function (PSF) from a file
-:param filename: Input volume filename. Must be a volume format supported by <cite>imageio.volwrite</cite>
-:type filename: str</p>
+<dd><p>Load a Point-Spread Function (PSF) from a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) – Input volume filename. Must be a volume format supported by <cite>imageio.volwrite</cite></td>
+</tr>
+</tbody>
+</table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Only the middle slice along the first dimension will be used</p>
@@ -375,17 +383,29 @@ the aspect ratio will be inferred from the tracks position.</li>
 <dl class="py method">
 <dt id="trait2d.simulators.movie_simulator.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em><span class="n">reinitialize</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.movie_simulator.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the movie simulation
-:param reinitialize: If <cite>True</cite>, the simulator will be reinitialized.
-:type reinitialize: bool</p>
+<dd><p>Run the movie simulation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reinitialize</strong> (<em>bool</em>) – If <cite>True</cite>, the simulator will be reinitialized.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="py method">
 <dt id="trait2d.simulators.movie_simulator.save">
 <code class="descname">save</code><span class="sig-paren">(</span><em><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.simulators.movie_simulator.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the simulated movie.
-:param filename: Output volume filename. Must be a volume format supported by <cite>imageio.volwrite</cite>
-:type filename: str</p>
+<dd><p>Save the simulated movie.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) – Output volume filename. Must be a volume format supported by <cite>imageio.volwrite</cite></td>
+</tr>
+</tbody>
+</table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The volume will be converted to single precision float (<cite>numpy.float32</cite>)</p>
