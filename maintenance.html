@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; trait2d 1.2-2-geb19c9b documentation</title>
+  <title>Project Maintenance &mdash; trait2d 1.2-2-geb19c9b documentation</title>
   
 
   
@@ -23,7 +23,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -39,9 +38,8 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -72,7 +70,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -155,14 +153,14 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Project Maintenance</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
             
-              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/master/sphinx/source/search" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/master/sphinx/source/maintenance.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -176,18 +174,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="project-maintenance">
+<span id="csv-files"></span><h1>Project Maintenance<a class="headerlink" href="#project-maintenance" title="Permalink to this headline">¶</a></h1>
+<p>This page contains documentation for researchers who are maintaining their own repository of the project.</p>
+<div class="section" id="releasing-on-pypi">
+<h2>Releasing on PyPI<a class="headerlink" href="#releasing-on-pypi" title="Permalink to this headline">¶</a></h2>
+<p>The repository contains a workflow that automatically uploads a published GitHub release to PyPI.</p>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can skip this step if your repository is already configured and you want to go straight to the process of publishing a release.</p>
+</div>
+<ol class="arabic simple">
+<li>Make necessary changes to <a class="reference external" href="../setup.py">setup.py</a>. The fields <cite>author</cite>, <cite>author_email</cite>, and <cite>url</cite> should be the most interesting. You’ll probably also need to change the <cite>name</cite> field to make uploading to PyPI possible.</li>
+<li>On GitHub, go to the <a class="reference external" href="../../../settings/secrets/actions">action secrets</a> settings and add your PyPI <a class="reference external" href="https://pypi.org/help/#apitoken">API token</a> as <code class="code docutils literal notranslate"><span class="pre">PYPI_PASSWORD</span></code>.</li>
+</ol>
+</div>
+<div class="section" id="publishing-a-release">
+<h3>Publishing a Release<a class="headerlink" href="#publishing-a-release" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>In  <a class="reference external" href="../setup.py">setup.py</a>, change the field <cite>version</cite> to the version number of your release. Look at <a class="reference external" href="https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/specification.html">this page</a> if you’re unsure.</li>
+<li>Make sure <a class="reference external" href="../../../settings/actions">actions are enabled</a>.</li>
+<li>Create a new release on GitHub, preferably using a tag with the same version number from before, and publish it. You can check the PyPI release workflow <a class="reference external" href="../../../actions/workflows/publish-package.yml">here</a>. If a green tick shows up, the PyPI release should be up!</li>
+</ol>
+</div>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
@@ -232,14 +246,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>
