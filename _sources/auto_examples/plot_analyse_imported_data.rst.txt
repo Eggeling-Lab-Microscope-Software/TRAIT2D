@@ -62,7 +62,7 @@ The representation of the track instance holds some information about it.
  .. code-block:: none
 
 
-    <Track instance at 139808519053216>
+    <Track instance at 139825406480288>
     ------------------------
     Track length:       1000
     Track ID:           None
@@ -154,7 +154,7 @@ It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to r
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.083 seconds)
+   **Total running time of the script:** ( 0 minutes  1.127 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_analyse_imported_data.py:
