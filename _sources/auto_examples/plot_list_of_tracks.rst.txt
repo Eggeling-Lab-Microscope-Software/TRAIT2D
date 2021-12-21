@@ -62,7 +62,7 @@ The representation of the ``ListOfTracks`` instance holds some information about
  .. code-block:: none
 
 
-    <ListOfTracks instance at 139886854230176>
+    <ListOfTracks instance at 140476181186784>
     Number of tracks: 3
 
 
@@ -140,7 +140,7 @@ For analysis, :class:`trait2d.analysis.ListOfTracks` uses the same semantics as 
  .. code-block:: none
 
 
-    {'sectors': {'ModelHop': 0.3333333333333333, 'ModelConfined': 0.6666666666666666, 'not catergorized': 0.0}, 'average_params': {'ModelHop': array([3.14967424e-13, 3.42032577e-11, 6.45676387e-10, 1.21317270e-05]), 'ModelConfined': array([1.46622083e-12, 1.63824707e-08, 1.50744939e-01])}, 't': array([0.    , 0.0005, 0.001 , 0.0015, 0.002 , 0.0025, 0.003 , 0.0035,
+    {'sectors': {'ModelHop': 0.3333333333333333, 'ModelConfined': 0.6666666666666666, 'not catergorized': 0.0}, 'average_params': {'ModelHop': array([3.16699297e-13, 2.71393784e-11, 4.69148684e-09, 1.40448823e-05]), 'ModelConfined': array([1.46622083e-12, 1.63802501e-08, 1.50744939e-01])}, 't': array([0.    , 0.0005, 0.001 , 0.0015, 0.002 , 0.0025, 0.003 , 0.0035,
            0.004 , 0.0045, 0.005 , 0.0055, 0.006 , 0.0065, 0.007 , 0.0075,
            0.008 , 0.0085, 0.009 , 0.0095, 0.01  , 0.0105, 0.011 , 0.0115,
            0.012 , 0.0125, 0.013 , 0.0135, 0.014 , 0.0145, 0.015 , 0.0155,
@@ -1322,7 +1322,7 @@ It is a good idea to use `ModelDB().cleanup()` at the end of your notebooks to r
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.366 seconds)
+   **Total running time of the script:** ( 0 minutes  1.979 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_list_of_tracks.py:
