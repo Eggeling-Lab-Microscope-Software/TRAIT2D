@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analysis Library &mdash; trait2d 1.2-4-g8c95634 documentation</title>
+  <title>Analysis Library &mdash; trait2d 1.2-6-g6e37894 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.2-4-g8c95634
+                1.2-6-g6e37894
               </div>
             
           
@@ -217,7 +217,8 @@
 <dl class="py method">
 <dt id="trait2d.analysis.Track.adc_analysis">
 <code class="descname">adc_analysis</code><span class="sig-paren">(</span><em><span class="n">R</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.16666666666666666</span></em>, <em><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em>, <em><span class="n">enable_log_sampling</span><span class="o">=</span><span class="default_value">False</span></em>, <em><span class="n">log_sampling_dist</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em><span class="n">weighting</span><span class="o">=</span><span class="default_value">'error'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.adc_analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Revised analysis using the apparent diffusion coefficient</p>
+<dd><p>Revised analysis using the apparent diffusion coefficient.
+Supposes equal time interval between localizations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -413,7 +414,8 @@ specified using the appropriate arguments.</p>
 <dl class="py method">
 <dt id="trait2d.analysis.Track.msd_analysis">
 <code class="descname">msd_analysis</code><span class="sig-paren">(</span><em><span class="n">fraction_fit_points</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em><span class="n">n_fit_points</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em><span class="n">fit_max_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em><span class="n">initial_guesses</span><span class="o">=</span><span class="default_value">{}</span></em>, <em><span class="n">maxfev</span><span class="o">=</span><span class="default_value">1000</span></em>, <em><span class="n">R</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#trait2d.analysis.Track.msd_analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Classical Mean Squared Displacement Analysis for single track</p>
+<dd><p>Classical Mean Squared Displacement Analysis for single track
+Supposes equal time interval between localizations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
