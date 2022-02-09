@@ -744,6 +744,7 @@ class Track:
         self._x = np.array(x, dtype=float)
         self._y = np.array(y, dtype=float)
         self._t = np.array(t, dtype=float)
+        self._tstamp = self._t              #this parameter will contain the original timestamps of the localizations. Useful for future generalizations
 
         self._id = id
 
@@ -893,6 +894,10 @@ class Track:
             # TODO: .pcl-specific import
             raise NotImplementedError(
                 "Import from pcl is not yet implemented.")
+        elif format == "npy":
+            # TODO: .pcl-specific import
+            raise NotImplementedError(
+                "Import from npy is not yet implemented.")
 
     def __repr__(self):
         return ("<%s instance at %s>\n"
@@ -964,7 +969,7 @@ class Track:
         plt.show()
 
     def plot_msd(self):
-        t = self._t[0:-3]
+        t = self._t[1:-2]-self._t.min()
         msd = self._msd
         err = self._msd_error
         import matplotlib.pyplot as plt

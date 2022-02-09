@@ -15,6 +15,7 @@ def get_msd_analysis_results(self):
 
 def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = None, fit_max_time: float = None, initial_guesses = { }, maxfev = 1000, R : float = 0):
     """ Classical Mean Squared Displacement Analysis for single track
+    Supposes equal time interval between localizations.
 
     Parameters
     ----------
@@ -47,7 +48,7 @@ def msd_analysis(self, fraction_fit_points: float = 0.25, n_fit_points: int = No
     N = self._msd.size
 
     # This is the time array, as the fits will be MSD vs T
-    T = self._t[0:-3]
+    T = self._t[1:-2]-self._t.min()
 
     dt = self._t[1] - self._t[0]
 
@@ -136,7 +137,7 @@ def plot_msd_analysis_results(self, scale: str = 'log'):
 
     results = self.get_msd_analysis_results()["fit_results"]
     N = self._x.size
-    T = self._t[0:-3]
+    T = self._t[1:-2]-self._t.min()
     n_points = self.get_msd_analysis_results()["n_points"]
     reg1 = results["model1"]["params"]
     reg2 = results["model2"]["params"]

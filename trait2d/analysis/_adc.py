@@ -11,7 +11,8 @@ def get_adc_analysis_results(self):
     return self._adc_analysis_results
 
 def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_time: float = None, maxfev = 1000, enable_log_sampling = False, log_sampling_dist = 0.2, weighting = 'error'):
-    """Revised analysis using the apparent diffusion coefficient
+    """Revised analysis using the apparent diffusion coefficient.
+    Supposes equal time interval between localizations.
 
     Parameters
     ----------
