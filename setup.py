@@ -9,7 +9,7 @@ setuptools.setup(
     long_description =long_description,
     long_description_content_type="text/markdown",
     author           = 'Francesco Reina, John Wigg, Mariia Dmitrieva, Bela Vogler, Joël Lefebvre,',
-    author_email     = 'francesco.reina@uni-jena.de, john.wigg@uni-jena.de, mariia.dmitrieva@eng.ox.ac.uk, bela.vogler@uni-jena.de, lefebvre.joel@uqam.ca',
+    author_email     = 'f.reina3@gmail.com, john.wigg@uni-jena.de, mariia.dmitrieva@eng.ox.ac.uk, bela.vogler@uni-jena.de, lefebvre.joel@uqam.ca',
     url              = "https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D",
     packages         = setuptools.find_packages(),
     version          = "1.2.1",
