@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Project Maintenance &mdash; trait2d 1.2.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="TRAIT Tutorial" href="auto_examples/plot_tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> trait2d
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Libraries</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulation Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Graphical Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis_gui.html">Analysis GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulator_gui.html">Simulator GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tracker_gui.html">Tracker GUI</a></li>
+</ul>
+<p class="caption"><span class="caption-text">File Formats</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="csv_files.html">CSV Files</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials and Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Example gallery</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Maintenance</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Project Maintenance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#releasing-on-pypi">Releasing on PyPI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#publishing-a-release">Publishing a Release</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trait2d</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Project Maintenance</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Eggeling-Lab-Microscope-Software/TRAIT2D/blob/1.2.1/sphinx/source/maintenance.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="project-maintenance">
+<span id="csv-files"></span><h1>Project Maintenance<a class="headerlink" href="#project-maintenance" title="Permalink to this headline">¶</a></h1>
+<p>This page contains documentation for researchers who are maintaining their own repository of the project.</p>
+<div class="section" id="releasing-on-pypi">
+<h2>Releasing on PyPI<a class="headerlink" href="#releasing-on-pypi" title="Permalink to this headline">¶</a></h2>
+<p>The repository contains a workflow that automatically uploads a published GitHub release to PyPI.</p>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can skip this step if your repository is already configured and you want to go straight to the process of publishing a release.</p>
+</div>
+<ol class="arabic simple">
+<li>Make necessary changes to <a class="reference external" href="../setup.py">setup.py</a>. The fields <code class="code docutils literal notranslate"><span class="pre">author</span></code>, <code class="code docutils literal notranslate"><span class="pre">author_email</span></code>, and <code class="code docutils literal notranslate"><span class="pre">url</span></code> should be the most interesting. You’ll probably also need to change the <code class="code docutils literal notranslate"><span class="pre">name</span></code> field to make uploading to PyPI possible.</li>
+<li>On GitHub, go to the <a class="reference external" href="../../../settings/secrets/actions">action secrets</a> settings and add your PyPI <a class="reference external" href="https://pypi.org/help/#apitoken">API token</a> as <code class="code docutils literal notranslate"><span class="pre">PYPI_PASSWORD</span></code>.</li>
+</ol>
+</div>
+<div class="section" id="publishing-a-release">
+<h3>Publishing a Release<a class="headerlink" href="#publishing-a-release" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>In  <a class="reference external" href="../setup.py">setup.py</a>, change the field <code class="code docutils literal notranslate"><span class="pre">version</span></code> to the version number of your release. Look at <a class="reference external" href="https://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/specification.html">this page</a> if you’re unsure.</li>
+<li>Make sure <a class="reference external" href="../../../settings/actions">actions are enabled</a>.</li>
+<li>Create a new release on GitHub, preferably using a tag with the same version number from before, and publish it. You can check the PyPI release workflow <a class="reference external" href="../../../actions/workflows/publish-package.yml">here</a>. If a green tick shows up, the PyPI release should be up!</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="auto_examples/plot_tutorial.html" class="btn btn-neutral float-left" title="TRAIT Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, FR,MD,JL,JW
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
