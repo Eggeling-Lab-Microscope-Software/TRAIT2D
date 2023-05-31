@@ -53,7 +53,7 @@ def adc_analysis(self, R: float = 1/6, fraction_fit_points: float=0.25, fit_max_
 
     # Compute  the time-dependent apparent diffusion coefficient.
     Dapp = self._msd / (4 * T * (1 - 2*R*dt / T))
-    Dapp_err = self._msd_error / (4 * T * (1 - 2*R*dt / T))
+    Dapp_err = (self._msd_error / self._msd) * Dapp
 
     model, fit_indices, fit_results = self._categorize(np.array(Dapp), np.arange(
         1, N+1), Dapp_err = Dapp_err, R=R, fraction_fit_points=fraction_fit_points, fit_max_time=fit_max_time, maxfev=maxfev, enable_log_sampling=enable_log_sampling, log_sampling_dist=log_sampling_dist, weighting = weighting)
